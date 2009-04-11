@@ -1,0 +1,1583 @@
+## ylset.slim
+## zhangmdev@gmail.com
+## 11/07/07
+## slim template for yl weeks
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+
+## YL begin
+   template shadingmodel YLSet {
+	description {AOV surface for YiLi weeks}
+   parameter string sdisplay {
+ 		label "Display"
+	    description { Choose the component to display in the primary render. }
+	    subtype selector
+	    range { black _black
+				flattened _flattened
+	    		color _color
+			colorA _colorA
+	    		colorB _colorB
+	    		colorC _colorC
+	    		colorD _colorD
+			colorE _colorE
+			colorF _colorF
+			colorG _colorG
+			colorH _colorH
+		    diffuse _diffuse
+		    diffuse_fill _diffuse_fill
+		    diffuse_back _diffuse_back
+		    specular _specular
+		    specular_fill _specular_fill
+		    specular_back _specular_back
+		    rim _rim
+		    epiderm _epiderm
+		    subderm _subderm
+		    backscattering _backscattering
+		    reflection _reflection
+		    refraction _refraction
+		    ambient _ambient
+		    occlusion _occlusion
+		    shadow _shadow
+		    depth _depth
+		    objectID _objectID
+		  }
+	    default _color
+	}
+	
+	parameter color SurfaceOpacity {
+	   label "Surface Opacity"
+	   detail varying
+	   default "1 1 1"
+       }
+
+	parameter color SurfaceColor {
+	   label "Surface Color"
+	   detail varying
+	   default ".7 .7 .7"
+       }
+       
+       parameter color CsurfA {
+ 		label "Surface ColorA"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	 parameter color CsurfB {
+ 		label "Surface ColorB"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color CsurfC {
+ 		label "Surface ColorC"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color CsurfD {
+ 		label "Surface ColorD"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color CsurfE {
+ 		label "Surface ColorE"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color CsurfF {
+ 		label "Surface ColorF"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color CsurfG {
+ 		label "Surface ColorG"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color CsurfH {
+ 		label "Surface ColorH"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+       parameter color cDiffuse {
+	description {Plug a Diffuse shading component here.}
+	   label "Diffuse"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cDiffuse1 {
+	description {Plug a Diffuse shading component here.}
+	   label "Diffuse Fill"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cDiffuse2 {
+	description {Plug a Diffuse shading component here.}
+	   label "Diffuse Back"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cSpecular {
+	description {Plug a Specular shading component here.}
+	   label "Specular"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cSpecular1 {
+	description {Plug a Specular shading component here.}
+	   label "Specular Fill"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cSpecular2 {
+	description {Plug a Specular shading component here.}
+	   label "Specular Back"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cRim {
+	description {Plug a Rim shading component here.}
+	   label "Rim"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cEpiderm {
+		label "Epiderm"
+		 detail varying
+		default ".0 .0 .0"
+       }
+       
+       parameter color cSubderm {
+		label "Subderm"
+		 detail varying
+		default ".0 .0 .0"
+       }
+       
+       parameter color cBackscattering {
+		label "Backscattering"
+		 detail varying
+		default ".0 .0 .0"
+       }
+       
+       parameter color cReflection {
+	description {Plug a Reflection shading component here.}
+	   label "Reflection"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cRefraction {
+	description {Plug a Refraction shading component here.}
+	   label "Refraction"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cAmbient {
+	description {Plug a Diffuse shading component here and receive environment only.}
+	   label "Ambient"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cOcclusion {
+	description {Plug a occlusion-based mix color here.}
+	   label "Occlusion"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter color cShadow {
+	description {Plug a collect shadow here.}
+	   label "Shadow"
+	   detail varying
+	   default ".0 .0 .0"
+       }
+       
+       parameter float fDepth {
+		label "Depth"
+		detail varying
+	   	default .0
+       }
+       
+       parameter color cID {
+	description {Set a color to key.}
+	   label "Object ID"
+	   detail varying
+	   default ".0 .0 1.0"
+       }
+       
+	parameter color _color {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+		parameter color _colorA {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorB {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorC {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorD {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorE {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorF {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorG {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorH {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _diffuse {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _diffuse_fill {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _diffuse_back {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+			
+	parameter color _specular {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _specular_fill {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _specular_back {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _rim {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _epiderm {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _subderm {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _backscattering {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _reflection {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _refraction {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _ambient {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter float _occlusion {
+	       detail varying
+	       provider primitive
+	       default 0.0
+	       access output
+	       display hidden
+	}
+	
+	parameter color _depth {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _shadow {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _objectID {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslYLSet(string mode;
+	   		color SurfaceOpacity, SurfaceColor;
+			color colorA, colorB, colorC, colorD, colorE, colorF, colorG, colorH;
+			color cDiffuse, cDiffuse1, cDiffuse2, cSpecular, cSpecular1, cSpecular2, cRim, cEpiderm, cSubderm, cBackscattering, cReflection, cRefraction, cAmbient, cOcclusion, cShadow; float fDepth; color cID;
+		       output color CI;
+		       output color OI; )
+	   {
+	   
+		extern color _depth;
+    	    	extern color _color;
+		extern color _colorA;
+		extern color _colorB;
+		extern color _colorC;
+		extern color _colorD;
+		extern color _colorE;
+		extern color _colorF;
+		extern color _colorG;
+		extern color _colorH;
+    	    	extern color _reflection;
+		extern color _refraction;
+    	    	extern color _specular;
+		extern color _specular_fill;
+		extern color _specular_back;
+    	    	extern color _diffuse;
+		extern color _diffuse_fill;
+		extern color _diffuse_back;
+    	    	extern color _rim;
+    	    	extern color _ambient;
+		extern float _occlusion;
+		extern color _objectID;
+		extern color _shadow;
+		extern color _epiderm;
+		extern color _subderm;
+		extern color _backscattering;
+	   	
+		if(mode == "_color") 
+	   	{
+	   		CI = SurfaceColor;
+	   	}
+		else if(mode == "_colorA") 
+	   	{
+	   		CI = colorA;
+	   	}
+		else if(mode == "_colorB") 
+	   	{
+	   		CI = colorB;
+	   	}
+		else if(mode == "_colorC") 
+	   	{
+	   		CI = colorC;
+	   	}
+		else if(mode == "_colorD") 
+	   	{
+	   		CI = colorD;
+	   	}
+		else if(mode == "_colorE") 
+	   	{
+	   		CI = colorE;
+	   	}
+		else if(mode == "_colorF") 
+	   	{
+	   		CI = colorF;
+	   	}
+		else if(mode == "_colorG") 
+	   	{
+	   		CI = colorG;
+	   	}
+		else if(mode == "_colorH") 
+	   	{
+	   		CI = colorH;
+	   	}
+		else if(mode == "_diffuse")
+	   	{
+	   		 CI = cDiffuse;
+	   	}
+		else if(mode == "_diffuse_fill")
+	   	{
+	   		 CI = cDiffuse1;
+	   	}
+		else if(mode == "_diffuse_back")
+	   	{
+	   		 CI = cDiffuse2;
+	   	}
+		else if(mode == "_specular")
+	   	{
+	   		CI = cSpecular;
+	   	}
+		else if(mode == "_specular_fill")
+	   	{
+	   		CI = cSpecular1;
+	   	}
+		else if(mode == "_specular_back")
+	   	{
+	   		CI = cSpecular2;
+	   	}
+		else if(mode == "_rim")
+	   	{
+	   		CI = cRim;
+	   	}
+		else if(mode == "_reflection")
+	   	{
+	   		CI = cReflection;
+	   	}
+		else if(mode == "_refraction")
+	   	{
+	   		CI = cRefraction;
+	   	}
+		else if(mode == "_ambient")
+	   	{
+	   		CI = cAmbient;
+	   	}
+		else if(mode == "_occlusion")
+	   	{
+	   		CI = cOcclusion;
+	   	}
+		else if(mode == "_depth")
+	   	{
+	   		CI = fDepth;
+	   	}
+		else if(mode == "_objectID")
+		{
+			CI = cID;
+		}
+		else if(mode == "_shadow")
+		{
+			CI = cShadow;
+		}
+		else if(mode == "_epiderm")
+		{
+			CI = cEpiderm;
+		}
+		else if(mode == "_subderm")
+		{
+			CI = cSubderm;
+		}
+		else if(mode == "_backscattering")
+		{
+			CI = cBackscattering;
+		}
+		else if(mode == "_black")
+	   	{
+	   		_color = SurfaceColor;
+			_colorA = colorA;
+			_colorB = colorB;
+			_colorC = colorC;
+			_colorD = colorD;
+			_colorE = colorE;
+			_colorF = colorF;
+			_colorG = colorG;
+			_colorH = colorH;
+	   		_diffuse = cDiffuse;
+			_diffuse_fill = cDiffuse1;
+			_diffuse_back = cDiffuse2;
+			_specular = cSpecular;
+			_specular_fill = cSpecular1;
+			_specular_back = cSpecular2;
+	   		_reflection = cReflection;
+			_refraction = cRefraction;
+	   		_rim = cRim;
+	   		_ambient = cAmbient;
+			_depth = fDepth;
+			_occlusion = comp(cOcclusion,0);
+			_objectID = cID;
+			_shadow = cShadow;
+			_epiderm = cEpiderm;
+			_subderm = cSubderm;
+			_backscattering = cBackscattering;
+	   		CI = 0;
+	   	}
+		else
+		{
+			_depth = fDepth;
+			_objectID = cID;
+	   		CI = SurfaceColor * (cDiffuse + cAmbient + cRim + cEpiderm + cSubderm + cBackscattering) + cSpecular + cReflection + cRefraction;
+		}
+		CI *= SurfaceOpacity; 
+	      OI = SurfaceOpacity; 
+	   }
+       }
+   }
+## YL end
+## fresnel begin
+template color decayReflection {
+	label {Decay Reflection}
+       description "Decay the reflection based on fresnel."
+       parameter color reflection {
+	   label "Reflection"
+	   detail mustvary
+	   default {0 0 0}
+       }
+       
+       parameter float index {
+		label {Refraction Index}
+		detail uniform
+		subtype slider
+		range {1. 3. .01}
+		default 1.8
+       }
+       
+       parameter color result {
+	   access output
+	   display hidden
+       }
+       RSLFunction {
+	   void pxsldecayReflection(color ci; float ir; output color c;)
+	   {
+		extern normal N;
+    		extern vector I;
+		
+		float Kr, Kt;
+    	    	vector R, T;
+
+		fresnel(normalize(I), normalize(N), 1/ir, Kr, Kt, R, T);
+	       c = ci * Kr;
+	   }
+       }
+   }
+## fresnel end
+## collect shadow begin
+template color collectShadow {
+	label {Collect Shadow}
+       parameter string cat {
+	label {Light Category}
+		detail uniform
+       }
+       
+       parameter color result {
+	   access output
+	   display hidden
+       }
+       RSLFunction {
+	   void pxslcollectShadow(uniform string cat; output color c;)
+	   {
+		extern point P;
+		
+		uniform string category = "-environment";
+		if(cat !="") category = cat;
+
+		c= 0;
+		illuminance(category, P)
+		{
+			color inshdC = 0;
+			lightsource("__inShadowC", inshdC);
+			c += inshdC*0.5;
+	    	}
+
+	   }
+       }
+   }
+## collect shadow end
+## sss begin
+template color zsss {
+	label {SubSurfaceScattering}
+	description {SSS based on depth map}
+	
+	parameter float isback {
+		label {Is Back Scatter}
+		detail uniform
+		subtype switch
+		default .0
+	}
+	
+	parameter float fintensity {
+		label {Intensity}
+		detail uniform
+		default 1.
+	}
+	
+	parameter color cflt {
+		label {Color}
+		detail varying
+		default {1. 1. 1.}
+	}
+	
+       parameter float fthickness {
+		label {Thickness}
+		detail uniform
+		default 0.1
+       }
+       
+       parameter float fabsorb {
+		label {Absorb Coefficiency}
+		detail uniform
+		default 0.5
+       }
+       
+       parameter float fspread {
+		label {Spread}
+		detail uniform
+		default 0.2
+       }
+       
+       parameter color result {
+	   access output
+	   display hidden
+       }
+       RSLFunction {
+	   void pxslzsss(float isback, intensity; color flt; float thickness, absorb, spread; output color c;)
+	   {
+		extern point P;
+		extern normal N;
+		extern vector I;
+		vector efresnel(vector II; normal NN; float eta; output float Kr, Kt;) 
+		{
+			vector R, T;
+			fresnel(II, NN, eta, Kr, Kt, R, T);
+			Kr = smoothstep(0.,0.5, Kr);
+			Kt = 1. - Kr;
+			return normalize(T);
+		}
+		color singlescatter(point Psample; vector ray, light; float max_dist, absorb; uniform matrix shadNDCSpace,shadcamSpace; string shdname; string irrname;)
+		{
+			color C=0;
+			float len = max_dist;
+			float NDCs, NDCt, Ddata, r=-1, count=0, dot=(ray.light);
+			point Pr, NDCP, CAMP;
+			
+			while(r<0 && count<8)
+			{
+				Pr = Psample+ray*len;
+				NDCP = transform (shadNDCSpace, Pr);
+				CAMP = transform(shadcamSpace, Pr);
+				NDCs = 0.5*(1+xcomp(NDCP));
+				NDCt = 0.5*(1-ycomp(NDCP));
+				Ddata = float texture(shdname, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, "samples", 1);
+				r = zcomp(CAMP)-Ddata;
+				len = len/2;
+				count = count+1;
+			}
+
+			if(r>0)
+			{
+				r = r/dot+len;
+				color tmp = color texture(irrname, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, "samples", 1);
+				C = tmp*(exp(-(r)*absorb));
+				setcomp(C,2,1);
+			}
+			else if(r<max_dist)
+			{
+				color tmp = color texture(irrname, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, NDCs, NDCt, "samples", 1);
+				C = tmp*0.99;
+				setcomp(C,2,1);
+			}
+						
+			return C;
+		}
+		color diffusescatter(string cat; point Psample; normal N; float max_dist, absorb, size)
+		{
+			color ctmp, C=0;
+			float i,j, realsamples=0, dir;
+			float offsettable[8]={-.931, -.587, -.293, -.0859, .0859, .293, .587, .931};
+			
+			vector Ln, up, ray, base1, base2;
+			string shdname,norname;
+			uniform matrix shadNDCSpace,shadcamSpace;
+			illuminance(cat, Psample)
+			{
+				extern vector L;
+				Ln = normalize(L);
+				
+				up = vector(0,1,0);
+				if (abs(ycomp(Ln)) > 0.9) up = vector(1,0,0);
+				base1 = normalize(Ln^up);
+				base2 = Ln^base1;
+				
+				if (lightsource("__shdname", shdname) != 0 && shdname!="" && lightsource("__norname", norname) != 0 && norname!="")
+				{
+					textureinfo(shdname, "projectionmatrix", shadNDCSpace);
+					textureinfo(shdname, "viewingmatrix", shadcamSpace);
+					
+					for(i=0;i<=7;i=i+1)
+					{
+						for(j=0;j<=7;j=j+1)
+						{
+							ray = Ln + offsettable[i]*base1*size + offsettable[j]*base2*size;
+							ray = normalize(ray);
+							dir = smoothstep(-1.,0.1, ray.N);
+							
+								ctmp = singlescatter(Psample, ray, Ln, max_dist/(ray.Ln), absorb, shadNDCSpace, shadcamSpace, shdname, norname);
+								realsamples = realsamples + comp(ctmp,2);
+								C = C+ctmp*dir;
+							
+						}
+					}
+				}
+			}
+			
+			if(realsamples>0) C = C/realsamples;
+			return C;
+		}
+		
+		vector Vn = normalize(I);
+		normal Nn = normalize(N);
+		
+		vector T = refract(Vn, Nn, 1/2.33);
+		T = normalize(T);
+		
+		point Pepid = P + thickness*T;
+		
+		if(isback==1)
+			c = intensity * flt* comp(diffusescatter("back", Pepid, -Nn, thickness, absorb, spread),0);
+		else
+			c = intensity * flt* comp(diffusescatter("key", Pepid, Nn, thickness, absorb, spread),0);
+	   }
+       }
+   }
+## sss end
+
+## yl distant begin
+templateV light ylDistant 0 {
+    	lighttype distant
+
+    	parameter color LightColor {
+	    detail uniform
+	    default {1 1 1}
+	}
+	
+	parameter float Kl {
+	    description "Scalar multiplier for light color."
+	    detail varying
+	    default 1
+	}
+	
+	parameter color ShadowColor {
+	    description "The color of the shadow. Values other than black
+                        can simulate the effect of semi-transparent shadowing."
+	    default {0 0 0}
+	    detail varying
+	}
+
+	parameter string __category {
+	description "Illuminance statements will be excuted only if those shaders match particular categories.
+		Reload after any change."
+	    access output
+	    provider primitive
+	    detail uniform
+	    default "key"
+	}
+	parameter string shdMap {
+	label "ShadowMap Name"
+	description "Tell the surfaces filenames of shadow maps to use."
+	 provider variable
+	    subtype shadow
+	    default ""
+	}
+	parameter float Samples {
+	    description {The number of samples to take of the map.  Use
+	    	larger numbers when you need smooth blurring effects.}
+	    subtype selector
+	    range { 1 1 4 4 9 9 16 16 25 25 36 36 64 64 }
+    	    default 16
+	}
+	parameter float Blur {
+	    description "The \"softness\" of the shadow.  As you increase 
+	    	the blur, you may want to increase shadow samples."
+	    default 0
+	    subtype slider
+	    range {0 1 .001}
+	    
+	}
+	parameter float Bias {
+	    description "Controls self shadowing artifacts of shadow algorithm.
+			Set the bias to 0 if you want to use the default 
+			shadow bias."
+	    default 0
+	    subtype slider
+	    range {0 16 .001}
+	}
+	
+	parameter string norMap {
+	label "NormalMap Name"
+	description "Tell the surfaces filenames of normal maps to use."
+	 provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	eval [::slimLightContributionMacro]
+
+	parameter float __nondiffuse {
+	    access output
+	    display hidden
+	    detail varying
+	    provider variable
+	    default 1
+	}
+	parameter float __nonspecular {
+	    display hidden
+	    access output
+	    detail varying
+	    provider variable
+	    default 1
+	}
+	parameter color __inShadowC {
+	    access output
+	    display hidden
+	    detail varying
+	    provider variable
+	    default {0 0 0}
+	}
+	parameter color __Clight {
+	    access output
+	    display hidden
+	    detail varying
+	    provider variable
+	    default {0 0 0}
+	}
+	parameter string __shdname {
+	    access output
+	    display hidden
+	    detail uniform
+	    provider variable
+	    default ""
+	}
+	parameter string __norname {
+	    access output
+	    display hidden
+	    detail uniform
+	    provider variable
+	    default ""
+	}
+
+	eval [::slimLightContributionOutputMacro]
+	RSLInclude "pxslUtil.h"
+	RSLMain {
+	 define SLIM_DIRECTIONAL_SHADOWS 1
+	 output "varying vector axis = vector \"shader\"(0,0,1);"
+	 output "__inShadowC = color(0);"
+	 output "varying point PP = transform(\"shader\", Ps);"
+
+	 output "solar(axis, 0.0) {"
+	 indent
+
+	  generate
+	    
+	  
+	  output "__nondiffuse = 1 - [getvar Diffuse];"
+	  output "__nonspecular = 1 - [getvar Specular];"
+	  foreach c {Rim ThinTranslucence BackScattering SubsurfaceScattering} {
+	      output "_contrib${c} = [getvar $c];"
+	  }
+	  output "Cl = [getvar Kl] * [getvar LightColor];"
+
+	output "__Clight = Cl;"
+	output "__shdname = [getvar shdMap];"
+	output " if(__shdname != \"\")"
+	output "{"
+	output "	__inShadowC = color shadow(__shdname, Ps, \"samples\", [getvar Samples], \"blur\", [getvar Blur], \"bias\", [getvar Bias]);"
+	output "	Cl = pxslCmix(Cl, [getvar ShadowColor], __inShadowC);"
+	output "}"
+
+	output "__norname = [getvar norMap];"
+	
+	
+	  
+	 exdent
+	 output "}"
+	}
+    } 
+## yl distant end
+## shading component specular begin
+	template shadingcomponent ylDiffuseSC {
+	    label YLDiffuse
+	    description {
+		Returns the result of the diffuse shading operator. Samples
+		all incoming lights along the diffuse direction of the surface.
+		Use light category to get linked shading control.
+	    }
+	    
+	    parameter string category {
+		description {Defined the categroy to receive specific lighting only.}
+		detail uniform
+	    }
+	    
+	    parameter float Intensity {
+		description "Intensity of diffuse component"
+		range {0 1 .001}
+		default 1
+		detail varying
+	    }
+	    parameter color Color {
+		description "Color of diffuse component"
+		detail varying
+		default {1 1 1}
+	    }
+	    parameter float lightType {
+		label Use
+		description {
+		    Whether to respond to traditional CG lights,
+		    lighting from environment maps, or both.
+		}		    
+		subtype selector
+		range {
+		    "Lights" -1
+		    "Environments" 1
+		    "Lights + Environments" 0
+		}
+		default 0
+	    }
+	    parameter normal Normal {
+		detail mustvary "pixar,ShadingNormal"
+	    }
+	    collection shadingcomponent result {
+		access output
+		display hidden
+		parameter color col {
+		    access output
+		}
+		eval [::aovOutputParameterMacro]
+	    }
+	    RSLInclude "pxslAOV.h"
+	    RSLSource StaticFunction {
+		void pxslylDiffuseSC(
+		    uniform string cat;
+		    float Kd;
+		    color coloration;
+		    uniform float lightType;
+		    normal Ns;
+		    output color col;
+		    DECLARE_AOV_OUTPUT_PARAMS
+		)
+		{
+		    INIT_AOV_OUTPUT_PARAMS
+
+		    col = 0;
+#if SLIM_SHADERTYPEID != SLIM_TYPEID_light
+		    extern point P;
+		    color inshadow;
+		    
+		    uniform string lightcat= "-environment";
+		    if(cat!="")  lightcat= cat;
+
+		    if (lightType <= 0)
+		    {
+			illuminance(lightcat, P, Ns, 1.57,
+			    "lightcache", "reuse")
+			{
+			    float nondiff = 0;
+			    lightsource("__nondiffuse", nondiff);
+			    if (nondiff < 1)
+			    {
+				if( 0 != lightsource("__inShadowC", inshadow) )
+				    c_shadow += inshadow;
+				col += Cl * (1-nondiff) * 
+				    normalize(L).Ns;
+			    }
+			}
+		    }
+		    if (lightType >= 0)
+		    {
+			illuminance ("environment", P, Ns, 1.57,
+			    "send:light:__coneangle", 1.57,
+			    "send:light:__coneaxis", Ns,
+			    "lightcache", "refresh")
+			{
+			    float nondiff = 0;
+			    lightsource("__nondiffuse", nondiff);
+			    if (nondiff < 1)
+			    {
+				if( 0 != lightsource("__inShadowC", inshadow) )
+				    c_shadow += inshadow;
+				col += (1-nondiff) * Cl;
+			    }
+			}
+		    }
+		    col *= coloration * Kd;
+#endif
+		    c_surfacecolor = coloration;
+		    c_diffuse = col;
+		}
+	    }
+	}
+## shading component diffuse end
+## shading component specular begin	
+	template shadingcomponent ylSpecularSC {
+	    label YLSpecular
+	    description {
+		Returns the result of the specular shading operator. Samples
+		all incoming lights along the specular direction of the surface.
+		Use light category to get linked shading control.
+	    }
+	    
+	    parameter string category {
+		description {Defined the categroy to receive specific lighting only.}
+		detail uniform
+	    }
+	    
+	    parameter float Intensity {
+		description "Intensity of specular component"
+		range {0 1 .001}
+		default 1
+		detail varying
+	    }
+	    parameter color Color {
+		description {
+		    Surface coloration. Use for metallic surfaces
+		    to obtain a filtered highlight color.
+		}
+		detail varying
+		default {1 1 1}
+	    }
+	    parameter float Roughness {
+		description {
+		    Size or roughness of highlight
+		}
+		range {0 1 .001}
+		default .1
+		detail varying
+	    }
+	    parameter float lightType {
+		label Use
+		description {
+		    Whether to respond to traditional CG lights,
+		    lighting from environment maps, or both.
+		}		    
+		subtype selector
+		range {
+		    "Lights" -1
+		    "Environments" 1
+		    "Lights + Environments" 0
+		}
+		default 0
+	    }
+	    parameter normal Normal {
+		detail mustvary "pixar,ShadingNormal"
+	    }
+	    parameter vector ViewDirection {
+		detail mustvary "pixar,ViewDirection"
+		display hidden
+	    }
+	    collection shadingcomponent result {
+		access output
+		display hidden
+		parameter color col {
+		    access output
+		}
+		eval [::aovOutputParameterMacro]
+	    }
+	    RSLInclude "pxslAOV.h"
+	    RSLSource StaticFunction {
+		void pxslylSpecularSC(
+			uniform string cat;
+		    float Ks;
+		    color coloration;
+		    float roughness;
+		    uniform float lightType;
+		    normal Ns;
+		    vector V;
+		    output color col;
+		    DECLARE_AOV_OUTPUT_PARAMS
+		)
+		{
+		    INIT_AOV_OUTPUT_PARAMS
+
+		    col = 0;
+#if SLIM_SHADERTYPEID != SLIM_TYPEID_light
+		    extern point P;
+		    
+		    uniform string lightcat= "-environment";
+		    if(cat!="")  lightcat= cat;
+		    
+		    if (lightType <= 0)
+		    {
+			illuminance(lightcat, P, Ns, 1.57,
+			    "lightcache", "reuse")
+			{
+			    float nonspec = 0;
+			    lightsource("__nonspecular", nonspec);
+			    if (nonspec < 1)
+				col += Cl * (1-nonspec) * 
+				    specularbrdf(normalize(L), Ns, 
+				    V, roughness);
+			}
+		    }
+		    if (lightType >= 0)
+		    {
+			float cone;
+			cone = 1.55 * pow(roughness,2);
+			illuminance ("environment", P, Ns, 1.57,
+			    "send:light:__coneangle", cone,
+			    "send:light:__coneaxis", reflect(-V, Ns),
+			    "lightcache", "refresh")
+			{
+			    float nonspec = 0;
+			    lightsource("__nonspecular", nonspec);
+			    if (nonspec < 1)
+				col += (1-nonspec) * Cl;
+			}
+		    }
+		    col *= coloration * Ks;
+		    c_specular = col;
+#endif
+		}
+	    }
+	}
+## shading component specular end
+
+## eye begin
+    template shadingmodel ylEye {
+    	parameter color ceye {
+	    label "Sclera Color"
+		detail varying
+	    default {1. 1. 1.}
+	}
+	parameter float Kd {
+       	detail varying
+       	subtype slider
+		range {0 1 0.01}
+	   default .55
+       }
+       parameter color specularColor {
+	   label "Specular Color"
+	   detail varying
+	   default "1 1 1"
+       }
+       parameter float Ks {
+       	detail varying
+       	subtype slider
+		range {0 1 0.01}
+	   default .7
+       }
+       parameter float sharpness {
+       	detail varying
+       	subtype slider
+		range {0 1 0.01}
+	   default .3
+       }
+       
+       parameter color creflection {
+	label {Reflection}
+		detail varying
+		default {.0 .0 .0}
+       }
+       
+	parameter float firis {
+		label "Iris Position"
+		description "Where the iris starts to pop out."
+		detail uniform
+		subtype slider
+		range {0.1 .2 0.001}
+		default 0.15
+	}
+	parameter float kiris {
+		label "Kiris"
+		detail uniform
+		subtype slider
+		range {0. 1.0 0.01}
+		default 0.3
+	}
+	parameter color ciris {
+	   label "Iris Color"
+	   detail uniform
+	   default "0 0.3 0.2"
+       }
+	parameter string irismap {
+	    label "Iris Texture"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter color cocclusion {
+		label "Occlusion"
+		provider variable
+		detail varying
+		default {1 1 1}
+	}
+	
+	parameter color csurfa {
+ 		label "Object ID"
+	    detail varying
+	    default {1 0 0}
+	}
+	
+	parameter color cdepth {
+ 		label "Depth"
+	    	default {.0 .0 .0}
+	    	detail varying
+	}
+	
+	parameter color _depth {
+	       detail varying
+	       provider primitive
+	       default "1 1 1"
+	       access output
+	       display hidden
+	   }
+	   parameter color _normal {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	parameter color _objectID {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+	   
+       }
+       RSLFunction {
+	   void
+	   pxslylEye(color scleraColor;
+	   		float Kd;
+	   		color specularColor;
+		       float Ks;
+		       float sharpness;
+		       color creflection;
+	   		float pos_iris;
+	   		float Ki;
+			color irisflt;
+	   		string irisMap;
+		       color color_occ, color_a, cdepth;
+		       output color CI;
+		       output color OI;
+		        )
+	   {
+	   	extern normal N;
+    		extern vector I;
+	   	extern point P;
+	   	extern float s, t;
+	   	normal Nf = faceforward (normalize(N), I);
+	   	vector V = -normalize(I);
+		
+		color diffuselight (normal N;)
+		{
+			color C = 0;
+			extern point P;
+			illuminance ("-environment", P, N, PI/2) {
+				extern vector L;  extern color Cl; 
+				float nondiff = 0;
+				lightsource ("__nondiffuse", nondiff);
+				if (nondiff < 1) {
+				    vector Ln = normalize(L);
+				    C += Cl * ((1-nondiff) * Ln.N);
+				}
+			}
+			return C;
+		}
+	   	
+	   	color LocIllumGlossy ( normal N;  vector V;
+                       float roughness, sharpness; )
+		{
+		    color C = 0;
+		    float w = .18 * (1-sharpness);
+		    extern point P;
+		    illuminance ("-environment", P, N, PI/2) {
+			/* Must declare extern L & Cl because we're in a function */
+			extern vector L;  extern color Cl; 
+			float nonspec = 0;
+			lightsource ("__nonspecular", nonspec);
+			if (nonspec < 1) {
+			    vector H = normalize(normalize(L)+V);
+			    C += Cl * ((1-nonspec) * 
+				       smoothstep (.72-w, .72+w,
+						   pow(max(0,N.H), 1/roughness)));
+			}
+		    }
+		    return C;
+		}
+		
+		color irisrefract(point P;normal N;float dist;)
+		{
+			color C =0;
+			
+			 illuminance ("-environment", P, N, PI/2) 
+			 {
+				extern vector L;
+				extern color Cl;
+				float nonspec = 0;
+			lightsource ("__nondiffuse", nonspec);
+				C += Cl*(1-nonspec)*normalize(L).N * exp(-dist);
+			}
+			return C;
+		}
+	   	
+	   	normal Nn = normalize(N);
+	   	
+	   	float Kr, Kt;
+    	    	vector R, T;
+		color crefl = 0;
+		fresnel(-V, Nn, 1/1.5, Kr, Kt, R, T);
+			
+			
+  		
+  		float pupil = 1 - smoothstep(pos_iris-0.015, pos_iris+0.015, t);
+		
+		normal Nh = -normalize(T);
+		color iris_scat = irisrefract(P, Nh,1);
+
+  		float ti, si;
+
+
+		si= t*0.78/pos_iris*cos( s*2*PI )/2+0.5;
+		ti = t*0.78/pos_iris*sin( s*2*PI )/2+0.5;
+	      
+	     
+	      
+	      color cp = 0;
+	      if(irisMap != "")
+	      		cp = color texture(irisMap,
+			    	     si,
+				     ti, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+				    
+				    		  
+		cp = Ki*cp*irisflt+ cp*diffuse(Nh)*(1.5-t/pos_iris)*irisflt + creflection;
+		
+		
+		color ce = scleraColor * Kd * diffuselight(Nn) * color_occ + creflection*Kr;
+		CI = mix(ce, cp, pupil) + specularColor*LocIllumGlossy(Nf, V, Ks/10, sharpness) ;
+
+	      OI = color(1);
+	      extern color _depth;
+	      
+		_depth = cdepth;
+		
+		extern color _normal;
+		_normal = color((xcomp(Nn)+1.)/2., (ycomp(Nn)+1.)/2., (zcomp(Nn)+1.)/2.);
+		
+		extern color _objectID;
+		_objectID = color_a;
+
+	   }
+       }
+   }
+## eye end
+## displacement begin
+template displacement ylSimple {
+    	label YLSimple
+    	description "Displacement shader withbump mapping."
+	ribattribute float displacementbound {
+	    label "Displacement Bound"
+	    description "This number represents the maximum displacement
+		    in shaderspace that your surface will undergo.  Be very
+		    careful with this parameter as it can dramatically influence
+		    rendering times.  In particular, make SURE to set this to
+		    0 (zero) if you aren't performing any displacement."	
+	    default 0
+	    range {0 100 .001}
+	    subtype vslider
+	}
+	parameter float DoDisplacement {
+	    label "Do Displacement"
+	    default 0
+	    subtype switch
+	}
+	parameter float UseShadingNormals {
+	    label "Use Shading Normals"
+            description "When a displacement map is used, this shader calls
+                calculatenormal().  This causes polygonal data to
+                appear faceted.  This parameter causes the original
+                shading normal offset to be added to the calculated
+                normal, generally re-smoothing polygonal data."
+	    default 0
+	    subtype switch
+	}
+	parameter float Kdisp {
+	    description "A multiplier for the displacement."
+	    subtype vslider
+	    range {0 100 .001}
+	    detail varying
+	    default 1.
+	}
+	parameter float Displacement {
+	    detail mustvary
+	    default 0
+	}
+	parameter float Kbump {
+	    description "A multiplier for the bump."
+	    subtype vslider
+	    range {0 1 .001}
+	    detail varying
+	    default .1
+	}
+	parameter float fbump {
+		label "Bump Map"
+	    detail mustvary
+	    default 0
+	}
+	
+	RSLMain {
+	    output "point PP = P;"
+	    generate
+	    output "normal Nn = normalize(N);"
+	    
+	    output "vector Nf = Nn/length(vtransform(\"shader\", Nn));"
+	    output "PP += Nf* [getvar Kdisp] * [getvar Displacement];"
+	   
+
+	    	output "if([getvar UseShadingNormals] != 0) { "
+	    	output "    normal deltaN = Nn - normalize(Ng);"
+	    	output "    N = normalize(calculatenormal(PP)) + deltaN;"
+	    	output "} else {"
+	    	output "    N = calculatenormal(PP);"
+	    	output "}"
+
+	    	output "if([connected fbump])"
+	    	output "{"
+	    	output "	point Q = PP + normalize(N) * [getvar Kbump] * [getvar fbump];"
+	    	output "if([getvar UseShadingNormals] != 0) { "
+	    	output "    normal deltaN = normalize(N) - normalize(Ng);"
+	    	output "    	N = normalize(calculatenormal(Q)) + deltaN;"
+	    	output "} else {"
+	    	output "	N = calculatenormal(Q);"
+	    	output "}"
+	    	output "}"
+
+	    
+	     output "if([getvar DoDisplacement] != 0)"
+	    output "    P = PP;"
+
+	}
+    } 
+## displacement end
+	}
+}

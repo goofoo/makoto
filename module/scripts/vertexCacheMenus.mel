@@ -1,0 +1,1014 @@
+global proc meshCacheRemoveMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gAnimationMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gAnimationMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the animation menu to find the meshCache menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "meshCacheMenus" $gAnimationMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gAnimationMenus[$menuSize] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+		}
+		// if meshCache menu exists, delete it first.
+		else {
+			deleteUI $gAnimationMenus[$menuIndex];
+			$gAnimationMenus[$menuIndex] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+		}
+		//meshCacheAppendMenuItems;
+	}
+}
+
+global proc meshCacheMakeMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gAnimationMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gAnimationMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the animation menu to find the meshCache menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "meshCacheMenus" $gAnimationMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gAnimationMenus[$menuSize] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+		}
+		// if meshCache menu exists, delete it first.
+		else {
+			deleteUI $gAnimationMenus[$menuIndex];
+			$gAnimationMenus[$menuIndex] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+		}
+		meshCacheAppendMenuItems;
+	}
+}
+ 
+global proc meshCacheAppendMenuItems()
+{
+	menuItem -l "Mesh Cache Parameters" -subMenu true;
+		menuItem -l "$OBJNAME" mcf_sf_name;
+		menuItem -l (`workspace -q -fn`+"/data/")  mcf_sf_path;
+		menuItem -l "world space" -cb 1 mcf_sf_ws;
+
+	setParent -menu ..;
+	menuItem -l "Save Mesh Cache" -c "openExportMeshCacheWin";
+	menuItem -l "Save Mesh Cache - Single Frame" -c "exportMeshCache";
+	menuItem -divider true;
+	menuItem -l "Load MCF Mesh Cache" -c "openImportMeshCacheWin";
+	menuItem -l "Add Cache Deformer" -c "openAddCacheDeformerWin";
+	menuItem -divider true;
+	menuItem -l "Attach PRT Attribute" -c "mcf_addAttr";
+	menuItem -l "Edit PRT Attribute" -c "mcf_editAttr";
+	menuItem -divider true;
+	menuItem -l "Save Scene" -c "openSaveXMLSceneWin";
+	menuItem -divider true;
+	menuItem -l "Load Scene" -c "openImportXMLSceneCacheWin";
+	menuItem -l "Change Data Path To" -c "fileBrowser \"set_xmlCacheDataPath\" \"Set Path\" \"\" 4";
+	menuItem -divider true;
+	menuItem -l "Show" -subMenu true;
+		menuItem -l "Wireframe" -c "mshc_sho(-1)";
+		menuItem -l "Tangent Space" -c "mshc_sho(-2)";
+		menuItem -l "Color" -c "mshc_sho(0)";
+		menuItem -divider true;
+		menuItem -l "Occlusion" -c "mshc_sho(1)";
+		menuItem -l "Direct" -c "mshc_sho(2)";
+		menuItem -l "Indirect" -c "mshc_sho(3)";
+		menuItem -l "Subderm" -c "mshc_sho(4)";
+		menuItem -l "Epiderm" -c "mshc_sho(5)";
+		menuItem -l "Back Scatter" -c "mshc_sho(6)";
+		menuItem -l "Light Source Direct" -c "mshc_sho(7)";
+	setParent -menu ..;
+	menuItem -l "Assign to ShadingGrp" -c "openmxAttachSGWin";
+	menuItem -divider true;
+	menuItem -l "Remove all MTOR Subdiv Node" -c "delete_all_mtorsubd";
+	menuItem -divider true;
+	menuItem -l "Convert .obj to .mcf" -c "openConvertToMcfWin";
+	menuItem -divider true;
+	menuItem -l "About" -c "mcf_about";
+	//menuItem -l "Register" -c "mcf_getLicense";
+}
+
+global proc exportMeshCache()
+{
+	string $cmd;
+	
+	if(`menuItem -q -l mcf_sf_name` == "$OBJNAME") {
+		$cmd = "vxCache -p `menuItem -q -l mcf_sf_path` -w `menuItem -q -cb mcf_sf_ws`";
+	}
+	else
+		$cmd = "vxCache -n `menuItem -q -l mcf_sf_name` -p `menuItem -q -l mcf_sf_path` -w `menuItem -q -cb mcf_sf_ws`";
+	eval($cmd);
+}
+
+global proc exportMeshCacheSingleFrame()
+{
+	string $cmd;
+
+	if ( `checkBox -q -v exportMeshCacheUseName` && `textFieldGrp -q -text exportMeshCacheName` != "" ) {
+		if ( `textFieldButtonGrp -q -text exportMeshCachePath` == "" )
+			$cmd = "vxCache -w `checkBox -q -v exportMeshCacheWorld`";
+		else 
+			$cmd = "vxCache -p `textFieldButtonGrp -q -text exportMeshCachePath` -w `checkBox -q -v exportMeshCacheWorld`";
+	}
+	else {
+		if ( `textFieldButtonGrp -q -text exportMeshCachePath` == "" )
+			$cmd = "vxCache -n `textFieldGrp -q -text exportMeshCacheName` -w `checkBox -q -v exportMeshCacheWorld`";
+		else
+			$cmd = "vxCache -p `textFieldButtonGrp -q -text exportMeshCachePath` -n `textFieldGrp -q -text exportMeshCacheName` -w `checkBox -q -v exportMeshCacheWorld`";
+	}
+	
+	eval($cmd);
+}
+
+global proc doExportMeshCache()
+{
+	if( `checkBox -q -v exportMeshCacheMuilt` ) {
+		int $amount = 0;
+		progressWindow -title "Writing Mesh Cache" -progress $amount -status "Completed: 0%" -isInterruptable true;
+ 
+		int $s = `intFieldGrp -q -v1 exportMeshCacheRange`;
+		int $e = `intFieldGrp -q -v2 exportMeshCacheRange`;
+		int $step = `intFieldGrp -q -v1 exportMeshCacheStep`;
+
+		int $i;
+		for( $i = $s; $i <= $e; $i++ ) {
+			currentTime $i;
+			$amount = ($i-$s)/(1.0*($e-$s))*100;
+
+			// Check if the dialog has been cancelled
+			if ( `progressWindow -query -isCancelled` ) break; 
+			// Check if end condition has been reached
+			if ( `progressWindow -query -progress` > 100 ) break;
+ 
+			progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%"); 
+ 			
+ 			if( ($i-$s)%$step == 0 || $i==$e )
+				exportMeshCacheSingleFrame;
+		}
+		
+		progressWindow -endProgress;
+	}
+	else {
+		exportMeshCacheSingleFrame;
+	}
+}
+
+global proc int setMeshCachePath(string $path, string $type)
+{
+	textFieldButtonGrp -e -text $path exportMeshCachePath;
+	mcf_updateCacheName;
+	return true;
+}
+
+global proc mcf_updateCacheName()
+{
+	if(!`checkBox -q -v exportMeshCacheUseName`)
+		menuItem -e -l (`textFieldGrp -q -text exportMeshCacheName`) mcf_sf_name;
+	else
+		menuItem -e -l "$OBJNAME" mcf_sf_name;
+		
+	if(`textFieldButtonGrp -q -text exportMeshCachePath` != "" )
+		menuItem -e -l (`textFieldButtonGrp -q -text exportMeshCachePath`) mcf_sf_path;
+	else
+		menuItem -e -l (`workspace -q -rd`+"data/") mcf_sf_path;
+		
+	if( `checkBox -q -v exportMeshCacheWorld` )
+		menuItem -e -cb 1 mcf_sf_ws;
+	else
+		menuItem -e -cb 0 mcf_sf_ws;
+}
+
+global proc openExportMeshCacheWin()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists exportMeshCacheWin`) == true ) deleteUI exportMeshCacheWin;
+ 
+//Create the window.
+ window -title "vertexCache 4.1 - Save Mesh Cache Options" -wh 400 300  -mb false exportMeshCacheWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+text -al left -l "\nSelect polygonal mesh(es) and press DOWN key to export to mesh cache files.";
+
+checkBox -al "left" -l "Use Object Name" -v 1 -cc "textFieldGrp -e -en (!`textFieldGrp -q -en exportMeshCacheName`) exportMeshCacheName; mcf_updateCacheName" exportMeshCacheUseName;
+textFieldGrp -en 0 -cw 1 110 -label "Cache Name" -text "untitled" -cc "mcf_updateCacheName" exportMeshCacheName;
+textFieldButtonGrp
+     -cw 1 110 -label "Cache Path" -buttonLabel "Browse.."
+     -bc "fileBrowser \"setMeshCachePath\" \"Set Path\" \"\" 4"
+     -cc "mcf_updateCacheName"
+     exportMeshCachePath;
+
+checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en exportMeshCacheRange`) exportMeshCacheRange" exportMeshCacheMuilt;
+intFieldGrp -en 0 -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportMeshCacheRange;
+intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 exportMeshCacheStep;
+
+checkBox -al "left" -l "World Space" -v 1 -cc "mcf_updateCacheName" exportMeshCacheWorld;
+
+//row begin
+button -l "Export" -c "doExportMeshCache;deleteUI exportMeshCacheWin" -p $row;
+button -l "Apply" -c "doExportMeshCache" -p $row;
+button -l "Close" -c "deleteUI exportMeshCacheWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow exportMeshCacheWin;
+
+}
+
+global proc string findImportMeshCachePath()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"*.mcf")`;
+	return $path;
+}
+
+global proc string findImportXMLMeshCachePath()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"*.xmc")`;
+	return $path;
+}
+
+global proc string findWavefrontObjPath()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"*.obj")`;
+	return $path;
+}
+
+global proc mchConvertObjModifyMcfName()
+{
+	string $objpath = `textFieldButtonGrp -q -text mchConvertObjPath`;
+	string $buffer[];
+	$numTokens = `tokenize $objpath "." $buffer`;
+	string $mcfpath = $buffer[0] + ".1.mcf";
+	textFieldButtonGrp -e -text $mcfpath mchConvertMcfPath;
+}
+
+global proc doMchConvertToMcf()
+{
+	string $objpath = `textFieldButtonGrp -q -text mchConvertObjPath`;
+	string $mcfpath = `textFieldButtonGrp -q -text mchConvertMcfPath`;
+	
+	string $cmd = "obj2mcf -i \"" + $objpath + "\" -o \"" + $mcfpath + "\"";
+	eval($cmd);
+}
+
+global proc openConvertToMcfWin()
+{
+	//If such a window already exists, destory it.
+	if ( (`window -exists convertToMcfWin`) == true ) deleteUI convertToMcfWin;
+ 
+	//Create the window.
+	window -title "vertexCache 1.0 - Convert Obj To Mcf" -wh 400 300  -mb false convertToMcfWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+textFieldButtonGrp
+     -cw 1 80 -label ".obj File" -buttonLabel "Pick"
+     -bc "textFieldButtonGrp -e -text (`findWavefrontObjPath`) mchConvertObjPath; mchConvertObjModifyMcfName;"
+     -cc "mchConvertObjModifyMcfName"
+     mchConvertObjPath;
+ 
+textFieldButtonGrp
+     -cw 1 80 -label ".mcf File" -buttonLabel "Pick"
+     -bc "textFieldButtonGrp -e -text (`findImportMeshCachePath`) mchConvertMcfPath"
+     mchConvertMcfPath;
+     
+text -al left -l "\nDescription: pick up the wavefront .obj file and translate to .mcf cache file.";
+
+//row begin
+button -l "Convert" -c "doMchConvertToMcf;deleteUI convertToMcfWin"-p $row;
+button -l "Apply" -c "doMchConvertToMcf" -p $row;
+button -l "Close" -c "deleteUI convertToMcfWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow convertToMcfWin;
+}
+
+global proc doAddCacheDeformer()
+{
+	string $path = `textFieldGrp -q -text deformerCachePath`;
+	string $buffer[];
+	$numTokens = `tokenize $path "." $buffer`;
+
+	string $sel[] = `ls -sl`;
+	if( size($sel)>0 ) {
+		string $geom = $sel[0];
+		select -r $geom;
+		string $node[] = `deformer -type vxCacheDeformer`;
+		setAttr -type "string" ($node[0] + ".cachePath") $buffer[0];
+		//connectAttr -f "time1.outTime" ($node[0] + ".currentTime");
+		setKeyframe -t `intFieldGrp -q -v1 deformerCacheRange` -v `intFieldGrp -q -v1 deformerCacheRange` ($node[0] + ".currentTime");
+		setKeyframe -t `intFieldGrp -q -v2 deformerCacheRange` -v `intFieldGrp -q -v2 deformerCacheRange` ($node[0] + ".currentTime");
+
+
+		setAttr ( $node[0] + ".minFrame") `intFieldGrp -q -v1 deformerCacheRange`;
+		setAttr ( $node[0] + ".maxFrame") `intFieldGrp -q -v2 deformerCacheRange`;
+		setAttr ( $node[0] + ".frameStep") `intFieldGrp -q -v1 deformerCacheStep`;
+	}
+	else {
+		print("Nothing selected!");
+	}
+
+
+}
+
+global proc openAddCacheDeformerWin()
+{
+	//If such a window already exists, destory it.
+	if ( (`window -exists addCacheDeformerWin`) == true ) deleteUI addCacheDeformerWin;
+ 
+	//Create the window.
+	window -title "vertexCache 4.1 - Add Cache Deformer Options" -wh 400 300  -mb false addCacheDeformerWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+textFieldButtonGrp
+     -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
+     -bc "textFieldButtonGrp -e -text (`findImportMeshCachePath`) deformerCachePath"
+     deformerCachePath;
+     
+intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` deformerCacheRange;
+intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 deformerCacheStep;
+
+text -al left -l "\nDescription: pick up a cache file and add the deformer to select object.";
+
+//row begin
+button -l "Add" -c "doAddCacheDeformer;deleteUI addCacheDeformerWin"-p $row;
+button -l "Apply" -c "doAddCacheDeformer" -p $row;
+button -l "Close" -c "deleteUI addCacheDeformerWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow addCacheDeformerWin;
+}
+
+global proc openImportMeshCacheWin() 
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists importMeshCacheWin`) == true ) deleteUI importMeshCacheWin;
+ 
+//Create the window.
+ window -title "vertexCache 4.1 - Load Mesh Cache Options" -wh 400 300  -mb false importMeshCacheWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+textFieldButtonGrp
+     -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
+     -bc "textFieldButtonGrp -e -text (`findImportMeshCachePath`) importMeshCachePath"
+     importMeshCachePath;
+     
+intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` importMeshCacheRange;
+intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 importMeshCacheStep;
+
+text -al left -l "\nDescription: pick up a cache file and import as mesh.";
+
+//row begin
+button -l "Load" -c "doImportMeshCache;deleteUI importMeshCacheWin"-p $row;
+button -l "Apply" -c "doImportMeshCache" -p $row;
+button -l "Close" -c "deleteUI importMeshCacheWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow importMeshCacheWin;
+}
+
+global proc doImportMeshCache()
+{
+string $path = `textFieldGrp -q -text importMeshCachePath`;
+string $buffer[];
+$numTokens = `tokenize $path "." $buffer`;
+
+string $node = `createNode meshCacheNode`;
+string $shape = `createNode mesh`;
+connectAttr -f ($node + ".outMesh") ($shape + ".inMesh");
+sets -e -forceElement initialShadingGroup $shape;
+setAttr -type "string" ($node + ".cachePath") $buffer[0];
+
+//connectAttr -f "time1.outTime" ($node + ".currentTime");
+setKeyframe -t `intFieldGrp -q -v1 importMeshCacheRange` -v `intFieldGrp -q -v1 importMeshCacheRange` ($node + ".currentTime");
+setKeyframe -t `intFieldGrp -q -v2 importMeshCacheRange` -v `intFieldGrp -q -v2 importMeshCacheRange` ($node + ".currentTime");
+
+
+setAttr ( $node + ".minFrame") `intFieldGrp -q -v1 importMeshCacheRange`;
+setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importMeshCacheRange`;
+setAttr ( $node + ".frameStep") `intFieldGrp -q -v1 importMeshCacheStep`;
+}
+
+global proc openImportXMLMeshCacheWin() 
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists importXMLMeshCacheWin`) == true ) deleteUI importXMLMeshCacheWin;
+ 
+//Create the window.
+ window -title "vertexCache 3.0 - Load Cache Options" -wh 400 300  -mb false importXMLMeshCacheWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+textFieldButtonGrp
+     -cw 1 110 -label "XMC Path" -buttonLabel "Pick"
+     -bc "textFieldButtonGrp -e -text (`findImportXMLMeshCachePath`) importXMLMeshCachePath"
+     importXMLMeshCachePath;
+     
+intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` importXMLMeshCacheRange;
+
+text -al left -l "\nDescription: pick up a cache file and import as mesh.";
+
+//row begin
+button -l "Load" -c "doImportXMLMeshCache;deleteUI importXMLMeshCacheWin"-p $row;
+button -l "Apply" -c "doImportXMLMeshCache" -p $row;
+button -l "Close" -c "deleteUI importXMLMeshCacheWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow importXMLMeshCacheWin;
+}
+
+global proc doImportXMLMeshCache()
+{
+string $path = `textFieldGrp -q -text importXMLMeshCachePath`;
+string $buffer[];
+$numTokens = `tokenize $path "." $buffer`;
+
+string $node = `createNode meshCacheViz`;
+setAttr -type "string" ($node + ".cachePath") $path;
+
+//connectAttr -f "time1.outTime" ($node + ".currentTime");
+setKeyframe -t `intFieldGrp -q -v1 importXMLMeshCacheRange` -v `intFieldGrp -q -v1 importXMLMeshCacheRange` ($node + ".currentTime");
+setKeyframe -t `intFieldGrp -q -v2 importXMLMeshCacheRange` -v `intFieldGrp -q -v2 importXMLMeshCacheRange` ($node + ".currentTime");
+
+	string $dummy = `createNode -n "dummy" transform`;
+	connectAttr -f ($node + ".outval") ($dummy+".translateX");
+setAttr ( $node + ".minFrame") `intFieldGrp -q -v1 importXMLMeshCacheRange`;
+setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importXMLMeshCacheRange`;
+//setAttr ( $node + ".frameStep") `intFieldGrp -q -v1 importMeshCacheStep`;
+}
+
+global proc mcf_addStringAttr(string $val)
+{
+	string $sel[] = `ls -sl`;
+	int $i;
+	for($i=0; $i<size($sel); $i++)
+	{
+		select -r $sel[$i];
+		string $shape[] = `pickWalk -d down`;
+		addAttr -ln $val -dt "string"  $shape[0] ;
+		print ("Add "+$val+" to "+ $shape[0] );
+	}
+}
+
+global proc mcf_addAttr()
+{
+	string $sel[] = `ls -sl`;
+	int $i;
+	string $node = `createNode prtAttrib`;
+	for($i=0; $i<size($sel); $i++)
+	{
+		select -r $sel[$i];
+		string $shape[] = `pickWalk -d down`;
+		if(!`attributeExists "prtMsg" $shape[0]`) addAttr -ln "prtMsg" -attributeType "float"  $shape[0];
+		connectAttr -f ($node + ".output") ($shape[0]+".prtMsg");
+	}
+	select -r $node;
+	ShowAttributeEditorOrChannelBox;
+}
+
+global proc mcf_editAttr()
+{
+	string $sel[] = `ls -sl`;
+	int $i;
+	for($i=0; $i<size($sel); $i++)
+	{
+		select -r $sel[$i];
+		string $shape[] = `pickWalk -d down`;
+		if(`attributeExists "prtMsg" $shape[0]`) 
+		{
+			string $node[] =`listConnections -scn on ($shape[0]+".prtMsg")`;
+			select -r $node[0];
+			ShowAttributeEditorOrChannelBox;
+			$i = size($sel)+2;
+		}
+	}
+}
+
+global proc string findImportSceneCachePath()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"*.scene")`;
+	return $path;
+}
+
+global proc doImportSceneCache()
+{
+	string $dummyGrp = `group -em -n dummyGrp`;
+string $path = `textFieldGrp -q -text importSceneCachePath`;
+string $meshc[] = `importSceneCache -m 1 -p $path`;
+	for($i = 0; $i < size($meshc); $i++)
+	{
+		string $node = `createNode meshCacheViz`;
+		setAttr -type "string" ($node + ".meshName") $meshc[$i];
+		setAttr -type "string" ($node + ".cachePath") $path;
+
+//connectAttr -f "time1.outTime" ($node + ".currentTime");
+		setKeyframe -t `intFieldGrp -q -v1 importXMLSceneCacheRange` -v `intFieldGrp -q -v1 importXMLSceneCacheRange` ($node + ".currentTime");
+		setKeyframe -t `intFieldGrp -q -v2 importXMLSceneCacheRange` -v `intFieldGrp -q -v2 importXMLSceneCacheRange` ($node + ".currentTime");
+
+		setAttr ( $node + ".minFrame") `intFieldGrp -q -v1 importXMLSceneCacheRange`;
+		setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importXMLSceneCacheRange`;
+		string $dummy = `createNode -n "dummy" transform`;
+		connectAttr -f ($node + ".outval") ($dummy+".translateX");
+		
+		string $p[] =`listRelatives -p $node`;
+		rename $p[0] $meshc[$i];
+		
+		parent $dummy $dummyGrp;
+	}
+	
+	$meshc = `importSceneCache -t 1 -p $path`;
+	for($i = 0; $i < size($meshc); $i++)
+	{
+		string $node = `createNode cacheTransform`;
+		setAttr -type "string" ($node + ".meshName") $meshc[$i];
+		setAttr -type "string" ($node + ".cachePath") $path;
+
+//connectAttr -f "time1.outTime" ($node + ".currentTime");
+		setKeyframe -t `intFieldGrp -q -v1 importXMLSceneCacheRange` -v `intFieldGrp -q -v1 importXMLSceneCacheRange` ($node + ".currentTime");
+		setKeyframe -t `intFieldGrp -q -v2 importXMLSceneCacheRange` -v `intFieldGrp -q -v2 importXMLSceneCacheRange` ($node + ".currentTime");
+
+		setAttr ( $node + ".minFrame") `intFieldGrp -q -v1 importXMLSceneCacheRange`;
+		setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importXMLSceneCacheRange`;
+
+		string $loc[] =`spaceLocator -p 0 0 0`;
+
+		parent $loc[0] $node;
+		
+		setAttr ($loc[0]+".translateX") 0;
+		setAttr ($loc[0]+".translateY") 0;
+		setAttr ($loc[0]+".translateZ") 0;
+		setAttr ($loc[0]+".rotateX") 0;
+		setAttr ($loc[0]+".rotateY") 0;
+		setAttr ($loc[0]+".rotateZ") 0;
+		setAttr ($loc[0]+".scaleX") 1;
+		setAttr ($loc[0]+".scaleY") 1;
+		setAttr ($loc[0]+".scaleZ") 1;
+
+		rename $node $meshc[$i];
+	}
+}
+
+global proc openImportXMLSceneCacheWin() 
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists importSceneCacheWin`) == true ) deleteUI importSceneCacheWin;
+ 
+//Create the window.
+ window -title "vertexCache 5.0 - Load Scene Options" -wh 400 300  -mb false importSceneCacheWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+textFieldButtonGrp
+     -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
+     -bc "textFieldButtonGrp -e -text (`findImportSceneCachePath`) importSceneCachePath"
+     importSceneCachePath;
+     
+intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` importXMLSceneCacheRange;
+
+text -al left -l "\nDescription: pick up an SCENE file to import.";
+
+//row begin
+button -l "Load" -c "doImportSceneCache;deleteUI importSceneCacheWin"-p $row;
+button -l "Apply" -c "doImportSceneCache" -p $row;
+button -l "Close" -c "deleteUI importSceneCacheWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow importSceneCacheWin;
+}
+
+global proc int set_xmlCacheDataPath(string $path, string $type)
+{
+	string $node[] = `ls -type meshCacheViz`;
+	string $an;
+	for($an in $node)
+	{
+		string $oname = `getAttr ($an+".cachePath")`;
+		
+		string $buffer[];
+		$numTokens = `tokenize $oname "/" $buffer`;
+		
+		string $nname = $path + "/" + $buffer[$numTokens-1];
+		setAttr -type "string" ($an + ".cachePath") $nname;
+	}
+	$node = `ls -type cacheTransform`;
+	for($an in $node)
+	{
+		string $oname = `getAttr ($an+".cachePath")`;
+		
+		string $buffer[];
+		$numTokens = `tokenize $oname "/" $buffer`;
+		
+		string $nname = $path + "/" + $buffer[$numTokens-1];
+		setAttr -type "string" ($an + ".cachePath") $nname;
+	}
+	return true;
+}
+
+global proc int setXMLScenePath(string $path, string $type)
+{
+	textFieldButtonGrp -e -text $path saveXMLScenePath;
+	return true;
+}
+
+global proc saveXMLSceneSingleFrame()
+{
+	int $icam = `optionMenuGrp -q -select saveXMLSceneOptBS`;
+	int $ieye = `optionMenuGrp -q -select saveXMLSceneOptEye`;
+	string $cams[] = `ls -ca`;
+
+	string $cmd;
+
+	if ( `textFieldButtonGrp -q -text saveXMLScenePath` == "" )
+		$cmd = "xmlMeshCache -t `textFieldGrp -q -text saveXMLSceneTitle` -bc `listRelatives -p "+$cams[$icam-1]+"` -ec `listRelatives -p "+$cams[$ieye-1]+"`";
+	else
+		$cmd = "xmlMeshCache -p `textFieldButtonGrp -q -text saveXMLScenePath` -t `textFieldGrp -q -text saveXMLSceneTitle` -bc `listRelatives -p "+$cams[$icam-1]+"` -ec `listRelatives -p "+$cams[$ieye-1]+"`";
+	
+	eval($cmd);
+}
+
+global proc dosaveXMLScene()
+{
+		int $amount = 0;
+		progressWindow -title "Writing XML Scene" -progress $amount -status "Completed: 0%" -isInterruptable true;
+ 
+		int $s = `intFieldGrp -q -v1 saveXMLSceneRange`;
+		int $e = `intFieldGrp -q -v2 saveXMLSceneRange`;
+		int $step = `intFieldGrp -q -v1 saveXMLSceneStep`;
+
+		int $i;
+		for( $i = $s; $i <= $e; $i++ ) 
+		{
+			currentTime $i;
+			$amount = ($i+1-$s)/(1.0*($e+1-$s))*100;
+
+			// Check if the dialog has been cancelled
+			if ( `progressWindow -query -isCancelled` ) break; 
+			// Check if end condition has been reached
+			if ( `progressWindow -query -progress` > 100 ) break;
+ 
+			progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%"); 
+ 			
+ 			if( ($i-$s)%$step == 0 || $i==$e )
+				saveXMLSceneSingleFrame;
+		}
+		
+		progressWindow -endProgress;
+}
+
+global proc openSaveXMLSceneWin()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists saveXMLSceneWin`) == true ) deleteUI saveXMLSceneWin;
+ 
+//Create the window.
+ window -title "vertexCache 4.1 - Save Scene Options" -wh 400 300  -mb false saveXMLSceneWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+text -al left -l "\nSelect polygonal mesh(es) and press DOWN key to save scene.";
+
+textFieldGrp
+     -cw 1 110 -label "Scene Title" -text "untitled"
+     saveXMLSceneTitle;
+	 
+textFieldButtonGrp
+     -cw 1 110 -label "Scene Path" -buttonLabel "Browse.."
+     -bc "fileBrowser \"setXMLScenePath\" \"Set Path\" \"\" 4"
+     saveXMLScenePath;
+
+//checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en saveXMLSceneRange`) saveXMLSceneRange" saveXMLSceneMuilt;
+intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` saveXMLSceneRange;
+intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 saveXMLSceneStep;
+optionMenuGrp -label "Back-Scatter Camera" -cw 1 120 -columnWidth 2 80 saveXMLSceneOptBS;
+
+	string $cams[] = `ls -ca`;
+	string $ac;
+	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
+	
+
+
+	optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 80 saveXMLSceneOptEye;
+		for($ac in $cams) menuItem -label `listRelatives -p $ac`;
+	setParent..;
+
+//row begin
+button -l "Export" -c "dosaveXMLScene;deleteUI saveXMLSceneWin" -p $row;
+button -l "Apply" -c "dosaveXMLScene" -p $row;
+button -l "Close" -c "deleteUI saveXMLSceneWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow saveXMLSceneWin;
+
+}
+
+global proc delete_all_mtorsubd()
+{
+	string $sbd[] = `ls -type mtorSubdivNode`;
+	string $as;
+	for($as in $sbd) delete $as;
+}
+
+global proc domxSelbysg()
+{
+	int $issg = `optionMenuGrp -q -select mxAssignOptGS`;
+	string $ssg[] = `ls -type shadingEngine`;
+	
+	string $assed[] = `listConnections -sh 1 ($ssg[$issg-1]+".dagSetMembers")`;
+	select -cl  ;
+	int $id = 0;
+	string $as;
+	for($as in $assed)
+	{
+		if($id==0) select -r $as;
+		else select -tgl $as;
+		$id++;
+	}
+}
+
+global proc domxAssignsg()
+{
+	int $issg = `optionMenuGrp -q -select mxAssignOptGS`;
+	string $ssg[] = `ls -type shadingEngine`;
+	string $sel[] = `ls -sl`;
+	string $as;
+	string $shp[];
+	int $id = 0;
+	for($as in $sel)
+	{
+		$shp =`pickWalk -d down $as`;
+		string $curconn[] = `listConnections -p 1 ($shp[0]+".instObjGroups[0]")`;
+		if(size($curconn) >0)
+		{
+			disconnectAttr ($shp[0]+".instObjGroups[0]") $curconn[0];
+		}
+		connectAttr -f ($shp[0]+".instObjGroups[0]") ($ssg[$issg-1]+".dagSetMembers["+$id+"]");
+		$id++;
+	}
+}
+
+global proc openmxAttachSGWin()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists openmxAttachSGWin`) == true ) deleteUI openmxAttachSGWin;
+ 
+//Create the window.
+ window -title "vertexCache 4.1 - SG Options" -wh 400 300  -mb false openmxAttachSGWin;
+
+paneLayout -configuration "vertical2";
+ 		 	string $panel = `outlinerPanel`;
+ 	string $outliner = `outlinerPanel -query -outlinerEditor $panel`;
+ 	outlinerEditor -edit
+ 	    -mainListConnection "worldList" 
+ 	    -selectionConnection "modelList" 
+ 	    -showShapes 1
+ 	    -showAttributes false
+ 	    -showConnected false
+ 	    -showAnimCurvesOnly false
+ 	    -autoExpand false
+ 	    -showDagOnly true
+ 	    -ignoreDagHierarchy false
+ 	    -expandConnections false
+ 	    -showNamespace true
+ 	    -showCompounds true
+ 	    -showNumericAttrsOnly false
+ 	    -highlightActive true
+ 	    -autoSelectNewObjects false
+ 	    -doNotSelectNewObjects false
+ 	    -transmitFilters false
+ 		-showSetMembers true
+ 		-setFilter defaultSetFilter
+ 	    $outliner;
+		setParent..;
+		setParent..;
+ 			
+
+columnLayout -adjustableColumn true;
+
+//column begin
+
+
+optionMenuGrp -label "Existing Shading Groups" -cw 1 120 -columnWidth 2 280 mxAssignOptGS;
+
+	string $cams[] = `ls -type shadingEngine`;
+	string $ac;
+	for($ac in $cams) menuItem -label $ac;
+	
+
+
+text -al left -l "\nSelect meshCache nodes by shading group";
+button -l "Select" -c "domxSelbysg";
+
+text -al left -l "\nSelect meshCache nodes and assign to shading group";
+button -l "Assign" -c "domxAssignsg";
+
+showWindow openmxAttachSGWin;
+
+}
+
+global proc mshc_sho(int $opt)
+{
+	string $viewhdr[] =`ls -type hwHDREnvViewer`;
+	string $node[] = `ls -type meshCacheViz`;
+	string $an;
+	for($an in $node)
+	{
+		string $conn[] = `listConnections -d 1 -s 1 ( $an + ".icoe")`;
+		if(size($viewhdr)>0 && size($conn)<1) connectAttr -f ($viewhdr[0] +".output") ( $an + ".icoe");
+		setAttr ( $an + ".dm") $opt;
+	}
+}
+
+///////////////////////////////////////////
+//
+// About Information
+//
+///////////////////////////////////////////
+
+global proc mcf_about()
+{
+	//If such a window already exists, destory it.
+ 	if ( (`window -exists mcf_about_note`) == true ) deleteUI mcf_about_note;
+ 
+//Create the window.
+	window -title "About Vortex Cache" -wh 320 200 mcf_about_note;
+	
+	columnLayout -adjustableColumn true;
+	text -align "left" -l "vertexCache, Version 3.3.5 04/10/09";
+	text -align "left" -l "Copyright (C) 2005 Imagine Cube.";
+	text -align "left" -l "All rights reserved.";
+	scrollField -h 100
+			-wordWrap false
+    			-text "R&D, Technical Director\nZhang Jian\n\nArt Director\nJulian Johnson Mortimer\n"
+			-editable false;
+	button -l "Close" -c "deleteUI mcf_about_note";
+	
+	showWindow mcf_about_note;
+}
+
+
+//////////////////////////////////////
+//
+// get license
+//
+//////////////////////////////////////
+
+global proc mcf_getLicense()
+{
+	string $callback = `system "lmutil hostid"`;
+	string $buffer[];
+    	int $numTokens = `tokenize $callback "\"" $buffer`;
+    	string $hostid = $buffer[1];
+    	if( size($hostid) == 0 ) $hostid = $buffer[2];
+	confirmDialog -t "Register Muscle TK"
+					-m    ("Please email the number below to" + "\n" +
+						"registermtk@cgtoolkit.com" + "\n" + "\n" +
+						$hostid)
+					-button "OK";
+}
+
+

@@ -1,0 +1,766 @@
+## fur.slim
+## zhangmdev@gmail.com
+## 01/18/08
+## slim template for fur rendering
+## Fur surface
+## Fur Dump surface
+## Fur Dump Occlusion surface
+## Fur Beneath surface
+## Depth Range float
+## fur.slim {
+## 	{ zhang,Fur#0	shadingmodel {Fur}		/Surface }
+## 	{ zhang,furDump#0	shadingmodel {Fur Dump}		/Surface }
+## 	{ zhang,furDumpOcc#0	shadingmodel {Fur Dump Occlusion} /Surface }
+## 	{ zhang,furBeneath#0	shadingmodel {Fur Beneath} /Surface }
+## 	{ zhang,depthRange#0	float {Depth Range} /Float }
+## }
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+
+template shadingmodel Fur {
+
+parameter string sdisplay {
+ 		label "Display"
+	    description {
+		Choose the component to display in the primary render.
+	    }
+	    subtype selector
+	    range { color _color
+	    		colorA _colorA
+	    		colorB _colorB
+	    		colorC _colorC
+		    specular _specular
+		    keylight _keylight
+		    filllight _filllight
+		    backlight _backlight
+		    depth _depth
+		    shadow _shadow
+		    flattened _flattened
+		    
+		  }
+	    default _flattened
+	}
+
+	parameter float Kd {
+		label "Kd"
+		default 0.8
+	}
+		parameter string srootcolor {
+	    label "Root Map"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter color croot {
+		label "Root Color"
+		default {1 1 1}
+	}
+	
+	parameter string stipcolor {
+	    label "Tip Map"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+		parameter color ctip {
+		label "Tip Color"
+		default {1 1 1}
+	}
+	parameter string MapName {
+	    label "HDR File"
+	    description "The name of the Environment Map to use."
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	parameter string Space {
+	    label "Coordinate System"
+	    description "A coordinate system for your environment map.
+	    	When used with maps generated from the attached object,
+		use \"_world_lefthanded\" or \"world\". If you have an 
+		arbitrary lat-long environment use \"_environment\".  
+		If you wish to independently manipulate the orientation 
+		of your environment, enter the name of a coordinate 
+		system object here."
+	    default {[coordsys mtorCoordSysShape]}
+	    provider variable
+	}
+	parameter float exposure {
+		label {Exposure}
+		default 0
+	}
+	parameter color cflt {
+		label {Environment Filter}
+		default {1 1 1}
+	}
+	
+	parameter string sroot {
+	    label "Root Occlusion"
+	    description "The name of the occlusion map at v=0.0"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter string smid1 {
+	    label "Mid1 Occlusion"
+	    description "The name of the occlusion map at v=0.33"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter string smid2 {
+	    label "Mid2 Occlusion"
+	    description "The name of the occlusion map at v=0.67"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter string stip {
+	    label "Tip Occlusion"
+	    description "The name of the occlusion map at v=1.0"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter string sdynroot {
+	    label "Dynanic Occlusion"
+	    description "The name of the dynamic occlusion map at v=0.0"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter float Ks {
+		label "Ks"
+		default 0.5
+	}
+	
+	parameter float roughness {
+		label "Roughness"
+		default 0.05
+		range {0.001 1 0.001}
+	}
+	
+	parameter string sspec {
+	    label "Specular Map"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter color cspec {
+		label "Specular Color"
+		default {1 1 1}
+	}
+	
+		parameter float depth {
+		detail varying
+		detail mustvary "zhang,depthRange"
+	}
+	
+	parameter normal N_Srf {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+     	parameter color _color {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+		parameter color _colorA {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	
+		parameter color _colorB {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	
+		parameter color _colorC {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	
+	parameter color _specular {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _keylight {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _filllight {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	} 
+	
+	parameter color _backlight {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _shadow {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+		parameter color _depth {
+	       detail varying
+	       provider primitive
+	       default "1 1 1"
+	       access output
+	       display hidden
+	   }
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslFur(uniform string mode;
+	   float Kd; uniform string rootmap; color croot; uniform string tipmap; color ctip;
+				string hdrname, spacename; float exposure; color Cenv;
+				uniform string occmap0, occmap1, occmap2, occmap3, occmapd;
+				float Ks, roughness; uniform string specmap; color specflt;
+				float depth;
+		       output color CI;
+		       output color OI; )
+	   {
+	   	extern point P;
+	   	extern float s, t, v;
+		extern vector I, dPdv;
+		extern normal N_Srf;
+		
+		color rootColor = croot;
+		color tipColor = ctip;
+		
+		vector V = -normalize(I);
+		
+		vector T = normalize (dPdv);
+		T = normalize(T);
+		
+		vector nSN = N_Srf;
+		nSN = normalize(nSN);
+		
+		
+		vector S = normalize(nSN^T);
+		S = normalize(T^S);
+		float  l = clamp(nSN.T,0,1);
+		l *= l;
+		vector norm_hair = (l * nSN) + ( (1-l) * S);
+		norm_hair = normalize(norm_hair);
+		
+		color Cspec = 0, Cdiff = 0, Ckey = 0, Cfill = 0, Cback = 0;
+		float cosang;
+		
+		if(rootmap != "")
+		{
+			rootColor *= color texture(rootmap,
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+		}
+		
+		if(tipmap != "")
+		{
+			tipColor *= color texture(tipmap,
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+		}
+		
+	     color Chair = mix(rootColor, tipColor, v);
+		  
+		float T_Dot_nL, T_Dot_e, Alpha, Beta, Kajiya;
+		
+			 
+		  
+		  illuminance ("keylight", P, norm_hair, 3.141592654) 
+		  {
+				extern vector L;
+				extern color Cl;
+				
+				vector Ln = normalize(L);
+				
+					T_Dot_nL = T.Ln;
+					T_Dot_e = T.V;
+					Alpha = acos(T_Dot_nL);
+					Beta = acos(T_Dot_e);
+					
+					Kajiya = T_Dot_nL * T_Dot_e + sin(Alpha) * sin(Beta);
+	
+				Ckey += Cl*smoothstep(-0.2, 1., Ln.norm_hair);
+				
+					Cspec += Cl * pow(Kajiya, 1/roughness*1000);
+	
+			}
+			
+		if(specmap != "")
+		{
+			Cspec *= color texture(specmap,
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+		}	
+			illuminance ("filllight", P, norm_hair, 3.141592654) 
+		  {
+				extern vector L;
+				extern color Cl;
+				
+				vector Ln = normalize(L);
+				Cfill += Cl*smoothstep(-0.2, 1., Ln.norm_hair);
+	
+			}
+			
+			illuminance ("backlight", P, norm_hair, 3.141592654) 
+		  {
+				extern vector L;
+				extern color Cl;
+				
+				vector Ln = normalize(L);
+				Cback += Cl*smoothstep(-0.2, 1., Ln.norm_hair);
+	
+			}
+			
+
+			
+			normal Nh = norm_hair;
+			if(spacename != "")
+			{
+			 Nh = ntransform ("current", spacename, Nh);
+			 Nh = normalize(Nh);
+			}
+			
+			if(hdrname != "") Cfill += hdr_environment(hdrname, Nh, exposure)*Cenv;
+			
+			float start, end, occ = 1;
+			if(occmap0 != "" && occmap1 != "" && occmap2 != "" && occmap3 != "")
+			{
+				if(v<0.333333)
+				{
+					start = float texture(occmap0[0],
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+					
+					end = float texture(occmap1[0],
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+					
+					occ = mix(start, end, v*3);
+				}
+				else if(v<0.666667)
+				{
+					start = float texture(occmap1[0],
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+					
+					end = float texture(occmap2[0],
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+					
+					occ = mix(start, end, (v-0.333333)*3);
+				}
+				else
+				{
+					start = float texture(occmap2[0],
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+					
+					end = float texture(occmap3[0],
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+					
+					occ = mix(start, end, (v-0.666667)*3);
+				}
+				
+			}
+			
+			if(occmapd != "")
+			{
+					start = float texture(occmapd[0],
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+				    
+				    occ *= start;
+				
+			}
+			
+			    	    	extern color _color;
+							extern color _colorA;
+							extern color _specular;
+							extern color _keylight;
+							extern color _filllight;
+							extern color _backlight;
+							extern color _shadow;
+							extern color _colorB;
+							extern color _colorC;
+							extern color _depth;
+							_colorB = 1-occ;
+							_colorC = 1;
+							_color = Chair;
+							_colorA = occ;
+							_specular = Cspec*specflt;
+							_keylight = Ckey*Chair;
+							_filllight = Cfill*Chair;
+							_backlight = Cback*Chair;
+							_shadow = 1;
+							_depth = depth;
+			
+			if(mode == "_color") CI = _color;
+			else if(mode == "_specular") CI = _specular;
+			else if(mode == "_keylight") CI = _keylight;
+			else if(mode == "_backlight") CI = _backlight;
+			else if(mode == "_filllight") CI = _filllight;
+			else if(mode == "_shadow") CI = _shadow;
+			else if(mode == "_colorA") CI = _colorA;
+			else if(mode == "_colorB") CI = _colorB;
+			else if(mode == "_colorC") CI = _colorC;
+			else if(mode == "_depth") CI = _depth;
+			else CI = Chair*(Ckey+Cfill*occ+Cback*occ)*Kd + Cspec*specflt*occ*Ks;
+			OI = 1; 
+	   }
+       }
+   }
+   
+   template shadingmodel furDump {
+	parameter string outfile {
+		    label "Cache File"
+		    description {Saves the sample points to a .pcf file for further usage.}
+		    provider variable
+		    subtype environment
+		    default {//D/data/$JOBNAME.$F.pcf}
+		}
+		parameter float width {
+			 detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+		}
+		parameter normal N_Srf {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslfurDump(string filename;
+		       output color CI;
+		       output color OI; )
+	   {
+	   	extern point P;
+	   	extern float s, t, v, width;
+		extern vector dPdv;
+		extern normal N_Srf;
+		
+		vector T = normalize (dPdv);
+		T= normalize (vtransform("world",T));
+		
+		vector nSN = N_Srf;
+		nSN = normalize(vtransform("world",nSN));
+		
+		vector S = normalize(nSN^T);
+		S = normalize(T^S);
+		float  l = clamp(nSN.T,0,1);
+		l *= l;
+		vector norm_hair = (l * nSN) + ( (1-l) * S);
+		norm_hair = normalize(norm_hair);
+
+	   	point Pw = transform("world", P);
+		normal Nw = norm_hair;
+		
+		
+		color Col = color(s,t,v);
+
+	   	dumpGrid(filename, Pw, Nw, Col, width*width*PI);
+	   	
+	      CI = 1.;
+	      OI = 0.5; 
+	   }
+       }
+   }
+   
+   template shadingmodel furDumpOcc {
+	parameter string outfile {
+		    label "PCF File"
+		    description {Point cloud file saved by dupGrid. Tiff images will be saved in same directory.}
+		    provider variable
+		    subtype environment
+		    default {//D/data/$JOBNAME.$F.pcf}
+		}
+		parameter float width {
+			 detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+		}
+		parameter normal N_Srf {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslfurDumpOcc(string filename;
+		       output color CI;
+		       output color OI; )
+	   {
+	   	extern point P;
+	   	extern float s, t, v, width;
+		extern vector dPdv;
+		extern normal N_Srf;
+		
+		vector T = normalize (dPdv);
+		T= normalize (vtransform("world",T));
+		
+		vector nSN = N_Srf;
+		nSN = normalize(vtransform("world",nSN));
+		
+		vector S = normalize(nSN^T);
+		S = normalize(T^S);
+		float  l = clamp(nSN.T,0,1);
+		l *= l;
+		vector norm_hair = (l * nSN) + ( (1-l) * S);
+		norm_hair = normalize(norm_hair);
+
+	   	point Pw = transform("world", P);
+		normal Nw = norm_hair;
+		
+		
+		color Col = color(s,t,v);
+
+	   	dumpOccFur(filename, Pw, Nw, Col, width*width*PI);
+	   	
+	      CI = 1.;
+	      OI = 0.5; 
+	   }
+       }
+   }
+
+template shadingmodel furBeneath {
+	parameter float depth {
+		detail varying
+		detail mustvary
+	}
+	parameter color _shadow {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+		parameter color _colorB {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	parameter color _colorC {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	parameter color _depth {
+	       detail varying
+	       provider primitive
+	       default "1 1 1"
+	       access output
+	       display hidden
+	   }
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslfurBeneath(
+			float depth;
+		       output color CI;
+		       output color OI; )
+	   {
+	   	extern color _shadow;
+		extern color _colorB;
+		extern color _colorC;
+		extern color _depth;
+		_colorB = 1;
+		_colorC = 0;
+		_shadow = 1;
+		_depth = depth;
+
+		extern point P;
+		illuminance("keylight", P)
+		{
+			color inshdC = 0;
+			lightsource("__inShadowC", inshdC);
+			_shadow -= inshdC;
+	    	}
+		
+	      CI = 0;
+	      OI = 1; 
+	   }
+       }
+   }
+
+template float depthRange {
+	label {Depth Range}
+       parameter float fnear {
+		label {Near Clip}
+		detail uniform
+		default 1
+       }
+       
+       parameter float ffar {
+		label {Far Clip}
+		detail uniform
+		default 1000
+       }
+       
+       parameter float result {
+	   access output
+	   display hidden
+       }
+       RSLFunction {
+	   void pxsldepthRange(float near, far; output float c;)
+	   {
+		extern point P;
+
+		float d = smoothstep(near,far,zcomp(P));
+		d = pow(d,0.5);
+	       c = d;
+	   }
+       }
+   }
+   
+}
+}

@@ -1,0 +1,252 @@
+## lighjt_z.slim
+## zhangmdev@gmail.com
+## 01/16/08
+## light_z.slim {
+##	{ zhang,zDistant#0	light {zDistant}		/Light }
+##	{ zhang,zSoftShadow#0	light {pbSoftShadow}		/Light }
+## }
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+templateV light zDistant 0 {
+    	lighttype distant
+
+    	parameter color LightColor {
+	    detail uniform
+	    default {1 1 1}
+	}
+	
+	parameter float Kl {
+	    description "Scalar multiplier for light color."
+	    detail varying
+	    default 1
+	}
+	
+	parameter color ShadowColor {
+	    description "The color of the shadow. Values other than black
+                        can simulate the effect of semi-transparent shadowing."
+	    default {0 0 0}
+	    detail varying
+	}
+	
+	parameter string __category {
+	description "Illuminance statements will be excuted only if those shaders match particular categories.
+		Reload after any change."
+	    access output
+	    provider primitive
+	    detail uniform
+	    default "keylight"
+	}
+	parameter string shdMap {
+	label "ShadowMap Name"
+	description "Tell the surfaces filenames of shadow maps to use."
+	 provider variable
+	    subtype shadow
+	    default ""
+	}
+	parameter float Samples {
+	    description {The number of samples to take of the map.  Use
+	    	larger numbers when you need smooth blurring effects.}
+	    subtype selector
+	    range { 1 1 4 4 9 9 16 16 25 25 36 36 64 64 }
+    	    default 16
+	}
+	parameter float Blur {
+	    description "The \"softness\" of the shadow.  As you increase 
+	    	the blur, you may want to increase shadow samples."
+	    default 0
+	    subtype slider
+	    range {0 1 .001}
+	    
+	}
+	parameter float Bias {
+	    description "Controls self shadowing artifacts of shadow algorithm.
+			Set the bias to 0 if you want to use the default 
+			shadow bias."
+	    default 0
+	    subtype slider
+	    range {0 16 .001}
+	}
+	
+	eval [::slimLightContributionMacro]
+
+	parameter float __nondiffuse {
+	    access output
+	    display hidden
+	    detail varying
+	    provider variable
+	    default 1
+	}
+	parameter float __nonspecular {
+	    display hidden
+	    access output
+	    detail varying
+	    provider variable
+	    default 1
+	}
+	parameter color __inShadowC {
+	    access output
+	    display hidden
+	    detail varying
+	    provider variable
+	    default {0 0 0}
+	}
+
+	eval [::slimLightContributionOutputMacro]
+	RSLInclude "pxslUtil.h"
+	RSLMain {
+	 define SLIM_DIRECTIONAL_SHADOWS 1
+	 output "varying vector axis = vector \"shader\"(0,0,1);"
+	 output "__inShadowC = color(0);"
+	 output "varying point PP = transform(\"shader\", Ps);"
+	 output "solar(axis, 0.0) {"
+	 indent
+
+	  generate
+	    
+	  
+	  output "__nondiffuse = 1 - [getvar Diffuse];"
+	  output "__nonspecular = 1 - [getvar Specular];"
+	  foreach c {Rim ThinTranslucence BackScattering SubsurfaceScattering} {
+	      output "_contrib${c} = [getvar $c];"
+	  }
+	  output "Cl = [getvar Kl] * [getvar LightColor];"
+
+	output " if([getvar shdMap] != \"\")"
+	output "{"
+	output "	__inShadowC = color shadow([getvar shdMap], Ps, \"samples\", [getvar Samples], \"blur\", [getvar Blur], \"bias\", [getvar Bias]);"
+	output "	Cl = pxslCmix(Cl, [getvar ShadowColor], __inShadowC);"
+	output "}"
+	
+	
+	  
+	 exdent
+	 output "}"
+	}
+    }
+
+
+templateV light zSoftShadow 0 {
+    	lighttype distant
+
+    	parameter color LightColor {
+	    detail uniform
+	    default {1 1 1}
+	}
+	
+	parameter float Kl {
+	    description "Scalar multiplier for light color."
+	    detail varying
+	    default 1
+	}
+	
+	parameter color ShadowColor {
+	    description "The color of the shadow. Values other than black
+                        can simulate the effect of semi-transparent shadowing."
+	    default {0 0 0}
+	    detail varying
+	}
+	
+	parameter string __category {
+	description "Illuminance statements will be excuted only if those shaders match particular categories.
+		Reload after any change."
+	    access output
+	    provider primitive
+	    detail uniform
+	    default "keylight"
+	}
+	
+	parameter float flightsize {
+		label {Light Size}
+	    description "Size of the light plane, bigger light is more blurry but slower"
+	    detail varying
+	    default 1.0
+	}
+	
+	parameter float flightfov {
+		label {Light Angle}
+	    description "Angle of the light in degree"
+	    detail varying
+	    default 90
+	}
+		parameter string PCFName {
+	    label "PCF File"
+	    description "The name of the Point Cloud File (.pcf) to use."
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	parameter float fbias {
+		label "Bias"
+		description "Bias of the shadow map, should be larger than zero."
+		default 0.5
+	}
+	
+	eval [::slimLightContributionMacro]
+
+	parameter float __nondiffuse {
+	    access output
+	    display hidden
+	    detail varying
+	    provider variable
+	    default 1
+	}
+	parameter float __nonspecular {
+	    display hidden
+	    access output
+	    detail varying
+	    provider variable
+	    default 1
+	}
+	parameter color __inShadowC {
+	    access output
+	    display hidden
+	    detail varying
+	    provider variable
+	    default {0 0 0}
+	}
+
+	eval [::slimLightContributionOutputMacro]
+	RSLInclude "pxslUtil.h"
+	RSLMain {
+
+	 output "uniform string pcfname = [getvar PCFName];"
+	 output "varying vector axis = vector \"shader\"(0,0,1);"
+	 output "varying vector ray = -vtransform(\"current\", \"world\", axis);"
+		
+		output "vector front = vector \"shader\" (0,0,1);"
+		output "front = normalize(vtransform(\"current\", \"world\", front));"
+		output "vector up = vector \"shader\" (0,1,0);"
+		output "up = normalize(vtransform(\"current\", \"world\", up));"
+		output "vector side = vector \"shader\" (1,0,0);"
+		output "side = normalize(vtransform(\"current\", \"world\", side));"
+		output "point eye = point \"shader\" (0,0,0);"
+		output "eye = transform(\"current\", \"world\", eye);"
+		
+	 output "__inShadowC = color(0);"
+	 
+
+	  generate
+	    output "varying point PP = transform(\"shader\", Ps);"
+	 output "varying point Pw = transform(\"world\", Ps);"
+	  output "illuminate(point \"shader\" (0,0,0)) {"
+	 indent
+	  
+	  output "__nondiffuse = 1 - [getvar Diffuse];"
+	  output "__nonspecular = 1 - [getvar Specular];"
+	  foreach c {Rim ThinTranslucence BackScattering SubsurfaceScattering} {
+	      output "_contrib${c} = [getvar $c];"
+	  }
+	  output "Cl = [getvar LightColor]*[getvar Kl];"
+
+	output "if(pcfname != \"\") {"
+		output " float shadowf =  softshadowmap(pcfname, side, up, front,  [getvar flightfov], [getvar flightsize], eye, Pw, [getvar fbias]);"
+		
+		output "Cl = mix(Cl, [getvar ShadowColor], shadowf); }"
+
+	 exdent
+	 output "}"
+	}
+    } 
+}
+}

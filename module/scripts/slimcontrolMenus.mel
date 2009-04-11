@@ -1,0 +1,318 @@
+global proc slimcontrolRemoveMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the slimcontrol menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if slimcontrol menu exists, delete it first.
+		else {
+			if(`menuItem -exists slimcontrolItems` ) deleteUI slimcontrolItems;
+			if(`menuItem -exists slimcontrolMTOR2ndItems` ) deleteUI slimcontrolMTOR2ndItems;
+		}
+	}
+}
+
+global proc slimcontrolCreateMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the slimcontrol menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if slimcontrol menu exists, seach the menu item.
+		else {
+			if(`menuItem -exists slimcontrolItems` ) deleteUI slimcontrolItems;
+			if(`menuItem -exists slimcontrolMTOR2ndItems` ) deleteUI slimcontrolMTOR2ndItems;
+		}
+		
+		// append menu items
+		menuItem -p zTools -l "MTOR Set 2nd Ouput" -c "source mtorSetQuantize.mel" slimcontrolMTOR2ndItems;
+		menuItem -p zTools -l "Slim Controls" -subMenu true slimcontrolItems;
+			menuItem -l "Set All HDR File" -c "slimcontrolSetHDR(`fileDialog -dm \"*.hdr\"`)";
+			menuItem -l "Set All Exposure" -c "openSetExposureWin";
+			menuItem -divider true;
+			menuItem -l "Set All Mode to black" -c "slimcontrolSetAllMode(\"_black\")";
+			menuItem -l "Set All Mode to color" -c "slimcontrolSetAllMode(\"_color\")";
+			menuItem -l "Set All Mode to diffuse" -c "slimcontrolSetAllMode(\"_diffuse\")";
+			menuItem -l "Set All Mode to specular" -c "slimcontrolSetAllMode(\"_specular\")";
+			menuItem -l "Set All Mode to matte" -c "slimcontrolSetAllMode(\"_matte\")";
+			menuItem -l "Set All Mode to rim" -c "slimcontrolSetAllMode(\"_rim\")";
+			menuItem -l "Set All Mode to ambient" -c "slimcontrolSetAllMode(\"_ambient\")";
+			menuItem -l "Set All Mode to epiderm" -c "slimcontrolSetAllMode(\"_epiderm\")";
+			menuItem -l "Set All Mode to subderm" -c "slimcontrolSetAllMode(\"_subderm\")";
+			menuItem -l "Set All Mode to backscattering" -c "slimcontrolSetAllMode(\"_backscattering\")";
+			menuItem -l "Set All Mode to depth" -c "slimcontrolSetAllMode(\"_depth\")";
+			menuItem -l "Set All Mode to shadow" -c "slimcontrolSetAllMode(\"_shadow\")";
+			menuItem -l "Set All Mode to reflection" -c "slimcontrolSetAllMode(\"_reflection\")";
+			menuItem -l "Set All Mode to normal" -c "slimcontrolSetAllMode(\"_normal\")";
+			menuItem -l "Set All Mode to caustic" -c "slimcontrolSetAllMode(\"_caustic\")";
+			menuItem -l "Set All Mode to backlight" -c "slimcontrolSetAllMode(\"_backlight\")";
+			menuItem -l "Set All Mode to filllight" -c "slimcontrolSetAllMode(\"_filllight\")";
+			menuItem -l "Set All Mode to keylight" -c "slimcontrolSetAllMode(\"_keylight\")";
+			menuItem -l "Set All Mode to diffuse_key" -c "slimcontrolSetAllMode(\"_diffuse_key\")";
+			menuItem -l "Set All Mode to diffuse_fill" -c "slimcontrolSetAllMode(\"_diffuse_fill\")";
+			menuItem -l "Set All Mode to diffuse_back" -c "slimcontrolSetAllMode(\"_diffuse_back\")";
+			menuItem -l "Set All Mode to specular_key" -c "slimcontrolSetAllMode(\"_specular_key\")";
+			menuItem -l "Set All Mode to specular_fill" -c "slimcontrolSetAllMode(\"_specular_fill\")";
+			menuItem -l "Set All Mode to specular_back" -c "slimcontrolSetAllMode(\"_specular_back\")";
+			menuItem -l "Set All Mode to colorA" -c "slimcontrolSetAllMode(\"_colorA\")";
+			menuItem -l "Set All Mode to colorB" -c "slimcontrolSetAllMode(\"_colorB\")";
+			menuItem -l "Set All Mode to colorC" -c "slimcontrolSetAllMode(\"_colorC\")";
+			menuItem -l "Set All Mode to colorD" -c "slimcontrolSetAllMode(\"_colorD\")";
+			menuItem -l "Set All Mode to colorE" -c "slimcontrolSetAllMode(\"_colorE\")";
+			menuItem -l "Set All Mode to colorF" -c "slimcontrolSetAllMode(\"_colorF\")";
+			menuItem -l "Set All Mode to colorG" -c "slimcontrolSetAllMode(\"_colorG\")";
+			menuItem -l "Set All Mode to colorH" -c "slimcontrolSetAllMode(\"_colorH\")";
+			menuItem -l "Set All Mode to colorI" -c "slimcontrolSetAllMode(\"_colorI\")";
+			menuItem -l "Set All Mode to objectID" -c "slimcontrolSetAllMode(\"_objectID\")";
+			menuItem -l "Set All Mode to flattened" -c "slimcontrolSetAllMode(\"_flattened\")";
+			menuItem -divider true;
+			menuItem -l "Disable All MapGen" -c "slimcontrolSetMapGenFreq(\"never\")";
+			menuItem -l "Enable All MapGen" -c "slimcontrolSetMapGenFreq(\"frame\")";
+			menuItem -divider true;
+			
+			
+		setParent -menu ..;
+	}
+}
+
+global proc slimcontrolSetAllMode(string $value)
+{
+	string $apparray[];
+	string $paramarray[];
+	string $param;
+	string $apps = `slimcmd slim GetAppearances -type surface`;
+	string $app;
+	$numtokens = tokenize($apps,$apparray);
+	for ($app in $apparray) 
+	{
+		if ($app != "") 
+		{
+			$param = `slimcmd $app GetPropertyTree`;
+			$param = `slimcmd $param GetChildren`;
+			
+				$numtokens = tokenize($param,$paramarray);
+				for ($param in $paramarray) 
+				{
+					if(`slimcmd $param GetLabel`=="Display" && `slimcmd $param GetType `=="string") 
+					{
+						slimcmd $param SetValue $value;
+						print ("set "+`slimcmd $app GetLabel` + ":" + `slimcmd $param GetLabel` + " to "+$value+"\n");
+					}
+				}
+		}
+	} 
+	
+	$apps = `slimcmd slim GetAppearances -type shadingmodel`;
+	$numtokens = tokenize($apps,$apparray);
+	for ($app in $apparray) 
+	{
+		if ($app != "") 
+		{
+			$param = `slimcmd $app GetProperties`;
+			$numtokens = tokenize($param,$paramarray);
+				for ($param in $paramarray) 
+				{
+					if(`slimcmd $param GetLabel`=="Display" && `slimcmd $param GetType `=="string") 
+					{
+						slimcmd $param SetValue $value;
+						print ("set "+`slimcmd $app GetLabel` + ":" + `slimcmd $param GetLabel` + " to "+$value+"\n");
+					}
+				}
+		}
+	} 
+}
+
+global proc slimcontrolSetMapGenFreq(string $value)
+{
+	string $paramarray[];
+	string $param;
+	string $apparray[];
+	string $apps = `slimcmd slim GetAppearances -type mapgen`;
+	string $app;
+	$numtokens = tokenize($apps,$apparray);
+	for ($app in $apparray) 
+	{
+	if ($app != "") 
+	{
+		$param = `slimcmd $app GetProperties`;
+		$numtokens = tokenize($param,$paramarray);
+				for ($param in $paramarray) 
+				{
+					if(`slimcmd $param GetLabel`=="Frequency" && `slimcmd $param GetType `=="string") 
+					{
+						slimcmd $param SetValue $value;
+						print ("set "+`slimcmd $app GetLabel` + ":" + `slimcmd $param GetLabel` + " to "+`slimcmd $param GetValue`+"\n");
+					}
+				}
+    }
+} 
+}
+
+global proc slimcontrolSetHDR(string $value)
+{
+	string $paramarray[];
+	string $param;
+	string $apparray[];
+	string $apps = `slimcmd slim GetAppearances -type color`;
+	string $app;
+	$numtokens = tokenize($apps,$apparray);
+	for ($app in $apparray) 
+	{
+		if ($app != "") 
+		{
+			$param = `slimcmd $app GetProperties`;
+			$numtokens = tokenize($param,$paramarray);
+					for ($param in $paramarray) 
+					{
+						if(`slimcmd $param GetLabel`=="HDR File" && `slimcmd $param GetType `=="string") 
+						{
+							slimcmd $param SetValue $value;
+							print ("set "+`slimcmd $app GetLabel` + ":" + `slimcmd $param GetLabel` + " to "+`slimcmd $param GetValue`+"\n");
+						}
+					}
+		}
+		
+	}
+	$apps = `slimcmd slim GetAppearances -type surface`;
+	$numtokens = tokenize($apps,$apparray);
+	for ($app in $apparray) 
+	{
+		if ($app != "") 
+		{
+			$param = `slimcmd $app GetProperties`;
+			$numtokens = tokenize($param,$paramarray);
+					for ($param in $paramarray) 
+					{
+						if(`slimcmd $param GetLabel`=="HDR File" && `slimcmd $param GetType `=="string") 
+						{
+							slimcmd $param SetValue $value;
+							print ("set "+`slimcmd $app GetLabel` + ":" + `slimcmd $param GetLabel` + " to "+`slimcmd $param GetValue`+"\n");
+						}
+					}
+		}
+		
+	}
+	$apps = `slimcmd slim GetAppearances -type shadingmodel`;
+	$numtokens = tokenize($apps,$apparray);
+	for ($app in $apparray) 
+	{
+		if ($app != "") 
+		{
+			$param = `slimcmd $app GetProperties`;
+			$numtokens = tokenize($param,$paramarray);
+					for ($param in $paramarray) 
+					{
+						if(`slimcmd $param GetLabel`=="HDR File" && `slimcmd $param GetType `=="string") 
+						{
+							slimcmd $param SetValue $value;
+							print ("set "+`slimcmd $app GetLabel` + ":" + `slimcmd $param GetLabel` + " to "+`slimcmd $param GetValue`+"\n");
+						}
+					}
+		}
+		
+	}
+}
+
+global proc openSetExposureWin()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists setExposureWin`) == true ) deleteUI setExposureWin;
+ 
+//Create the window.
+ window -title "Set Exposure Value" -wh 400 300  -mb false setExposureWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+floatSliderGrp -label "Value" -field true
+ 		-minValue -10.0 -maxValue 10.0
+ 		-fieldMinValue -100.0 -fieldMaxValue 100.0
+		-step 0.001
+ 		-value 0
+		slimcontrol_exposure_slider;
+ 
+//row begin
+button -l "Apply" -c "slimcontrolSetExposure(`floatSliderGrp -q -value slimcontrol_exposure_slider`)" -p $row;
+button -l "Close" -c "deleteUI setExposureWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow setExposureWin;
+
+}
+
+global proc slimcontrolSetExposure(float $value)
+{
+	string $paramarray[];
+	string $param;
+	string $apparray[];
+	string $apps = `slimcmd slim GetAppearances -type color`;
+	string $app;
+	$numtokens = tokenize($apps,$apparray);
+	for ($app in $apparray) 
+	{
+	if ($app != "") 
+	{
+		$param = `slimcmd $app GetProperties`;
+		$numtokens = tokenize($param,$paramarray);
+				for ($param in $paramarray) 
+				{
+					if(`slimcmd $param GetLabel`=="Exposure" && `slimcmd $param GetType `=="float") 
+					{
+						slimcmd $param SetValue $value;
+						print ("set "+`slimcmd $app GetLabel` + ":" + `slimcmd $param GetLabel` + " to "+`slimcmd $param GetValue`+"\n");
+					}
+				}
+	}
+} 
+}

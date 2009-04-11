@@ -1,0 +1,286 @@
+global proc patchHairRemoveMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the patchHair menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if patchHair menu exists, delete it first.
+		else {
+			if(`menuItem -exists patchHairMenuItems`) deleteUI patchHairMenuItems; 
+		}
+	}
+}
+
+global proc patchHairCreateMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the patchHair menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if patchHair menu exists, seach the menu item.
+		else {
+			if(`menuItem -exists patchHairItems` ) deleteUI patchHairItems;
+		}
+		
+		// append menu items
+		menuItem  -p zTools -subMenu true -label "patchHair" patchHairMenuItems;
+			menuItem -l "Convert to Mesh" -c "znurbstube2polypatch";
+			menuItem -l "Create Base" -c "openPatchHairBaseWin";
+			menuItem -l "Attach Curves to Mesh" -c "openPatchHairAttachWin";
+			menuItem -l "Comb" -c "patchHair_do_comb";
+		setParent -menu ..;
+
+	}
+}
+
+global proc patchHair_do_attach_node()
+{
+	string $grow[] = `ls -sl`;
+	if(size($grow) <1) 
+	{
+		print("Select 2 meshes to attach patchHair."); 
+		return; 
+	}
+
+	$grow = `pickWalk -d down`;
+	
+	int $seg = `intFieldGrp -q -v1 patchHairAttach_seg`;
+	int $ncv = $seg+1;
+	
+	int $numCurve = `patchInfo -n $grow[0] -s $seg`;
+	$numCurve *= 6;
+
+	int $i, $j, $frame;
+	string $res[];
+	
+	string $ccmd = "curve -d 2 ";
+	for($i=0; $i<$ncv; $i++)
+	{
+		$ccmd = $ccmd + "-p 1 1 " + $i + " ";
+	}
+	$ccmd = $ccmd + "-k 0 ";
+	for($i=0; $i<$ncv-1; $i++)
+	{
+		$ccmd = $ccmd + "-k " + $i + " ";
+	}
+	$ccmd = $ccmd + "-k " + ($i-1) + " ";
+	
+	for($i =0; $i<$numCurve; $i++)
+	{
+		$crv = eval($ccmd);
+		select -r $crv;
+		string $crvshp[] = `pickWalk -d down`;
+
+		$res[$i]  = $crv;
+	}
+
+	for($i =0; $i<$numCurve; $i++) delete -ch $res[$i];
+	
+	int $frameMin =`playbackOptions -q -min`;
+	int $frameMax =`playbackOptions -q -max`;
+	for($frame = $frameMin; $frame <= $frameMax; $frame++)
+	{
+		currentTime $frame;
+		for($i =0; $i<$numCurve; $i++)
+		{
+			if($i ==0) select -r $res[$i];
+			else select -tgl $res[$i];
+		}
+
+		patchInfo -m 1 -n $grow[0] -b $grow[1] -s $seg -t `floatFieldGrp -q -v1 patchHairAttach_twist`;
+	
+		for($i =0; $i<$numCurve; $i++)
+		{
+			//$ccmd = "select -r " + $res[$i] +".cv[0:"+($seg-1)+"]";
+			//eval($ccmd);
+			for($j =0; $j<$ncv; $j++) setKeyframe ($res[$i] +".cv["+$j+"]");
+		}
+		
+	}
+	
+	
+	for($i =0; $i<$numCurve; $i++)
+	{
+		if($i ==0) select -r $res[$i];
+		else select -tgl $res[$i];
+	}
+	group;
+	
+}
+
+global proc openPatchHairAttachWin()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists patchHairAttachWin`) == true ) deleteUI patchHairAttachWin;
+ 
+//Create the window.
+ window -title "Patch2Hair Options" -wh 400 300  -mb false patchHairAttachWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+text -al left -l "\nSelect polygonal patch mesh to attch curves.";
+
+intFieldGrp -cw 1 110 -label "Segment" -nf 1 -v1 6 patchHairAttach_seg;
+floatFieldGrp -cw 1 110 -label "Twist" -nf 1 -v1 0.5 patchHairAttach_twist;
+
+//row begin
+button -l "Export" -c "patchHair_do_attach_node;deleteUI patchHairAttachWin" -p $row;
+button -l "Apply" -c "patchHair_do_attach_node" -p $row;
+button -l "Close" -c "deleteUI patchHairAttachWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow patchHairAttachWin;
+
+}
+
+global proc znurbstube2polypatch()
+{
+	string $sel[] = `ls -sl`;
+	string $as;
+	for($as in $sel)
+	{
+		detachSurface -ch 0 -rpo 1 ($as+".u[0]");
+		string $half[] =`detachSurface -ch 0 -rpo 1 ($as+".u[3]")`;
+		delete $half[1];
+		rebuildSurface -ch 0 -rpo 1 -rt 0 -end 1 -kr 0 -kcp 0 -kc 0 -su 1 -du 1 -sv 6 -dv 1 -tol 0.01 -fr 0  -dir 2 $half[0];
+		nurbsToPoly -mnd 1  -ch 1 -f 3 -pt 1 -pc 200 -chr 0.9 -ft 0.01 -mel 0.001 -d 0.1 -ut 1 -un 3 -vt 1 -vn 3 -uch 0 -ucr 0 -cht 0.2 -es 0 -ntr 0 -mrt 0 -uss 1 $half[0];
+
+	}
+}
+
+global proc patchHair_do_comb()
+{
+	string $sel[] = `ls -sl`;
+	string $curvegrp = $sel[0];
+
+	int $frameMin =`playbackOptions -q -min`;
+	int $frameMax =`playbackOptions -q -max`;
+	
+	int $i;
+	for($frame = $frameMin; $frame <= $frameMax; $frame++)
+	{
+		currentTime $frame;
+		for($i=1; $i<size($sel); $i++)
+		{
+			setAttr($sel[$i] + ".runDynamics") 0;
+			select -r $curvegrp;
+			select -add $sel[$i];
+			shaveCombFromCurves;
+			setAttr($sel[$i] + ".runDynamics") 1;
+		}
+	}
+	for($i=1; $i<size($sel); $i++)
+	{
+		setAttr($sel[$i] + ".runDynamics") 2;
+	}
+}
+
+global proc patchHair_do_create_base()
+{
+	string $grow[] = `ls -sl`;
+	if(size($grow) <2) 
+	{
+		print("Select 2 meshes to create hair base."); 
+		return; 
+	}
+
+	$grow = `pickWalk -d down`;
+	
+	int $seg = `intFieldGrp -q -v1 patchHairBase_seg`;
+
+	patchInfo -n $grow[0] -a $grow[1] -s $seg;
+}
+
+global proc openPatchHairBaseWin()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists patchHairBaseWin`) == true ) deleteUI patchHairBaseWin;
+ 
+//Create the window.
+ window -title "PatchHair Create Base Options" -wh 400 300  -mb false patchHairBaseWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+text -al left -l "\nSelect polygonal patch mesh and grow mesh to create hair base.";
+
+intFieldGrp -cw 1 110 -label "Segment Per Patch" -nf 1 -v1 6 patchHairBase_seg;
+
+//row begin
+button -l "Create" -c "patchHair_do_create_base;deleteUI patchHairBaseWin" -p $row;
+button -l "Apply" -c "patchHair_do_create_base" -p $row;
+button -l "Close" -c "deleteUI patchHairBaseWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow patchHairBaseWin;
+
+}

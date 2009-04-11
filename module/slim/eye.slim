@@ -1,0 +1,449 @@
+## eye.slim
+## zhangmdev@gmail.com
+## 01/22/08
+## slim template for eye shaders
+## eye.slim {
+##	{ zhang,Eye#0	shadingmodel {Eye}		/Surface }
+## }
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+	
+	template shadingmodel Eye {
+    	description {Eye shader for poly mesh planar projected UV.}
+	
+	parameter float firispos {
+		label {Iris Position}
+       	detail uniform
+       	subtype slider
+		range {0 0.5 0.01}
+	   default .25
+       }
+	
+	parameter float firisdepth {
+		label {Iris Depth}
+       	detail uniform
+       	subtype slider
+		range {0 1 0.01}
+	   default .1
+       }
+       
+       	parameter float firisshutter {
+		label {Iris Shutter}
+       	detail uniform
+       	subtype slider
+		range {0 1 0.01}
+	   default .1
+       }
+	
+		parameter string irismap {
+	    label "Eye Texture"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter float Kd {
+       	detail varying
+       	subtype slider
+		range {0 1 0.01}
+	   default .6
+       }
+       
+       parameter string MapName {
+	    label "HDR File"
+	    description "The name of the Environment Map to use."
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	parameter string Space {
+	    label "Coordinate System"
+	    description "A coordinate system for your environment map.
+	    	When used with maps generated from the attached object,
+		use \"_world_lefthanded\" or \"world\". If you have an 
+		arbitrary lat-long environment use \"_environment\".  
+		If you wish to independently manipulate the orientation 
+		of your environment, enter the name of a coordinate 
+		system object here."
+	    default {[coordsys mtorCoordSysShape]}
+	    provider variable
+	}
+	parameter float exposure {
+		label {Exposure}
+		default 0
+	}
+       
+       parameter color specularColor {
+	   label "Specular Color"
+	   detail varying
+	   default "0 .25 1"
+       }
+       parameter float Ks {
+       	detail varying
+       	subtype slider
+		range {0 1 0.01}
+	   default .7
+       }
+       parameter float sharpness {
+       	detail varying
+       	subtype slider
+		range {0 1 0.01}
+	   default .3
+       }
+       parameter string envmap {
+	    label "Environment Map"
+	    provider variable
+	    subtype environment
+	    default ""
+	}
+	
+	parameter float fkrefl {
+		label "Reflection Strength"
+		detail uniform
+		subtype slider
+		range {0 1 0.01}
+		default 1.
+	}
+	
+	parameter float fkreflmin {
+		label "Reflection Min"
+		detail uniform
+		subtype slider
+		range {0 1 0.01}
+		default 0.1
+	}
+	
+	parameter color reflColor {
+	   label "Reflection Tint"
+	   detail uniform
+	   default "1 1 1"
+       }
+
+	parameter float kiris {
+		label "Kiris"
+		detail uniform
+		subtype slider
+		range {0. 1.0 0.01}
+		default 0.3
+	}
+	parameter color ciris {
+	   label "Iris Color"
+	   detail uniform
+	   default "0 0.3 0.2"
+       }
+
+	parameter color csurfa {
+ 		label "Surface ColorA"
+	    detail varying
+	    default {1 1 1}
+	}
+
+	parameter color csurfb {
+ 		label "Surface ColorB"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color csurfc {
+ 		label "Surface ColorC"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color csurfd {
+ 		label "Surface ColorD"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter color csurfe {
+ 		label "Surface ColorE"
+	    detail varying
+	    default {1 1 1}
+	}
+	
+	parameter float depth {
+		detail varying
+		detail mustvary "zhang,depthRange"
+	}
+	
+	parameter color Cside {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color Cup {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color Cfront {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color Ccenter {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color _depth {
+	       detail varying
+	       provider primitive
+	       default "1 1 1"
+	       access output
+	       display hidden
+	   }
+	   parameter color _normal {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	parameter color _colorA {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	parameter color _colorB {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	parameter color _colorC {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	parameter color _colorD {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	parameter color _colorE {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+	   
+       }
+       RSLFunction {
+	   void
+	   pxslEye(float iris_pos, iris_depth, iris_shutter;
+			uniform string eyeMap;
+			float Kd;
+			uniform string shdrname, sspacename;
+			float fexposure;
+			color specularColor;
+		       float Ks;
+		       float sharpness;
+		       string environmentMap;
+		       float Kreflection;
+		       float KreflectionMin;
+		       color CreflTint;
+	   		float Ki;
+			color irisflt;
+			color color_a, color_b, color_c, color_d, color_e;
+		       float depth;
+		       output color CI;
+		       output color OI;
+		        )
+	   {
+	   	extern normal N;
+    		extern vector I;
+	   	extern point P;
+
+		
+		extern color Cside, Cup, Cfront, Ccenter;
+		
+				vector side = vector(Cside);
+		vector up = vector(Cup);
+		vector front = vector(Cfront);
+		vector center = vector(Ccenter);
+		
+	   	extern float s, t;
+		float iris2cen = sqrt((s-0.5)*(s-0.5) + (t-0.5)*(t-0.5));
+		
+		float iris_mask = 1-smoothstep(iris_pos-0.01, iris_pos,iris2cen);
+		
+		iris2cen =  1-smoothstep(0,iris_pos,iris2cen);
+
+	   	normal Nf = faceforward (normalize(N), I);
+		
+	   	vector V = -normalize(I);
+	   	
+	   	color LocIllumGlossy ( normal N;  vector V;
+                       float roughness, sharpness; )
+		{
+		    color C = 0;
+		    float w = .18 * (1-sharpness);
+		    extern point P;
+		    illuminance (P, N, PI/2) {
+			/* Must declare extern L & Cl because we're in a function */
+			extern vector L;  extern color Cl; 
+			float nonspec = 0;
+			lightsource ("__nonspecular", nonspec);
+			if (nonspec < 1) {
+			    vector H = normalize(normalize(L)+V);
+			    C += Cl * ((1-nonspec) * 
+				       smoothstep (.72-w, .72+w,
+						   pow(max(0,N.H), 1/roughness*10)));
+			}
+		    }
+		    return C;
+		}
+		
+		color irisrefract(point P;normal N;float dist;)
+		{
+			color C =0;
+			
+			 illuminance (P, N, PI/2) 
+			 {
+				extern vector L;
+				extern color Cl;
+				float nonspec = 0;
+			lightsource ("__nondiffuse", nonspec);
+				C += Cl*(1-nonspec)*normalize(L).N * exp(-dist);
+			}
+			return C;
+		}
+	   	
+	   	normal Nn = normalize(N);
+	   	
+	   	float Kr, Kt, Krr;
+    	    	vector R, T;
+		color crefl = 0;
+		fresnel(normalize (I), Nf, 1/1.34, Kr, Kt, R, T);
+			Krr = KreflectionMin + (Kreflection - KreflectionMin)*Kr;
+  		if(environmentMap != "" ) {
+  			
+  			crefl = environment ( environmentMap, vtransform("_environment", R), "filter", "radial-bspline", "lerp", 1, "blur", 0.);
+  		}
+  		
+		
+matrix spaceiris = matrix "world" (xcomp(side), xcomp(up), xcomp(front), 0,
+					ycomp(side), ycomp(up), ycomp(front), 0,
+					zcomp(side), zcomp(up), zcomp(front), 0,
+					0, 0, 0, 1);
+		     vector To = vtransform("current","world", T);
+		     To = normalize(vtransform("world",spaceiris, To));
+		     
+		     point Pw = transform("world", P);
+		     vector cen2p = Pw - center;
+		     cen2p = normalize(vtransform("world",spaceiris, cen2p));
+		     
+		     point hit = point(cen2p);
+		     
+		     hit += To*iris2cen*iris_depth;
+		     
+		     float radius = length(cen2p);
+		     
+		     float si= xcomp(hit)/radius*0.5;
+			float ti= ycomp(hit)/radius*0.5;
+			
+			vector vhit = vector(hit);
+			float vhitleng = length(vhit);
+			vhit = normalize(vhit)*vhitleng*pow(2, 1-iris_shutter);
+			
+			float csi = xcomp(vhit)/radius*0.5;
+			float cti= ycomp(vhit)/radius*0.5;
+			
+			si = mix(si, csi, iris2cen);
+			ti = mix(ti, cti, iris2cen);
+			si= si+0.5;
+			ti= ti+0.5;
+  				
+		normal Nh = -normalize(T);
+		color iris_scat = irisrefract(P,-T,iris_depth);
+  		
+		vector Niris = vector(-T);
+
+	      color cp = 0;
+	      if(eyeMap != "")
+	      		cp = color texture(eyeMap,
+			    	     si,
+				     ti, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+				    
+				    
+		color ambientC = 0;
+		if(shdrname != "")
+			{
+				normal Nt = N;
+				if(sspacename == "") Nt = ntransform ("world", Nt);
+				else Nt = normalize(ntransform (sspacename, Nt));
+
+				ambientC =  hdr_environment(shdrname, Nt, fexposure);
+			}
+				    		  
+		color irisC = cp*(Kd-Ki/4)*diffuse(Nf) +ambientC*cp + cp*Ki+cp*cp*Ki*2 + cp*irisflt* iris_scat *(1+Kr) + cp*specular(Niris,V,0.05) + Kreflection * crefl *cp;
+		color scelarC = cp*Kd*diffuse(Nf) +ambientC + Krr*CreflTint * crefl;
+		CI = mix(scelarC, irisC, iris_mask)     + specularColor*LocIllumGlossy(Nf, V, Ks/10, sharpness/10);
+	      OI = color(1);
+
+	      extern color _depth;
+			_depth = depth;
+		
+		extern color _normal;
+		_normal = color((xcomp(Nn)+1.)/2., (ycomp(Nn)+1.)/2., (zcomp(Nn)+1.)/2.);
+		
+		extern color _colorA;
+		_colorA = color_a;
+		
+		extern color _colorB;
+		_colorB = color_b;
+		
+		extern color _colorC;
+		_colorC = color_c;
+		
+		extern color _colorD;
+		_colorD = color_d;
+		
+		extern color _colorE;
+		_colorE = color_e;
+
+	   }
+       }
+   }
+}
+}

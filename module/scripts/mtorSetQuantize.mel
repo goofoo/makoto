@@ -1,0 +1,321 @@
+global proc mtorSetSingleQuantize(int $i, string $name, int $bits) 
+{
+	string $cmd = "mtor control setvalue -rg dspyName_" + $i + " -value \"" + $name + "\"";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyType_" + $i + " -value \"tiff\"";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyMode_" + $i + " -value \"_" + $name + "\"";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyQuantize_" + $i + " -value 1";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyZero_" + $i + " -value 0";
+	eval($cmd);
+	if($bits==1)
+		$cmd = "mtor control setvalue -rg dspyOne_" + $i + " -value 255";
+	else
+		$cmd = "mtor control setvalue -rg dspyOne_" + $i + " -value 65535";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyMin_" + $i + " -value 0";
+	eval($cmd);
+	if($bits==1)
+		$cmd = "mtor control setvalue -rg dspyMax_" + $i + " -value 255";
+	else
+		$cmd = "mtor control setvalue -rg dspyMax_" + $i + " -value 65535";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyDither_" + $i + " -value 0.5";
+	eval($cmd);
+}
+
+global proc mtorSetQuantizeWnd()
+{
+	
+//If such a window already exists, destory it.
+if ( (`window -exists wndmtorsetsnddsp`) == true ) deleteUI wndmtorsetsnddsp;
+
+//Create the window.
+window -title "MTOR Secondary Display Options" -wh 400 720 wndmtorsetsnddsp;
+columnLayout -adjustableColumn true; //Start of the column.
+text -l "Create a number of secondary display channels in global controls and select channels to set.\n";
+separator -style "single";
+rowColumnLayout -numberOfColumns 2 
+		-columnAttach 1 left 8
+ 		-columnWidth 1 30
+		-columnWidth 2 320;
+		
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolbits`) rbcolbits" ckcol;
+radioButtonGrp -numberOfRadioButtons 2 -label "color" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolabits`) rbcolabits" ckcola;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorA" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolabits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolbbits`) rbcolbbits" ckcolb;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorB" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolbbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolcbits`) rbcolcbits" ckcolc;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorC" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolcbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcoldbits`) rbcoldbits" ckcold;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorD" -labelArray2 "8-bit" "16-bit" -sl 2 rbcoldbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolebits`) rbcolebits" ckcole;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorE" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolebits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolfbits`) rbcolfbits" ckcolf;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorF" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolfbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolgbits`) rbcolgbits" ckcolg;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorG" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolgbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolhbits`) rbcolhbits" ckcolh;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorH" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolhbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolibits`) rbcolibits" ckcoli;
+radioButtonGrp -numberOfRadioButtons 2 -label "colorI" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolibits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbdifbits`) rbdifbits" ckdif;
+radioButtonGrp -numberOfRadioButtons 2 -label "diffuse" -labelArray2 "8-bit" "16-bit" -sl 2 rbdifbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbmatbits`) rbmatbits" ckmat;
+radioButtonGrp -numberOfRadioButtons 2 -label "matte" -labelArray2 "8-bit" "16-bit" -sl 2 rbmatbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbepibits`) rbepibits" ckepi;
+radioButtonGrp -numberOfRadioButtons 2 -label "epiderm" -labelArray2 "8-bit" "16-bit" -sl 2 rbepibits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbsubbits`) rbsubbits" cksub;
+radioButtonGrp -numberOfRadioButtons 2 -label "subderm" -labelArray2 "8-bit" "16-bit" -sl 2 rbsubbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbbksbits`) rbbksbits" ckbks;
+radioButtonGrp -numberOfRadioButtons 2 -label "backscattering" -labelArray2 "8-bit" "16-bit" -sl 2 rbbksbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbrimbits`) rbrimbits" ckrim;
+radioButtonGrp -numberOfRadioButtons 2 -label "rim" -labelArray2 "8-bit" "16-bit" -sl 2 rbrimbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbambbits`) rbambbits" ckamb;
+radioButtonGrp -numberOfRadioButtons 2 -label "ambient" -labelArray2 "8-bit" "16-bit" -sl 1 rbambbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbrefbits`) rbrefbits" ckref;
+radioButtonGrp -numberOfRadioButtons 2 -label "reflection" -labelArray2 "8-bit" "16-bit" -sl 1 rbrefbits;
+
+checkBox -label "" -v 0 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcaubits`) rbcaubits" ckcau;
+radioButtonGrp -en 0 -numberOfRadioButtons 2 -label "caustic" -labelArray2 "8-bit" "16-bit" -sl 1 rbcaubits;
+
+checkBox -label "" -v 0 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbspebits`) rbspebits" ckspe;
+radioButtonGrp -en 0 -numberOfRadioButtons 2 -label "specular" -labelArray2 "8-bit" "16-bit" -sl 1 rbspebits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbklbits`) rbklbits" ckkl;
+radioButtonGrp -numberOfRadioButtons 2 -label "keylight" -labelArray2 "8-bit" "16-bit" -sl 1 rbklbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbflbits`) rbflbits" ckfl;
+radioButtonGrp -numberOfRadioButtons 2 -label "filllight" -labelArray2 "8-bit" "16-bit" -sl 1 rbflbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbblbits`) rbblbits" ckbl;
+radioButtonGrp -numberOfRadioButtons 2 -label "backlight" -labelArray2 "8-bit" "16-bit" -sl 1 rbblbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbdepbits`) rbdepbits" ckdep;
+radioButtonGrp -numberOfRadioButtons 2 -label "depth" -labelArray2 "8-bit" "16-bit" -sl 2 rbdepbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbnorbits`) rbnorbits" cknor;
+radioButtonGrp -numberOfRadioButtons 2 -label "normal" -labelArray2 "8-bit" "16-bit" -sl 1 rbnorbits;
+
+checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbshdbits`) rbshdbits" ckshd;
+radioButtonGrp -numberOfRadioButtons 2 -label "shadow" -labelArray2 "8-bit" "16-bit" -sl 1 rbshdbits;
+
+setParent ..;
+separator -style "single";
+rowLayout -numberOfColumns 2 -columnWidth2 190 190 -columnAttach 1 "left" 10;
+button -l "Set Selected Channels" -c "mtorSetQuantize";
+button -l "Create Basic Shake Script" -c "mtorCreateShakeScript";
+setParent ..;
+
+//Show it.
+showWindow wndmtorsetsnddsp; 
+}
+
+global proc mtorSetQuantize()
+{
+	int $channel = 0;
+	if(`checkBox -q -v ckcol`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "color", `radioButtonGrp -q -sl rbcolbits`);
+	}
+	if(`checkBox -q -v ckcola`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorA", `radioButtonGrp -q -sl rbcolabits`);
+	}
+	if(`checkBox -q -v ckcolb`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorB", `radioButtonGrp -q -sl rbcolbbits`);
+	}
+	if(`checkBox -q -v ckcolc`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorC", `radioButtonGrp -q -sl rbcolcbits`);
+	}
+	if(`checkBox -q -v ckcold`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorD", `radioButtonGrp -q -sl rbcoldbits`);
+	}
+	if(`checkBox -q -v ckcole`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorE", `radioButtonGrp -q -sl rbcolebits`);
+	}
+	if(`checkBox -q -v ckcolf`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorF", `radioButtonGrp -q -sl rbcolfbits`);
+	}
+	if(`checkBox -q -v ckcolg`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorG", `radioButtonGrp -q -sl rbcolgbits`);
+	}
+	if(`checkBox -q -v ckcolh`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorH", `radioButtonGrp -q -sl rbcolhbits`);
+	}
+	if(`checkBox -q -v ckcoli`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "colorI", `radioButtonGrp -q -sl rbcolibits`);
+	}
+	if(`checkBox -q -v ckdif`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "diffuse", `radioButtonGrp -q -sl rbdifbits`);
+	}
+	if(`checkBox -q -v ckmat`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "matte", `radioButtonGrp -q -sl rbmatbits`);
+	}
+	if(`checkBox -q -v ckepi`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "epiderm", `radioButtonGrp -q -sl rbepibits`);
+	}
+	if(`checkBox -q -v cksub`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "subderm", `radioButtonGrp -q -sl rbsubbits`);
+	}
+	if(`checkBox -q -v ckbks`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "backscattering", `radioButtonGrp -q -sl rbbksbits`);
+	}
+	if(`checkBox -q -v ckrim`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "rim", `radioButtonGrp -q -sl rbrimbits`);
+	}
+	if(`checkBox -q -v ckamb`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "ambient", `radioButtonGrp -q -sl rbambbits`);
+	}
+	if(`checkBox -q -v ckref`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "reflection", `radioButtonGrp -q -sl rbrefbits`);
+	}
+	if(`checkBox -q -v ckcau`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "caustic", `radioButtonGrp -q -sl rbcaubits`);
+	}
+	if(`checkBox -q -v ckspe`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "specular", `radioButtonGrp -q -sl rbspebits`);
+	}
+	if(`checkBox -q -v ckkl`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "keylight", `radioButtonGrp -q -sl rbklbits`);
+	}
+	if(`checkBox -q -v ckfl`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "filllight", `radioButtonGrp -q -sl rbflbits`);
+	}
+	if(`checkBox -q -v ckbl`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "backlight", `radioButtonGrp -q -sl rbblbits`);
+	}
+	if(`checkBox -q -v ckshd`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "shadow", `radioButtonGrp -q -sl rbshdbits`);
+	}
+	if(`checkBox -q -v ckdep`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "depth", `radioButtonGrp -q -sl rbdepbits`);
+	}
+	if(`checkBox -q -v cknor`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "normal", `radioButtonGrp -q -sl rbnorbits`);
+	}
+	
+	string $cmd = "mtor control setvalue -rg contextString -value \"prim\"";
+	//eval($cmd);
+	
+	print("Mtor set quantation to secondary displays.\n");
+	//if ( (`window -exists wndmtorsetsnddsp`) == true ) deleteUI wndmtorsetsnddsp;
+}
+
+global proc mtorCreateShakeScript()
+{
+	mtor control getvalue -sync;
+	
+	string $fp = `workspace -q -rd` + "rmanpix/"+`mtor control getvalue -rg dspyName`+".shk";
+	$fileId=`fopen $fp "w"`;
+
+	fprint $fileId ("shadowColor = Color("+`mtor control getvalue -rg dspyFormatX`+", "+`mtor control getvalue -rg dspyFormatY`+", 1, 0, red, red, 1, 0);\n");
+ 	fprint $fileId ("colorFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".color.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("diffuseFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".diffuse.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("ambientFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".ambient.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("colorAFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".colorA.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("shadowFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".shadow.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("epidermFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".epiderm.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("subdermFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".subderm.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("backscatteringFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".backscattering.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("rimFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".rim.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("reflectionFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".reflection.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("keylightFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".keylight.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("filllightFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".filllight.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("backlightFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".backlight.#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+	fprint $fileId ("primFile = SFileIn(\"./"+`mtor control getvalue -rg dspyName`+".#.tif\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+
+	fprint $fileId "IMult1 = IMult(colorFile, diffuseFile, 1, 100, 0);\n";
+	fprint $fileId "IMult2 = IMult(ambientFile, colorAFile, 1, 100, 0);\n";
+	
+	fprint $fileId "Under1 = Under(IMult1, shadowColor, 1, 0, 0);\n";
+	fprint $fileId "Mask(Under1, shadowFile, \"R\", 100, 0, 1);\n";
+
+	fprint $fileId "IAdd0 = IAdd(primFile, Under1, 1, 40);\n";
+	fprint $fileId "IAdd1 = IAdd(IAdd0, IMult2, 1, 14.4);\n";
+
+	fprint $fileId "IAdd2 = IAdd(IAdd1, epidermFile, 1, 30);\n";
+	fprint $fileId "IAdd3 = IAdd(IAdd2, subdermFile, 1, 30);\n";
+	fprint $fileId "IAdd4 = IAdd(IAdd3, backscatteringFile, 1, 30);\n";
+	fprint $fileId "IAdd5 = IAdd(IAdd4, rimFile, 1, 30);\n";
+	fprint $fileId "IAdd6 = IAdd(IAdd5, reflectionFile, 1, 30);\n";
+	fprint $fileId "IAdd7 = IAdd(IAdd6, keylightFile, 1, 100);\n";
+	fprint $fileId "IAdd8 = IAdd(IAdd7, filllightFile, 1, 100);\n";
+	fprint $fileId "IAdd9 = IAdd(IAdd8, backlightFile, 1, 100);\n";
+
+ 	fclose $fileId;
+
+	print ("Shake script saved to: "+$fp+"\n");
+}
+
+mtorSetQuantizeWnd();

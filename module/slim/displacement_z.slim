@@ -1,0 +1,128 @@
+## displacement_z.slim
+## zhangmdev@gmail.com
+## 05/08/08
+## slim template for custom displacement
+## displacement_z.slim {
+## 	{ zhang,DisplacementPlusBump#0	displacement {Displacement Plus Bump}		/Displacement}
+## }
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+
+template displacement DisplacementPlusBump {
+    	label DisplacementPlusBump
+    	description "Displacement shader with normal and bump mapping."
+	ribattribute float displacementbound {
+	    label "Displacement Bound"
+	    description "This number represents the maximum displacement
+		    in shaderspace that your surface will undergo.  Be very
+		    careful with this parameter as it can dramatically influence
+		    rendering times.  In particular, make SURE to set this to
+		    0 (zero) if you aren't performing any displacement."	
+	    default 0
+	    range {0 100 .001}
+	    subtype vslider
+	}
+	parameter float DoDisplacement {
+	    label "Do Displacement"
+	    default 0
+	    subtype switch
+	}
+	parameter float UseShadingNormals {
+	    label "Use Shading Normals"
+            description "When a displacement map is used, this shader calls
+                calculatenormal().  This causes polygonal data to
+                appear faceted.  This parameter causes the original
+                shading normal offset to be added to the calculated
+                normal, generally re-smoothing polygonal data."
+	    default 0
+	    subtype switch
+	}
+	parameter float Kdisp {
+	    description "A multiplier for the displacement."
+	    subtype vslider
+	    range {0 100 .001}
+	    detail varying
+	    default 1.
+	}
+	parameter float Displacement {
+	    detail mustvary
+	    default 0
+	}
+	parameter float Kbump {
+	    description "A multiplier for the bump."
+	    subtype vslider
+	    range {0 1 .001}
+	    detail varying
+	    default .1
+	}
+	parameter float fbump {
+		label "Bump Map"
+	    detail mustvary
+	    default 0
+	}
+
+	parameter point __Pbe {
+	       access output
+	       detail varying
+	       provider variable
+	       default "0.0 0.0 0.0"
+	       display hidden
+	}
+	parameter normal __Nbe {
+	       access output
+	       detail varying
+	       provider variable
+	       default "0.0 0.0 0.0"
+	       display hidden
+	}
+	parameter normal __Nbe1 {
+	       access output
+	       detail varying
+	       provider variable
+	       default "0.0 0.0 0.0"
+	       display hidden
+	}
+	RSLMain {
+	    output "point PP = P;"
+	    generate
+	    output "__Pbe = P;"
+	    
+	    output "normal Nn = normalize(N);"
+	    output "__Nbe = Nn;"
+	    output "vector Nf = Nn/length(vtransform(\"shader\", Nn));"
+	    output "PP += Nf* [getvar Kdisp] * [getvar Displacement];"
+	   
+
+	    	output " {"
+	    	output "if([getvar UseShadingNormals] != 0) "
+		output "{ "
+	    	output "    normal deltaN = Nn - normalize(Ng);"
+	    	output "    N = normalize(calculatenormal(PP)) + deltaN;"
+	    	output "} "
+		output " else {"
+	    	output "    N = calculatenormal(PP);"
+	    	output "	}"
+	    	output " }"
+			output "__Nbe1 = N;"
+	    	output "if([connected fbump])"
+	    	output "{"
+	    	output "	point Q = PP + normalize(N) * [getvar Kbump] * [getvar fbump];"
+	    	output "if([getvar UseShadingNormals] != 0) { "
+	    	output "    normal deltaN = normalize(N) - normalize(Ng);"
+	    	output "    	N = normalize(calculatenormal(Q)) + deltaN;"
+	    	output "} else {"
+	    	output "	N = calculatenormal(Q);"
+	    	output "}"
+	    	output "}"
+
+	    
+	     output "if([getvar DoDisplacement] != 0)"
+	    output "    P = PP;"
+
+	}
+    } 
+    
+
+}
+}

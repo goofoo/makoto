@@ -1,0 +1,134 @@
+## z_lights_hdr.slim
+## zhangmdev@gmail.com
+## 11/09/08
+## slim template for HDR environment rendering
+## HDR Environment light
+## z_lights_hdr.slim {
+## 	{ zhang,HDREnvironment#1	light {HDR Environment}		light}
+## }
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+   
+   templateV light HDREnvironment 1 {
+   	label "HDR Environment"
+	lighttype environment
+	parameter string MapName {
+	    label "HDR File"
+	    description "The name of the Environment Map to use."
+	    provider variable
+	    subtype environment
+	    default ""
+	}
+	parameter string Space {
+	    label "Coordinate System"
+	    description "A coordinate system for your environment map.
+	    	When used with maps generated from the attached object,
+		use \"_world_lefthanded\" or \"world\". If you have an 
+		arbitrary lat-long environment use \"_environment\".  
+		If you wish to independently manipulate the orientation 
+		of your environment, enter the name of a coordinate 
+		system object here."
+	    default {[coordsys mtorCoordSysShape]}
+	    provider variable
+	}
+	parameter float exposure {
+		label {Exposure}
+		default 0
+	}
+	parameter float clipnear {
+		label {Clip Near}
+		default 0.1
+	}
+	parameter float clipfar {
+		label {Clip Far}
+		default 0.9
+	}
+	
+	parameter float __nondiffuse {
+	    access output
+	    display hidden
+	    detail varying
+	    provider primitive
+	    default 0
+	}
+	parameter float __nonspecular {
+	    display hidden
+	    access output
+	    detail varying
+	    provider primitive
+	    default 0
+	}
+	parameter float __hdrexposure {
+	    display hidden
+	    access output
+	    detail uniform
+	    provider primitive
+	    default 0
+	}
+	parameter string __category {
+	    display hidden
+	    access output
+	    detail uniform
+	    provider primitive
+	    default {environment}
+	}
+	parameter string __hdrname {
+	    display hidden
+	    access output
+	    detail uniform
+	    provider primitive
+	    default {}
+	}
+	parameter string __hdrspace {
+	    display hidden
+	    access output
+	    detail uniform
+	    provider primitive
+	    default {[coordsys mtorCoordSysShape]}
+	}
+	parameter float __clipnear {
+		display hidden
+	    access output
+	    detail uniform
+	    provider primitive
+	    default {0.1}
+	}
+	parameter float __clipfar {
+		display hidden
+	    access output
+	    detail uniform
+	    provider primitive
+	    default {0.9}
+	}
+	
+    	RSLMain {
+    		output {extern float __nondiffuse;}
+    		output {__nondiffuse = 1;}
+    		output {extern float __nonspecular;}
+    		output {__nonspecular = 1;} 
+			output {extern float __hdrexposure;}
+			output "__hdrexposure = [getvar exposure];"
+			output {extern string __category;}
+			output {__category = "environment";}
+			output {extern string __hdrname;}		
+    		output "__hdrname = [getvar MapName];"
+			output {extern string __hdrspace;}
+    		output "__hdrspace = [getvar Space];"
+			output "extern float __clipnear;"
+			output "__clipnear = [getvar clipnear];"
+			output "extern float __clipfar;"
+			output "__clipfar = [getvar clipfar];"
+			
+	    	output "solar () {"
+	    		indent
+	    		generate
+	    		output "Cl = color(1);"
+	    		exdent
+			output "}"
+
+	}
+    }
+
+}
+}

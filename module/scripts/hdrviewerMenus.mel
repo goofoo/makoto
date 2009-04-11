@@ -1,0 +1,145 @@
+global proc hdrviewerRemoveMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the hdrviewer menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if hdrviewer menu exists, delete it first.
+		else {
+			if(`menuItem -exists hdrviewerItems` ) deleteUI hdrviewerItems;
+			//if(`menuItem -exists setup2ndDispItems`) deleteUI setup2ndDispItems; 
+		}
+	}
+}
+
+global proc hdrviewerCreateMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the hdrviewer menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if hdrviewer menu exists, seach the menu item.
+		else {
+			if(`menuItem -exists hdrviewerItems` ) deleteUI hdrviewerItems;
+		}
+		
+		// append menu items
+		menuItem -p zTools -l "Viewer HDR Environment" -subMenu true hdrviewerItems;
+			menuItem -l "Attach to Selected" -c "zHDRCreate";
+			menuItem -l "Reload" -c "zHDRReload";
+			menuItem -l "Load New Map" -c "zHDRLoadNew";
+			menuItem -divider true;
+			menuItem -l "Not Set" zhdr_loadedmap;
+			setParent -menu ..;
+		//setParent -menu ..;
+		//menuItem -l "Setup Secondary Display" -c "source exrSet2ndDisplay.mel" setup2ndDispItems;
+	}
+}
+
+
+global proc zHDRSetup()
+{
+	string $shader = `createNode hwHDREnvViewer`;
+	setAttr -type "string" ($shader+".hdrName") `fileDialog -dm "*.hdr"`;
+	
+	string $sys = `createNode mtorCoordSys`;
+	$sys = `rename $sys "mtorCoordSysShape"`;
+	select -r $sys;
+	string $transform[] = `pickWalk -d up`;
+	
+	select -r $shader;
+	string $loc[] = `pickWalk -d up`;
+	
+	orientConstraint $loc[0] $transform[0];
+	rename $transform[0] "mtorCoordSys";
+	rename $loc[0] "viewHDR";
+}
+
+global proc zHDRCreate()
+{
+	string $sel[] = `ls -sl`;
+	string $mapname = "Not Set";
+	if(size($sel)<1) print("Select a MTOR Coordinate System to attach HDR Viewer.");
+	else
+	{
+		string $shader = `createNode hwHDREnvViewer`;
+		setAttr -type "string" ($shader+".hdrName") `fileDialog -dm "*.hdr"`;
+		$mapname = `getAttr ($shader+".hdrName")`;
+		string $tm[] = `listRelatives -ap $shader`;
+		
+		orientConstraint $sel[0] $tm[0];
+		connectAttr -f ($sel[0] + ".worldMatrix") ($shader+".worldSpace");
+		rename $tm[0] "viewHDR";
+	}
+	menuItem -e -l $mapname zhdr_loadedmap;
+}
+
+global proc zHDRReload()
+{
+	string $mapname = "Not Set";
+	string $node[] = `ls -type hwHDREnvViewer`;
+	string $an;
+	for($an in $node)
+	{
+		string $name = `getAttr ($an+".hdrName")`;
+		setAttr -type "string" ($an+".hdrName") "null";
+		setAttr -type "string" ($an+".hdrName") "null1";
+		setAttr -type "string" ($an+".hdrName") $name;
+		$mapname = `getAttr ($an+".hdrName")`;
+	}
+	menuItem -e -l $mapname zhdr_loadedmap;
+}
+
+global proc zHDRSelect()
+{
+	string $viz[] = `ls -type hwHDREnvViewer`;
+	if(size($viz)<1) print("No HDR Viewer exists.");
+	else select -r $viz[0];
+}
+
+global proc zHDRLoadNew()
+{
+	string $mapname = "Not Set";
+	string $sel[] = `ls -type hwHDREnvViewer`;
+	string $an;
+	for($an in $sel)
+	{
+		setAttr -type "string" ($an+".hdrName") `fileDialog -dm "*.hdr"`;
+		$mapname = `getAttr ($an+".hdrName")`;
+	}
+	menuItem -e -l $mapname zhdr_loadedmap;
+}

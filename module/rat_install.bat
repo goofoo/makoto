@@ -1,0 +1,9 @@
+copy .\ribgen\*.dll %RATTREE%\lib\plugins
+copy .\ribgen\*.slim %RATTREE%\lib\plugins
+copy .\procedural\*.dll %RATTREE%\lib\plugins
+copy .\slim\*.slim %RATTREE%\lib\slim
+copy .\slim\include\*.h %RATTREE%\lib\slim\include
+copy .\slim\include\*.dll %RATTREE%\lib\slim\include
+copy .\slim\include\*.dll %RMANTREE%\lib\shaders
+copy TOR.ini %RATTREE%\etc
+copy slim.ini %RATTREE%\etc
