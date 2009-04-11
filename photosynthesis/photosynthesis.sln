@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "photosynthesis server", "photosynthesis.vcproj", "{006ABA67-1C56-4364-8FF3-D4BDECD72D33}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		debug2k8 = debug2k8
+		Release = Release
+		ReleaseDebug = ReleaseDebug
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.Debug.ActiveCfg = Debug|Win32
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.Debug.Build.0 = Debug|Win32
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.debug2k8.ActiveCfg = debug2k8|Win32
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.debug2k8.Build.0 = debug2k8|Win32
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.Release.ActiveCfg = Release|Win32
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.Release.Build.0 = Release|Win32
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.ReleaseDebug.ActiveCfg = Release|Win32
+		{006ABA67-1C56-4364-8FF3-D4BDECD72D33}.ReleaseDebug.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
