@@ -324,7 +324,7 @@ int FXMLScene::load(const char* filename)
 
 void FXMLScene::dice(int n_cell)
 {
-	for(int i=0; i<m_mesh.size(); i++) 
+	for(unsigned i=0; i<m_mesh.size(); i++) 
 	{
 		if(m_mesh[i]->hasAttrib("noShadow") !=1)
 		{
@@ -359,7 +359,7 @@ void FXMLScene::diceWithRTandColor(int n_cell)
 	CoeRec* coe_samp = new CoeRec[estimate_ncell];
 	
 	int n_samp = 0;
-	for(int i=0; i<m_mesh.size(); i++) 
+	for(unsigned i=0; i<m_mesh.size(); i++) 
 	{
 		if(m_mesh[i]->hasAttrib("noShadow") !=1)
 		{
@@ -409,7 +409,7 @@ void FXMLScene::dice(int n_cell, FQSPLAT* cloud) const
 	
 	cout<<" dicing... ";
 	
-	for(int i=0; i<m_mesh.size(); i++) 
+	for(unsigned i=0; i<m_mesh.size(); i++) 
 	{
 		float epsilon = sqrt(m_mesh[i]->getArea()/m_mesh[i]->getNumTriangle()/2/n_cell);
 		m_mesh[i]->dice(epsilon, samp, n_samp);
@@ -430,7 +430,7 @@ void FXMLScene::diceLight(int n_cell, FQSPLAT* cloud) const
 	
 	cout<<" dicing... ";
 	
-	for(int i=0; i<m_light.size(); i++) 
+	for(unsigned i=0; i<m_light.size(); i++) 
 	{
 		float epsilon = sqrt(m_light[i]->getArea()/m_light[i]->getNumTriangle()/2/n_cell);
 		m_light[i]->dice(epsilon, samp, n_samp);
@@ -452,7 +452,7 @@ void FXMLScene::diceWithRT(int n_cell, FQSPLAT* cloud) const
 	
 	cout<<" dicing... ";
 	
-	for(int i=0; i<m_mesh.size(); i++) 
+	for(unsigned i=0; i<m_mesh.size(); i++) 
 	{
 		float epsilon = sqrt(m_mesh[i]->getArea()/m_mesh[i]->getNumTriangle()/2/n_cell);
 		m_mesh[i]->diceWithRT(epsilon, samp, coe_samp, n_samp);

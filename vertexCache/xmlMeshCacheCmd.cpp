@@ -192,7 +192,7 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 	MStatus status;
 	FXMLScene xml_f;
 	xml_f.begin(filename, frameNumber);
-	for(int i=0; i<m_mesh_list.length(); i++) 
+	for(unsigned i=0; i<m_mesh_list.length(); i++) 
 	{
 		m_mesh_list[i].extendToShape();
 		
@@ -326,7 +326,7 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 	{
 		MStringArray setNames;
 		meshFn.getUVSetNames(setNames);
-		for(int i=0; i< setNames.length(); i++)
+		for(unsigned i=0; i< setNames.length(); i++)
 		{
 			float* scoord = new float[n_facevertex];
 			float* tcoord = new float[n_facevertex];
@@ -458,7 +458,7 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 		
 		MVector ctang(0,0,0);
 		MVector ttang;
-		for(int j = 0; j<conn_face.length(); j++) 
+		for(unsigned j = 0; j<conn_face.length(); j++) 
 		{
 			meshFn.getFaceVertexTangent (conn_face[j], i,  ttang,  MSpace::kWorld, &uvset);
 			ttang.normalize();
@@ -486,7 +486,7 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 	}
 	
 	float aspace[4][4];
-	for(int i=0; i<m_nurbs_list.length(); i++) 
+	for(unsigned i=0; i<m_nurbs_list.length(); i++) 
 	{
 		zWorks::getTransformWorld(m_nurbs_list[i].partialPathName(), aspace);
 		xml_f.addTransform(m_nurbs_list[i].partialPathName().asChar(), aspace);

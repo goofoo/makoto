@@ -35,7 +35,7 @@ void FQSPLAT::create(pcdSample* rec, int n_rec)
 	m_num_leaf = 0;
 	createTree(rec, m_himap, m_col_buf, m_num_hipix, 0, m_point_count-1, 0, -1, 0);
 	
-	for(int i=0; i<m_num_hipix; i++) objectSpace.transform(m_himap[i].mean);
+	for(unsigned i=0; i<m_num_hipix; i++) objectSpace.transform(m_himap[i].mean);
 		
 	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf;
 }
@@ -61,7 +61,7 @@ void FQSPLAT::createNoColor(pcdSample* rec, int n_rec)
 	createTreeNoColor(rec, m_himap, m_num_hipix, 0, m_point_count-1, 0, -1, 0);
 	
 	float max_leaf = 0, min_leaf = 10e6;
-	for(int i=0; i<m_num_hipix; i++) 
+	for(unsigned i=0; i<m_num_hipix; i++) 
 	{
 		objectSpace.transform(m_himap[i].mean);
 		if(m_himap[i].is_leaf && m_himap[i].r>max_leaf) max_leaf = m_himap[i].r;
@@ -93,7 +93,7 @@ void FQSPLAT::create(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 	createTree(rec, coe_rec, m_himap, m_coe_buf, m_num_hipix, 0, m_point_count-1, 0, -1, 0);
 	
 	float max_leaf = 0, min_leaf = 10e6;
-	for(int i=0; i<m_num_hipix; i++) 
+	for(unsigned i=0; i<m_num_hipix; i++) 
 	{
 		objectSpace.transform(m_himap[i].mean);
 		if(m_himap[i].is_leaf && m_himap[i].r>max_leaf) max_leaf = m_himap[i].r;
@@ -126,7 +126,7 @@ void FQSPLAT::createRTandColor(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 	createTree(rec, coe_rec, m_himap, m_coe_buf, m_col_buf, m_num_hipix, 0, m_point_count-1, 0, -1, 0);
 	
 	float max_leaf = 0, min_leaf = 10e6;
-	for(int i=0; i<m_num_hipix; i++) 
+	for(unsigned i=0; i<m_num_hipix; i++) 
 	{
 		objectSpace.transform(m_himap[i].mean);
 		if(m_himap[i].is_leaf && m_himap[i].r>max_leaf) max_leaf = m_himap[i].r;

@@ -232,7 +232,7 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 		vertIter.getConnectedFaces(conn_face);
 		vertIter.getConnectedEdges(conn_edge);
 		MPoint Q;
-		for(int j=0; j<conn_face.length(); j++)
+		for(unsigned j=0; j<conn_face.length(); j++)
 		{
 			int pre_id;
 			faceIter.setIndex(conn_face[j],pre_id);
@@ -241,7 +241,7 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 		Q = Q/(double)conn_face.length();
 		
 		MPoint R;
-		for(int j=0; j<conn_edge.length(); j++)
+		for(unsigned j=0; j<conn_edge.length(); j++)
 		{
 			int pre_id;
 			edgeIter.setIndex(conn_edge[j], pre_id);

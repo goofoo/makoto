@@ -187,26 +187,15 @@ MStatus hdrEnvNode::compute( const MPlug& plug, MDataBlock& data )
 void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/, 
 							 M3dView::DisplayStyle style,
 							 M3dView::DisplayStatus status )
-{ 
-	// Get the size
-	//
-	//MObject thisNode = thisMObject();
-
-	//MMatrix mat_world = zWorks::getMatrixAttr(thisNode, amatrix);
-	//MString cam_name = zWorks::getStringAttr(thisNode, acameraname);
-	
-	//MDagPath cacmp;
-	//view.getCamera (cacmp);
+{
 	if(!m_program) return;
 	view.beginGL(); 
 
 	glPushAttrib( GL_POLYGON_BIT );
 	glEnable(GL_CULL_FACE);
-	//glFrontFace(GL_CW);
 
 	m_program->voronoiBegin(m_tex, pow(2.0f, m_exposure));
 		glBegin(GL_QUADS);
-//MGlobal::displayInfo(FnCg::showError());
 		int i1, j1;
 		for(int j=0; j<IMG_HMINUSONE; j++)
 		{
@@ -223,7 +212,6 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 				
 				gBase::texCoord4f(GL_TEXTURE0_ARB, m_pST[j*IMG_W+i1].x, m_pST[j*IMG_W+i1].y, 0, 0);
 				glVertex3f(m_pPos[j*IMG_W+i1].x*m_size, m_pPos[j*IMG_W+i1].y*m_size, m_pPos[j*IMG_W+i1].z*m_size);
-
 
 				gBase::texCoord4f(GL_TEXTURE0_ARB, m_pST[j1*IMG_W+i1].x, m_pST[j1*IMG_W+i1].y, 0, 0);
 				glVertex3f(m_pPos[j1*IMG_W+i1].x*m_size, m_pPos[j1*IMG_W+i1].y*m_size, m_pPos[j1*IMG_W+i1].z*m_size);
@@ -317,43 +305,6 @@ hdrEnvNode::setInternalValueInContext( const MPlug& plug,
 		handledAttribute = true;
 		m_hdrname = (MString) handle.asString();
 		loadHDR(m_hdrname);
-		if(m_hdrname != "")
-		{
-			/*MGlobal::displayInfo(m_hdrname);
-			HDRtexture* f_hdr = new HDRtexture(m_hdrname.asChar());
-			if(f_hdr->isValid()) 
-			{
-				if(m_tex>0) glDeleteTextures(1, &m_tex );
-#ifdef __APPLE__
-				m_tex = f_hdr->createTextureSingle(GL_TEXTURE_RECTANGLE_ARB, GL_RGBA_FLOAT16_APPLE);
-#else
-				m_tex = f_hdr->createTextureSingle(GL_TEXTURE_RECTANGLE_NV, GL_FLOAT_RGBA16_NV);
-#endif
-				m_width = f_hdr->getWidth();
-				m_height = f_hdr->getHeight();
-				
-				float grid_x = (float)m_width/(float)IMG_WMINUSONE;
-				float grid_y = (float)m_height/(float)IMG_HMINUSONE;
-				
-				for(int j=0; j<IMG_H; j++)
-				{
-					for(int i=0; i<IMG_W; i++)
-					{
-						m_pST[j*IMG_W+i].x = i*grid_x;
-						m_pST[j*IMG_W+i].y = j*grid_y;
-					}
-				}
-				MGlobal::displayInfo(MString("HDR texture loaded: ")+m_hdrname);
-				zDisplayFloat(123);
-			}
-			else
-			{
-				MGlobal::displayWarning(MString("Failed to load: ")+m_hdrname);
-			}
-			delete f_hdr;
-			f_hdr = NULL;*/
-			
-		}
 	}
 
 	else if (plug == aExposure)
