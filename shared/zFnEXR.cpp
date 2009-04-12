@@ -10,7 +10,6 @@ ZFnEXR::~ZFnEXR(void)
 
 void ZFnEXR::save(float* data, const char* filename, int width, int height)
 {
-#ifndef __APPLE__
 	Array2D<Rgba> px (height, width);
 
 	 for (int y = 0; y < height; ++y)
@@ -29,5 +28,4 @@ void ZFnEXR::save(float* data, const char* filename, int width, int height)
 	RgbaOutputFile file (filename, width, height, WRITE_RGBA);
     file.setFrameBuffer (&px[0][0], 1, width);
     file.writePixels (height);
-#endif
 }

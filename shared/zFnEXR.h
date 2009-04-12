@@ -1,4 +1,5 @@
-#ifndef __APPLE__
+#ifndef ZFN_EXR_H
+#define ZFN_EXR_H
 
 #include <ImfRgbaFile.h>
 #include <ImfStringAttribute.h>
@@ -8,13 +9,6 @@
 using namespace Imf;
 using namespace Imath;
 
-#include <iostream>
-
-using namespace std;
-
-
-#endif
-
 class ZFnEXR
 {
 public:
@@ -22,3 +16,4 @@ public:
 	~ZFnEXR(void);
 	static void save(float* data, const char* filename, int width, int height);
 };
+#endif

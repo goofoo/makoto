@@ -1,13 +1,3 @@
-/*#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <OpenGL/glext.h>
-#else
-#include <windows.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include "../shared/glext.h"
-#endif*/
 #include "tiffio.h"
 #include "math.h"
 
@@ -36,8 +26,6 @@ public:
 	uint32 getHeight() { return height; }
 	uint16 getSamples() { return samples_per_pixel; }
 	uint32 getSize() { return size; }
-	
-	//GLuint createTextureSingle(GLenum target, GLenum internalformat, GLenum format, int width, int height, float* data);
 	
 private:
 	uint32 width, height;

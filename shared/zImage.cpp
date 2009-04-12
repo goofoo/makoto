@@ -253,23 +253,4 @@ void zImage::setStrip(const uint8* in, uint8* out, int start_x, int start_y, int
 		}
 	}
 }
-/*
-GLuint zImage::createTextureSingle(GLenum target, GLenum internalformat, GLenum format, int width, int height, float* data)
-{
-	GLuint texid;
-  glGenTextures(1, &texid);
-
-  glBindTexture(target, texid);
-
-  glTexImage2D(target, 0, internalformat, width, height, 0, format, GL_FLOAT, data);
-
-    glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  //glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  //glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
- 
-  return texid;
-
-}
-*/
 //:~

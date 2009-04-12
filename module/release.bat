@@ -10,6 +10,14 @@ copy .\slim\ylset.slim D:\wamp\www\prt_release\slim
 copy .\slim\z_colors_prt.slim D:\wamp\www\prt_release\slim
 copy .\slim\z_lights_hdr.slim D:\wamp\www\prt_release\slim
 copy .\slim\include\zprt.dll D:\wamp\www\prt_release\slim\include
+copy .\plug-ins\meshCache.mll D:\wamp\www\prt_release\plug-ins
+copy .\plug-ins\meshCache2008.mll D:\wamp\www\prt_release\plug-ins
+copy .\plug-ins\HDREnvironmentViewer70.mll D:\wamp\www\prt_release\plug-ins
+copy .\plug-ins\HDREnvironmentViewer2008.mll D:\wamp\www\prt_release\plug-ins
 copy TOR.ini D:\wamp\www\prt_release
 copy slim.ini D:\wamp\www\prt_release
 copy rat_install.bat D:\wamp\www\prt_release
+copy .\scripts\hdrviewerMenus.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\vertexCacheMenus.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\slimcontrolMenus.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\mtorSetQuantize.mel D:\wamp\www\prt_release\scripts

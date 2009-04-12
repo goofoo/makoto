@@ -80,29 +80,30 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="D:\local\libxml\include;D:\local\iconv\include"
+				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug/version1.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				WarningLevel="1"
+				WarningLevel="2"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glut32.lib glu32.lib libxml2.lib"
+				AdditionalDependencies="zlib.lib IlmImf.lib"
 				OutputFile="../module/application/photosynthesis.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\local\glut;D:\local\libxml\lib"
-				IgnoreDefaultLibraryNames="nafxcwd.lib"
+				AdditionalLibraryDirectories="D:\local\openexr\lib;D:\local\glut;D:\local\libxml\lib"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames="nafxcwd.lib lic.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/version1.pdb"
 				SubSystem="1"
@@ -204,6 +205,9 @@
 			Filter="">
 			<File
 				RelativePath=".\main.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\zFnEXR.cpp">
 			</File>
 		</Filter>
 	</Files>
