@@ -377,11 +377,11 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 	if(string(meshname)=="") return 0;
 	free();
 	m_xml_name = string(filename);
-	if(doc.load(filename) != 1) return 0;
+	if(doc.load(filename) != 1) { cout<<"cannot open scene "<<filename; return 0;}
 	
 	doc.setChildren();
 	
-	if(findMesh(meshname) !=1) return 0;
+	if(findMesh(meshname) !=1) { cout<<"cannot find mesh "<<meshname; return 0;}
 	
 	ifstream ffin;
 	int pos, size;
