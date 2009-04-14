@@ -21,3 +21,4 @@ copy .\scripts\hdrviewerMenus.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\vertexCacheMenus.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\slimcontrolMenus.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\mtorSetQuantize.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\exrSet2ndDisplay.mel D:\wamp\www\prt_release\scripts
