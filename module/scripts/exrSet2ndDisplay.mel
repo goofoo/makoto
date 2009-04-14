@@ -1,0 +1,170 @@
+/*
+ *  exrSet2ndOutput.mel
+ *  
+ *
+ *  Created by zhang on 08-11-18.
+ *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *
+ */
+global proc exrSetAChennel(int $i, string $name) 
+{
+	string $cmd = "mtor control setvalue -rg dspyName_" + $i + " -value \"output\"";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyType_" + $i + " -value \"openexr\"";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyMode_" + $i + " -value \"" + $name + "\"";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyQuantize_" + $i + " -value 1";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyZero_" + $i + " -value 0";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyOne_" + $i + " -value 0";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyMin_" + $i + " -value 0";
+	eval($cmd);
+	$cmd = "mtor control setvalue -rg dspyMax_" + $i + " -value 0";
+	eval($cmd);
+}
+
+global proc exrToggleAllChannels()
+{
+
+	string $exrckbarray[25] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", 
+						"ckibl", "ckindirect", 
+						"ckdif", "ckrim", 
+						"ckepi", "cksub", "ckbks", 
+						"ckspe", "ckkl", "ckfl", "ckbl", 
+						"ckshd", "ckref", "ckcau", "ckocc",  
+						"ckdirt", "ckid", "ckdep", "cknormal" };
+	
+	int $b = `checkBox -q -v exr2nddspckbto`;
+	
+
+	int $i;
+	for($i=0; $i<25; $i++) checkBox -e -v $b $exrckbarray[$i];
+
+}
+
+global proc exrSet2ndDisp()
+{
+	string $exrckbarray[25] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", 
+						"ckibl", "ckindirect", 
+						"ckdif", "ckrim", 
+						"ckepi", "cksub", "ckbks", 
+						"ckspe", "ckkl", "ckfl", "ckbl", 
+						"ckshd", "ckref", "ckcau", "ckocc",  
+						"ckdirt", "ckid", "ckdep", "cknormal" };
+	string $exrvalarray[25] = { "_color", "_colorA", "_colorB", "_colorC", "_colorD", "_colorE",
+						"_ibl", "_indirect", 
+						"_diffuse", "_rim", 
+						"_epiderm", "_subderm", "_backscattering", 
+						"_specular", "_keylight", "_filllight", "_backlight", 
+						"_shadow", "_reflection", "_caustic", "_occ",
+						"_dirt", "_id", "_depth", "_normal" };
+	int $channel = 0;
+	
+	int $i;
+	string $val;
+	for($i=0; $i<25; $i++) 
+	{
+		if(`checkBox -q -v $exrckbarray[$i]`)
+		{
+			$channel++;
+			
+			if($channel==1) $val = $exrvalarray[$i];
+			else $val = $val + "," +$exrvalarray[$i];
+		}
+	}
+
+	exrSetAChennel(1, $val);
+	
+	print("Mtor set OpenEXR secondary displays.\n");
+}
+
+global proc exrCreateShakeScript()
+{
+	mtor control getvalue -sync;
+	
+	string $jobname = `mtor control getvalue -rg dspyName`;
+	
+	string $fp = `workspace -q -rd` + "rmanpix/"+$jobname+".shk";
+	$fileId=`fopen $fp "w"`;
+	
+	string $exrckbarray[25] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", 
+						"ckibl", "ckindirect", 
+						"ckdif", "ckrim", 
+						"ckepi", "cksub", "ckbks", 
+						"ckspe", "ckkl", "ckfl", "ckbl", 
+						"ckshd", "ckref", "ckcau", "ckocc",  
+						"ckdirt", "ckid", "ckdep", "cknormal" };
+	string $exrvalarray[25] = { "_color", "_colorA", "_colorB", "_colorC", "_colorD", "_colorE",
+						"_ibl", "_indirect", 
+						"_diffuse", "_rim", 
+						"_epiderm", "_subderm", "_backscattering", 
+						"_specular", "_keylight", "_filllight", "_backlight", 
+						"_shadow", "_reflection", "_caustic", "_occ",
+						"_dirt", "_id", "_depth", "_normal" };
+	int $i;
+	for($i=0; $i<25; $i++) 
+	{
+		if(`checkBox -q -v $exrckbarray[$i]`) fprint $fileId ($exrvalarray[$i]+" = SFileIn(\"./"+$jobname+".output.#.exr\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\", \"" + $exrvalarray[$i] + ".r\", \""  + $exrvalarray[$i] + ".g\", \""  + $exrvalarray[$i] + ".b\", \"Not Active\", \"Not Active\");\n");
+	}
+	
+	fprint $fileId ("primary = SFileIn(\"./"+$jobname+".#.exr\", \"Auto\", 0, 0, \"v1.1\", \"0\", \"\");\n");
+
+ 	fclose $fileId;
+
+	print ("Shake script saved to: "+$fp+"\n");
+}
+
+global proc exrOpen2ndDispWin()
+{
+	
+//If such a window already exists, destory it.
+if ( (`window -exists exr2ndDispWin`) == true ) deleteUI exr2ndDispWin;
+
+//Create the window.
+window -title "MTOR Secondary Display Options" -wh 400 720 exr2ndDispWin;
+columnLayout -adjustableColumn true; //Start of the column.
+text -l "Select secondary display channels to create.\n";
+checkBox -label "all" -cc "exrToggleAllChannels" exr2nddspckbto;
+separator -style "single";
+
+	string $exrckbarray[25] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", 
+						"ckibl", "ckindirect", 
+						"ckdif", "ckrim", 
+						"ckepi", "cksub", "ckbks", 
+						"ckspe", "ckkl", "ckfl", "ckbl", 
+						"ckshd", "ckref", "ckcau", "ckocc",  
+						"ckdirt", "ckid", "ckdep", "cknormal" };
+	string $exrckblabelarray[25] = { "color", "color A", "color B", "color C", "color D", "color E", 
+						"IBL", "indirect",
+						"diffuse", "rim", 
+						"epiderm", "subderm", "back scattering",
+						"specular", "key light", "fill light", "back light", 
+						"shadow", "reflection", "caustics", "occlusion",
+						"dirt", "ID", "depth", "normal" };
+rowColumnLayout -numberOfColumns 2 
+		-columnAttach 1 left 8
+ 		-columnWidth 1 180
+		-columnWidth 2 180;		
+	int $i;
+	for($i=0; $i<25; $i++) 
+	{
+		checkBox -l $exrckblabelarray[$i] -v 0 $exrckbarray[$i];
+		text -l "";
+	}
+setParent ..;	
+setParent ..;
+separator -style "single";
+rowLayout -numberOfColumns 2 -columnWidth2 190 190 -columnAttach 1 "left" 10;
+button -l "Set Selected Channels" -c "exrSet2ndDisp";
+button -l "Create Basic Shake Script" -c "exrCreateShakeScript";
+setParent ..;
+
+//Show it.
+showWindow exr2ndDispWin; 
+}
+
+exrOpen2ndDispWin();
+
