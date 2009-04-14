@@ -25,6 +25,7 @@ global proc slimcontrolRemoveMenus()
 		else {
 			if(`menuItem -exists slimcontrolItems` ) deleteUI slimcontrolItems;
 			if(`menuItem -exists slimcontrolMTOR2ndItems` ) deleteUI slimcontrolMTOR2ndItems;
+			if(`menuItem -exists slimcontrolMTOREXR2ndItems` ) deleteUI slimcontrolMTOREXR2ndItems;
 		}
 	}
 }
@@ -56,10 +57,12 @@ global proc slimcontrolCreateMenus()
 		else {
 			if(`menuItem -exists slimcontrolItems` ) deleteUI slimcontrolItems;
 			if(`menuItem -exists slimcontrolMTOR2ndItems` ) deleteUI slimcontrolMTOR2ndItems;
+			if(`menuItem -exists slimcontrolMTOREXR2ndItems` ) deleteUI slimcontrolMTOREXR2ndItems;
 		}
 		
 		// append menu items
-		menuItem -p zTools -l "MTOR Set 2nd Ouput" -c "source mtorSetQuantize.mel" slimcontrolMTOR2ndItems;
+		menuItem -p zTools -l "MTOR Set EXR 2nd Ouput" -c "source exrSet2ndDisplay.mel" slimcontrolMTOREXR2ndItems;
+		menuItem -p zTools -l "MTOR Set Tiff 2nd Ouput" -c "source mtorSetQuantize.mel" slimcontrolMTOR2ndItems;
 		menuItem -p zTools -l "Slim Controls" -subMenu true slimcontrolItems;
 			menuItem -l "Set All HDR File" -c "slimcontrolSetHDR(`fileDialog -dm \"*.hdr\"`)";
 			menuItem -l "Set All Exposure" -c "openSetExposureWin";
