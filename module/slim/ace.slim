@@ -4502,22 +4502,14 @@ template shadingmodel enchodus {
 	
 	parameter float clipnear {
  		label "Near Clipping"
-	    	default {1}
+	    	default {0.1}
 	    	detail uniform
 	}
 	
 	parameter float clipfar {
  		label "Far Clipping"
-	    	default {1000}
+	    	default {0.9}
 	    	detail uniform
-	}
-	
-	parameter float iusrdepth {
-		label "Use Ace Depth"
-		description {Set near and far clip beetween 0 and 1 if enable this.}
-		subtype switch
-		detail uniform
-		default 0
 	}
 	
 	parameter color _depth {
@@ -4599,7 +4591,7 @@ template shadingmodel enchodus {
 	   		string irisSpecMap;
 	   		string irisBumpMap;
 			color color_a, color_b, color_c, color_d, color_e;
-		       float nearclip, farclip, depisace;
+		       float nearclip, farclip;
 		       output color CI;
 		       output color OI;
 		        )
@@ -4702,15 +4694,11 @@ template shadingmodel enchodus {
 		
 		CI = cp*Ki+cp*iris_scat*irisflt*Kt + cp*speciris*specular(Niris,V,0.05) + Krr*CreflTint * crefl + specularColor*LocIllumGlossy(Nf, V, Ks/10, sharpness/10) + Krr*CreflTint * crefl*cp;
 	      OI = color(1);
-	      extern color _depth;
 	      
-		  if(depisace == 1)
-		  {
-			float dd = pow(smoothstep( nearclip, farclip, depth(P)), 0.67);
-			_depth = color(dd,1-dd,0);
-			}
-		  else
-			_depth = smoothstep(nearclip,farclip,zcomp(P));
+		extern color _depth;
+			
+		float dep = pow(smoothstep( nearclip, farclip, depth(P) ), 0.67);
+		_depth = color(dep,1-dep,0);
 		
 		extern color _normal;
 		_normal = color((xcomp(Nn)+1.)/2., (ycomp(Nn)+1.)/2., (zcomp(Nn)+1.)/2.);
