@@ -488,8 +488,11 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 	float aspace[4][4];
 	for(unsigned i=0; i<m_nurbs_list.length(); i++) 
 	{
-		zWorks::getTransformWorld(m_nurbs_list[i].partialPathName(), aspace);
-		xml_f.addTransform(m_nurbs_list[i].partialPathName().asChar(), aspace);
+		zWorks::getTransformWorld(m_nurbs_list[i].fullPathName(), aspace);
+		
+		MString surfacename = m_nurbs_list[i].fullPathName();
+		zWorks::validateFilePath(surfacename);
+		xml_f.addTransform(surfacename.asChar(), aspace);
 	}
 	xml_f.addCamera("backscat_camera", m_space);
 	xml_f.addCamera("eye_camera", m_eye);
