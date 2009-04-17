@@ -48,7 +48,13 @@ public:
 	void addN(int num, const XYZ* data);
 	void addTangent(int num, const XYZ* data);
 	void addBBox(float x0, float y0, float z0, float x1, float y1, float z1);
-	void addTransform(const char* name, float space[4][4]);
+	void transformBegin(const char* name, float space[4][4]);
+	void transformEnd();
+	void addScale(float x, float y, float z);
+	void nurbssurfaceBegin(const char* name, int degreeU, int degreeV, int formU, int formV);
+	void nurbssurfaceEnd();
+	void addStaticVec(const char* name, int num, const XYZ* data);
+	void addStaticFloat(const char* name, int num, const float* data);
 	void addCamera(const char* name, float space[4][4]);
 /*reading*/
 	int load(const char* filename);

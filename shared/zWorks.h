@@ -114,5 +114,5 @@ public:
 	static void displayVectorParam(const char* str, double x, double y, double z);
 	
 	static void getTransformWorld(const MString& name, float space[4][4]);
-	static void getTransformWorldNoScale(const MString& name, float space[4][4]);
+	static MVector getTransformWorldNoScale(const MString& name, float space[4][4]);
 };

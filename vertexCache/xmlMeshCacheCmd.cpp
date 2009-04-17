@@ -192,310 +192,380 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 	MStatus status;
 	FXMLScene xml_f;
 	xml_f.begin(filename, frameNumber);
-	for(unsigned i=0; i<m_mesh_list.length(); i++) 
+	for(unsigned it=0; it<m_mesh_list.length(); it++) 
 	{
-		m_mesh_list[i].extendToShape();
+		m_mesh_list[it].extendToShape();
 		
-		MString surface = m_mesh_list[i].fullPathName();
+		MString surface = m_mesh_list[it].fullPathName();
 	
 		zWorks::validateFilePath(surface);
 
 		xml_f.meshBegin(surface.asChar());
 	
-	MFnMesh meshFn(m_mesh_list[i], &status );
-	MItMeshPolygon faceIter(m_mesh_list[i], MObject::kNullObj, &status );
-	MItMeshVertex vertIter(m_mesh_list[i], MObject::kNullObj, &status);
-	MItMeshEdge edgeIter(m_mesh_list[i], MObject::kNullObj, &status);
-	
-	//zWorks::displayIntParam("N Face", meshFn.numPolygons());
-	//zWorks::displayIntParam("N Vertex", meshFn.numVertices());
-	//zWorks::displayIntParam("N Facevertex", meshFn.numFaceVertices());
+		MFnMesh meshFn(m_mesh_list[it], &status );
+		MItMeshPolygon faceIter(m_mesh_list[it], MObject::kNullObj, &status );
+		MItMeshVertex vertIter(m_mesh_list[it], MObject::kNullObj, &status);
+		MItMeshEdge edgeIter(m_mesh_list[it], MObject::kNullObj, &status);
+		
+		//zWorks::displayIntParam("N Face", meshFn.numPolygons());
+		//zWorks::displayIntParam("N Vertex", meshFn.numVertices());
+		//zWorks::displayIntParam("N Facevertex", meshFn.numFaceVertices());
 
-	int n_tri = 0;
-	float f_area = 0;
-	double area;
-	
-	faceIter.reset();
-	for( ; !faceIter.isDone(); faceIter.next() ) 
-	{
-		MIntArray vexlist;
-		faceIter.getVertices ( vexlist );
-		n_tri += vexlist.length() - 2;
+		int n_tri = 0;
+		float f_area = 0;
+		double area;
 		
-		faceIter.getArea( area,  MSpace::kWorld );
-		f_area += (float)area;
-	}
-	
-	xml_f.triangleInfo(n_tri, f_area);
-	
-	MFnDependencyNode fnode(m_mesh_list[i].node());
-	MString smsg("prtMsg");
-	MPlug pmsg = fnode.findPlug( smsg, 1,  &status );
-	
-	double light_intensity = 1.0;
-	
-	if(status)
-	{
-		MObject oattrib;
-		zWorks::getConnectedNode(oattrib, pmsg);
-		fnode.setObject(oattrib);
-
-		bool iattr = 0;
-		zWorks::getBoolAttributeByName(fnode, "skipIndirect", iattr);
-		if(iattr) xml_f.addAttribute("skipIndirect", 1);
-		
-		iattr = 0;
-		zWorks::getBoolAttributeByName(fnode, "skipScatter", iattr);
-		if(iattr) xml_f.addAttribute("skipScatter", 1);
-		
-		iattr = 0;
-		zWorks::getBoolAttributeByName(fnode, "skipBackscatter", iattr);
-		if(iattr) xml_f.addAttribute("skipBackscatter", 1);
-		
-		iattr = 0;
-		zWorks::getBoolAttributeByName(fnode, "asLightsource", iattr);
-		if(iattr) xml_f.addAttribute("asLightsource", 1);
-		
-		iattr = 0;
-		zWorks::getBoolAttributeByName(fnode, "asGhost", iattr);
-		if(iattr) xml_f.addAttribute("invisible", 1);
-		
-		iattr = 0;
-		zWorks::getBoolAttributeByName(fnode, "castNoShadow", iattr);
-		if(iattr) xml_f.addAttribute("noShadow", 1);
-		
-		double td;
-		if(zWorks::getDoubleAttributeByName(fnode, "lightIntensity", td)) light_intensity = td;
-		
-		fnode.setObject(m_mesh_list[i].node());
-	}
-
-	xml_f.staticBegin();
-	
-	int n_poly = meshFn.numPolygons();
-	int n_vert = meshFn.numVertices();
-	int* polycount = new int[n_poly];
-	
-	faceIter.reset();
-	for( ; !faceIter.isDone(); faceIter.next() ) polycount[ faceIter.index() ] = faceIter.polygonVertexCount();
-	
-	xml_f.addFaceCount(n_poly, polycount);
-	delete[] polycount;
-	
-	int n_facevertex = meshFn.numFaceVertices();
-	int* polyconnect = new int[n_facevertex];
-	
-	int acc = 0;
-	faceIter.reset();
-	for( ; !faceIter.isDone(); faceIter.next() ) 
-	{
-		MIntArray  vexlist;
-		faceIter.getVertices ( vexlist );
-		for( int i=vexlist.length()-1; i >=0; i-- ) 
+		faceIter.reset();
+		for( ; !faceIter.isDone(); faceIter.next() ) 
 		{
-			polyconnect[acc] = vexlist[i];
-			acc++;
+			MIntArray vexlist;
+			faceIter.getVertices ( vexlist );
+			n_tri += vexlist.length() - 2;
+			
+			faceIter.getArea( area,  MSpace::kWorld );
+			f_area += (float)area;
 		}
-	}
-	
-	xml_f.addFaceConnection(n_facevertex, polyconnect);
-	delete[] polyconnect;
-	
-	int* triconnect = new int[3*n_tri];
-	acc = 0;
-	faceIter.reset();
-	for( ; !faceIter.isDone(); faceIter.next() ) 
-	{
-		MIntArray  vexlist;
-		faceIter.getVertices ( vexlist );
-		for( int i=vexlist.length()-2; i >0; i-- ) 
+		
+		xml_f.triangleInfo(n_tri, f_area);
+		
+		MFnDependencyNode fnode(m_mesh_list[it].node());
+		MString smsg("prtMsg");
+		MPlug pmsg = fnode.findPlug( smsg, 1,  &status );
+		
+		double light_intensity = 1.0;
+		
+		if(status)
 		{
-			triconnect[acc] = vexlist[vexlist.length()-1];
-			acc++;
-			triconnect[acc] = vexlist[i];
-			acc++;
-			triconnect[acc] = vexlist[i-1];
-			acc++;
-		}
-	}
-	
-	xml_f.addTriangleConnection(3*n_tri, triconnect);
-	delete[] triconnect;
+			MObject oattrib;
+			zWorks::getConnectedNode(oattrib, pmsg);
+			fnode.setObject(oattrib);
 
-	if(meshFn.numUVSets() > 0)
-	{
-		MStringArray setNames;
-		meshFn.getUVSetNames(setNames);
-		for(unsigned i=0; i< setNames.length(); i++)
+			bool iattr = 0;
+			zWorks::getBoolAttributeByName(fnode, "skipIndirect", iattr);
+			if(iattr) xml_f.addAttribute("skipIndirect", 1);
+			
+			iattr = 0;
+			zWorks::getBoolAttributeByName(fnode, "skipScatter", iattr);
+			if(iattr) xml_f.addAttribute("skipScatter", 1);
+			
+			iattr = 0;
+			zWorks::getBoolAttributeByName(fnode, "skipBackscatter", iattr);
+			if(iattr) xml_f.addAttribute("skipBackscatter", 1);
+			
+			iattr = 0;
+			zWorks::getBoolAttributeByName(fnode, "asLightsource", iattr);
+			if(iattr) xml_f.addAttribute("asLightsource", 1);
+			
+			iattr = 0;
+			zWorks::getBoolAttributeByName(fnode, "asGhost", iattr);
+			if(iattr) xml_f.addAttribute("invisible", 1);
+			
+			iattr = 0;
+			zWorks::getBoolAttributeByName(fnode, "castNoShadow", iattr);
+			if(iattr) xml_f.addAttribute("noShadow", 1);
+			
+			double td;
+			if(zWorks::getDoubleAttributeByName(fnode, "lightIntensity", td)) light_intensity = td;
+			
+			fnode.setObject(m_mesh_list[it].node());
+		}
+
+		xml_f.staticBegin();
+		
+		int n_poly = meshFn.numPolygons();
+		int n_vert = meshFn.numVertices();
+		int* polycount = new int[n_poly];
+		
+		faceIter.reset();
+		for( ; !faceIter.isDone(); faceIter.next() ) polycount[ faceIter.index() ] = faceIter.polygonVertexCount();
+		
+		xml_f.addFaceCount(n_poly, polycount);
+		delete[] polycount;
+		
+		int n_facevertex = meshFn.numFaceVertices();
+		int* polyconnect = new int[n_facevertex];
+		
+		int acc = 0;
+		faceIter.reset();
+		for( ; !faceIter.isDone(); faceIter.next() ) 
 		{
-			float* scoord = new float[n_facevertex];
-			float* tcoord = new float[n_facevertex];
-			
-			acc = 0;
-			faceIter.reset();
-			for( ; !faceIter.isDone(); faceIter.next() ) 
+			MIntArray  vexlist;
+			faceIter.getVertices ( vexlist );
+			for( int i=vexlist.length()-1; i >=0; i-- ) 
 			{
-				MFloatArray uarray, varray;
-				faceIter.getUVs ( uarray, varray, &setNames[i] );
-				for( int j=uarray.length()-1; j >=0 ; j-- ) 
-				{
-					scoord[acc] = uarray[j];
-					tcoord[acc] = 1.0 - varray[j];
-					acc++;
-				}
+				polyconnect[acc] = vexlist[i];
+				acc++;
 			}
-			
-			
-			if(setNames[i] == "map1")
+		}
+		
+		xml_f.addFaceConnection(n_facevertex, polyconnect);
+		delete[] polyconnect;
+		
+		int* triconnect = new int[3*n_tri];
+		acc = 0;
+		faceIter.reset();
+		for( ; !faceIter.isDone(); faceIter.next() ) 
+		{
+			MIntArray  vexlist;
+			faceIter.getVertices ( vexlist );
+			for( int i=vexlist.length()-2; i >0; i-- ) 
 			{
-				xml_f.uvSetBegin(setNames[i].asChar());
-				xml_f.addS("facevarying float s", meshFn.numFaceVertices(), scoord);
-				xml_f.addT("facevarying float t", meshFn.numFaceVertices(), tcoord);
-				xml_f.uvSetEnd();
+				triconnect[acc] = vexlist[vexlist.length()-1];
+				acc++;
+				triconnect[acc] = vexlist[i];
+				acc++;
+				triconnect[acc] = vexlist[i-1];
+				acc++;
 			}
-			else
+		}
+		
+		xml_f.addTriangleConnection(3*n_tri, triconnect);
+		delete[] triconnect;
+
+		if(meshFn.numUVSets() > 0)
+		{
+			MStringArray setNames;
+			meshFn.getUVSetNames(setNames);
+			for(unsigned i=0; i< setNames.length(); i++)
 			{
-				xml_f.uvSetBegin(setNames[i].asChar());
-				string paramname("facevarying float u_");
-				paramname.append(setNames[i].asChar());
-				xml_f.addS(paramname.c_str(), meshFn.numFaceVertices(), scoord);
+				float* scoord = new float[n_facevertex];
+				float* tcoord = new float[n_facevertex];
 				
-				paramname = "facevarying float v_";
-				paramname.append(setNames[i].asChar());
-				xml_f.addT(paramname.c_str(), meshFn.numFaceVertices(), tcoord);
-				xml_f.uvSetEnd();
+				acc = 0;
+				faceIter.reset();
+				for( ; !faceIter.isDone(); faceIter.next() ) 
+				{
+					MFloatArray uarray, varray;
+					faceIter.getUVs ( uarray, varray, &setNames[i] );
+					for( int j=uarray.length()-1; j >=0 ; j-- ) 
+					{
+						scoord[acc] = uarray[j];
+						tcoord[acc] = 1.0 - varray[j];
+						acc++;
+					}
+				}
+				
+				
+				if(setNames[i] == "map1")
+				{
+					xml_f.uvSetBegin(setNames[i].asChar());
+					xml_f.addS("facevarying float s", meshFn.numFaceVertices(), scoord);
+					xml_f.addT("facevarying float t", meshFn.numFaceVertices(), tcoord);
+					xml_f.uvSetEnd();
+				}
+				else
+				{
+					xml_f.uvSetBegin(setNames[i].asChar());
+					string paramname("facevarying float u_");
+					paramname.append(setNames[i].asChar());
+					xml_f.addS(paramname.c_str(), meshFn.numFaceVertices(), scoord);
+					
+					paramname = "facevarying float v_";
+					paramname.append(setNames[i].asChar());
+					xml_f.addT(paramname.c_str(), meshFn.numFaceVertices(), tcoord);
+					xml_f.uvSetEnd();
+				}
+				
+				delete[] scoord;
+				delete[] tcoord;
 			}
-			
-			delete[] scoord;
-			delete[] tcoord;
 		}
-	}
-	
-	MStringArray colorSetNames;
-	meshFn.getColorSetNames (colorSetNames);
-	
-	for(unsigned int i=0; i<colorSetNames.length(); i++)
-	{
-		MStatus hasColor;
 		
-		XYZ *colors = new XYZ[n_vert];
+		MStringArray colorSetNames;
+		meshFn.getColorSetNames (colorSetNames);
+		
+		for(unsigned int i=0; i<colorSetNames.length(); i++)
+		{
+			MStatus hasColor;
+			
+			XYZ *colors = new XYZ[n_vert];
+			vertIter.reset();
+			MString aset = colorSetNames[i];
+			MColor col;
+			for( unsigned int i=0; !vertIter.isDone(); vertIter.next(), i++ )
+			{
+					MIntArray conn_face;
+					vertIter.getConnectedFaces(conn_face);
+					vertIter.getColor(col, conn_face[0], &aset);
+					colors[i].x = col.r*light_intensity;
+					colors[i].y = col.g*light_intensity;
+					colors[i].z = col.b*light_intensity;
+			}
+				
+			xml_f.addVertexColor(aset.asChar(), n_vert, colors);
+			delete[] colors;
+		}
+
+		xml_f.staticEnd();
+		
+
+		
+		xml_f.dynamicBegin();
+		
+		MPointArray p_vert;
+		
+		meshFn.getPoints ( p_vert, MSpace::kWorld );
+		
+		MPoint corner_l(10e6, 10e6, 10e6);
+		MPoint corner_h(-10e6, -10e6, -10e6);
+		
+		for( unsigned int i=0; i<p_vert.length(); i++) 
+		{
+			if( p_vert[i].x < corner_l.x ) corner_l.x = p_vert[i].x;
+			if( p_vert[i].y < corner_l.y ) corner_l.y = p_vert[i].y;
+			if( p_vert[i].z < corner_l.z ) corner_l.z = p_vert[i].z;
+			if( p_vert[i].x > corner_h.x ) corner_h.x = p_vert[i].x;
+			if( p_vert[i].y > corner_h.y ) corner_h.y = p_vert[i].y;
+			if( p_vert[i].z > corner_h.z ) corner_h.z = p_vert[i].z;
+		}
+		
+		
+		
+		XYZ *cv = new XYZ[n_vert];
+		
+		for( unsigned int i=0; i<p_vert.length(); i++) 
+		{
+			cv[i].x = p_vert[i].x;
+			cv[i].y = p_vert[i].y;
+			cv[i].z= p_vert[i].z;
+		}
+		
+		xml_f.addP(n_vert, cv);
+		delete[] cv;
+		
+		XYZ *nor = new XYZ[n_vert];
+		XYZ *tang = new XYZ[n_vert];
+		
 		vertIter.reset();
-		MString aset = colorSetNames[i];
-		MColor col;
+		MVector vnor;
+		
 		for( unsigned int i=0; !vertIter.isDone(); vertIter.next(), i++ )
 		{
-				MIntArray conn_face;
-				vertIter.getConnectedFaces(conn_face);
-				vertIter.getColor(col, conn_face[0], &aset);
-				colors[i].x = col.r*light_intensity;
-				colors[i].y = col.g*light_intensity;
-				colors[i].z = col.b*light_intensity;
+			vertIter.getNormal(vnor, MSpace::kWorld);
+			vnor.normalize();
+			nor[i].x = vnor.x;
+			nor[i].y = vnor.y;
+			nor[i].z = vnor.z;
 		}
-			
-		xml_f.addVertexColor(aset.asChar(), n_vert, colors);
-		delete[] colors;
-	}
-
-	xml_f.staticEnd();
-	
-
-	
-	xml_f.dynamicBegin();
-	
-	MPointArray p_vert;
-	
-	meshFn.getPoints ( p_vert, MSpace::kWorld );
-	
-	MPoint corner_l(10e6, 10e6, 10e6);
-	MPoint corner_h(-10e6, -10e6, -10e6);
-	
-	for( unsigned int i=0; i<p_vert.length(); i++) 
-	{
-		if( p_vert[i].x < corner_l.x ) corner_l.x = p_vert[i].x;
-		if( p_vert[i].y < corner_l.y ) corner_l.y = p_vert[i].y;
-		if( p_vert[i].z < corner_l.z ) corner_l.z = p_vert[i].z;
-		if( p_vert[i].x > corner_h.x ) corner_h.x = p_vert[i].x;
-		if( p_vert[i].y > corner_h.y ) corner_h.y = p_vert[i].y;
-		if( p_vert[i].z > corner_h.z ) corner_h.z = p_vert[i].z;
-	}
-	
-	
-	
-	XYZ *cv = new XYZ[n_vert];
-	
-	for( unsigned int i=0; i<p_vert.length(); i++) 
-	{
-		cv[i].x = p_vert[i].x;
-		cv[i].y = p_vert[i].y;
-		cv[i].z= p_vert[i].z;
-	}
-	
-	xml_f.addP(n_vert, cv);
-	delete[] cv;
-	
-	XYZ *nor = new XYZ[n_vert];
-	XYZ *tang = new XYZ[n_vert];
-	
-	vertIter.reset();
-	MVector vnor;
-	
-	for( unsigned int i=0; !vertIter.isDone(); vertIter.next(), i++ )
-	{
-		vertIter.getNormal(vnor, MSpace::kWorld);
-		vnor.normalize();
-		nor[i].x = vnor.x;
-		nor[i].y = vnor.y;
-		nor[i].z = vnor.z;
-	}
-	
-	MString uvset("map1");
-	
-	vertIter.reset();
-	for( unsigned int i=0; !vertIter.isDone(); vertIter.next(), i++ )
-	{
-		MIntArray conn_face;
-		vertIter.getConnectedFaces(conn_face);
 		
-		MVector ctang(0,0,0);
-		MVector ttang;
-		for(unsigned j = 0; j<conn_face.length(); j++) 
+		MString uvset("map1");
+		
+		vertIter.reset();
+		for( unsigned int i=0; !vertIter.isDone(); vertIter.next(), i++ )
 		{
-			meshFn.getFaceVertexTangent (conn_face[j], i,  ttang,  MSpace::kWorld, &uvset);
-			ttang.normalize();
-			ctang += ttang;
+			MIntArray conn_face;
+			vertIter.getConnectedFaces(conn_face);
+			
+			MVector ctang(0,0,0);
+			MVector ttang;
+			for(unsigned j = 0; j<conn_face.length(); j++) 
+			{
+				meshFn.getFaceVertexTangent (conn_face[j], i,  ttang,  MSpace::kWorld, &uvset);
+				ttang.normalize();
+				ctang += ttang;
+			}
+			ctang.normalize();
+			tang[i].x = ctang.x;
+			tang[i].y = ctang.y;
+			tang[i].z = ctang.z;
+			
+			tang[i] = nor[i].cross(tang[i]);
+			tang[i].normalize();
 		}
-		ctang.normalize();
-		tang[i].x = ctang.x;
-		tang[i].y = ctang.y;
-		tang[i].z = ctang.z;
+
+		xml_f.addN(n_vert, nor);
+		xml_f.addTangent(n_vert, tang);
+
+		delete[] tang;
+		delete[] nor;
 		
-		tang[i] = nor[i].cross(tang[i]);
-		tang[i].normalize();
-	}
-
-	xml_f.addN(n_vert, nor);
-	xml_f.addTangent(n_vert, tang);
-
-	delete[] tang;
-	delete[] nor;
-	
-	xml_f.dynamicEnd();
-	xml_f.addBBox(corner_l.x, corner_l.y, corner_l.z, corner_h.x, corner_h.y, corner_h.z);
+		xml_f.dynamicEnd();
+		xml_f.addBBox(corner_l.x, corner_l.y, corner_l.z, corner_h.x, corner_h.y, corner_h.z);
 
 		xml_f.meshEnd();
 	}
 	
 	float aspace[4][4];
-	for(unsigned i=0; i<m_nurbs_list.length(); i++) 
+	for(unsigned it=0; it<m_nurbs_list.length(); it++) 
 	{
-		zWorks::getTransformWorld(m_nurbs_list[i].fullPathName(), aspace);
+		MVector scale = zWorks::getTransformWorldNoScale(m_nurbs_list[it].fullPathName(), aspace);
 		
-		MString surfacename = m_nurbs_list[i].fullPathName();
+		MString surfacename = m_nurbs_list[it].fullPathName();
 		zWorks::validateFilePath(surfacename);
-		xml_f.addTransform(surfacename.asChar(), aspace);
+		xml_f.transformBegin(surfacename.asChar(), aspace);
+		xml_f.addScale(scale.x, scale.y, scale.z);
+		
+		m_nurbs_list[it].extendToShape();
+		
+		surfacename = m_nurbs_list[it].fullPathName();
+		zWorks::validateFilePath(surfacename);
+		
+		MFnNurbsSurface fsurface(m_nurbs_list[it]);
+		
+		int degreeU = fsurface.degreeU();
+		int degreeV = fsurface.degreeV();
+		
+		int formU, formV;
+		
+		if(fsurface.formInU() == MFnNurbsSurface::Form::kOpen ) formU = 0;
+		else if(fsurface.formInU() == MFnNurbsSurface::Form::kClosed ) formU = 1;
+		else formU = 2;
+
+		if(fsurface.formInV() == MFnNurbsSurface::Form::kOpen ) formV = 0;
+		else if(fsurface.formInV() == MFnNurbsSurface::Form::kClosed ) formV = 1;
+		else formV = 2;
+		
+		xml_f.nurbssurfaceBegin(surfacename.asChar(), degreeU, degreeV, formU, formV);
+		
+		xml_f.staticBegin();
+		
+		MPointArray p_cvs;
+	
+		fsurface.getCVs( p_cvs, MSpace::kObject );
+		
+		unsigned n_cvs = p_cvs.length();
+		XYZ *cv = new XYZ[n_cvs];
+	
+		for(unsigned i=0; i<n_cvs; i++) 
+		{
+			cv[i].x = p_cvs[i].x;
+			cv[i].y = p_cvs[i].y;
+			cv[i].z= p_cvs[i].z;
+		}
+	
+		xml_f.addStaticVec("cvs", n_cvs, cv);
+		delete[] cv;
+		
+		MDoubleArray knotu, knotv;
+		
+		fsurface.getKnotsInU(knotu);
+		fsurface.getKnotsInV(knotv);
+		
+		unsigned n_ku = knotu.length();
+		unsigned n_kv = knotv.length();
+		
+		float *ku = new float[n_ku];
+		for(unsigned i=0; i<n_ku; i++) ku[i] = knotu[i];
+		
+		float *kv = new float[n_kv];
+		for(unsigned i=0; i<n_kv; i++) kv[i] = knotv[i];
+
+		xml_f.addStaticFloat("knotu", n_ku, ku);
+		xml_f.addStaticFloat("knotv", n_kv, kv);
+		
+		delete[] ku;
+		delete[] kv;
+		
+		xml_f.staticEnd();
+		
+		xml_f.nurbssurfaceEnd();
+		
+		xml_f.transformEnd();
 	}
+	
 	xml_f.addCamera("backscat_camera", m_space);
 	xml_f.addCamera("eye_camera", m_eye);
+	
 	xml_f.end(filename);
 }
 //:~

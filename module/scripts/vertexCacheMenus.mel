@@ -625,13 +625,12 @@ string $meshc[] = `importSceneCache -m 1 -p $path`;
 	}
 	
 	$meshc = `importSceneCache -t 1 -p $path`;
-	for($i = 0; $i < size($meshc); $i++)
+	for($i = 0; $i < size($meshc); $i += 3)
 	{
 		string $node = `createNode cacheTransform`;
 		setAttr -type "string" ($node + ".meshName") $meshc[$i];
 		setAttr -type "string" ($node + ".cachePath") $path;
 
-//connectAttr -f "time1.outTime" ($node + ".currentTime");
 		setKeyframe -t `intFieldGrp -q -v1 importXMLSceneCacheRange` -v `intFieldGrp -q -v1 importXMLSceneCacheRange` ($node + ".currentTime");
 		setKeyframe -t `intFieldGrp -q -v2 importXMLSceneCacheRange` -v `intFieldGrp -q -v2 importXMLSceneCacheRange` ($node + ".currentTime");
 
@@ -652,7 +651,26 @@ string $meshc[] = `importSceneCache -m 1 -p $path`;
 		setAttr ($loc[0]+".scaleY") 1;
 		setAttr ($loc[0]+".scaleZ") 1;
 
-		rename $node $meshc[$i];
+		parent $meshc[$i+1] $node;
+		setAttr ($meshc[$i+1]+".translateX") 0;
+		setAttr ($meshc[$i+1]+".translateY") 0;
+		setAttr ($meshc[$i+1]+".translateZ") 0;
+		setAttr ($meshc[$i+1]+".rotateX") 0;
+		setAttr ($meshc[$i+1]+".rotateY") 0;
+		setAttr ($meshc[$i+1]+".rotateZ") 0;
+		//setAttr ($meshc[$i+1]+".scaleX") 1;
+		//setAttr ($meshc[$i+1]+".scaleY") 1;
+		//setAttr ($meshc[$i+1]+".scaleZ") 1;
+		string $scsmd = "setAttr " + $meshc[$i+1]+".scale "+ $meshc[$i+2];
+		eval($scsmd);
+		
+		rename $node ($meshc[$i] + "_trans");
+		
+		select -r $meshc[$i+1];
+		string $perhnurbs[] = `pickWalk -d down`;
+		if(`nodeType $perhnurbs[0]` == "nurbsSurface") sets -e -forceElement initialShadingGroup;
+		
+		rename $meshc[$i+1] $meshc[$i];
 	}
 }
 

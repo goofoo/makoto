@@ -240,7 +240,7 @@ void FXMLScene::addBBox(float x0, float y0, float z0, float x1, float y1, float 
 	doc.elementEnd();
 }
 
-void FXMLScene::addTransform(const char* name, float space[4][4])
+void FXMLScene::transformBegin(const char* name, float space[4][4])
 {
 	doc.elementBegin("transform");
 	doc.addAttribute("name", name);
@@ -248,7 +248,60 @@ void FXMLScene::addTransform(const char* name, float space[4][4])
 	doc.addAttribute("Y", space[1][0], space[1][1], space[1][2]);
 	doc.addAttribute("Z", space[2][0], space[2][1], space[2][2]);
 	doc.addAttribute("W", space[3][0], space[3][1], space[3][2]);
+	
+}
+
+void FXMLScene::transformEnd()
+{
 	doc.elementEnd();
+}
+
+void FXMLScene::addScale(float x, float y, float z)
+{
+	doc.addAttribute("scale", x, y, z);
+}
+
+void FXMLScene::nurbssurfaceBegin(const char* name, int degreeU, int degreeV, int formU, int formV)
+{
+	doc.elementBegin("nurbs_surface");
+	doc.addAttribute("name", name);
+	doc.addAttribute("degreeU", degreeU);
+	doc.addAttribute("degreeV", degreeV);
+	doc.addAttribute("formU", formU);
+	doc.addAttribute("formV", formV);
+}
+
+void FXMLScene::nurbssurfaceEnd()
+{
+	doc.elementEnd();
+}
+
+void FXMLScene::addStaticVec(const char* name, int num, const XYZ* data)
+{
+	int offset = (int)sizeof(XYZ)*num;
+	doc.elementBegin(name);
+	doc.addAttribute("loc", pos_s);
+	doc.addAttribute("size", offset);
+	doc.addAttribute("count", num);
+	doc.elementEnd();
+	
+	pos_s += offset;
+	
+	static_file.write((char*)data, sizeof(XYZ)*num);
+}
+
+void FXMLScene::addStaticFloat(const char* name, int num, const float* data)
+{
+	int offset = (int)sizeof(float)*num;
+	doc.elementBegin(name);
+	doc.addAttribute("loc", pos_s);
+	doc.addAttribute("size", offset);
+	doc.addAttribute("count", num);
+	doc.elementEnd();
+	
+	pos_s += offset;
+	
+	static_file.write((char*)data, sizeof(float)*num);
 }
 
 void FXMLScene::addCamera(const char* name, float space[4][4])

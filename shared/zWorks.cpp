@@ -572,17 +572,19 @@ void zWorks::getTransformWorld(const MString& name, float space[4][4])
 	fm.clear();
 }
 
-void zWorks::getTransformWorldNoScale(const MString& name, float space[4][4])
+MVector zWorks::getTransformWorldNoScale(const MString& name, float space[4][4])
 {
 	MDoubleArray fm;
 	MGlobal::executeCommand(MString("xform -q -m -ws ")+name,fm );
-	MVector vx(fm[0], fm[1], fm[2]); vx.normalize();
-	MVector vy(fm[4], fm[5], fm[6]); vy.normalize();
-	MVector vz(fm[8], fm[9], fm[10]); vz.normalize();
+	MVector scale;
+	MVector vx(fm[0], fm[1], fm[2]); scale.x = vx.length(); vx.normalize();
+	MVector vy(fm[4], fm[5], fm[6]); scale.y = vy.length(); vy.normalize();
+	MVector vz(fm[8], fm[9], fm[10]); scale.z = vz.length(); vz.normalize();
 	space[0][0]=vx.x; space[0][1]=vx.y; space[0][2]=vx.z;
 	space[1][0]=vy.x; space[1][1]=vy.y; space[1][2]=vy.z;
 	space[2][0]=vz.x; space[2][1]=vz.y; space[2][2]=vz.z;
 	space[3][0]=fm[12]; space[3][1]=fm[13]; space[3][2]=fm[14];
 	fm.clear();
+	return scale;
 }
 //:~

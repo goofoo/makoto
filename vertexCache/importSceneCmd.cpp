@@ -17,6 +17,7 @@
 #include <maya/MFnMeshData.h>
 #include "../shared/zData.h"
 #include "../shared/ZXMLDoc.h"
+#include "../shared/zGlobal.h"
 ////////////////////////////////////////
 //
 // cache file generation Command Class
@@ -88,9 +89,117 @@ MStatus XMLSceneCmd::doIt( const MArgList& args )
 	{
 		while(doc.isLastNode() != 1)
 		{
-			if(doc.checkNodeName("camera") == 1 || doc.checkNodeName("transform") == 1 )
+			if(doc.checkNodeName("camera") == 1)
 			{
 				appendToResult(doc.getAttribByName("name"));
+				
+				MFnCamera fcam;
+				MObject ocam = fcam.create();
+				appendToResult(MFnDependencyNode(ocam).name());
+				appendToResult(" 1 1 1 ");
+			}
+			else if(doc.checkNodeName("transform") == 1)
+			{
+				appendToResult(doc.getAttribByName("name"));
+				
+				XYZ scale;
+				doc.getFloat3AttribByName("scale", scale.x, scale.y, scale.z);
+				
+				doc.getChildByName("nurbs_surface");
+				
+				int degreeU = doc.getIntAttribByName("degreeU");
+				int degreeV = doc.getIntAttribByName("degreeV");
+				
+				int formU = doc.getIntAttribByName("formU");
+				int formV = doc.getIntAttribByName("formV");
+				
+				MFnNurbsSurface::Form fmu;
+				MFnNurbsSurface::Form fmv;
+				
+				if(formU ==0) fmu = MFnNurbsSurface::Form::kOpen;
+				else if(formU ==1) fmu = MFnNurbsSurface::Form::kClosed;
+				else fmu = MFnNurbsSurface::Form::kPeriodic;
+				
+				if(formV ==0) fmv = MFnNurbsSurface::Form::kOpen;
+				else if(formV ==1) fmv = MFnNurbsSurface::Form::kClosed;
+				else fmv = MFnNurbsSurface::Form::kPeriodic;
+				
+				std::string staticName = cache_path.asChar();
+				zGlobal::cutByFirstDot(staticName);
+				staticName += ".sta";
+				
+				std::ifstream ffin;
+				ffin.open(staticName.c_str(), ios::in | ios::binary);
+				
+				doc.getChildByName("static");
+				
+				doc.getChildByName("cvs");
+					
+					int n_cvs = doc.getIntAttribByName("count");
+					int pos = doc.getIntAttribByName("loc");
+					int size = doc.getIntAttribByName("size");
+					
+					XYZ* cvs = new XYZ[n_cvs];
+					ffin.seekg( pos, ios::beg );
+					ffin.read((char*)cvs, size);
+					
+					MPointArray pcvs; pcvs.setLength(n_cvs);
+					
+					for(unsigned i=0; i<n_cvs; i++) pcvs[i] = MPoint(cvs[i].x, cvs[i].y, cvs[i].z);
+					
+					delete[] cvs;
+					
+				doc.setParent();
+				
+				doc.getChildByName("knotu");
+					
+					int n_knotu = doc.getIntAttribByName("count");
+					pos = doc.getIntAttribByName("loc");
+					size = doc.getIntAttribByName("size");
+					
+					float* knotu = new float[n_knotu];
+					ffin.seekg( pos, ios::beg );
+					ffin.read((char*)knotu, size);
+					
+					MDoubleArray pknotu; pknotu.setLength(n_knotu);
+					
+					for(unsigned i=0; i<n_knotu; i++) pknotu[i] = knotu[i];
+					
+					delete[] knotu;
+					
+				doc.setParent();
+				
+				doc.getChildByName("knotv");
+					
+					int n_knotv = doc.getIntAttribByName("count");
+					pos = doc.getIntAttribByName("loc");
+					size = doc.getIntAttribByName("size");
+					
+					float* knotv = new float[n_knotv];
+					ffin.seekg( pos, ios::beg );
+					ffin.read((char*)knotv, size);
+					
+					MDoubleArray pknotv; pknotv.setLength(n_knotv);
+					
+					for(unsigned i=0; i<n_knotv; i++) pknotv[i] = knotv[i];
+					
+					delete[] knotv;
+					
+				ffin.close();
+					
+				doc.setParent();
+
+				MFnNurbsSurface fnurbs;
+				MObject onurbs = fnurbs.create(pcvs, pknotu, pknotv, degreeU, degreeV,  fmu,  fmv, 0, MObject::kNullObj);
+				MString nurbsn = MFnDependencyNode(onurbs).name();
+				MGlobal::displayInfo(nurbsn);
+				appendToResult(nurbsn);
+				
+				MString outscale = MString(" ") +scale.x +" "+scale.y +" "+scale.z;
+				appendToResult(outscale);
+				
+				doc.setParent();
+				doc.setParent();
 			}
 			doc.nextNode();
 		}
