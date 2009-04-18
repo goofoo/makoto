@@ -139,7 +139,7 @@ quadrics::GenRIB( RIBContext *c )
 	c->GetShutter(&shutterOpen, &shutterClose);
 	c->GetMotionInfo(&shutterAngle, &fps, &subframeMotion, &blurCamera, &shutterTiming, &shutterConfig);
 	
-//	c->ReportError( RIBContext::reInfo, "quadrics get motion: %f %f %f %i", shutterOpen, shutterClose, fps, frame);
+	//c->ReportError( RIBContext::reInfo, "quadrics get motion: %f %f %f %i", shutterOpen, shutterClose, fps, frame);
 	
 	const char *vizname = c->GetObjName();
 	MObject viznode;
@@ -164,13 +164,18 @@ quadrics::GenRIB( RIBContext *c )
 	sprt += ".1.prt";
 	
 	
-	double dtime0, dtime1, t0, t1;
+	double dtime0, dtime1, t0;//t1;
 	t0 = (double)frame;
-	MTime mt0(t0);
+	
+	MTime mt0;
+	if(fps == 24) mt0 = MTime(t0, MTime::Unit::kFilm);
+	else if(fps == 25) mt0 = MTime(t0, MTime::Unit::kPALFrame);
+	else mt0 = MTime(t0, MTime::Unit::kNTSCFrame);
+	
 	MDGContext ctx0(mt0);
 	zWorks::getDoubleAttributeByNameAndTime(fnode, "currentTime", ctx0, dtime0);
 	
-	t1 = (double)frame + ((float)shutterClose - (float)shutterOpen)*(float)fps;
+	//t1 = (double)frame + ((float)shutterClose - (float)shutterOpen)*(float)fps;
 	
 	zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
 	
