@@ -658,9 +658,6 @@ string $meshc[] = `importSceneCache -m 1 -p $path`;
 		setAttr ($meshc[$i+1]+".rotateX") 0;
 		setAttr ($meshc[$i+1]+".rotateY") 0;
 		setAttr ($meshc[$i+1]+".rotateZ") 0;
-		//setAttr ($meshc[$i+1]+".scaleX") 1;
-		//setAttr ($meshc[$i+1]+".scaleY") 1;
-		//setAttr ($meshc[$i+1]+".scaleZ") 1;
 		string $scsmd = "setAttr " + $meshc[$i+1]+".scale "+ $meshc[$i+2];
 		eval($scsmd);
 		
@@ -672,6 +669,8 @@ string $meshc[] = `importSceneCache -m 1 -p $path`;
 		
 		rename $meshc[$i+1] $meshc[$i];
 	}
+	
+	playbackOptions -min `intFieldGrp -q -v1 importXMLSceneCacheRange` -max `intFieldGrp -q -v2 importXMLSceneCacheRange`;
 }
 
 global proc openImportXMLSceneCacheWin() 

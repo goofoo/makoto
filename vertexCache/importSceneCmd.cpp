@@ -93,8 +93,49 @@ MStatus XMLSceneCmd::doIt( const MArgList& args )
 			{
 				appendToResult(doc.getAttribByName("name"));
 				
-				MFnCamera fcam;
-				MObject ocam = fcam.create();
+				MFnCamera ccam;
+				MObject ocam = ccam.create();
+				
+				if(doc.isEmpty() != 1)
+				{
+					MDagPath pcam;
+					MDagPath::getAPathTo(ocam, pcam);
+					pcam.extendToShape();
+					
+					MFnCamera fcam = MFnCamera(pcam);
+					doc.setChildren();
+					
+					while(doc.isLastNode() != 1)
+					{
+						if(doc.checkNodeName("attribute") == 1)
+						{
+							if(strcmp (doc.getAttribByName("name"), "focal_length") == 0)
+							{
+								fcam.setFocalLength(doc.getFloatAttribByName("value"));
+							}
+							else if(strcmp (doc.getAttribByName("name"), "horizontal_film_aperture") == 0)
+							{
+								fcam.setHorizontalFilmAperture(doc.getFloatAttribByName("value"));
+							}
+							else if(strcmp (doc.getAttribByName("name"), "vertical_film_aperture") == 0)
+							{
+								fcam.setVerticalFilmAperture(doc.getFloatAttribByName("value"));
+							}
+							else if(strcmp (doc.getAttribByName("name"), "near_clipping_plane") == 0)
+							{
+								fcam.setNearClippingPlane(doc.getFloatAttribByName("value"));
+							}
+							else if(strcmp (doc.getAttribByName("name"), "far_clipping_plane") == 0)
+							{
+								fcam.setFarClippingPlane(doc.getFloatAttribByName("value"));
+							}
+						}
+						doc.nextNode();
+					}
+					
+					doc.setParent();
+				}
+				
 				appendToResult(MFnDependencyNode(ocam).name());
 				appendToResult(" 1 1 1 ");
 			}
@@ -192,7 +233,7 @@ MStatus XMLSceneCmd::doIt( const MArgList& args )
 				MFnNurbsSurface fnurbs;
 				MObject onurbs = fnurbs.create(pcvs, pknotu, pknotv, degreeU, degreeV,  fmu,  fmv, 0, MObject::kNullObj);
 				MString nurbsn = MFnDependencyNode(onurbs).name();
-				MGlobal::displayInfo(nurbsn);
+	
 				appendToResult(nurbsn);
 				
 				MString outscale = MString(" ") +scale.x +" "+scale.y +" "+scale.z;

@@ -66,6 +66,14 @@ void FXMLScene::addAttribute(const char* name, int val)
 	doc.elementEnd();
 }
 
+void FXMLScene::addAttribute(const char* name, float val)
+{
+	doc.elementBegin("attribute");
+	doc.addAttribute("name", name);
+	doc.addAttribute("value", val);
+	doc.elementEnd();
+}
+
 void FXMLScene::meshEnd()
 {
 	doc.elementEnd();
@@ -304,7 +312,7 @@ void FXMLScene::addStaticFloat(const char* name, int num, const float* data)
 	static_file.write((char*)data, sizeof(float)*num);
 }
 
-void FXMLScene::addCamera(const char* name, float space[4][4])
+void FXMLScene::cameraBegin(const char* name, float space[4][4])
 {
 	doc.elementBegin("camera");
 	doc.addAttribute("name", name);
@@ -312,6 +320,11 @@ void FXMLScene::addCamera(const char* name, float space[4][4])
 	doc.addAttribute("Y", space[1][0], space[1][1], space[1][2]);
 	doc.addAttribute("Z", space[2][0], space[2][1], space[2][2]);
 	doc.addAttribute("W", space[3][0], space[3][1], space[3][2]);
+	
+}
+
+void FXMLScene::cameraEnd()
+{
 	doc.elementEnd();
 }
 

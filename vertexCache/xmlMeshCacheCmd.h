@@ -15,6 +15,7 @@
 #include <maya/MVectorArray.h>
 #include <maya/MSyntax.h>
 #include <maya/MArgDatabase.h>
+#include <maya/MDagPath.h>
 #include <maya/MDagPathArray.h>
 
 class xmlMeshCache : public MPxCommand
@@ -38,5 +39,6 @@ class xmlMeshCache : public MPxCommand
 	
 	float m_space[4][4];
 	float m_eye[4][4];
+	MDagPath p_eye;
  };
 

@@ -111,8 +111,7 @@ MStatus xmlMeshCache::doIt( const MArgList& args )
 	{
 		argData.getFlagArgument("-ec", 0, seye);
 	
-// get back light space
-		MDagPath p_eye;
+// get eye space
 		
 		zWorks::getTypedPathByName(MFn::kTransform, seye, p_eye);
 		MObject o_eye = p_eye.transform();
@@ -563,8 +562,18 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 		xml_f.transformEnd();
 	}
 	
-	xml_f.addCamera("backscat_camera", m_space);
-	xml_f.addCamera("eye_camera", m_eye);
+	xml_f.cameraBegin("backscat_camera", m_space);
+	xml_f.cameraEnd();
+	
+	xml_f.cameraBegin("eye_camera", m_eye);
+	p_eye.extendToShape();
+	MFnCamera feye(p_eye);
+	xml_f.addAttribute("focal_length", (float)feye.focalLength());
+	xml_f.addAttribute("horizontal_film_aperture", (float)feye.horizontalFilmAperture());
+	xml_f.addAttribute("vertical_film_aperture", (float)feye.verticalFilmAperture());
+	xml_f.addAttribute("near_clipping_plane", (float)feye.nearClippingPlane());
+	xml_f.addAttribute("far_clipping_plane", (float)feye.farClippingPlane());
+	xml_f.cameraEnd();
 	
 	xml_f.end(filename);
 }

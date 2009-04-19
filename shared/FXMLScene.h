@@ -31,6 +31,7 @@ public:
 	void meshBegin(const char* name);
 	void triangleInfo(int n_tri, float area);
 	void addAttribute(const char* name, int val);
+	void addAttribute(const char* name, float val);
 	void meshEnd();
 	void staticBegin();
 	void staticEnd();
@@ -55,7 +56,8 @@ public:
 	void nurbssurfaceEnd();
 	void addStaticVec(const char* name, int num, const XYZ* data);
 	void addStaticFloat(const char* name, int num, const float* data);
-	void addCamera(const char* name, float space[4][4]);
+	void cameraBegin(const char* name, float space[4][4]);
+	void cameraEnd();
 /*reading*/
 	int load(const char* filename);
 /*query*/
