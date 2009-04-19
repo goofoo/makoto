@@ -84,6 +84,7 @@ void FTriangle::create(const XYZ& p0, const XYZ& p1, const XYZ& p2)
 	XYZ front = side^V[b]; front.normalize();
 	XYZ up = front^side;
 	
+	m_space.setIdentity();
 	m_space.setOrientations(side, up, front);
 	m_space.setTranslation(P[a]);
 	m_space.inverse();
