@@ -745,19 +745,27 @@ template float depthRange {
 		detail uniform
 		default 1000
        }
+	   
+	   parameter float iinv {
+		label {Invert}
+		detail uniform
+		subtype switch
+		default 0
+	   }
        
        parameter float result {
 	   access output
 	   display hidden
        }
        RSLFunction {
-	   void pxsldepthRange(float near, far; output float c;)
+	   void pxsldepthRange(float near, far, iinv; output float c;)
 	   {
 		extern point P;
 
 		float d = smoothstep(near,far,zcomp(P));
 		d = pow(d,0.5);
 	       c = d;
+		   if(iinv ==1) c = 1 -c;
 	   }
        }
    }

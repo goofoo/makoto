@@ -1,3 +1,5 @@
+#ifndef _Z_WORKS_H
+#define _Z_WORKS_H
 #pragma once
 #include <maya/MIOStream.h>
 #include <maya/MFnDependencyNode.h>
@@ -116,3 +118,4 @@ public:
 	static void getTransformWorld(const MString& name, float space[4][4]);
 	static MVector getTransformWorldNoScale(const MString& name, float space[4][4]);
 };
+#endif

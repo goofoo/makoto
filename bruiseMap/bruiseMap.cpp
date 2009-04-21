@@ -9,47 +9,72 @@
 #include "bruiseMap.h"
 #include "../shared/zWorks.h"
 #include "../shared/gBase.h"
+#include "../shared/zFnEXR.h"
 #include <maya/MItMeshVertex.h>
 #include <maya/MFnMeshData.h>
 #include <maya/MItMeshPolygon.h>
 
-bruiseMap::bruiseMap():has_mesh(0),ddice(0),n_samp(0)
+bruiseMap::bruiseMap():has_base(0),has_guide(0),ddice(0),ddist(0),n_samp(0),map_dist(0)
 {
 }
 
 bruiseMap::~bruiseMap() 
 {
 	if(ddice) delete[] ddice;
+	if(ddist) delete[] ddist;
+	if(map_dist) delete[] map_dist;
 }
 
 void bruiseMap::setBase(const MObject& mesh)
 {
 	pbase = mesh;
-	has_mesh = 1;
+	has_base = 1;
 }
 
 void bruiseMap::setGuide(const MObject& mesh)
 {
 	pguide = mesh;
-	has_mesh = 1;
+	has_guide = 1;
 }
 
-int bruiseMap::dice()
+int bruiseMap::dice(float bias)
 {
-	if(!has_mesh) return 0;
+	if(!has_base || !has_guide) return 0;
 	
 	MStatus status;
 	MFnMesh meshFn(pbase, &status );
 	MItMeshVertex vertIter(pbase, &status);
 	MItMeshPolygon faceIter(pbase, &status);
+	MFnMesh guideFn(pguide, &status );
 	
 	MPointArray p_vert;
+	MVectorArray p_ray;
 	meshFn.getPoints ( p_vert, MSpace::kWorld );
 	n_vert = meshFn.numVertices(); 
-	XYZ* parray = new XYZ[n_vert];
 	
-	for(unsigned i=0; i<n_vert; i++) parray[i] = XYZ(p_vert[i].x, p_vert[i].y, p_vert[i].z);
-	p_vert.clear();
+	hitArray.setLength(n_vert);
+	
+	MPointArray Aphit;
+	MIntArray Aihit;
+	for(unsigned i=0; !vertIter.isDone(); vertIter.next(), i++) 
+	{
+		MPoint vertp = vertIter.position( MSpace::kObject);
+		MVector vertn;
+		vertIter.getNormal(vertn, MSpace::kObject);
+		p_ray.append(vertn);
+		vertp += vertn*bias;
+		if(guideFn.intersect (vertp, -vertn, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		{
+			if(Aphit.length()==1) 
+			{
+				MVector tohit = Aphit[0] - vertp;
+				hitArray[i] = tohit.length();
+			}
+			else hitArray[i] = -1;
+		}
+		else hitArray[i] = -1;
+
+	}
 	
 	unsigned n_tri = 0;
 	float sum_area = 0;
@@ -69,37 +94,120 @@ int bruiseMap::dice()
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
+	if(ddist) delete[] ddist;
 	ddice = new DiceParam[estimate_ncell];
+	ddist = new float[estimate_ncell];
 	n_samp = 0;
 
 	DiceTriangle ftri;
 	int a, b, c;
 	faceIter.reset();
 	int seed = 12;
+	XYZ va, vb, vc;
 	for( ; !faceIter.isDone(); faceIter.next() ) 
 	{
 		MIntArray  vexlist;
 		faceIter.getVertices ( vexlist );
-		for( int i=vexlist.length()-2; i >0; i-- ) 
+		
+		int hashit = 0;
+		for(unsigned i=0; i< vexlist.length(); i++)
 		{
-			a = vexlist[vexlist.length()-1];
-			b = vexlist[i];
-			c = vexlist[i-1];
-			
-			ftri.create(parray[a], parray[b], parray[c]);
-			ftri.setId(a, b, c);
-			ftri.rasterize(epsilon, ddice, n_samp, seed);seed++;
+			if(hitArray[vexlist[i]] >0) hashit =1;
+		}
+		
+		if(hashit==1)
+		{
+			for( int i=vexlist.length()-2; i >0; i-- ) 
+			{
+				a = vexlist[vexlist.length()-1];
+				b = vexlist[i];
+				c = vexlist[i-1];
+				va =XYZ(p_vert[a].x, p_vert[a].y, p_vert[a].z);
+				vb =XYZ(p_vert[b].x, p_vert[b].y, p_vert[b].z);
+				vc =XYZ(p_vert[c].x, p_vert[c].y, p_vert[c].z);
+				ftri.create(va, vb, vc);
+				ftri.setId(a, b, c);
+				ftri.rasterize(epsilon, ddice, n_samp, seed);seed++;
+			}
+		}
+
+	}
+	
+	MPoint ori;
+	MVector ray;
+	for(unsigned i=0; i<n_samp; i++)
+	{
+		ori = p_vert[ddice[i].id0]*ddice[i].alpha + p_vert[ddice[i].id1]*ddice[i].beta + p_vert[ddice[i].id2]*ddice[i].gamma;
+		ray = p_ray[ddice[i].id0]*ddice[i].alpha + p_ray[ddice[i].id1]*ddice[i].beta + p_ray[ddice[i].id2]*ddice[i].gamma;
+		ray.normalize();
+		ori += ray*bias;
+		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		{
+			if(Aphit.length()==1) 
+			{
+				MVector tohit = Aphit[0] - ori;
+				ddist[i] = tohit.length();
+			}
+			else ddist[i] = -1;
+		}
+	}
+
+	p_vert.clear();
+	p_ray.clear();
+	return n_samp;	
+}
+/*
+void bruiseMap::trace(float bias)
+{
+	if(!has_base || n_samp < 1) return;
+	
+	MStatus status;
+	MFnMesh meshFn(pbase, &status );
+	
+	if(n_vert != meshFn.numVertices()) return;
+	
+	MItMeshVertex vertIter(pbase, &status);
+	MItMeshPolygon faceIter(pbase, &status);
+	MFnMesh guideFn(pguide, &status );
+	
+	MPointArray p_vert;
+	meshFn.getPoints ( p_vert, MSpace::kWorld );
+	
+	MVectorArray p_ray;
+	MVector ray;
+	for(;!vertIter.isDone(); vertIter.next() )
+	{
+		vertIter.getNormal (ray,  MSpace::kObject  );
+		p_ray.append(ray);
+	}
+
+	MPoint ori;
+	MPointArray Aphit;
+	MIntArray Aihit;
+	for(unsigned i=0; i<n_samp; i++)
+	{
+		ori = p_vert[ddice[i].id0]*ddice[i].alpha + p_vert[ddice[i].id1]*ddice[i].beta + p_vert[ddice[i].id2]*ddice[i].gamma;
+		ray = p_ray[ddice[i].id0]*ddice[i].alpha + p_ray[ddice[i].id1]*ddice[i].beta + p_ray[ddice[i].id2]*ddice[i].gamma;
+		ray.normalize();
+		ori += ray*bias;
+		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		{
+			if(Aphit.length()==1) 
+			{
+				MVector tohit = Aphit[0] - ori;
+				ddist[i] = tohit.length();
+			}
+			else ddist[i] = -1;
 		}
 	}
 	
-	delete[] parray;
-	
-	return n_samp;	
+	p_vert.clear();
+	p_ray.clear();
 }
-
+*/
 void bruiseMap::draw()
 {
-	if(!has_mesh || n_samp < 1) return;
+	if(!has_base || n_samp < 1) return;
 	
 	MStatus status;
 	MFnMesh meshFn(pbase, &status );
@@ -111,126 +219,186 @@ void bruiseMap::draw()
 	
 	MPointArray p_vert;
 	meshFn.getPoints ( p_vert, MSpace::kWorld );
-	//n_vert = meshFn.numVertices(); 
-	XYZ* parray = new XYZ[n_vert];
 	
-	for(unsigned i=0; i<n_vert; i++) parray[i] = XYZ(p_vert[i].x, p_vert[i].y, p_vert[i].z);
-	p_vert.clear();
-	
-	XYZ* pbuf = new XYZ[n_samp];
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-	}
-	
-	delete[] parray;
+	MPoint ori;
 	
 	glBegin(GL_POINTS);
 	for(unsigned i=0; i<n_samp; i++)
 	{
-		glVertex3f(pbuf[i].x, pbuf[i].y, pbuf[i].z);
-	}
-	glEnd();
-	
-	delete[] pbuf;
-	
-/*	
-	glBegin(GL_POINTS);
-	for(unsigned i=0; !vertIter.isDone(); vertIter.next(), i++ )
-	{
-		S = vertIter.position(MSpace::kWorld);
-		glVertex3f(S.x, S.y, S.z);
-	}
-	glEnd();
-
-	
-	MVector N, tang, ttang, binormal, dir, hair_up;
-	MColor Cscale, Cerect, Crotate, Ccurl;
-	float rot;
-	MATRIX44F hair_space;
-	
-	MString setScale("fb_scale");
-	MString setErect("fb_erect");
-	MString setRotate("fb_rotate");
-	MString setCurl("fb_curl");
-	MIntArray conn_face;
-	
-	
-	{
-		
-		
-		vertIter.getNormal(N, MSpace::kWorld);
-		N.normalize();
-		
-		vertIter.getColor(Cscale, &setScale);
-		vertIter.getColor(Cerect, &setErect);
-		vertIter.getColor(Crotate, &setRotate);
-		vertIter.getColor(Ccurl, &setCurl);
-		
-		vertIter.getConnectedFaces(conn_face);
-		tang = MVector(0,0,0);
-		for(int j=0; j<conn_face.length(); j++)
+		if(ddist[i]>0) 
 		{
-			meshFn.getFaceVertexTangent (conn_face[j], i, ttang,  MSpace::kWorld);
-			ttang.normalize();
-			tang += ttang;
-		}
-		tang /= conn_face.length();
-		conn_face.clear();
-		tang.normalize();
-		tang = N^tang;
-		tang.normalize();
-		
-		binormal = N^tang;
-		
-		if(Crotate.r<0.5)
-		{
-			rot = (0.5 - Crotate.r)*2;
-			tang = tang + (binormal-tang)*rot;
-			tang.normalize();
-			binormal = N^tang;
-		}
-		else
-		{
-			rot = (Crotate.r-0.5)*2;
-			tang = tang + (binormal*-1-tang)*rot;
-			tang.normalize();
-			binormal = N^tang;
-		}
-		
-		dir = tang + (N - tang)*Cerect.r;
-		dir.normalize();
-		
-		//S = S+dir*Cscale.r*m_scale;
-		//glVertex3f(S.x, S.y, S.z);
-		
-		hair_up = dir^binormal;
-		
-		hair_space.setIdentity();
-		hair_space.setOrientations(XYZ(binormal.x, binormal.y, binormal.z), XYZ(hair_up.x, hair_up.y, hair_up.z), XYZ(dir.x, dir.y, dir.z));
-		
-		S = vertIter.position(MSpace::kWorld);
-		
-		hair_space.setTranslation(XYZ(S.x, S.y, S.z));
-		
-		fb->create(Cscale.r*m_scale, 0, Cscale.r*m_scale*(Ccurl.r-0.5)*2);
-		
-		XYZ pw;
-	
-		for(int j=0; j<NUMBENDSEG; j++)
-		{
-			fb->getPoint(j, pw);
-			hair_space.transform(pw);
-			glVertex3f(pw.x, pw.y, pw.z);
+			ori = p_vert[ddice[i].id0]*ddice[i].alpha + p_vert[ddice[i].id1]*ddice[i].beta + p_vert[ddice[i].id2]*ddice[i].gamma;
 			
-			fb->getPoint(j+1, pw);
-			hair_space.transform(pw);
-			glVertex3f(pw.x, pw.y, pw.z);
+			glVertex3f(ori.x, ori.y, ori.z);
+		}
+	}
+	glEnd();
+
+	p_vert.clear();
+}
+
+void bruiseMap::init()
+{
+	if(map_dist) delete[] map_dist;
+	map_dist = new float[1024*1024];
+	for(unsigned i=0; i<1024*1024; i++) map_dist[i] = 0;
+}
+
+void bruiseMap::save(float bias)
+{
+		if(!has_base || !has_guide) return;
+	
+	MStatus status;
+	MFnMesh meshFn(pbase, &status );
+	MItMeshVertex vertIter(pbase, &status);
+	MItMeshPolygon faceIter(pbase, &status);
+	MFnMesh guideFn(pguide, &status );
+	
+	MPointArray p_vert;
+	MVectorArray p_ray;
+	meshFn.getPoints ( p_vert, MSpace::kWorld );
+	n_vert = meshFn.numVertices(); 
+	
+	hitArray.setLength(n_vert);
+	
+	MPointArray Aphit;
+	MIntArray Aihit;
+	for(unsigned i=0; !vertIter.isDone(); vertIter.next(), i++) 
+	{
+		MPoint vertp = vertIter.position( MSpace::kObject);
+		MVector vertn;
+		vertIter.getNormal(vertn, MSpace::kObject);
+		p_ray.append(vertn);
+		vertp += vertn*bias;
+		if(guideFn.intersect (vertp, -vertn, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		{
+			if(Aphit.length()==1) 
+			{
+				MVector tohit = Aphit[0] - vertp;
+				hitArray[i] = tohit.length();
+			}
+			else hitArray[i] = -1;
+		}
+		else hitArray[i] = -1;
+
+	}
+
+	DiceTriangle ftri;
+	int a, b, c;
+	faceIter.reset();
+	int seed = 12;
+	//XYZ va, vb, vc;
+	float uva[2], uvb[2], uvc[2];
+	MPoint ori;
+	MVector ray, tohit;
+	for( ; !faceIter.isDone(); faceIter.next() ) 
+	{
+		MIntArray  vexlist;
+		faceIter.getVertices ( vexlist );
+		
+		int hashit = 0;
+		for(unsigned i=0; i< vexlist.length(); i++)
+		{
+			if(hitArray[vexlist[i]] >0) hashit =1;
+		}
+		
+		if(hashit==1)
+		{
+			for( int i=vexlist.length()-2; i >0; i-- ) 
+			{
+				a = vexlist[vexlist.length()-1];
+				b = vexlist[i];
+				c = vexlist[i-1];
+				
+				faceIter.getUV(vexlist.length()-1, uva );
+				faceIter.getUV(i, uvb );
+				faceIter.getUV(i-1, uvc );
+				
+				//va =XYZ(p_vert[a].x, p_vert[a].y, p_vert[a].z);
+				//vb =XYZ(p_vert[b].x, p_vert[b].y, p_vert[b].z);
+				//vc =XYZ(p_vert[c].x, p_vert[c].y, p_vert[c].z);
+				
+				ftri.create2D(uva, uvb, uvc);
+				
+				int n_dice = ftri.getGrid2D();
+				
+				Dice2DParam* param = new Dice2DParam[n_dice];
+				
+				int real_dice = ftri.rasterize2D(param, seed);seed++;
+				
+				for(int k=0; k<real_dice; k++)
+				{
+					ori = p_vert[a]*param[k].alpha + p_vert[b]*param[k].beta + p_vert[c]*param[k].gamma;
+					ray = p_ray[a]*param[k].alpha + p_ray[b]*param[k].beta + p_ray[c]*param[k].gamma;
+					ray.normalize();
+					ori += ray*bias;
+					
+					if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+					{
+						if(Aphit.length()==1) 
+						{
+							int map_s = param[k].s;
+							int map_t = param[k].t;
+							tohit = Aphit[0] - ori;
+							map_dist[map_t*1024+map_s] = tohit.length();
+						}
+					}
+					
+				}
+				
+				delete[] param;
+			}
 		}
 
-		
 	}
 	
-*/	
+
+	for(unsigned i=0; i<n_samp; i++)
+	{
+		
+		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		{
+			if(Aphit.length()==1) 
+			{
+				MVector tohit = Aphit[0] - ori;
+				ddist[i] = tohit.length();
+			}
+			else ddist[i] = -1;
+		}
+	}
+/*
+	MPoint ori;
+	MVector ray;
+	for(unsigned i=0; i<n_samp; i++)
+	{
+		ori = p_vert[ddice[i].id0]*ddice[i].alpha + p_vert[ddice[i].id1]*ddice[i].beta + p_vert[ddice[i].id2]*ddice[i].gamma;
+		ray = p_ray[ddice[i].id0]*ddice[i].alpha + p_ray[ddice[i].id1]*ddice[i].beta + p_ray[ddice[i].id2]*ddice[i].gamma;
+		ray.normalize();
+		ori += ray*bias;
+		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		{
+			if(Aphit.length()==1) 
+			{
+				MVector tohit = Aphit[0] - ori;
+				ddist[i] = tohit.length();
+			}
+			else ddist[i] = -1;
+		}
+	}
+*/
+	p_vert.clear();
+	p_ray.clear();
+	
+	float* data = new float[1024*1024*4];
+	for(unsigned j=0; j<1024; j++)
+		for(unsigned i=0; i<1024; i++)
+		{
+			data[(j*1024+i)*4] = map_dist[j*1024+i];
+			data[(j*1024+i)*4+1] = 0;
+			data[(j*1024+i)*4+2] = 0;
+			data[(j*1024+i)*4+3] = 1;
+		}
+	ZFnEXR::save(data, "D:/foo.exr", 1024, 1024);
+	delete[] data;
 }
 //~:

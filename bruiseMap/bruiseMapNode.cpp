@@ -29,8 +29,8 @@ MTypeId bruiseMapNode::id( 0x0002517 );
 
 MObject bruiseMapNode::astartframe;
 MObject bruiseMapNode::acurrenttime;
-MObject	bruiseMapNode::aExposure;
-MObject	bruiseMapNode::aSize;
+MObject	bruiseMapNode::aBias;
+//MObject	bruiseMapNode::aSize;
 MObject	bruiseMapNode::aHDRName;
 MObject bruiseMapNode::aworldSpace;
 MObject bruiseMapNode::aoutput;
@@ -64,11 +64,13 @@ MStatus bruiseMapNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		int startFrame = data.inputValue(astartframe, &status).asInt();
 		
-		if(startFrame == frame)
-		{
-			int npt = m_base->dice();
-			MGlobal::displayInfo(MString("Bruise map diced ") + npt + " samples");
-		}
+		float bias = data.inputValue(aBias, &status).asFloat();
+
+		if(frame == startFrame) m_base->init();
+		int npt = m_base->dice(bias);
+		//m_base->trace(bias);
+		//MGlobal::displayInfo(MString("Bruise map diced ") + npt + " samples");
+		m_base->save(bias);
 	    
 		data.setClean(plug);
 	}
@@ -81,7 +83,7 @@ void bruiseMapNode::draw( M3dView & view, const MDagPath & /*path*/,
 {
 	view.beginGL(); 
 
-	if(m_base->hasMesh()) m_base->draw();
+	if(m_base->hasBase()) m_base->draw();
 
 	view.endGL();
 }
@@ -111,26 +113,22 @@ MStatus bruiseMapNode::initialize()
 	    MFnNumericAttribute nAttr; 
     MFnTypedAttribute tAttr;
 	
-	aExposure = nAttr.create("exposure", "exposure",
-						  MFnNumericData::kFloat, 1.f, &status);
+	aBias = nAttr.create("bias", "bs",
+						  MFnNumericData::kFloat, 0.1f, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( nAttr.setStorable(true));
     CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(1.f));
-    CHECK_MSTATUS( nAttr.setSoftMin(-10.f));
-    CHECK_MSTATUS( nAttr.setSoftMax(10.f));
-	nAttr.setCached( true );
-	nAttr.setInternal( true );
+    CHECK_MSTATUS( nAttr.setMin(0.f));
 	
-	aSize = nAttr.create("size", "size",
-						  MFnNumericData::kFloat, 900.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( nAttr.setStorable(true));
-    CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(900.f));
-    CHECK_MSTATUS( nAttr.setMin(1.f));
-	nAttr.setCached( true );
-	nAttr.setInternal( true );
+	//aSize = nAttr.create("size", "size",
+	//					  MFnNumericData::kFloat, 900.f, &status);
+ //   CHECK_MSTATUS( status );
+ //   CHECK_MSTATUS( nAttr.setStorable(true));
+ //   CHECK_MSTATUS( nAttr.setKeyable(true));
+ //   CHECK_MSTATUS( nAttr.setDefault(900.f));
+ //   CHECK_MSTATUS( nAttr.setMin(1.f));
+	//nAttr.setCached( true );
+	//nAttr.setInternal( true );
 	
 	aHDRName = tAttr.create("hdrName", "hdrname",
 	MFnData::kString, MObject::kNullObj, &status);
@@ -163,12 +161,12 @@ MStatus bruiseMapNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
-	CHECK_MSTATUS( addAttribute(aSize));
-		CHECK_MSTATUS( addAttribute(aExposure));
+
+	CHECK_MSTATUS( addAttribute(aBias));
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	
 	addAttribute(aworldSpace);
-	attributeAffects( aExposure, aoutput );
+	attributeAffects( aBias, aoutput );
 	attributeAffects( aworldSpace, aoutput );
 	attributeAffects( agrowth, aoutput );
 	attributeAffects( astartframe, aoutput );
@@ -190,28 +188,17 @@ bruiseMapNode::setInternalValueInContext( const MPlug& plug,
 		handledAttribute = true;
 		m_hdrname = (MString) handle.asString();
 	}
-
-	else if (plug == aExposure)
-	{
-		handledAttribute = true;
-		float val = handle.asFloat();
-		if (val != m_exposure)
-		{
-			m_exposure = val;
-			mAttributesChanged = true;
-		}
-	}
-	else if (plug == aSize)
-	{
-		handledAttribute = true;
-		float val = handle.asFloat();
-		if (val != m_size)
-		{
-			m_size = val;
-			mAttributesChanged = true;
-		}
-	}
-
+	//else if (plug == aSize)
+	//{
+	//	handledAttribute = true;
+	//	float val = handle.asFloat();
+	//	if (val != m_size)
+	//	{
+	//		m_size = val;
+	//		mAttributesChanged = true;
+	//	}
+	//}
+//
 	return handledAttribute;
 }
 
@@ -222,21 +209,16 @@ bruiseMapNode::getInternalValueInContext( const MPlug& plug,
 											  MDGContext&)
 {
 	bool handledAttribute = false;
-	if (plug == aExposure)
-	{
-		handledAttribute = true;
-		handle.set( m_exposure );
-	}
-	else if (plug == aHDRName)
+	if (plug == aHDRName)
 	{
 		handledAttribute = true;
 		handle.set( m_hdrname );
 	}
-	else if (plug == aSize)
-	{
-		handledAttribute = true;
-		handle.set( m_size );
-	}
+	//else if (plug == aSize)
+	//{
+	//	handledAttribute = true;
+	//	handle.set( m_size );
+	//}
 
 	return handledAttribute;
 }

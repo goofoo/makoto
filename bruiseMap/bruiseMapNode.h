@@ -6,7 +6,8 @@
  *  Copyright 2007 __MyCompanyName__. All rights reserved.
  *
  */
-
+#ifndef _BRUISEMAPNODE_H
+#define _BRUISEMAPNODE_H
 #include <maya/MPxLocatorNode.h> 
 #include <maya/MString.h> 
 #include <maya/MTypeId.h> 
@@ -50,17 +51,15 @@ public:
 		// Attributes
 	static MObject  astartframe;
 	static MObject  acurrenttime;
-	static MObject  aExposure;
+	static MObject  aBias;
 	static MObject  aHDRName;
-	static MObject  aSize;
+	//static MObject  aSize;
 	static MObject aworldSpace;
 	static MObject aoutput;
 	static MObject agrowth;
 	static MObject aguide;
 	static	MTypeId		id;
 	
-		// Cached internal values
-	float m_exposure;
 	float m_size;
 	MString m_hdrname;
 	
@@ -68,3 +67,4 @@ private :
 	bruiseMap* m_base;
 	bool	mAttributesChanged;
 };
+#endif

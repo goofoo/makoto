@@ -211,14 +211,14 @@ copyIntoMaya.bat
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="D:\maya7.0\include;&quot;C:\Program Files\Alias\Maya7.0\include&quot;;&quot;$(SolutionDir)..\FCollada\LibXML\include&quot;;&quot;$(SolutionDir)..\FCollada&quot;;&quot;$(SolutionDir)&quot;;&quot;$(CG_INC_PATH)&quot;"
+				AdditionalIncludeDirectories="D:\maya7.0\include;D:\local\openexr\include\OpenEXR"
 				PreprocessorDefinitions="REQUIRE_IOSTREAM;WIN32;NDEBUG;_WINDOWS;_USRDLL;NT_PLUGIN"
 				StringPooling="TRUE"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="1"
-				WarnAsError="TRUE"
+				WarnAsError="FALSE"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4355"/>
@@ -227,11 +227,11 @@ copyIntoMaya.bat
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="FALSE"
-				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib Cg.lib CgGL.lib opengl32.lib"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin /NODEFAULTLIB:LIBCMTD /NODEFAULTLIB:LIBCPMTD"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib Cg.lib CgGL.lib opengl32.lib zlib.lib IlmImf.lib"
 				OutputFile="../module/plug-ins/BruiseMap70.mll"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\maya7.0\lib;&quot;C:\Program Files\Alias\Maya7.0\lib&quot;;&quot;$(CG_LIB_PATH)&quot;"
+				AdditionalLibraryDirectories="D:\local\glut;D:\maya7.0\lib;D:\local\openexr\lib"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs=""
 				GenerateDebugInformation="TRUE"
@@ -404,6 +404,9 @@ copyIntoMaya.bat
 			</File>
 			<File
 				RelativePath=".\pluginMain.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\zFnEXR.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\zWorks.cpp">
