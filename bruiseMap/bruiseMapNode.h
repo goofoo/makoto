@@ -52,16 +52,14 @@ public:
 	static MObject  astartframe;
 	static MObject  acurrenttime;
 	static MObject  aBias;
-	static MObject  aHDRName;
+	static MObject  amapsize;
+	static MObject  auvset;
 	static MObject  asavemap;
 	static MObject aworldSpace;
 	static MObject aoutput;
 	static MObject agrowth;
 	static MObject aguide;
 	static	MTypeId		id;
-	
-	float m_size;
-	MString m_hdrname;
 	
 private :
 	bruiseMap* m_base;

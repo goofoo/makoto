@@ -78,7 +78,7 @@ void meshCacheVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 	if(m_mode<0) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	glFrontFace(GL_CW);
 	glShadeModel(GL_SMOOTH);
-//zDisplayFloat(m_mode);
+
 	if(m_pMesh) 
 	{
 		if(m_mode<0) 

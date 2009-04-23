@@ -189,24 +189,27 @@ void bruiseMap::draw()
 	p_vert.clear();
 }
 
-void bruiseMap::init()
+void bruiseMap::init(int size)
 {
 	if(map_dist) delete[] map_dist;
-	map_dist = new float[1024*1024];
-	for(unsigned i=0; i<1024*1024; i++) map_dist[i] = 0;
+	
+	m_wh = size;
+	m_wh_minus1 = m_wh -1;
+	map_dist = new float[m_wh*m_wh];
+	for(unsigned i=0; i<m_wh*m_wh; i++) map_dist[i] = 0;
 }
 
-void write(int s, int t, float val, float* data)
+void bruiseMap::write(int s, int t, float val, float* data)
 {
-	if(s<0 || s >1023) return;
-	if(t<0 || t >1023) return;	
-	if(data[t*1024+s]==0) data[t*1024+s]=val;
-	else if(data[t*1024+s] < val) data[t*1024+s]=(val+ data[t*1024+s])/2;
+	if(s<0 || s >m_wh_minus1) return;
+	if(t<0 || t >m_wh_minus1) return;	
+	if(data[t*m_wh+s]==0) data[t*m_wh+s]=val;
+	else if(data[t*m_wh+s] < val) data[t*m_wh+s]=(val+ data[t*m_wh+s])/2;
 }
 
-void bruiseMap::save(float bias, const char* filename)
+void bruiseMap::save(float bias, const char* filename, MString& uvsetName)
 {
-		if(!has_base || !has_guide) return;
+	if(!has_base || !has_guide) return;
 	
 	MStatus status;
 	MFnMesh meshFn(pbase, &status );
@@ -270,9 +273,9 @@ void bruiseMap::save(float bias, const char* filename)
 				b = vexlist[i];
 				c = vexlist[i-1];
 				
-				faceIter.getUV(vexlist.length()-1, uva );
-				faceIter.getUV(i, uvb );
-				faceIter.getUV(i-1, uvc );
+				faceIter.getUV(vexlist.length()-1, uva, &uvsetName);
+				faceIter.getUV(i, uvb, &uvsetName);
+				faceIter.getUV(i-1, uvc, &uvsetName);
 				
 				ftri.create2D(uva, uvb, uvc);
 				

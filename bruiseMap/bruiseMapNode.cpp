@@ -31,7 +31,8 @@ MObject bruiseMapNode::astartframe;
 MObject bruiseMapNode::acurrenttime;
 MObject	bruiseMapNode::aBias;
 MObject bruiseMapNode::asavemap;
-MObject	bruiseMapNode::aHDRName;
+MObject	bruiseMapNode::amapsize;
+MObject	bruiseMapNode::auvset;
 MObject bruiseMapNode::aworldSpace;
 MObject bruiseMapNode::aoutput;
 MObject bruiseMapNode::agrowth;
@@ -66,7 +67,12 @@ MStatus bruiseMapNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		float bias = data.inputValue(aBias, &status).asFloat();
 
-		if(frame == startFrame) m_base->init();
+		if(frame == startFrame)
+		{
+			int mapsize = data.inputValue(amapsize, &status).asInt();
+			m_base->init(mapsize);
+		}
+		
 		int npt = m_base->dice(bias);
 
 		int isave = data.inputValue(asavemap, &status).asInt();
@@ -77,7 +83,10 @@ MStatus bruiseMapNode::compute( const MPlug& plug, MDataBlock& data )
 
 			cache_path = cache_path + "/data/" + MFnDependencyNode(thisMObject()).name() + "."+frame+".exr";
 			MGlobal::displayInfo(MString("Saving ")+cache_path);
-			m_base->save(bias, cache_path.asChar());
+			
+			MString uvname = data.inputValue(auvset).asString();
+			if(uvname == "") uvname = "map1";
+			m_base->save(bias, cache_path.asChar(), uvname);
 		}
 	    
 		data.setClean(plug);
@@ -128,17 +137,12 @@ MStatus bruiseMapNode::initialize()
     CHECK_MSTATUS( nAttr.setKeyable(true));
     CHECK_MSTATUS( nAttr.setMin(0.f));
 	
-	//aSize = nAttr.create("size", "size",
-	//					  MFnNumericData::kFloat, 900.f, &status);
- //   CHECK_MSTATUS( status );
- //   CHECK_MSTATUS( nAttr.setStorable(true));
- //   CHECK_MSTATUS( nAttr.setKeyable(true));
- //   CHECK_MSTATUS( nAttr.setDefault(900.f));
- //   CHECK_MSTATUS( nAttr.setMin(1.f));
-	//nAttr.setCached( true );
-	//nAttr.setInternal( true );
+	amapsize = nAttr.create( "mapsize", "mapsize", MFnNumericData::kInt, 1024 );
+	nAttr.setStorable(false);
+	nAttr.setKeyable(false);
+	addAttribute( amapsize );
 	
-	aHDRName = tAttr.create("hdrName", "hdrname",
+	auvset = tAttr.create("uvset", "uv",
 	MFnData::kString, MObject::kNullObj, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( tAttr.setStorable(true));
@@ -147,12 +151,11 @@ MStatus bruiseMapNode::initialize()
 	tAttr.setInternal( true );
 	
 	zWorks::createMatrixAttr(aworldSpace, "worldSpace", "ws");
-	
-	MFnNumericAttribute numAttr;
-	aoutput = numAttr.create( "outval", "ov", MFnNumericData::kInt, 1 );
-	numAttr.setStorable(false);
-	numAttr.setWritable(false);
-	numAttr.setKeyable(false);
+
+	aoutput = nAttr.create( "outval", "ov", MFnNumericData::kInt, 1 );
+	nAttr.setStorable(false);
+	nAttr.setWritable(false);
+	nAttr.setKeyable(false);
 	addAttribute( aoutput );
 	
 	zWorks::createTypedAttr(agrowth, MString("growMesh"), MString("gm"), MFnData::kMesh);
@@ -161,25 +164,25 @@ MStatus bruiseMapNode::initialize()
 	zWorks::createTypedAttr(aguide, MString("guideMesh"), MString("gdm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(aguide), "ERROR adding grow mesh");
 	
-	astartframe = numAttr.create( "startFrame", "sf", MFnNumericData::kInt, 1 );
-	numAttr.setStorable(true);
-	numAttr.setKeyable(true);
+	astartframe = nAttr.create( "startFrame", "sf", MFnNumericData::kInt, 1 );
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
 	addAttribute( astartframe );
 	
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
-	asavemap = numAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
-	numAttr.setStorable(false);
-	numAttr.setKeyable(true);
+	asavemap = nAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
+	nAttr.setStorable(false);
+	nAttr.setKeyable(true);
 	addAttribute(asavemap);
 	
 	CHECK_MSTATUS( addAttribute(aBias));
-	CHECK_MSTATUS( addAttribute(aHDRName));
+	CHECK_MSTATUS( addAttribute(auvset));
 	
 	addAttribute(aworldSpace);
 	attributeAffects( aBias, aoutput );
-	attributeAffects( aworldSpace, aoutput );
+	attributeAffects( amapsize, aoutput );
 	attributeAffects( agrowth, aoutput );
 	attributeAffects( astartframe, aoutput );
 	attributeAffects( acurrenttime, aoutput );
@@ -196,22 +199,7 @@ bruiseMapNode::setInternalValueInContext( const MPlug& plug,
 												  MDGContext&)
 {
 	bool handledAttribute = false;
-	if (plug == aHDRName)
-	{
-		handledAttribute = true;
-		m_hdrname = (MString) handle.asString();
-	}
-	//else if (plug == aSize)
-	//{
-	//	handledAttribute = true;
-	//	float val = handle.asFloat();
-	//	if (val != m_size)
-	//	{
-	//		m_size = val;
-	//		mAttributesChanged = true;
-	//	}
-	//}
-//
+
 	return handledAttribute;
 }
 
@@ -222,16 +210,6 @@ bruiseMapNode::getInternalValueInContext( const MPlug& plug,
 											  MDGContext&)
 {
 	bool handledAttribute = false;
-	if (plug == aHDRName)
-	{
-		handledAttribute = true;
-		handle.set( m_hdrname );
-	}
-	//else if (plug == aSize)
-	//{
-	//	handledAttribute = true;
-	//	handle.set( m_size );
-	//}
 
 	return handledAttribute;
 }

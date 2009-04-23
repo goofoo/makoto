@@ -10,6 +10,7 @@
 #ifndef _bruiseMap_H
 #define _bruiseMap_H
 #include <maya/MObject.h>
+#include <maya/MString.h>
 #include <maya/MDagPath.h>
 #include <maya/MPoint.h>
 #include <maya/MPointArray.h>
@@ -30,14 +31,15 @@ public:
 	
 	int dice(float bias);
 	void draw();
-	void init();
-	void save(float bias, const char* filename);
+	void init(int size);
+	void write(int s, int t, float val, float* data);
+	void save(float bias, const char* filename, MString& uvsetName);
 private:
 	char has_base, has_guide;
 	MObject pbase, pguide;
 	DiceParam* ddice;
 	float* ddist;
-	int n_samp, n_vert;
+	int n_samp, n_vert, m_wh, m_wh_minus1;
 	MFloatArray hitArray;
 	float* map_dist;
 };
