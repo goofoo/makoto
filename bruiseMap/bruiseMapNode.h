@@ -53,7 +53,7 @@ public:
 	static MObject  acurrenttime;
 	static MObject  aBias;
 	static MObject  aHDRName;
-	//static MObject  aSize;
+	static MObject  asavemap;
 	static MObject aworldSpace;
 	static MObject aoutput;
 	static MObject agrowth;

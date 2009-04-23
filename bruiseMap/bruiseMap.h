@@ -29,10 +29,9 @@ public:
 	char hasGuide() const {return has_guide;}
 	
 	int dice(float bias);
-	//void trace(float bias);
 	void draw();
 	void init();
-	void save(float bias);
+	void save(float bias, const char* filename);
 private:
 	char has_base, has_guide;
 	MObject pbase, pguide;

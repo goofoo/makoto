@@ -30,7 +30,7 @@ MTypeId bruiseMapNode::id( 0x0002517 );
 MObject bruiseMapNode::astartframe;
 MObject bruiseMapNode::acurrenttime;
 MObject	bruiseMapNode::aBias;
-//MObject	bruiseMapNode::aSize;
+MObject bruiseMapNode::asavemap;
 MObject	bruiseMapNode::aHDRName;
 MObject bruiseMapNode::aworldSpace;
 MObject bruiseMapNode::aoutput;
@@ -68,9 +68,17 @@ MStatus bruiseMapNode::compute( const MPlug& plug, MDataBlock& data )
 
 		if(frame == startFrame) m_base->init();
 		int npt = m_base->dice(bias);
-		//m_base->trace(bias);
-		//MGlobal::displayInfo(MString("Bruise map diced ") + npt + " samples");
-		m_base->save(bias);
+
+		int isave = data.inputValue(asavemap, &status).asInt();
+		if(isave==1) 
+		{
+			MString cache_path;
+			MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), cache_path);
+
+			cache_path = cache_path + "/data/" + MFnDependencyNode(thisMObject()).name() + "."+frame+".exr";
+			MGlobal::displayInfo(MString("Saving ")+cache_path);
+			m_base->save(bias, cache_path.asChar());
+		}
 	    
 		data.setClean(plug);
 	}
@@ -82,7 +90,7 @@ void bruiseMapNode::draw( M3dView & view, const MDagPath & /*path*/,
 							 M3dView::DisplayStatus status )
 {
 	view.beginGL(); 
-
+	glPointSize(2);
 	if(m_base->hasBase()) m_base->draw();
 
 	view.endGL();
@@ -90,7 +98,7 @@ void bruiseMapNode::draw( M3dView & view, const MDagPath & /*path*/,
 
 bool bruiseMapNode::isBounded() const
 { 
-	return true;
+	return false;
 }
 
 MBoundingBox bruiseMapNode::boundingBox() const
@@ -161,7 +169,11 @@ MStatus bruiseMapNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
-
+	asavemap = numAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
+	numAttr.setStorable(false);
+	numAttr.setKeyable(true);
+	addAttribute(asavemap);
+	
 	CHECK_MSTATUS( addAttribute(aBias));
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	
@@ -172,6 +184,7 @@ MStatus bruiseMapNode::initialize()
 	attributeAffects( astartframe, aoutput );
 	attributeAffects( acurrenttime, aoutput );
 	attributeAffects( aguide, aoutput );
+	attributeAffects( asavemap, aoutput );
 	
 	return MS::kSuccess;
 }

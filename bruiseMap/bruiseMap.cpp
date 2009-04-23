@@ -88,9 +88,9 @@ int bruiseMap::dice(float bias)
 		sum_area += (float)area;
 	}
 	
-	float epsilon = sqrt(sum_area/n_tri/2/16);
+	float epsilon = sqrt(sum_area/n_tri/2/13);
 
-	int estimate_ncell = n_tri*16*2;
+	int estimate_ncell = n_tri*13*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -141,7 +141,7 @@ int bruiseMap::dice(float bias)
 		ray = p_ray[ddice[i].id0]*ddice[i].alpha + p_ray[ddice[i].id1]*ddice[i].beta + p_ray[ddice[i].id2]*ddice[i].gamma;
 		ray.normalize();
 		ori += ray*bias;
-		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		if(guideFn.intersect (ori, -ray, Aphit, 0.0, MSpace::kObject, &Aihit, &status)) 
 		{
 			if(Aphit.length()==1) 
 			{
@@ -156,55 +156,7 @@ int bruiseMap::dice(float bias)
 	p_ray.clear();
 	return n_samp;	
 }
-/*
-void bruiseMap::trace(float bias)
-{
-	if(!has_base || n_samp < 1) return;
-	
-	MStatus status;
-	MFnMesh meshFn(pbase, &status );
-	
-	if(n_vert != meshFn.numVertices()) return;
-	
-	MItMeshVertex vertIter(pbase, &status);
-	MItMeshPolygon faceIter(pbase, &status);
-	MFnMesh guideFn(pguide, &status );
-	
-	MPointArray p_vert;
-	meshFn.getPoints ( p_vert, MSpace::kWorld );
-	
-	MVectorArray p_ray;
-	MVector ray;
-	for(;!vertIter.isDone(); vertIter.next() )
-	{
-		vertIter.getNormal (ray,  MSpace::kObject  );
-		p_ray.append(ray);
-	}
 
-	MPoint ori;
-	MPointArray Aphit;
-	MIntArray Aihit;
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		ori = p_vert[ddice[i].id0]*ddice[i].alpha + p_vert[ddice[i].id1]*ddice[i].beta + p_vert[ddice[i].id2]*ddice[i].gamma;
-		ray = p_ray[ddice[i].id0]*ddice[i].alpha + p_ray[ddice[i].id1]*ddice[i].beta + p_ray[ddice[i].id2]*ddice[i].gamma;
-		ray.normalize();
-		ori += ray*bias;
-		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
-		{
-			if(Aphit.length()==1) 
-			{
-				MVector tohit = Aphit[0] - ori;
-				ddist[i] = tohit.length();
-			}
-			else ddist[i] = -1;
-		}
-	}
-	
-	p_vert.clear();
-	p_ray.clear();
-}
-*/
 void bruiseMap::draw()
 {
 	if(!has_base || n_samp < 1) return;
@@ -244,7 +196,15 @@ void bruiseMap::init()
 	for(unsigned i=0; i<1024*1024; i++) map_dist[i] = 0;
 }
 
-void bruiseMap::save(float bias)
+void write(int s, int t, float val, float* data)
+{
+	if(s<0 || s >1023) return;
+	if(t<0 || t >1023) return;	
+	if(data[t*1024+s]==0) data[t*1024+s]=val;
+	else if(data[t*1024+s] < val) data[t*1024+s]=(val+ data[t*1024+s])/2;
+}
+
+void bruiseMap::save(float bias, const char* filename)
 {
 		if(!has_base || !has_guide) return;
 	
@@ -314,10 +274,6 @@ void bruiseMap::save(float bias)
 				faceIter.getUV(i, uvb );
 				faceIter.getUV(i-1, uvc );
 				
-				//va =XYZ(p_vert[a].x, p_vert[a].y, p_vert[a].z);
-				//vb =XYZ(p_vert[b].x, p_vert[b].y, p_vert[b].z);
-				//vc =XYZ(p_vert[c].x, p_vert[c].y, p_vert[c].z);
-				
 				ftri.create2D(uva, uvb, uvc);
 				
 				int n_dice = ftri.getGrid2D();
@@ -333,17 +289,41 @@ void bruiseMap::save(float bias)
 					ray.normalize();
 					ori += ray*bias;
 					
-					if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+					if(guideFn.intersect (ori, -ray, Aphit, 0, MSpace::kObject, &Aihit, &status)) 
 					{
 						if(Aphit.length()==1) 
 						{
 							int map_s = param[k].s;
 							int map_t = param[k].t;
 							tohit = Aphit[0] - ori;
-							map_dist[map_t*1024+map_s] = tohit.length();
+							float dist = tohit.length();
+							
+							map_s=param[k].s-1;
+							map_t=param[k].t-1;
+							write(map_s, map_t, dist, map_dist);
+							map_t++;
+							write(map_s, map_t, dist, map_dist);
+							map_t++;
+							write(map_s, map_t, dist, map_dist);
+							
+							map_s++;
+							map_t=param[k].t-1;
+							write(map_s, map_t, dist, map_dist);
+							map_t++;
+							write(map_s, map_t, dist, map_dist);
+							map_t++;
+							write(map_s, map_t, dist, map_dist);
+							
+							map_s++;
+							map_t=param[k].t-1;
+							write(map_s, map_t, dist, map_dist);
+							map_t++;
+							write(map_s, map_t, dist, map_dist);
+							map_t++;
+							write(map_s, map_t, dist, map_dist);
+							
 						}
 					}
-					
 				}
 				
 				delete[] param;
@@ -352,7 +332,7 @@ void bruiseMap::save(float bias)
 
 	}
 	
-
+/*
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		
@@ -366,7 +346,7 @@ void bruiseMap::save(float bias)
 			else ddist[i] = -1;
 		}
 	}
-/*
+
 	MPoint ori;
 	MVector ray;
 	for(unsigned i=0; i<n_samp; i++)
@@ -398,7 +378,7 @@ void bruiseMap::save(float bias)
 			data[(j*1024+i)*4+2] = 0;
 			data[(j*1024+i)*4+3] = 1;
 		}
-	ZFnEXR::save(data, "D:/foo.exr", 1024, 1024);
+	ZFnEXR::save(data, filename, 1024, 1024);
 	delete[] data;
 }
 //~:

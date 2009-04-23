@@ -29,10 +29,12 @@ global proc exrSetAChennel(int $i, string $name)
 global proc exrToggleAllChannels()
 {
 
-	string $exrckbarray[27] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli", 
+	string $exrckbarray[31] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli", 
 						"ckindirect", 
 						"ckdif", "ckrim", 
 						"ckepi", "cksub", "ckbks", 
+						"ckdifffill", "ckdiffback",
+						"ckspecfill", "ckspecback",
 						"ckspe", "ckkl", "ckfl", "ckbl", 
 						"ckshd", "ckref", "ckcau", "ckocc",  
 						"ckid", "ckdep", "cknormal" };
@@ -47,17 +49,21 @@ global proc exrToggleAllChannels()
 
 global proc exrSet2ndDisp()
 {
-	string $exrckbarray[27] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli",
+	string $exrckbarray[31] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli",
 						"ckindirect", 
 						"ckdif", "ckrim", 
 						"ckepi", "cksub", "ckbks", 
+						"ckdifffill", "ckdiffback",
+						"ckspecfill", "ckspecback",
 						"ckspe", "ckkl", "ckfl", "ckbl", 
 						"ckshd", "ckref", "ckcau", "ckocc",  
 						"ckid", "ckdep", "cknormal" };
-	string $exrvalarray[27] = { "_color", "_colorA", "_colorB", "_colorC", "_colorD", "_colorE", "_colorF", "_colorG", "_colorH", "_colorI",
+	string $exrvalarray[31] = { "_color", "_colorA", "_colorB", "_colorC", "_colorD", "_colorE", "_colorF", "_colorG", "_colorH", "_colorI",
 						"_indirect", 
 						"_diffuse", "_rim", 
 						"_epiderm", "_subderm", "_backscattering", 
+						"_diffuse_fill","_diffuse_back",  
+						"_specular_fill","_specular_back",  
 						"_specular", "_keylight", "_filllight", "_backlight", 
 						"_shadow", "_reflection", "_caustic", "_occlusion",
 						"_objectID", "_depth", "_normal" };
@@ -90,17 +96,21 @@ global proc exrCreateShakeScript()
 	string $fp = `workspace -q -rd` + "rmanpix/"+$jobname+".shk";
 	$fileId=`fopen $fp "w"`;
 	
-	string $exrckbarray[27] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli", 
+	string $exrckbarray[31] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli", 
 						"ckindirect", 
 						"ckdif", "ckrim", 
 						"ckepi", "cksub", "ckbks", 
+						"ckdifffill", "ckdiffback",
+						"ckspecfill", "ckspecback",
 						"ckspe", "ckkl", "ckfl", "ckbl", 
 						"ckshd", "ckref", "ckcau", "ckocc",  
 						"ckid", "ckdep", "cknormal" };
-	string $exrvalarray[27] = { "_color", "_colorA", "_colorB", "_colorC", "_colorD", "_colorE", "_colorF", "_colorG", "_colorH", "_colorI",
+	string $exrvalarray[31] = { "_color", "_colorA", "_colorB", "_colorC", "_colorD", "_colorE", "_colorF", "_colorG", "_colorH", "_colorI",
 						"_indirect", 
 						"_diffuse", "_rim", 
-						"_epiderm", "_subderm", "_backscattering", 
+						"_epiderm", "_subderm", "_backscattering",
+						"_diffuse_fill","_diffuse_back",  
+						"_specular_fill","_specular_back", 
 						"_specular", "_keylight", "_filllight", "_backlight", 
 						"_shadow", "_reflection", "_caustic", "_occlusion",
 						"_objectID", "_depth", "_normal" };
@@ -130,17 +140,21 @@ text -l "Select secondary display channels to create.\n";
 checkBox -label "all" -cc "exrToggleAllChannels" exr2nddspckbto;
 separator -style "single";
 
-	string $exrckbarray[27] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli",
+	string $exrckbarray[31] = { "ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf", "ckcolg", "ckcolh", "ckcoli",
 						"ckindirect", 
 						"ckdif", "ckrim", 
 						"ckepi", "cksub", "ckbks", 
+						"ckdifffill", "ckdiffback",
+						"ckspecfill", "ckspecback",
 						"ckspe", "ckkl", "ckfl", "ckbl", 
 						"ckshd", "ckref", "ckcau", "ckocc",  
 						"ckid", "ckdep", "cknormal" };
-	string $exrckblabelarray[27] = { "color", "color A", "color B", "color C", "color D", "color E", "color F", "color G",  "color H",  "color I",
+	string $exrckblabelarray[31] = { "color", "color A", "color B", "color C", "color D", "color E", "color F", "color G",  "color H",  "color I",
 						"indirect",
 						"diffuse", "rim", 
 						"epiderm", "subderm", "back scattering",
+						"_diffuse_fill","_diffuse_back",  
+						"_specular_fill","_specular_back", 
 						"specular", "key light", "fill light", "back light", 
 						"shadow", "reflection", "caustics", "occlusion",
 						"object ID", "depth", "normal" };
