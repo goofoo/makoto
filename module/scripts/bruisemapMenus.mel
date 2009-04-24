@@ -1,0 +1,204 @@
+global proc bruisemapRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the bruisemap menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if bruisemap menu exists, delete it first.
+        else {
+            if(`menuItem -exists bruisemapItems` ) deleteUI bruisemapItems;
+        }
+    }
+}
+
+global proc bruisemapCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the bruisemap menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if bruisemap menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists bruisemapItems` ) deleteUI bruisemapItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "Bruise Map" -subMenu true bruisemapItems;
+            menuItem -l "Create Viz" -c "bruisemap_attach";
+            menuItem -l "Save Map" -c "openSaveBuiseMapWin";
+            menuItem -divider true;
+            setParent -menu ..;
+    }
+}
+
+global proc bruisemap_attach()
+{
+	string $sel[] = `ls -sl`;
+	if(size($sel) != 2) 
+	{
+		print("Select 2 poly meshes to create bruise map!");
+		return;
+	}
+	
+	string $map =`createNode bruiseMapViz`;
+	
+	select -r $sel[0];
+	string $mesh[] = `pickWalk -d down`;
+	connectAttr -f ($mesh[0]+".outMesh") ($map+".guideMesh");
+	
+	select -r $sel[1];
+	$mesh = `pickWalk -d down`;
+	connectAttr -f ($mesh[0]+".outMesh") ($map+".growMesh");
+	
+	string $dummy = `createNode -n "dummy" transform`;
+	connectAttr -f ($map + ".outval") ($dummy+".translateX");
+	
+	connectAttr -f "time1.outTime" ($map + ".currentTime");
+	
+	setAttr ($map + ".startFrame") `playbackOptions -q -min`;
+}
+
+global proc openSaveBuiseMapWin()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists savebruisemapWin`) == true ) deleteUI savebruisemapWin;
+ 
+//Create the window.
+ window -title "Save Bruise Map Options" -wh 400 300  -mb false savebruisemapWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+	optionMenuGrp -label "UV Set" -cw 1 120 -columnWidth 2 80 savebruisemapOptUV;
+		string $sel[] = `ls -sl`;
+		if(size($sel)>0)
+		{
+			select $sel[0];
+			string $mesh[] = `pickWalk -d down`;
+			
+			string $uvs[] = `polyUVSet -q -allUVSets $mesh[0]`;
+			string $ac;
+			for($ac in $uvs) menuItem -label $ac;
+		}
+
+	optionMenuGrp -label "Map Size" -cw 1 120 -columnWidth 2 80 savebruisemapOptSize;
+		menuItem -label "1024";
+		menuItem -label "2048";
+		menuItem -label "4096";
+	
+    
+	intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` savebruisemapOptRange;
+
+	text -al left -l "\nDescription: select the base mesh to save.";
+
+//row begin
+button -l "Load" -c "doSaveBruiseMap;deleteUI savebruisemapWin"-p $row;
+button -l "Apply" -c "doSaveBruiseMap" -p $row;
+button -l "Close" -c "deleteUI savebruisemapWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm    $row     "bottom" 2
+        -attachForm     $row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm    $scroll "left"   2
+        -attachControl    $scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow savebruisemapWin;
+}
+
+global proc doSaveBruiseMap()
+{
+	string $sel[] = `ls -sl`;
+	select $sel[0];
+	string $mesh[] = `pickWalk -d down`;
+	
+	string $uvs[] = `polyUVSet -q -allUVSets $mesh[0]`;
+	
+	string $conn[] = `listConnections -d 1 -s 1 ( $mesh[0] + ".outMesh")`;
+	
+	int $iuv = `optionMenuGrp -q -select savebruisemapOptUV`;
+	
+	setAttr -type "string" ($conn[0] + ".uvset") $uvs[$iuv-1];
+	
+	int $isize = `optionMenuGrp -q -select savebruisemapOptSize`;
+	
+	if($isize==1) setAttr ($conn[0] + ".mapsize") 1024;
+	else if($isize==2) setAttr ($conn[0] + ".mapsize") 2048;
+	else setAttr ($conn[0] + ".mapsize") 4096;
+
+	int $amount = 0;
+	progressWindow -title "Writing Bruise Map" -progress $amount -status "Completed: 0%" -isInterruptable true;
+
+	int $s = `intFieldGrp -q -v1 savebruisemapOptRange`;
+	int $e = `intFieldGrp -q -v2 savebruisemapOptRange`;
+	int $step = 1;
+	
+	setAttr ($conn[0] + ".startFrame") $s;
+	setAttr ($conn[0] + ".saveMap") 1;
+
+	int $i;
+	for( $i = $s; $i <= $e; $i++ ) 
+	{
+		currentTime $i;
+		$amount = ($i+1-$s)/(1.0*($e+1-$s))*100;
+
+		// Check if the dialog has been cancelled
+		if ( `progressWindow -query -isCancelled` ) break; 
+		// Check if end condition has been reached
+		if ( `progressWindow -query -progress` > 100 ) break;
+
+		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%"); 
+		
+		//if( ($i-$s)%$step == 0 || $i==$e )
+		//	saveXMLSceneSingleFrame;
+	}
+	
+	progressWindow -endProgress;
+	
+	setAttr ($conn[0] + ".saveMap") 0;
+}

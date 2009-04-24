@@ -52,28 +52,36 @@ int bruiseMap::dice(float bias)
 	meshFn.getPoints ( p_vert, MSpace::kWorld );
 	n_vert = meshFn.numVertices(); 
 	
+	hitArray.clear();
+	hitparray.clear();
 	hitArray.setLength(n_vert);
+	hitparray.setLength(n_vert*2);
 	
-	MPointArray Aphit;
-	MIntArray Aihit;
 	for(unsigned i=0; !vertIter.isDone(); vertIter.next(), i++) 
 	{
+		hitArray[i] = -1;
 		MPoint vertp = vertIter.position( MSpace::kObject);
 		MVector vertn;
 		vertIter.getNormal(vertn, MSpace::kObject);
 		p_ray.append(vertn);
 		vertp += vertn*bias;
-		if(guideFn.intersect (vertp, -vertn, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
+		
+		MPointArray Aphit;
+		MIntArray Aihit;
+		if(guideFn.intersect (vertp, -vertn, Aphit, 0, MSpace::kObject, &Aihit, &status)) 
 		{
-			if(Aphit.length()==1) 
-			{
-				MVector tohit = Aphit[0] - vertp;
-				hitArray[i] = tohit.length();
-			}
-			else hitArray[i] = -1;
+			MVector hitnormal;
+			guideFn.getPolygonNormal ( Aihit[0], hitnormal,  MSpace::kObject  );
+				
+			if(hitnormal*-vertn > 0) hitArray[i] = 1;
+			hitparray[i*2] = Aphit[0];
+			hitparray[i*2+1] = vertp;
 		}
-		else hitArray[i] = -1;
-
+		else 
+		{
+			hitparray[i*2] = MPoint(0,0,0);
+			hitparray[i*2+1] = MPoint(0,0,0);
+		}
 	}
 	
 	unsigned n_tri = 0;
@@ -107,9 +115,14 @@ int bruiseMap::dice(float bias)
 	for( ; !faceIter.isDone(); faceIter.next() ) 
 	{
 		MIntArray  vexlist;
-		faceIter.getVertices ( vexlist );
-		
 		int hashit = 0;
+		faceIter.getConnectedVertices ( vexlist );
+		for(unsigned i=0; i< vexlist.length(); i++)
+		{
+			if(hitArray[vexlist[i]] >0) hashit =1;
+		}
+		
+		faceIter.getVertices ( vexlist );
 		for(unsigned i=0; i< vexlist.length(); i++)
 		{
 			if(hitArray[vexlist[i]] >0) hashit =1;
@@ -133,7 +146,7 @@ int bruiseMap::dice(float bias)
 
 	}
 	
-	MPoint ori;
+	/*MPoint ori;
 	MVector ray;
 	for(unsigned i=0; i<n_samp; i++)
 	{
@@ -150,7 +163,7 @@ int bruiseMap::dice(float bias)
 			}
 			else ddist[i] = -1;
 		}
-	}
+	}*/
 
 	p_vert.clear();
 	p_ray.clear();
@@ -177,12 +190,18 @@ void bruiseMap::draw()
 	glBegin(GL_POINTS);
 	for(unsigned i=0; i<n_samp; i++)
 	{
-		if(ddist[i]>0) 
-		{
+		//if(ddist[i]>0) 
+		//{
 			ori = p_vert[ddice[i].id0]*ddice[i].alpha + p_vert[ddice[i].id1]*ddice[i].beta + p_vert[ddice[i].id2]*ddice[i].gamma;
 			
 			glVertex3f(ori.x, ori.y, ori.z);
-		}
+		//}
+	}
+	glEnd();
+	glBegin(GL_LINES);
+	for(unsigned i=0; i<hitparray.length(); i++)
+	{
+			glVertex3f(hitparray[i].x, hitparray[i].y, hitparray[i].z);
 	}
 	glEnd();
 
@@ -223,43 +242,45 @@ void bruiseMap::save(float bias, const char* filename, MString& uvsetName)
 	n_vert = meshFn.numVertices(); 
 	
 	hitArray.setLength(n_vert);
-	
 	MPointArray Aphit;
 	MIntArray Aihit;
 	for(unsigned i=0; !vertIter.isDone(); vertIter.next(), i++) 
 	{
+		hitArray[i] = -1;
 		MPoint vertp = vertIter.position( MSpace::kObject);
 		MVector vertn;
 		vertIter.getNormal(vertn, MSpace::kObject);
 		p_ray.append(vertn);
 		vertp += vertn*bias;
-		if(guideFn.intersect (vertp, -vertn, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
-		{
-			if(Aphit.length()==1) 
-			{
-				MVector tohit = Aphit[0] - vertp;
-				hitArray[i] = tohit.length();
-			}
-			else hitArray[i] = -1;
-		}
-		else hitArray[i] = -1;
 
+		if(guideFn.intersect (vertp, -vertn, Aphit, 0, MSpace::kObject, &Aihit, &status)) 
+		{
+			MVector hitnormal;
+			guideFn.getPolygonNormal ( Aihit[0], hitnormal,  MSpace::kObject  );
+				
+			if(hitnormal*-vertn > 0) hitArray[i] = 1;
+		}
 	}
 
 	DiceTriangle ftri;
 	int a, b, c;
 	faceIter.reset();
 	int seed = 12;
-	//XYZ va, vb, vc;
+
 	float uva[2], uvb[2], uvc[2];
 	MPoint ori;
 	MVector ray, tohit;
 	for( ; !faceIter.isDone(); faceIter.next() ) 
 	{
 		MIntArray  vexlist;
-		faceIter.getVertices ( vexlist );
-		
 		int hashit = 0;
+		faceIter.getConnectedVertices ( vexlist );
+		for(unsigned i=0; i< vexlist.length(); i++)
+		{
+			if(hitArray[vexlist[i]] >0) hashit =1;
+		}
+		
+		faceIter.getVertices ( vexlist );
 		for(unsigned i=0; i< vexlist.length(); i++)
 		{
 			if(hitArray[vexlist[i]] >0) hashit =1;
@@ -279,11 +300,11 @@ void bruiseMap::save(float bias, const char* filename, MString& uvsetName)
 				
 				ftri.create2D(uva, uvb, uvc);
 				
-				int n_dice = ftri.getGrid2D();
+				int n_dice = ftri.getGrid2D(m_wh);
 				
 				Dice2DParam* param = new Dice2DParam[n_dice];
 				
-				int real_dice = ftri.rasterize2D(param, seed);seed++;
+				int real_dice = ftri.rasterize2D(param, seed, m_wh);seed++;
 				
 				for(int k=0; k<real_dice; k++)
 				{
@@ -294,7 +315,10 @@ void bruiseMap::save(float bias, const char* filename, MString& uvsetName)
 					
 					if(guideFn.intersect (ori, -ray, Aphit, 0, MSpace::kObject, &Aihit, &status)) 
 					{
-						if(Aphit.length()==1) 
+						MVector hitnormal;
+						guideFn.getPolygonNormal ( Aihit[0], hitnormal,  MSpace::kObject  );
+							
+						if(hitnormal*-ray > 0)
 						{
 							int map_s = param[k].s;
 							int map_t = param[k].t;
@@ -335,53 +359,19 @@ void bruiseMap::save(float bias, const char* filename, MString& uvsetName)
 
 	}
 	
-/*
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		
-		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
-		{
-			if(Aphit.length()==1) 
-			{
-				MVector tohit = Aphit[0] - ori;
-				ddist[i] = tohit.length();
-			}
-			else ddist[i] = -1;
-		}
-	}
-
-	MPoint ori;
-	MVector ray;
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		ori = p_vert[ddice[i].id0]*ddice[i].alpha + p_vert[ddice[i].id1]*ddice[i].beta + p_vert[ddice[i].id2]*ddice[i].gamma;
-		ray = p_ray[ddice[i].id0]*ddice[i].alpha + p_ray[ddice[i].id1]*ddice[i].beta + p_ray[ddice[i].id2]*ddice[i].gamma;
-		ray.normalize();
-		ori += ray*bias;
-		if(guideFn.intersect (ori, -ray, Aphit, 10e-6, MSpace::kObject, &Aihit, &status)) 
-		{
-			if(Aphit.length()==1) 
-			{
-				MVector tohit = Aphit[0] - ori;
-				ddist[i] = tohit.length();
-			}
-			else ddist[i] = -1;
-		}
-	}
-*/
 	p_vert.clear();
 	p_ray.clear();
 	
-	float* data = new float[1024*1024*4];
-	for(unsigned j=0; j<1024; j++)
-		for(unsigned i=0; i<1024; i++)
+	float* data = new float[m_wh*m_wh*4];
+	for(unsigned j=0; j<m_wh; j++)
+		for(unsigned i=0; i<m_wh; i++)
 		{
-			data[(j*1024+i)*4] = map_dist[j*1024+i];
-			data[(j*1024+i)*4+1] = 0;
-			data[(j*1024+i)*4+2] = 0;
-			data[(j*1024+i)*4+3] = 1;
+			data[(j*m_wh+i)*4] = map_dist[j*m_wh+i];
+			data[(j*m_wh+i)*4+1] = 0;
+			data[(j*m_wh+i)*4+2] = 0;
+			data[(j*m_wh+i)*4+3] = 1;
 		}
-	ZFnEXR::save(data, filename, 1024, 1024);
+	ZFnEXR::save(data, filename, m_wh, m_wh);
 	delete[] data;
 }
 //~:

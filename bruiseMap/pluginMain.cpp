@@ -19,7 +19,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "2.6.1 - 04/11/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.1.1 - 04/25/09", "Any");
 
 	status = plugin.registerNode( "bruiseMapViz", bruiseMapNode::id, 
 						 &bruiseMapNode::creator, &bruiseMapNode::initialize,
@@ -29,7 +29,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 
-	//MGlobal::executeCommand("source hdrviewerMenus.mel; hdrviewerCreateMenus;source slimcontrolMenus; slimcontrolCreateMenus();");
+	MGlobal::executeCommand("source bruisemapMenus.mel; bruisemapCreateMenus;");
 
 	return status;
 }
@@ -49,7 +49,7 @@ MStatus uninitializePlugin( MObject obj )
 		return status;
 	}
 
-	//MGlobal::executeCommand("hdrviewerRemoveMenus;slimcontrolRemoveMenus;");
+	MGlobal::executeCommand("bruisemapRemoveMenus;");
 	return status;
 }
 

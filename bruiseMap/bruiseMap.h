@@ -41,6 +41,7 @@ private:
 	float* ddist;
 	int n_samp, n_vert, m_wh, m_wh_minus1;
 	MFloatArray hitArray;
+	MPointArray hitparray;
 	float* map_dist;
 };
 #endif

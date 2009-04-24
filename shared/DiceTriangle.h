@@ -21,8 +21,8 @@ public:
 	void create(const XYZ& p0, const XYZ& p1, const XYZ& p2);
 	void create2D(const float* st0, const float* st1, const float* st2);
 	
-	int getGrid2D();
-	int rasterize2D(Dice2DParam* res, const int seed);
+	int getGrid2D(int grid_width);
+	int rasterize2D(Dice2DParam* res, const int seed, int grid_width);
 
 	void getP0(XYZ& in) const { in = p_obj[0]; }
 	void getP1(XYZ& in) const { in = p_obj[1]; }

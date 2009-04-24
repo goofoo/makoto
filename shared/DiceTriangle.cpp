@@ -207,7 +207,7 @@ void DiceTriangle::create2D(const float* st0, const float* st1, const float* st2
 	f012 = barycentric_coord(p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y);
 }
 
-int DiceTriangle::getGrid2D()
+int DiceTriangle::getGrid2D(int grid_width)
 {
 	float dy = p_obj[1].y - p_obj[0].y;
 	if(dy<0) dy = -dy;
@@ -235,10 +235,10 @@ int DiceTriangle::getGrid2D()
 	
 	if(dxa > dx) dx = dxa;
 	
-	return (1+dx*1024)*(1+dy*1024);
+	return (1+dx*grid_width)*(1+dy*grid_width);
 }
 
-int DiceTriangle::rasterize2D(Dice2DParam* res, const int seed)
+int DiceTriangle::rasterize2D(Dice2DParam* res, const int seed, int grid_width)
 {
 	float s_max = 0;
 	float t_max = 0;
@@ -252,10 +252,10 @@ int DiceTriangle::rasterize2D(Dice2DParam* res, const int seed)
 		if(p_obj[i].y < t_min) t_min = p_obj[i].y;
 	}
 	
-	float delta = 1.f/1024;
+	float delta = 1.f/grid_width;
 	
-	s_min = int(s_min*1024)*delta;
-	t_min = int(t_min*1024)*delta;
+	s_min = int(s_min*grid_width)*delta;
+	t_min = int(t_min*grid_width)*delta;
 	
 	int grid_x = (s_max-s_min)/delta + 1;
 	int grid_y = (t_max-t_min)/delta + 1;
