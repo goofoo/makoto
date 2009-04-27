@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="zhair"
+	ProjectGUID="{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}"
+	RootNamespace="COLLADA"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Maya6.5|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="&quot;$(MAYA_PATH65)\include&quot;;&quot;C:\Program Files\Alias\Maya6.5\include&quot;;&quot;C:\Program Files\AliasWavefront\Maya6.5\include&quot;;&quot;$(SolutionDir)..\FCollada\LibXML\include&quot;;&quot;$(SolutionDir)..\FCollada&quot;;&quot;$(SolutionDir)&quot;;&quot;$(CG_INC_PATH)&quot;"
+				PreprocessorDefinitions="REQUIRE_IOSTREAM;WIN32;NDEBUG;_WINDOWS;_USRDLL;NT_PLUGIN"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4355"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="FALSE"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib Cg.lib CgGL.lib opengl32.lib"
+				OutputFile="$(OutDir)/COLLADA.mll"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MAYA_PATH65)\lib&quot;;&quot;C:\Program Files\Alias\Maya6.5\lib&quot;;&quot;C:\Program Files\AliasWavefront\Maya6.5\lib&quot;;&quot;$(CG_LIB_PATH)&quot;"
+				IgnoreDefaultLibraryNames=""
+				DelayLoadDLLs=""
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/COLLADAexport.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Copying plugin to Maya install"
+				CommandLine="cd $(OutDir)
+copyIntoMaya.bat
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Maya6.5Debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="&quot;$(MAYA_PATH65)\include&quot;;&quot;C:\Program Files\Alias\Maya6.5\include&quot;;&quot;C:\Program Files\AliasWavefront\Maya6.5\include&quot;;&quot;$(SolutionDir)..\FCollada\LibXML\include&quot;;&quot;$(SolutionDir)..\FCollada&quot;;&quot;$(SolutionDir)&quot;;&quot;$(CG_INC_PATH)&quot;"
+				PreprocessorDefinitions="REQUIRE_IOSTREAM;WIN32;_DEBUG;_WINDOWS;_USRDLL;NT_PLUGIN"
+				StringPooling="TRUE"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4355"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="FALSE"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib Cg.lib CgGL.lib opengl32.lib"
+				OutputFile="$(OutDir)/COLLADA.mll"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MAYA_PATH65)\lib&quot;;&quot;C:\Program Files\Alias\Maya6.5\lib&quot;;&quot;C:\Program Files\AliasWavefront\Maya6.5\lib&quot;;&quot;$(CG_LIB_PATH)&quot;"
+				IgnoreDefaultLibraryNames=""
+				DelayLoadDLLs=""
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/COLLADAexport.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Copying plugin to Maya install"
+				CommandLine="cd $(OutDir)
+copyIntoMaya.bat
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Maya6.0.1|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="&quot;$(MAYA_PATH601)\include&quot;;&quot;C:\Program Files\Alias\Maya6.0.1\include&quot;;&quot;C:\Program Files\AliasWavefront\Maya6.0.1\include&quot;;&quot;$(SolutionDir)..\FCollada\LibXML\include&quot;;&quot;$(SolutionDir)..\FCollada&quot;;&quot;$(SolutionDir)&quot;;&quot;$(CG_INC_PATH)&quot;"
+				PreprocessorDefinitions="REQUIRE_IOSTREAM;WIN32;NDEBUG;_WINDOWS;_USRDLL;NT_PLUGIN"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4355"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="FALSE"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib Cg.lib CgGL.lib opengl32.lib"
+				OutputFile="$(OutDir)/COLLADA.mll"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MAYA_PATH601)\lib&quot;;&quot;C:\Program Files\Alias\Maya6.0.1\lib&quot;;&quot;C:\Program Files\AliasWavefront\Maya6.0.1\lib&quot;;&quot;$(CG_LIB_PATH)&quot;"
+				IgnoreDefaultLibraryNames=""
+				DelayLoadDLLs=""
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/COLLADAexport.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Copying plugin to Maya install"
+				CommandLine="cd $(OutDir)
+copyIntoMaya.bat
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Maya7.0|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="D:\maya7.0\include;&quot;C:\Program Files\Alias\Maya7.0\include&quot;;&quot;$(SolutionDir)..\FCollada\LibXML\include&quot;;&quot;$(SolutionDir)..\FCollada&quot;;&quot;$(SolutionDir)&quot;;&quot;$(CG_INC_PATH)&quot;"
+				PreprocessorDefinitions="REQUIRE_IOSTREAM;WIN32;NDEBUG;_WINDOWS;_USRDLL;NT_PLUGIN"
+				StringPooling="TRUE"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="1"
+				WarnAsError="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4355"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="FALSE"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib Cg.lib CgGL.lib opengl32.lib"
+				OutputFile="../module/plug-ins/ZHair70.mll"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\maya7.0\lib;&quot;C:\Program Files\Alias\Maya7.0\lib&quot;;&quot;$(CG_LIB_PATH)&quot;"
+				IgnoreDefaultLibraryNames=""
+				DelayLoadDLLs=""
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/COLLADAexport.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Copying plugin to Maya install"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Maya7.0Debug|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="&quot;$(MAYA_PATH70)\include&quot;;&quot;C:\Program Files\Alias\Maya7.0\include&quot;;&quot;$(SolutionDir)..\FCollada\LibXML\include&quot;;&quot;$(SolutionDir)..\FCollada&quot;;&quot;$(SolutionDir)&quot;;&quot;$(CG_INC_PATH)&quot;"
+				PreprocessorDefinitions="REQUIRE_IOSTREAM;WIN32;_DEBUG;_WINDOWS;_USRDLL;NT_PLUGIN"
+				StringPooling="TRUE"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4355"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="FALSE"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib Cg.lib CgGL.lib openGL32.lib"
+				OutputFile="$(OutDir)/COLLADA.mll"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MAYA_PATH70)\lib&quot;;&quot;C:\Program Files\Alias\Maya7.0\lib&quot;;&quot;$(CG_LIB_PATH)&quot;"
+				IgnoreDefaultLibraryNames=""
+				DelayLoadDLLs=""
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/COLLADAexport.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Copying plugin to Maya install"
+				CommandLine="cd $(OutDir)
+copyIntoMaya.bat
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Maya2008|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION_2008)\include;&quot;$(CG_INC_PATH)&quot;"
+				PreprocessorDefinitions="REQUIRE_IOSTREAM;WIN32;NDEBUG;_WINDOWS;_USRDLL;NT_PLUGIN"
+				StringPooling="TRUE"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="1"
+				WarnAsError="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4355"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="FALSE"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib Cg.lib CgGL.lib opengl32.lib cg.lib cggl.lib"
+				OutputFile="../module/plug-ins/HDREnvironmentViewer2008.mll"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION_2008)\lib;&quot;$(CG_LIB_PATH)&quot;"
+				IgnoreDefaultLibraryNames=""
+				DelayLoadDLLs=""
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/COLLADAexport.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Copying plugin to Maya install"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="source"
+			Filter="">
+			<File
+				RelativePath="..\shared\DiceTriangle.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\gBase.cpp">
+			</File>
+			<File
+				RelativePath=".\HairMap.cpp">
+			</File>
+			<File
+				RelativePath=".\HairMap.h">
+			</File>
+			<File
+				RelativePath=".\pluginMain.cpp">
+			</File>
+			<File
+				RelativePath=".\zHairNode.cpp">
+			</File>
+			<File
+				RelativePath=".\zHairNode.h">
+			</File>
+			<File
+				RelativePath="..\shared\zWorks.cpp">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

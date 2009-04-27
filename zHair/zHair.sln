@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zhair", "zHair.vcproj", "{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Maya2008 = Maya2008
+		Maya6.0.1 = Maya6.0.1
+		Maya6.5 = Maya6.5
+		Maya6.5Debug = Maya6.5Debug
+		Maya7.0 = Maya7.0
+		Maya7.0Debug = Maya7.0Debug
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya2008.ActiveCfg = Maya2008|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya2008.Build.0 = Maya2008|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya6.0.1.ActiveCfg = Maya6.0.1|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya6.0.1.Build.0 = Maya6.0.1|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya6.5.ActiveCfg = Maya6.5|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya6.5.Build.0 = Maya6.5|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya6.5Debug.ActiveCfg = Maya6.5Debug|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya6.5Debug.Build.0 = Maya6.5Debug|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya7.0.ActiveCfg = Maya7.0|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya7.0.Build.0 = Maya7.0|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya7.0Debug.ActiveCfg = Maya7.0Debug|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya7.0Debug.Build.0 = Maya7.0Debug|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
