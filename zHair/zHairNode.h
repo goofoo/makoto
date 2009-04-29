@@ -56,6 +56,7 @@ public:
 	static MObject aworldSpace;
 	static MObject aoutput;
 	static MObject agrowth;
+	static MObject aguide;
 	static	MTypeId		id;
 	
 		// Cached internal values

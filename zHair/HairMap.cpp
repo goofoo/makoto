@@ -13,7 +13,7 @@
 #include <maya/MFnMeshData.h>
 #include <maya/MItMeshPolygon.h>
 
-hairMap::hairMap():has_mesh(0),ddice(0),n_samp(0)
+hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0)
 {
 }
 hairMap::~hairMap() 
@@ -21,20 +21,26 @@ hairMap::~hairMap()
 	if(ddice) delete[] ddice;
 }
 
-void hairMap::setGrow(const MObject& mesh)
+void hairMap::setBase(const MObject& mesh)
 {
-	pgrow = mesh;
-	has_mesh = 1;
+	obase = mesh;
+	has_base = 1;
+}
+
+void hairMap::setGuide(const MObject& mesh)
+{
+	oguide = mesh;
+	has_guide = 1;
 }
 
 int hairMap::dice()
 {
-	if(!has_mesh) return 0;
+	if(!has_base) return 0;
 	
 	MStatus status;
-	MFnMesh meshFn(pgrow, &status );
-	MItMeshVertex vertIter(pgrow, &status);
-	MItMeshPolygon faceIter(pgrow, &status);
+	MFnMesh meshFn(obase, &status );
+	MItMeshVertex vertIter(obase, &status);
+	MItMeshPolygon faceIter(obase, &status);
 	
 	MPointArray p_vert;
 	meshFn.getPoints ( p_vert, MSpace::kWorld );
@@ -92,15 +98,15 @@ int hairMap::dice()
 
 void hairMap::draw()
 {
-	if(!has_mesh || n_samp < 1) return;
+	if(!has_base || n_samp < 1) return;
 	
 	MStatus status;
-	MFnMesh meshFn(pgrow, &status );
+	MFnMesh meshFn(obase, &status );
 	
 	if(n_vert != meshFn.numVertices()) return;
 	
-	MItMeshVertex vertIter(pgrow, &status);
-	MItMeshPolygon faceIter(pgrow, &status);
+	//MItMeshVertex vertIter(obase, &status);
+	//MItMeshPolygon faceIter(obase, &status);
 	
 	MPointArray p_vert;
 	meshFn.getPoints ( p_vert, MSpace::kWorld );
@@ -126,104 +132,24 @@ void hairMap::draw()
 	glEnd();
 	
 	delete[] pbuf;
+}
+
+void hairMap::drawGuide()
+{
+	if(!has_guide) return;
 	
-/*	
+	MStatus status;
+	
+	MItMeshPolygon faceIter(oguide, &status);if(!status) MGlobal::displayInfo("failed gyui");
+
 	glBegin(GL_POINTS);
-	for(unsigned i=0; !vertIter.isDone(); vertIter.next(), i++ )
+	MPoint cen;
+	for( ; !faceIter.isDone(); faceIter.next() ) 
 	{
-		S = vertIter.position(MSpace::kWorld);
-		glVertex3f(S.x, S.y, S.z);
+		cen = faceIter.center (  MSpace::kObject);
+		glVertex3f(cen.x, cen.y, cen.z);
 	}
+	
 	glEnd();
-
-	
-	MVector N, tang, ttang, binormal, dir, hair_up;
-	MColor Cscale, Cerect, Crotate, Ccurl;
-	float rot;
-	MATRIX44F hair_space;
-	
-	MString setScale("fb_scale");
-	MString setErect("fb_erect");
-	MString setRotate("fb_rotate");
-	MString setCurl("fb_curl");
-	MIntArray conn_face;
-	
-	
-	{
-		
-		
-		vertIter.getNormal(N, MSpace::kWorld);
-		N.normalize();
-		
-		vertIter.getColor(Cscale, &setScale);
-		vertIter.getColor(Cerect, &setErect);
-		vertIter.getColor(Crotate, &setRotate);
-		vertIter.getColor(Ccurl, &setCurl);
-		
-		vertIter.getConnectedFaces(conn_face);
-		tang = MVector(0,0,0);
-		for(int j=0; j<conn_face.length(); j++)
-		{
-			meshFn.getFaceVertexTangent (conn_face[j], i, ttang,  MSpace::kWorld);
-			ttang.normalize();
-			tang += ttang;
-		}
-		tang /= conn_face.length();
-		conn_face.clear();
-		tang.normalize();
-		tang = N^tang;
-		tang.normalize();
-		
-		binormal = N^tang;
-		
-		if(Crotate.r<0.5)
-		{
-			rot = (0.5 - Crotate.r)*2;
-			tang = tang + (binormal-tang)*rot;
-			tang.normalize();
-			binormal = N^tang;
-		}
-		else
-		{
-			rot = (Crotate.r-0.5)*2;
-			tang = tang + (binormal*-1-tang)*rot;
-			tang.normalize();
-			binormal = N^tang;
-		}
-		
-		dir = tang + (N - tang)*Cerect.r;
-		dir.normalize();
-		
-		//S = S+dir*Cscale.r*m_scale;
-		//glVertex3f(S.x, S.y, S.z);
-		
-		hair_up = dir^binormal;
-		
-		hair_space.setIdentity();
-		hair_space.setOrientations(XYZ(binormal.x, binormal.y, binormal.z), XYZ(hair_up.x, hair_up.y, hair_up.z), XYZ(dir.x, dir.y, dir.z));
-		
-		S = vertIter.position(MSpace::kWorld);
-		
-		hair_space.setTranslation(XYZ(S.x, S.y, S.z));
-		
-		fb->create(Cscale.r*m_scale, 0, Cscale.r*m_scale*(Ccurl.r-0.5)*2);
-		
-		XYZ pw;
-	
-		for(int j=0; j<NUMBENDSEG; j++)
-		{
-			fb->getPoint(j, pw);
-			hair_space.transform(pw);
-			glVertex3f(pw.x, pw.y, pw.z);
-			
-			fb->getPoint(j+1, pw);
-			hair_space.transform(pw);
-			glVertex3f(pw.x, pw.y, pw.z);
-		}
-
-		
-	}
-	
-*/	
 }
 //~:

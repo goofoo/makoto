@@ -1,26 +1,3 @@
-//-
-// ==========================================================================
-// Copyright (C) 1995 - 2005 Alias Systems Corp. and/or its licensors.  All 
-// rights reserved. 
-// 
-// The coded instructions, statements, computer programs, and/or related 
-// material (collectively the "Data") in these files are provided by Alias 
-// Systems Corp. ("Alias") and/or its licensors for the exclusive use of the 
-// Customer (as defined in the Alias Software License Agreement that 
-// accompanies this Alias software). Such Customer has the right to use, 
-// modify, and incorporate the Data into other products and to distribute such 
-// products for use by end-users.
-//  
-// THE DATA IS PROVIDED "AS IS".  ALIAS HEREBY DISCLAIMS ALL WARRANTIES 
-// RELATING TO THE DATA, INCLUDING, WITHOUT LIMITATION, ANY AND ALL EXPRESS OR 
-// IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND/OR FITNESS FOR A 
-// PARTICULAR PURPOSE. IN NO EVENT SHALL ALIAS BE LIABLE FOR ANY DAMAGES 
-// WHATSOEVER, WHETHER DIRECT, INDIRECT, SPECIAL, OR PUNITIVE, WHETHER IN AN 
-// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, OR IN EQUITY, 
-// ARISING OUT OF ACCESS TO, USE OF, OR RELIANCE UPON THE DATA.
-// ==========================================================================
-//+
-
 #include "zHairNode.h"
 #include "../shared/zWorks.h"
 #include "../shared/gBase.h"
@@ -35,6 +12,7 @@ MObject	HairNode::aHDRName;
 MObject HairNode::aworldSpace;
 MObject HairNode::aoutput;
 MObject HairNode::agrowth;
+MObject HairNode::aguide;
 
 HairNode::HairNode()
 {
@@ -52,7 +30,10 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 	if(plug == aoutput)
 	{
 		MObject ogrow = data.inputValue(agrowth).asMesh();
-		if(!ogrow.isNull()) m_base->setGrow(ogrow);
+		if(!ogrow.isNull()) m_base->setBase(ogrow);
+		
+		MObject oguide = data.inputValue(aguide).asMesh();
+		if(!oguide.isNull()) m_base->setGuide(oguide);
 		
 		//MMatrix mat = data.inputValue(aworldSpace).asMatrix();
 		MTime currentTime = data.inputValue(acurrenttime, &status).asTime();
@@ -77,19 +58,21 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 {
 	view.beginGL(); 
 
-	if(m_base->hasMesh()) m_base->draw();
+	glPointSize(2);
+	if(m_base->hasBase()) m_base->draw();
+	m_base->drawGuide();
 
 	view.endGL();
 }
 
 bool HairNode::isBounded() const
 { 
-	return true;
+	return false;
 }
 
 MBoundingBox HairNode::boundingBox() const
 { 
-	MPoint corner1( -1.-1,-1 );
+	MPoint corner1( -1,-1,-1 );
 	MPoint corner2( 1,1,1 );
 
 	return MBoundingBox( corner1, corner2 );
@@ -148,6 +131,9 @@ MStatus HairNode::initialize()
 	zWorks::createTypedAttr(agrowth, MString("growMesh"), MString("gm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(agrowth), "ERROR adding grow mesh");
 	
+	zWorks::createTypedAttr(aguide, MString("guideMesh"), MString("gdm"), MFnData::kMesh);
+	zCheckStatus(addAttribute(aguide), "ERROR adding guide mesh");
+	
 	astartframe = numAttr.create( "startFrame", "sf", MFnNumericData::kInt, 1 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
@@ -163,6 +149,7 @@ MStatus HairNode::initialize()
 	attributeAffects( aExposure, aoutput );
 	attributeAffects( aworldSpace, aoutput );
 	attributeAffects( agrowth, aoutput );
+	attributeAffects( aguide, aoutput );
 	attributeAffects( astartframe, aoutput );
 	attributeAffects( acurrenttime, aoutput );
 	

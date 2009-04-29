@@ -22,15 +22,18 @@ public:
 	hairMap();
 	~hairMap();
 	
-	void setGrow(const MObject& mesh);
-	char hasMesh() const {return has_mesh;}
+	void setBase(const MObject& mesh);
+	void setGuide(const MObject& mesh);
+	char hasBase() const {return has_base;}
+	char hasGuide() const {return has_guide;}
 	
 	int dice();
 	
 	void draw();
+	void drawGuide();
 private:
-	char has_mesh;
-	MObject pgrow;
+	char has_base, has_guide;
+	MObject obase, oguide;
 	DiceParam* ddice;
 	int n_samp, n_vert;
 };
