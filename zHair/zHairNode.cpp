@@ -45,6 +45,8 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		{
 			int npt = m_base->dice();
 			MGlobal::displayInfo(MString("ZHair diced ") + npt + " samples");
+			m_base->initGuide();
+			m_base->bind();
 		}
 	    
 		data.setClean(plug);
@@ -57,11 +59,11 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 							 M3dView::DisplayStatus status )
 {
 	view.beginGL(); 
-
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glPointSize(2);
 	if(m_base->hasBase()) m_base->draw();
 	m_base->drawGuide();
-
+	glPopAttrib();
 	view.endGL();
 }
 

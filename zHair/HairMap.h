@@ -16,6 +16,11 @@
 #include <maya/MVectorArray.h>
 #include "../shared/DiceTriangle.h"
 
+struct Dguide
+{
+	XYZ root, dsp_col;
+};
+
 class hairMap
 {
 public:
@@ -28,13 +33,18 @@ public:
 	char hasGuide() const {return has_guide;}
 	
 	int dice();
+	void bind();
 	
 	void draw();
+	void initGuide();
 	void drawGuide();
 private:
 	char has_base, has_guide;
 	MObject obase, oguide;
 	DiceParam* ddice;
 	int n_samp, n_vert;
+	Dguide* guide_data;
+	unsigned num_guide;
+	unsigned* bind_data;
 };
 #endif
