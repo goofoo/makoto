@@ -18,7 +18,11 @@
 
 struct Dguide
 {
-	XYZ root, dsp_col;
+	short num_seg;
+	XYZ dsp_col;
+	XYZ* P;
+	XYZ* N;
+	XYZ* T;
 };
 
 class hairMap

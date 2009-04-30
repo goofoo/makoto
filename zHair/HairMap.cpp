@@ -141,27 +141,46 @@ void hairMap::initGuide()
 	if(guide_data) delete[] guide_data;
 	
 	MStatus status;
-	
+	MFnMesh meshFn(oguide, &status);
 	MItMeshPolygon faceIter(oguide, &status);
 	
 	num_guide = faceIter.count()/5;
 	guide_data = new Dguide[num_guide];
 
 	MPoint cen;
+	MVector nor, tang;
+	MIntArray vertlist;
 	float r,g,b;
-	int acc=0;
+	int patch_id;
 	for(int i=0; !faceIter.isDone(); faceIter.next(), i++) 
 	{
+		patch_id = i/5;
+		
 		if(i%5 ==0)
 		{
-			cen = faceIter.center (  MSpace::kObject);
+			guide_data[patch_id].num_seg = 5;
+			guide_data[patch_id].P = new XYZ[5];
+			guide_data[patch_id].N = new XYZ[5];
+			guide_data[patch_id].T = new XYZ[5];
+
 			r = rand( )%31/31.f;
 			g = rand( )%71/71.f;
 			b = rand( )%11/11.f;
-			guide_data[acc].root = XYZ(cen.x, cen.y, cen.z);
-			guide_data[acc].dsp_col = XYZ(r,g,b);
-			acc++;
+			guide_data[patch_id].dsp_col = XYZ(r,g,b);
 		}
+		
+		cen = faceIter.center (  MSpace::kObject);
+		guide_data[patch_id].P[i%5] = XYZ(cen.x, cen.y, cen.z);
+		
+		faceIter.getNormal ( nor,  MSpace::kObject );
+		guide_data[patch_id].N[i%5] = XYZ(nor.x, nor.y, nor.z);
+		
+		faceIter.getVertices (vertlist);
+		
+		meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
+		tang = nor^tang;
+		tang.normalize();
+		guide_data[patch_id].T[i%5] = XYZ(tang.x, tang.y, tang.z);
 	}
 }
 
@@ -207,7 +226,7 @@ void hairMap::bind()
 		float min_dist = 10e6;
 		for(unsigned j=0; j<num_guide; j++)
 		{
-			togd = pbuf[i] - guide_data[j].root;
+			togd = pbuf[i] - guide_data[j].P[0];
 			dist = togd.length();
 			
 			if(dist < min_dist)
@@ -225,14 +244,20 @@ void hairMap::drawGuide()
 {
 	if(!has_guide || !guide_data) return;
 
-	glBegin(GL_POINTS);
+	glBegin(GL_LINES);
 	MPoint cen;
 	float r,g,b;
 	int acc=0;
 	for(int i=0; i<num_guide; i++) 
 	{
 		glColor3f(guide_data[i].dsp_col.x, guide_data[i].dsp_col.y, guide_data[i].dsp_col.z);
-		glVertex3f(guide_data[i].root.x, guide_data[i].root.y, guide_data[i].root.z);
+		for(short j = 0; j< guide_data[i].num_seg; j++) 
+		{
+			glVertex3f(guide_data[i].P[j].x, guide_data[i].P[j].y, guide_data[i].P[j].z);
+			glVertex3f(guide_data[i].P[j].x+guide_data[i].N[j].x, guide_data[i].P[j].y+guide_data[i].N[j].y, guide_data[i].P[j].z+guide_data[i].N[j].z);
+			glVertex3f(guide_data[i].P[j].x, guide_data[i].P[j].y, guide_data[i].P[j].z);
+			glVertex3f(guide_data[i].P[j].x+guide_data[i].T[j].x, guide_data[i].P[j].y+guide_data[i].T[j].y, guide_data[i].P[j].z+guide_data[i].T[j].z);
+		}
 	}
 	
 	glEnd();
