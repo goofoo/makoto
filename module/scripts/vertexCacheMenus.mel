@@ -64,10 +64,13 @@ global proc meshCacheAppendMenuItems()
 		menuItem -l "$OBJNAME" mcf_sf_name;
 		menuItem -l (`workspace -q -fn`+"/data/")  mcf_sf_path;
 		menuItem -l "world space" -cb 1 mcf_sf_ws;
-
 	setParent -menu ..;
-	menuItem -l "Save Mesh Cache" -c "openExportMeshCacheWin";
-	menuItem -l "Save Mesh Cache - Single Frame" -c "exportMeshCache";
+	menuItem -divider true;
+	menuItem -l "Save Model" -c "vxCache -w 0 -sg 1";
+	menuItem -l "Load Model" -c "mshc_loadsingle";
+	menuItem -divider true;
+	menuItem -l "Save MCF Mesh Cache" -c "openExportMeshCacheWin";
+	menuItem -l "Save MCF Mesh Cache - Single Frame" -c "exportMeshCache";
 	menuItem -divider true;
 	menuItem -l "Load MCF Mesh Cache" -c "openImportMeshCacheWin";
 	menuItem -l "Add Cache Deformer" -c "openAddCacheDeformerWin";
@@ -1028,4 +1031,22 @@ global proc mcf_getLicense()
 					-button "OK";
 }
 
+global proc mshc_loadsingle()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"data/*.mcf")`;
+	
+	string $buffer[];
+	$numTokens = `tokenize $path "." $buffer`;
 
+	string $node = `createNode meshCacheNode`;
+	string $shape = `createNode mesh`;
+	connectAttr -f ($node + ".outMesh") ($shape + ".inMesh");
+	sets -e -forceElement initialShadingGroup $shape;
+	setAttr -type "string" ($node + ".cachePath") $buffer[0];
+	delete -ch $shape;
+	
+	string $sname = $buffer[0];
+	$numTokens = `tokenize $sname "/" $buffer`;
+	rename $shape $buffer[$numTokens-1];
+}
