@@ -69,24 +69,9 @@ fishGen::fishGen() : m_project_path(0L),
     m_cache_body_1(0L),
     m_cache_body_2(0L),
     m_cache_body_3(0L),
-    m_cache_teeth_top_0(0L),
-    m_cache_teeth_top_1(0L),
-    m_cache_teeth_top_2(0L),
-    m_cache_teeth_top_3(0L),
-    m_cache_teeth_bottom_0(0L),
-    m_cache_teeth_bottom_1(0L),
-    m_cache_teeth_bottom_2(0L),
-    m_cache_teeth_bottom_3(0L),
-    m_cache_eye_0(0L),
-    m_cache_eye_1(0L),
-    m_cache_eye_2(0L),
-    m_cache_eye_3(0L),
-    m_body_surf(0L),
-    m_body_disp(0L),
-    m_teeth_surf(0L),
-    m_teeth_disp(0L),
     m_eye_surf(0L),
-    m_eye_disp(0L),
+	m_eye_0(0L),
+    m_eye_1(0L),
     m_xmin(-1),
     m_xmax(1),
     m_ymin(-1),
@@ -97,56 +82,12 @@ fishGen::fishGen() : m_project_path(0L),
     m_k_bend(1),
     m_k_oscillate(1),
     m_length(20),
-    m_frequency(1),
-    m_displacementBound(1)
+    m_frequency(1)
 {   
 }
 
 fishGen::~fishGen()
 {
-    if(m_cache_body_0)
-    {
-    	delete [] m_cache_body_0;
-    }
-    if(m_cache_body_1)
-    {
-    	delete [] m_cache_body_1;
-    }
-    if(m_cache_body_2)
-    {
-    	delete [] m_cache_body_2;
-    }
-    if(m_cache_body_3)
-    {
-    	delete [] m_cache_body_3;
-    }
-    if(m_body_surf)
-    {
-    	delete [] m_body_surf;
-    }
-    if(m_body_disp)
-    {
-    	delete [] m_body_disp;
-    }
-    if(m_cache_teeth_top_0) delete m_cache_teeth_top_0;
-    if(m_cache_teeth_top_1) delete m_cache_teeth_top_1;
-    if(m_cache_teeth_top_2) delete m_cache_teeth_top_2;
-    if(m_cache_teeth_top_3) delete m_cache_teeth_top_3;
-    if(m_cache_teeth_bottom_0) delete m_cache_teeth_bottom_0;
-    if(m_cache_teeth_bottom_1) delete m_cache_teeth_bottom_1;
-    if(m_cache_teeth_bottom_2) delete m_cache_teeth_bottom_2;
-    if(m_cache_teeth_bottom_3) delete m_cache_teeth_bottom_3;
-    if(m_cache_eye_0) delete m_cache_eye_0;
-    if(m_cache_eye_1) delete m_cache_eye_1;
-    if(m_cache_eye_2) delete m_cache_eye_2;
-    if(m_cache_eye_3) delete m_cache_eye_3;
-    
-    if(m_teeth_surf) delete m_teeth_surf;
-    if(m_teeth_disp) delete m_teeth_disp;
-    if(m_eye_surf) delete m_eye_surf;
-    if(m_eye_disp) delete m_eye_disp;
-    
-    
 }
 
 int
@@ -178,136 +119,17 @@ fishGen::SetArgs(RIBContext *c,
 	{
 	    RIBContextUtil::GetStringValue(vals[i], &m_cache_body_3);
  	}
- 	else if( !strcmp(args[i], "string bodySurface") )
+	else if( !strcmp(args[i], "string eye0") )
 	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_body_surf);
+	    RIBContextUtil::GetStringValue(vals[i], &m_eye_0);
  	}
- 	else if( !strcmp(args[i], "string bodyDisplacement") )
+ 	else if( !strcmp(args[i], "string eye1") )
 	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_body_disp);
+	    RIBContextUtil::GetStringValue(vals[i], &m_eye_1);
  	}
- //	else
-	//if( !strcmp(args[i], "float XMin") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_xmin);
-	//}
-	//else
-	//if( !strcmp(args[i], "float XMax") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_xmax);
-	//}
-	//else
-	//if( !strcmp(args[i], "float YMin") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_ymin);
-	//}
-	//else
-	//if( !strcmp(args[i], "float YMax") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_ymax);
-	//}
-	//else
-	//if( !strcmp(args[i], "float ZMin") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_zmin);
-	//}
-	//else
-	//if( !strcmp(args[i], "float ZMax") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_zmax);
-	//}
-	//else
-	//if( !strcmp(args[i], "float Kflap") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_k_flap);
-	//}
-	//else if( !strcmp(args[i], "float Kbend") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_k_bend);
-	//}
-	//else if( !strcmp(args[i], "float Koscillate") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_k_oscillate);
-	//}
-	//else if( !strcmp(args[i], "float Length") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_length);
-	//}
-	//else if( !strcmp(args[i], "float bonecount") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_bonecount);
-	//}
-	//else if( !strcmp(args[i], "float Frequency") )
-	//{
-	//    RIBContextUtil::GetFloatValue(vals[i], &m_frequency);
-	//}
-	else if( !strcmp(args[i], "float displacementBound") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_displacementBound);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethTop0") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_top_0);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethTop1") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_top_1);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethTop2") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_top_2);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethTop3") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_top_3);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethBottom0") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_bottom_0);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethBottom1") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_bottom_1);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethBottom2") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_bottom_2);
-	}
-	else if( !strcmp(args[i], "string CacheFileTeethBottom3") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_teeth_bottom_3);
-	}
-	else if( !strcmp(args[i], "string teethSurface") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_teeth_surf);
-	}
-	else if( !strcmp(args[i], "string teethDisplacement") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_teeth_disp);
-	}
-	else if( !strcmp(args[i], "string CacheFileEye0") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_eye_0);
-	}
-	else if( !strcmp(args[i], "string CacheFileEye1") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_eye_1);
-	}
-	else if( !strcmp(args[i], "string CacheFileEye2") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_eye_2);
-	}
-	else if( !strcmp(args[i], "string CacheFileEye3") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_cache_eye_3);
-	}
 	else if( !strcmp(args[i], "string eyeSurface") )
 	{
 	    RIBContextUtil::GetStringValue(vals[i], &m_eye_surf);
-	}
-	else if( !strcmp(args[i], "string eyeDisplacement") )
-	{
-	    RIBContextUtil::GetStringValue(vals[i], &m_eye_disp);
 	}
 	else
 	{
@@ -315,9 +137,6 @@ fishGen::SetArgs(RIBContext *c,
 	    	"unknown arg: %s (%d)", args[i], n);
 	}
     }
-	
-	gethostname(hostname, sizeof(hostname));
-    //MGlobal::displayInfo(hostname);
     return err;
 }
 
@@ -335,24 +154,6 @@ fishGen::GenRIB( RIBContext *c )
 	std::string b1 = sproj+m_cache_body_1;
 	std::string b2 = sproj+m_cache_body_2;
 	std::string b3 = sproj+m_cache_body_3;
-	std::string tt0 = m_cache_teeth_top_0;
-	std::string tt1 = m_cache_teeth_top_1;
-	std::string tt2 = m_cache_teeth_top_2;
-	std::string tt3 = m_cache_teeth_top_3;
-	std::string tb0 = m_cache_teeth_bottom_0;
-	std::string tb1 = m_cache_teeth_bottom_1;
-	std::string tb2 = m_cache_teeth_bottom_2;
-	std::string tb3 = m_cache_teeth_bottom_3;
-	std::string e0 = m_cache_eye_0;
-	std::string e1 = m_cache_eye_1;
-	std::string e2 = m_cache_eye_2;
-	std::string e3 = m_cache_eye_3;
-		
-	//MString sproj;
-	//MGlobal::executeCommand(MString ("string $p = `workspace -q -fn`"), sproj);
-	
-	//std::string pp = sproj.asChar();
-	//int iclear = pp.find_last_of('/', pp.size()-1);
 	
 	MAnimControl ftime;
 	MTime mayatime = ftime.currentTime();
@@ -437,7 +238,26 @@ fishGen::GenRIB( RIBContext *c )
 	
 	sfile = sfile + "." + 250*(int)mayatime.value() + ".pdc";
 	
-	//MString pdcfilename = MString(m_pdc_name)+"."+250*int(mayatime.value())+".pdc";
+// get eye transforms
+	float lspace[4][4];
+	MVector lscale = zWorks::getTransformWorldNoScale(m_eye_0, lspace);
+	
+	float rspace[4][4];
+	MVector rscale = zWorks::getTransformWorldNoScale(m_eye_1, rspace);
+	
+	char seyespace[400];
+	sprintf(seyespace,"%s %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
+	m_eye_surf,
+	lspace[0][0],lspace[0][1],lspace[0][2],
+	lspace[1][0],lspace[1][1],lspace[1][2],
+	lspace[2][0],lspace[2][1],lspace[2][2],
+	lspace[3][0],lspace[3][1],lspace[3][2],
+	lscale.x, lscale.y, lscale.z,
+	rspace[0][0],rspace[0][1],rspace[0][2],
+	rspace[1][0],rspace[1][1],rspace[1][2],
+	rspace[2][0],rspace[2][1],rspace[2][2],
+	rspace[3][0],rspace[3][1],rspace[3][2],
+	rscale.x, rscale.y, rscale.z);
 
 	pdcFile* fpdc = new pdcFile();
 	if(fpdc->load(sfile.asChar())==1)
@@ -463,7 +283,6 @@ fishGen::GenRIB( RIBContext *c )
 	
 	MATRIX44F mat;
 	RtMatrix transform;
-	//zFMatrix44f* fmat = new zFMatrix44f();
 	RtBound mybound = { m_xmin, m_xmax, m_ymin, m_ymax, m_zmin, m_zmax } ;
 	
 	
@@ -484,8 +303,7 @@ fishGen::GenRIB( RIBContext *c )
 		{
 			c->MotionBegin(2, shutterOpen, shutterClose);
 		}
-			//fmat->reset(mat);
-			
+
 			front.x = (float)ptc_front_0[i].x;
 			front.y = (float)ptc_front_0[i].y;
 			front.z = (float)ptc_front_0[i].z;
@@ -503,16 +321,7 @@ fishGen::GenRIB( RIBContext *c )
 			mat.setOrientations(side, up, front);
 			mat.scale(ptc_scale[i]);
 			mat.setTranslation(ptc_pos_0[i].x, ptc_pos_0[i].y, ptc_pos_0[i].z);
-			//side = fmat->vcross(front, up);
-			//fmat->vnormalize(side);
-		
-			//up = fmat->vcross(side, front);
-			//fmat->vnormalize(up);
-			
-			//fmat->setOrientation(mat, side, up, front);
-			//fmat->scale(mat, (float)ptc_scale[i]);
-			
-			//fmat->translate(mat, (float)ptc_pos_0[i].x, (float)ptc_pos_0[i].y, (float)ptc_pos_0[i].z);
+
 			transform[0][0] = mat(0,0);
 			transform[0][1] = mat(0,1);
 			transform[0][2] = mat(0,2);
@@ -532,9 +341,6 @@ fishGen::GenRIB( RIBContext *c )
 			c->ConcatTransform(transform);
 		if(usingMotionBlur)
 		{	
-			
-			//fmat->reset(mat);
-			
 			front.x = (float)ptc_front_0[i].x;
 			front.y = (float)ptc_front_0[i].y;
 			front.z = (float)ptc_front_0[i].z;
@@ -543,14 +349,6 @@ fishGen::GenRIB( RIBContext *c )
 			up.y = (float)ptc_up_0[i].y;
 			up.z = (float)ptc_up_0[i].z;
 			
-			//side = fmat->vcross(front, up);
-			//fmat->vnormalize(side);
-		
-			//up = fmat->vcross(side, front);
-			//fmat->vnormalize(up);
-			
-			//fmat->setOrientation(mat, side, up, front);
-			//fmat->scale(mat, (float)ptc_scale[i]);
 			side = front.cross(up);
 			side.normalize();
 			
@@ -564,7 +362,7 @@ fishGen::GenRIB( RIBContext *c )
 			delta_t = shutterClose - shutterOpen;
 			
 			mat.setTranslation((float)ptc_pos_0[i].x + delta_t*(float)ptc_vel_0[i].x, (float)ptc_pos_0[i].y + delta_t*(float)ptc_vel_0[i].y, (float)ptc_pos_0[i].z + delta_t*(float)ptc_vel_0[i].z);
-			//fmat->translate(mat, (float)ptc_pos_0[i].x + delta_t*(float)ptc_vel_0[i].x, (float)ptc_pos_0[i].y + delta_t*(float)ptc_vel_0[i].y, (float)ptc_pos_0[i].z + delta_t*(float)ptc_vel_0[i].z);
+			
 			transform[0][0] = mat(0,0);
 			transform[0][1] = mat(0,1);
 			transform[0][2] = mat(0,2);
@@ -586,70 +384,19 @@ fishGen::GenRIB( RIBContext *c )
 			
 		}
 
-		
-   // 		sharedpath(b0, iclear, hostname);
-   // 		sharedpath(b1, iclear, hostname);
-   // 		sharedpath(b2, iclear, hostname);
-   // 		sharedpath(b3, iclear, hostname);
-   // 		sharedpath(tb0, iclear, hostname);
-   // 		sharedpath(tb1, iclear, hostname);
-   // 		sharedpath(tb2, iclear, hostname);
-   // 		sharedpath(tb3, iclear, hostname);
-   // 		sharedpath(tt0, iclear, hostname);
-   // 		sharedpath(tt1, iclear, hostname);
-   // 		sharedpath(tt2, iclear, hostname);
-   // 		sharedpath(tt3, iclear, hostname);
-   // 		sharedpath(e0, iclear, hostname);
-   // 		sharedpath(e1, iclear, hostname);
-   // 		sharedpath(e2, iclear, hostname);
-   // 		sharedpath(e3, iclear, hostname);
-    		
-    		//
-		
-		setupShaders(c, m_body_surf, m_body_disp);
-		
-		char sbuf[1200];
-		sprintf(sbuf,"%s %s %s %s %f %f %f %f %f %f %f %i %f %f", 
+		char sbuf[1600];
+		sprintf(sbuf,"%s %s %s %s %f %f %f %f %f %f %f %i %f %f %s", 
 		b0.c_str(), b1.c_str(), b2.c_str(), b3.c_str(), 
 		ptc_time_0[i]/4.0f, ptc_amplitude[i]*600.0f*m_k_flap, ptc_bend[i]*1200.0f*m_k_bend, ptc_amplitude[i]*90.0f*m_k_oscillate, m_length, m_bonecount, m_frequency, 
 		usingMotionBlur, 
-		shutterOpen, shutterClose);
+		shutterOpen, shutterClose,
+		seyespace
+		);
 		
 		RtString args[] = { "plugins/fishProcedural.dll", sbuf };
 		
 		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
 		
-		/*
-		setupShaders(c, m_teeth_surf, m_teeth_disp);
-		
-		sprintf(sbuf,"%s %s %s %s %f %f %f %f %f %f %f %i %f %f", 
-		tt0.c_str(), tt1.c_str(), tt2.c_str(), tt3.c_str(), 
-		ptc_time_0[i]/4.0f, ptc_amplitude[i]*600.0f*m_k_flap, ptc_bend[i]*1200.0f*m_k_bend, ptc_amplitude[i]*90.0f*m_k_oscillate, m_length, m_bonecount, m_frequency, 
-		usingMotionBlur, 
-		shutterOpen, shutterClose);
-		
-		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
-		
-		setupShaders(c, m_teeth_surf, m_teeth_disp);
-		
-		sprintf(sbuf,"%s %s %s %s %f %f %f %f %f %f %f %i %f %f", 
-		tb0.c_str(), tb1.c_str(), tb2.c_str(), tb3.c_str(), 
-		ptc_time_0[i]/4.0f, ptc_amplitude[i]*600.0f*m_k_flap, ptc_bend[i]*1200.0f*m_k_bend, ptc_amplitude[i]*90.0f*m_k_oscillate, m_length, m_bonecount, m_frequency, 
-		usingMotionBlur, 
-		shutterOpen, shutterClose);
-
-		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
-		
-		setupShaders(c, m_eye_surf, m_eye_disp);
-		
-		sprintf(sbuf,"%s %s %s %s %f %f %f %f %f %f %f %i %f %f",  
-		e0.c_str(), e1.c_str(), e2.c_str(), e3.c_str(), 
-		ptc_time_0[i]/4.0f, ptc_amplitude[i]*600.0f*m_k_flap, ptc_bend[i]*1200.0f*m_k_bend, ptc_amplitude[i]*90.0f*m_k_oscillate, m_length, m_bonecount, m_frequency, 
-		usingMotionBlur, 
-		shutterOpen, shutterClose);
-
-		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
-*/
 		c->AttributeEnd();
 	}
 	
@@ -657,22 +404,4 @@ fishGen::GenRIB( RIBContext *c )
 	return 0;
 
 }
-
-void fishGen::setupShaders(RIBContext *c, const char* surface, const char* displacement)
-{
-	char* space = "shader";
-	if(strcmp(surface, "null"))
-	{
-		c->TransformBegin();
-		c->Surface((RtToken)surface, RI_NULL);
-		c->TransformEnd();
-	}
-	if(strcmp(displacement, "null"))
-	{
-		c->TransformBegin();
-		c->Attribute((RtToken)"displacementbound", (RtToken)"sphere", (RtPointer)&m_displacementBound, (RtToken)"coordinatesystem", (RtPointer)&space, RI_NULL);
-		
-		c->Displacement((RtToken)displacement, RI_NULL);
-		c->TransformEnd();
-	}
-}
+//~:

@@ -33,18 +33,6 @@ slim 1 appearance pixardb {
     	label "Project Path"
     	default {$PROJ/}
     }
-    parameter string bodySurface {
-    	description {Name of the surface shader attached to the primitive. Leave it as null if no per-object shader is needed.}
-    	label "Body Surface"
-    	default {null}
-		subtype file
-    }
-    parameter string bodyDisplacement {
-    	description {Name of the displacement shader attached to the primitive. Leave it as null if no per-object shader is needed.}
-    	label "Body Displacement"
-    	default {null}
-		subtype file
-    }
     parameter string CacheFileBody0 {
     	label "Cache Body Finest"
     	default {$PROJ/data/pSphereShape1.rmc}
@@ -65,78 +53,19 @@ slim 1 appearance pixardb {
     	default {$PROJ/data/pSphereShape1.rmc}
 		subtype file
     }
-
-    parameter string teethSurface {
-    	description {Name of the surface shader attached to the primitive. Leave it as null if no per-object shader is needed.}
-    	label "Teeth Surface"
-    	default {null}
+	parameter string eye0 {
+    	label "Eye Transform 0"
+    	default {}
     }
-    parameter string teethDisplacement {
-    	description {Name of the displacement shader attached to the primitive. Leave it as null if no per-object shader is needed.}
-    	label "Teeth Displacement"
-    	default {null}
-    }
-    parameter string CacheFileTeethTop0 {
-    	label "Cache Teeth Top Finest"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileTeethTop1 {
-    	label "Cache Teeth Top High"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileTeethTop2 {
-    	label "Cache Teeth Top Medium"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileTeethTop3 {
-    	label "Cache Teeth Top Low"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileTeethBottom0 {
-    	label "Cache Teeth Bottom Finest"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileTeethBottom1 {
-    	label "Cache Teeth Bottom High"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileTeethBottom2 {
-    	label "Cache Teeth Bottom Medium"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileTeethBottom3 {
-    	label "Cache Teeth Bottom Low"
-    	default {$PROJ/data/pSphereShape1.rmc}
+	parameter string eye1 {
+    	label "Eye Transform 1"
+    	default {}
     }
     parameter string eyeSurface {
     	description {Name of the surface shader attached to the primitive. Leave it as null if no per-object shader is needed.}
     	label "Eye Surface"
     	default {null}
-    }
-    parameter string eyeDisplacement {
-    	description {Name of the displacement shader attached to the primitive. Leave it as null if no per-object shader is needed.}
-    	label "Eye Displacement"
-    	default {null}
-    }
-    parameter string CacheFileEye0 {
-    	label "Cache Eye Finest"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileEye1 {
-    	label "Cache Eye High"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileEye2 {
-    	label "Cache Eye Medium"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter string CacheFileEye3 {
-    	label "Cache Eye Low"
-    	default {$PROJ/data/pSphereShape1.rmc}
-    }
-    parameter float displacementBound {
-      label "Displacement Bound"
-      default 1.0
+		subtype file
     }
   }
 }

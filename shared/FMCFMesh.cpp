@@ -268,11 +268,45 @@ void FMCFMesh::getCenterAndSize(XYZ& center, float& size) const
 
 void FMCFMesh::facevaryingS(float* res) const
 {
-	for(int i=0; i<m_num_face_vertices; i++) res[i] = coord_s[uvs[i]];
+	//for(int i=0; i<m_num_face_vertices; i++) res[i] = coord_s[uvs[i]];
+	int acc = 0;
+	for(int i=0; i<npolys; i++)
+	{
+		int cface = faceCount[i];
+		for(int j=0; j<cface; j++)
+		{
+			res[acc+j] = coord_s[uvs[acc+cface-1-j]];
+		}
+		acc += cface;
+	}
 }
 
 void FMCFMesh::facevaryingT(float* res) const
 {
-	for(int i=0; i<m_num_face_vertices; i++) res[i] = 1.0 - coord_t[uvs[i]];
+	//for(int i=0; i<m_num_face_vertices; i++) res[i] = 1.0 - coord_t[uvs[i]];
+	int acc = 0;
+	for(int i=0; i<npolys; i++)
+	{
+		int cface = faceCount[i];
+		for(int j=0; j<cface; j++)
+		{
+			res[acc+j] = 1.0 - coord_t[uvs[acc+cface-1-j]];
+		}
+		acc += cface;
+	}
+}
+
+void FMCFMesh::rmanVertices(int* res) const
+{
+	int acc = 0;
+	for(int i=0; i<npolys; i++)
+	{
+		int cface = faceCount[i];
+		for(int j=0; j<cface; j++)
+		{
+			res[acc+j] = vertices[acc+cface-1-j];
+		}
+		acc += cface;
+	}
 }
 //:~

@@ -42,6 +42,7 @@ public:
 	XYZ* points() const {return cvs;}
 	void facevaryingS(float* res) const;
 	void facevaryingT(float* res) const;
+	void rmanVertices(int* res) const;
 	
 	void getVertAndNormal(XYZ& p, XYZ& n, unsigned int id) const
 	{

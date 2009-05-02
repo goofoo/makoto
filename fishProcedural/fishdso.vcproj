@@ -150,6 +150,9 @@
 			<File
 				RelativePath="..\shared\FMCFMesh.cpp">
 			</File>
+			<File
+				RelativePath="..\shared\RSphere.cpp">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
