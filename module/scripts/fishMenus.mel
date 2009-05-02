@@ -1,0 +1,130 @@
+global proc fishVizRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the fishViz menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if fishViz menu exists, delete it first.
+        else {
+            if(`menuItem -exists fishVizItems` ) deleteUI fishVizItems;
+        }
+    }
+}
+
+global proc fishVizCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the fishViz menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if fishViz menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists fishVizItems` ) deleteUI fishVizItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "Fish" -subMenu true fishVizItems;
+            menuItem -l "Create Viz" -c fishSetupWnd;
+            setParent -menu ..;
+    }
+}
+
+global proc fishSetup()
+{
+	string $log;
+	
+	string $viz = `createNode fishVizNode`;
+	setAttr -type "string" ($viz+".cacheName") (`textFieldGrp -q -text fishgrpcachename`);
+	string $mesh[] = `polyCube`;
+	select -r $mesh[0];
+	$mesh = `pickWalk -d down`;
+	connectAttr -f ($viz+".outMesh") ($mesh[0]+".inMesh");
+	connectAttr -f time1.outTime ($viz+".currentTime");
+	
+	playbackOptions -min `floatFieldGrp -q -v1 fishgrprange` -max `floatFieldGrp -q -v2 fishgrprange`;
+	
+	if(`textFieldGrp -q -text fishgrpmeshname`!="")
+	{
+		connectAttr -f (`textFieldGrp -q -text fishgrpmeshname`+".outMesh") ($viz+".inMesh");
+	}
+}
+
+global proc fishSetupWnd()
+{
+	
+//If such a window already exists, destory it.
+if ( (`window -exists wndfishSetup`) == true ) deleteUI wndfishSetup;
+
+//Create the window.
+window -title "Fish AI Cache Reader" -wh 400 320 wndfishSetup;
+columnLayout -adjustableColumn true; //Start of the column.
+text -l "";
+text -l ("Current project: "+`workspace -q -fn`);
+text -l "";
+separator -style "single";
+textFieldButtonGrp -cw 1 100 -cw 2 190 -bl "..." -bc "fcs_loadPDC" -label "Cache Name" -text  "" fishgrpcachename;
+textFieldButtonGrp -cw 1 100 -cw 2 190 -bl "use selected" -bc "fcs_selectMesh" -annotation "Shape name of the fish model" -label "Fish Mesh" -text "" fishgrpmeshname;
+floatFieldGrp -cw 1 100 -label "Start/End" -nf 2 -v1 1 -v2 200 fishgrprange;
+separator -style "single";
+button -l "Import" -c "fishSetup";
+
+//Show it.
+showWindow wndfishSetup; 
+}
+
+global proc fcs_loadPDC()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"particles/*.pdc")`;
+	
+	string $buffer[];
+	$numTokens = `tokenize $path "." $buffer`;
+	
+	textFieldButtonGrp -e -text $buffer[0] fishgrpcachename;
+}
+
+global proc fcs_selectMesh()
+{
+	string $sel[] = `ls -sl`;
+	string $am;
+	for($am in $sel)
+	{
+		select -r $am;
+		string $mesh[] = `pickWalk -d down`;
+		if(`nodeType $mesh[0]` == "mesh")textFieldButtonGrp -e -text $mesh[0] fishgrpmeshname;
+	}
+}

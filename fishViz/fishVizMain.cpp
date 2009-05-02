@@ -1,5 +1,6 @@
 #include "fishVizNode.h"
 #include <maya/MFnPlugin.h>
+#include <maya/MGlobal.h>
 
 MStatus initializePlugin( MObject obj )
 { 
@@ -13,6 +14,8 @@ MStatus initializePlugin( MObject obj )
 		status.perror("registerNode");
 		return status;
 	}
+	
+	MGlobal::executeCommand("source fishMenus.mel; fishVizCreateMenus;");
 
 	return status;
 }
@@ -28,5 +31,6 @@ MStatus uninitializePlugin( MObject obj)
 		return status;
 	}
 
+	MGlobal::executeCommand("fishVizRemoveMenus;");
 	return status;
 }
