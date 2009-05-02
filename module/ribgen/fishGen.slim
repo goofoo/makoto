@@ -1,0 +1,199 @@
+#
+## Copyright (c) 1999 PIXAR.  All rights reserved.  This program or
+## documentation contains proprietary confidential information and trade
+## secrets of PIXAR.  Reverse engineering of object code is prohibited.
+## Use of copyright notice is precautionary and does not imply
+## publication.
+##
+##                      RESTRICTED RIGHTS NOTICE
+##
+## Use, duplication, or disclosure by the Government is subject to the
+## following restrictions:  For civilian agencies, subparagraphs (a) through
+## (d) of the Commercial Computer Software--Restricted Rights clause at
+## 52.227-19 of the FAR; and, for units of the Department of Defense, DoD
+## Supplement to the FAR, clause 52.227-7013 (c)(1)(ii), Rights in
+## Technical Data and Computer Software.
+##
+## Pixar
+## 1001 West Cutting Blvd.
+## Richmond, CA  94804
+##
+## ----------------------------------------------------------------------------
+#
+# quadrics.slim
+#   the ui description for the  quadrics ribgen.
+#
+# $Revision: #1 $
+#
+slim 1 appearance pixardb {
+    instance dso fishGen $SLIMMASTER {
+    	description {A RIB Generator that emits RIB fish.}
+    subtype ribgen
+    
+    parameter string bodySurface {
+    	description {Name of the surface shader attached to the primitive. Leave it as null if no per-object shader is needed.}
+    	label "Body Surface"
+    	default {null}
+    }
+    parameter string bodyDisplacement {
+    	description {Name of the displacement shader attached to the primitive. Leave it as null if no per-object shader is needed.}
+    	label "Body Displacement"
+    	default {null}
+    }
+    parameter string CacheFileBody0 {
+    	label "Cache Body Finest"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileBody1 {
+    	label "Cache Body High"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileBody2 {
+    	label "Cache Body Medium"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileBody3 {
+    	label "Cache Body Low"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+
+    parameter string teethSurface {
+    	description {Name of the surface shader attached to the primitive. Leave it as null if no per-object shader is needed.}
+    	label "Teeth Surface"
+    	default {null}
+    }
+    parameter string teethDisplacement {
+    	description {Name of the displacement shader attached to the primitive. Leave it as null if no per-object shader is needed.}
+    	label "Teeth Displacement"
+    	default {null}
+    }
+    parameter string CacheFileTeethTop0 {
+    	label "Cache Teeth Top Finest"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileTeethTop1 {
+    	label "Cache Teeth Top High"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileTeethTop2 {
+    	label "Cache Teeth Top Medium"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileTeethTop3 {
+    	label "Cache Teeth Top Low"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileTeethBottom0 {
+    	label "Cache Teeth Bottom Finest"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileTeethBottom1 {
+    	label "Cache Teeth Bottom High"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileTeethBottom2 {
+    	label "Cache Teeth Bottom Medium"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileTeethBottom3 {
+    	label "Cache Teeth Bottom Low"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string eyeSurface {
+    	description {Name of the surface shader attached to the primitive. Leave it as null if no per-object shader is needed.}
+    	label "Eye Surface"
+    	default {null}
+    }
+    parameter string eyeDisplacement {
+    	description {Name of the displacement shader attached to the primitive. Leave it as null if no per-object shader is needed.}
+    	label "Eye Displacement"
+    	default {null}
+    }
+    parameter string CacheFileEye0 {
+    	label "Cache Eye Finest"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileEye1 {
+    	label "Cache Eye High"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileEye2 {
+    	label "Cache Eye Medium"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter string CacheFileEye3 {
+    	label "Cache Eye Low"
+    	default {$PROJ/data/pSphereShape1.rmc}
+    }
+    parameter float displacementBound {
+      label "Displacement Bound"
+      default 1.0
+    }
+    parameter float XMin {
+      label "XMin"
+      subtype slider
+      range {-100 100}
+      default -1
+    }
+    parameter float XMax {
+      label "XMax"
+      subtype slider
+      range {-100 100}
+      default 1
+    }
+    parameter float YMin {
+      label "YMin"
+      subtype slider
+      range {-100 100}
+      default -1
+    }
+    parameter float YMax {
+      label "YMax"
+      subtype slider
+      range {-100 100}
+      default 1
+    }
+    parameter float ZMin {
+      label "ZMin"
+      subtype slider
+      range {-100 100}
+      default -1
+    }
+    parameter float ZMax {
+      label "ZMax"
+      subtype slider
+      range {-100 100}
+      default 1
+    }
+    parameter float Kflap {
+      label "Flap Strength"
+      default 1
+    }
+    parameter float Kbend {
+      label "Bend Strength"
+      default 1
+    }
+    parameter float Koscillate {
+      label "Oscillate Strength"
+      default 1
+    }
+    parameter float Length {
+      label "Length"
+      subtype slider
+      range {0 100}
+      default 20
+    }
+    parameter float bonecount {
+      label "Bone Count"
+      subtype slider
+      range {4 30 1}
+      default 20
+    }
+    parameter float Frequency {
+      label "Frequency"
+      subtype slider
+      range {0 10}
+      default 1
+    }
+  }
+}

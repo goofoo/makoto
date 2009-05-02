@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-DNT"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(MAYATREE)\include&quot;;&quot;D:\Pixar\prman-11.3.1\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(MAYA_LOCATION70)\include&quot;;D:\Pixar\devkit\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -43,10 +43,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
 				AdditionalDependencies="prman.lib OpenMaya.lib OpenMayaAnim.lib OpenMayaFX.lib Foundation.lib wsock32.lib"
-				OutputFile="..\module\shaders\fishGen.dll"
+				OutputFile="..\module\ribgen\fishGen.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(MAYATREE)\lib&quot;;&quot;D:\pixar\prman-11.3.1\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION70)\lib&quot;;D:\Pixar\devkit\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/getArrayValue.pdb"
 				SubSystem="2"
@@ -55,10 +55,7 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="cd ../module/shaders
-install
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -143,31 +140,13 @@ install
 				RelativePath=".\fishGen.cpp">
 			</File>
 			<File
-				RelativePath=".\fishGen.h">
-			</File>
-			<File
 				RelativePath="..\shared\pdcFile.cpp">
-			</File>
-			<File
-				RelativePath="..\shared\pdcFile.h">
 			</File>
 			<File
 				RelativePath="..\shared\RIBContextUtil.cpp">
 			</File>
 			<File
-				RelativePath="..\shared\RIBContextUtil.h">
-			</File>
-			<File
-				RelativePath="..\shared\zFMatrix44f.cpp">
-			</File>
-			<File
-				RelativePath="..\shared\zFMatrix44f.h">
-			</File>
-			<File
 				RelativePath="..\shared\zWorks.cpp">
-			</File>
-			<File
-				RelativePath="..\shared\zWorks.h">
 			</File>
 		</Filter>
 	</Files>

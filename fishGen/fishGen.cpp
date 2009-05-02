@@ -34,7 +34,7 @@
  */
 #include <winsock2.h>
 #include "fishGen.h"
-#include "../shared/zFMatrix44f.h"
+//#include "../shared/zFMatrix44f.h"
 
 //#include <string.h>
 //#include <limits.h>
@@ -48,6 +48,7 @@
 #include <maya/MAnimControl.h>
 #include "../shared/zWorks.h"
 #include "../shared/pdcFile.h"
+#include "../shared/zData.h"
 
 extern "C" RIBGen *
 RIBGenCreate()
@@ -181,36 +182,36 @@ fishGen::SetArgs(RIBContext *c,
 	{
 	    RIBContextUtil::GetStringValue(vals[i], &m_body_disp);
  	}
- 	else
-	if( !strcmp(args[i], "float XMin") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_xmin);
-	}
-	else
-	if( !strcmp(args[i], "float XMax") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_xmax);
-	}
-	else
-	if( !strcmp(args[i], "float YMin") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_ymin);
-	}
-	else
-	if( !strcmp(args[i], "float YMax") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_ymax);
-	}
-	else
-	if( !strcmp(args[i], "float ZMin") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_zmin);
-	}
-	else
-	if( !strcmp(args[i], "float ZMax") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_zmax);
-	}
+ //	else
+	//if( !strcmp(args[i], "float XMin") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_xmin);
+	//}
+	//else
+	//if( !strcmp(args[i], "float XMax") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_xmax);
+	//}
+	//else
+	//if( !strcmp(args[i], "float YMin") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_ymin);
+	//}
+	//else
+	//if( !strcmp(args[i], "float YMax") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_ymax);
+	//}
+	//else
+	//if( !strcmp(args[i], "float ZMin") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_zmin);
+	//}
+	//else
+	//if( !strcmp(args[i], "float ZMax") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_zmax);
+	//}
 	else
 	if( !strcmp(args[i], "float Kflap") )
 	{
@@ -355,16 +356,36 @@ fishGen::GenRIB( RIBContext *c )
 	
 	const char *objName = c->GetObjName();
 	
-	MObject ptcObj = zGetShape(MString(objName), MFn::kParticle);
+	MObject ocache = zGetShape(MString(objName), MFn::kLocator);
 	
-	if(ptcObj== MObject::kNullObj)
-	{
-		MGlobal::displayWarning(MString("ERROR fishGen skipped non-particle shape ") + MString(objName));
-		return -1;
-	}
+	//if(ptcObj== MObject::kNullObj)
+	//{
+	//	MGlobal::displayWarning(MString("ERROR fishGen skipped non-particle shape ") + MString(objName));
+	//	return -1;
+	//}
 	
-	MObject ocache;
-	zWorks::getConnectedNode(ocache, MFnDependencyNode(ptcObj).findPlug("position"));
+	MObject omesh;
+	zWorks::getConnectedNode(omesh, MFnDependencyNode(ocache).findPlug("inMesh"));
+	MString smesh = MFnDependencyNode(omesh).name();
+	
+	double t;
+	MGlobal::executeCommand( MString("getAttr ")+ smesh +".boundingBoxMinX", t, false, false );
+	m_xmin = t*1.1;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ smesh +".boundingBoxMaxX", t, false, false );
+	m_xmax = t*1.1;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ smesh +".boundingBoxMinY", t, false, false );
+	m_ymin = t*1.1;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ smesh +".boundingBoxMaxY", t, false, false );
+	m_ymax = t*1.1;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ smesh +".boundingBoxMinZ", t, false, false );
+	m_zmin = t*1.1;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ smesh +".boundingBoxMaxZ", t, false, false );
+	m_zmax = t*1.1;
 	
 	MString sfile;
 	MFnDependencyNode(ocache).findPlug("cacheName").getValue(sfile);
@@ -397,7 +418,7 @@ fishGen::GenRIB( RIBContext *c )
 	
 	MATRIX44F mat;
 	RtMatrix transform;
-	zFMatrix44f* fmat = new zFMatrix44f();
+	//zFMatrix44f* fmat = new zFMatrix44f();
 	RtBound mybound = { m_xmin, m_xmax, m_ymin, m_ymax, m_zmin, m_zmax } ;
 	
 	
@@ -418,7 +439,7 @@ fishGen::GenRIB( RIBContext *c )
 		{
 			c->MotionBegin(2, shutterOpen, shutterClose);
 		}
-			fmat->reset(mat);
+			//fmat->reset(mat);
 			
 			front.x = (float)ptc_front_0[i].x;
 			front.y = (float)ptc_front_0[i].y;
@@ -428,37 +449,46 @@ fishGen::GenRIB( RIBContext *c )
 			up.y = (float)ptc_up_0[i].y;
 			up.z = (float)ptc_up_0[i].z;
 			
-			side = fmat->vcross(front, up);
-			fmat->vnormalize(side);
+			side = front.cross(up);
+			side.normalize();
+			
+			up = side.cross(front);
+			up.normalize();
+			mat.setIdentity();
+			mat.setOrientations(side, up, front);
+			mat.scale(ptc_scale[i]);
+			mat.setTranslation(ptc_pos_0[i].x, ptc_pos_0[i].y, ptc_pos_0[i].z);
+			//side = fmat->vcross(front, up);
+			//fmat->vnormalize(side);
 		
-			up = fmat->vcross(side, front);
-			fmat->vnormalize(up);
+			//up = fmat->vcross(side, front);
+			//fmat->vnormalize(up);
 			
-			fmat->setOrientation(mat, side, up, front);
-			fmat->scale(mat, (float)ptc_scale[i]);
+			//fmat->setOrientation(mat, side, up, front);
+			//fmat->scale(mat, (float)ptc_scale[i]);
 			
-			fmat->translate(mat, (float)ptc_pos_0[i].x, (float)ptc_pos_0[i].y, (float)ptc_pos_0[i].z);
-			transform[0][0] = mat.m11;
-			transform[0][1] = mat.m12;
-			transform[0][2] = mat.m13;
-			transform[0][3] = mat.m14;
-			transform[1][0] = mat.m21;
-			transform[1][1] = mat.m22;
-			transform[1][2] = mat.m23;
-			transform[1][3] = mat.m24;
-			transform[2][0] = mat.m31;
-			transform[2][1] = mat.m32;
-			transform[2][2] = mat.m33;
-			transform[2][3] = mat.m34;
-			transform[3][0] = mat.m41;
-			transform[3][1] = mat.m42;
-			transform[3][2] = mat.m43;
-			transform[3][3] = mat.m44;
+			//fmat->translate(mat, (float)ptc_pos_0[i].x, (float)ptc_pos_0[i].y, (float)ptc_pos_0[i].z);
+			transform[0][0] = mat(0,0);
+			transform[0][1] = mat(0,1);
+			transform[0][2] = mat(0,2);
+			transform[0][3] = mat(0,3);
+			transform[1][0] = mat(1,0);
+			transform[1][1] = mat(1,1);
+			transform[1][2] = mat(1,2);
+			transform[1][3] = mat(1,3);
+			transform[2][0] = mat(2,0);
+			transform[2][1] = mat(2,1);
+			transform[2][2] = mat(2,2);
+			transform[2][3] = mat(2,3);
+			transform[3][0] = mat(3,0);
+			transform[3][1] = mat(3,1);
+			transform[3][2] = mat(3,2);
+			transform[3][3] = mat(3,3);
 			c->ConcatTransform(transform);
 		if(usingMotionBlur)
 		{	
 			
-			fmat->reset(mat);
+			//fmat->reset(mat);
 			
 			front.x = (float)ptc_front_0[i].x;
 			front.y = (float)ptc_front_0[i].y;
@@ -468,34 +498,44 @@ fishGen::GenRIB( RIBContext *c )
 			up.y = (float)ptc_up_0[i].y;
 			up.z = (float)ptc_up_0[i].z;
 			
-			side = fmat->vcross(front, up);
-			fmat->vnormalize(side);
+			//side = fmat->vcross(front, up);
+			//fmat->vnormalize(side);
 		
-			up = fmat->vcross(side, front);
-			fmat->vnormalize(up);
+			//up = fmat->vcross(side, front);
+			//fmat->vnormalize(up);
 			
-			fmat->setOrientation(mat, side, up, front);
-			fmat->scale(mat, (float)ptc_scale[i]);
+			//fmat->setOrientation(mat, side, up, front);
+			//fmat->scale(mat, (float)ptc_scale[i]);
+			side = front.cross(up);
+			side.normalize();
+			
+			up = side.cross(front);
+			up.normalize();
+			mat.setIdentity();
+			mat.setOrientations(side, up, front);
+			mat.scale(ptc_scale[i]);
+			
 			
 			delta_t = shutterClose - shutterOpen;
 			
-			fmat->translate(mat, (float)ptc_pos_0[i].x + delta_t*(float)ptc_vel_0[i].x, (float)ptc_pos_0[i].y + delta_t*(float)ptc_vel_0[i].y, (float)ptc_pos_0[i].z + delta_t*(float)ptc_vel_0[i].z);
-			transform[0][0] = mat.m11;
-			transform[0][1] = mat.m12;
-			transform[0][2] = mat.m13;
-			transform[0][3] = mat.m14;
-			transform[1][0] = mat.m21;
-			transform[1][1] = mat.m22;
-			transform[1][2] = mat.m23;
-			transform[1][3] = mat.m24;
-			transform[2][0] = mat.m31;
-			transform[2][1] = mat.m32;
-			transform[2][2] = mat.m33;
-			transform[2][3] = mat.m34;
-			transform[3][0] = mat.m41;
-			transform[3][1] = mat.m42;
-			transform[3][2] = mat.m43;
-			transform[3][3] = mat.m44;
+			mat.setTranslation((float)ptc_pos_0[i].x + delta_t*(float)ptc_vel_0[i].x, (float)ptc_pos_0[i].y + delta_t*(float)ptc_vel_0[i].y, (float)ptc_pos_0[i].z + delta_t*(float)ptc_vel_0[i].z);
+			//fmat->translate(mat, (float)ptc_pos_0[i].x + delta_t*(float)ptc_vel_0[i].x, (float)ptc_pos_0[i].y + delta_t*(float)ptc_vel_0[i].y, (float)ptc_pos_0[i].z + delta_t*(float)ptc_vel_0[i].z);
+			transform[0][0] = mat(0,0);
+			transform[0][1] = mat(0,1);
+			transform[0][2] = mat(0,2);
+			transform[0][3] = mat(0,3);
+			transform[1][0] = mat(1,0);
+			transform[1][1] = mat(1,1);
+			transform[1][2] = mat(1,2);
+			transform[1][3] = mat(1,3);
+			transform[2][0] = mat(2,0);
+			transform[2][1] = mat(2,1);
+			transform[2][2] = mat(2,2);
+			transform[2][3] = mat(2,3);
+			transform[3][0] = mat(3,0);
+			transform[3][1] = mat(3,1);
+			transform[3][2] = mat(3,2);
+			transform[3][3] = mat(3,3);
 			c->ConcatTransform(transform);
 			c->MotionEnd();
 			
@@ -518,22 +558,22 @@ fishGen::GenRIB( RIBContext *c )
 		std::string e2 = m_cache_eye_2;
 		std::string e3 = m_cache_eye_3;
 		
-    		sharedpath(b0, iclear, hostname);
-    		sharedpath(b1, iclear, hostname);
-    		sharedpath(b2, iclear, hostname);
-    		sharedpath(b3, iclear, hostname);
-    		sharedpath(tb0, iclear, hostname);
-    		sharedpath(tb1, iclear, hostname);
-    		sharedpath(tb2, iclear, hostname);
-    		sharedpath(tb3, iclear, hostname);
-    		sharedpath(tt0, iclear, hostname);
-    		sharedpath(tt1, iclear, hostname);
-    		sharedpath(tt2, iclear, hostname);
-    		sharedpath(tt3, iclear, hostname);
-    		sharedpath(e0, iclear, hostname);
-    		sharedpath(e1, iclear, hostname);
-    		sharedpath(e2, iclear, hostname);
-    		sharedpath(e3, iclear, hostname);
+   // 		sharedpath(b0, iclear, hostname);
+   // 		sharedpath(b1, iclear, hostname);
+   // 		sharedpath(b2, iclear, hostname);
+   // 		sharedpath(b3, iclear, hostname);
+   // 		sharedpath(tb0, iclear, hostname);
+   // 		sharedpath(tb1, iclear, hostname);
+   // 		sharedpath(tb2, iclear, hostname);
+   // 		sharedpath(tb3, iclear, hostname);
+   // 		sharedpath(tt0, iclear, hostname);
+   // 		sharedpath(tt1, iclear, hostname);
+   // 		sharedpath(tt2, iclear, hostname);
+   // 		sharedpath(tt3, iclear, hostname);
+   // 		sharedpath(e0, iclear, hostname);
+   // 		sharedpath(e1, iclear, hostname);
+   // 		sharedpath(e2, iclear, hostname);
+   // 		sharedpath(e3, iclear, hostname);
     		
     		//
 		
@@ -546,11 +586,11 @@ fishGen::GenRIB( RIBContext *c )
 		usingMotionBlur, 
 		shutterOpen, shutterClose);
 		
-		RtString args[] = { "afish.dll", sbuf };
+		RtString args[] = { "plugins/afish.dll", sbuf };
 		
 		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
 		
-		
+		/*
 		setupShaders(c, m_teeth_surf, m_teeth_disp);
 		
 		sprintf(sbuf,"%s %s %s %s %f %f %f %f %f %f %f %i %f %f", 
@@ -580,11 +620,11 @@ fishGen::GenRIB( RIBContext *c )
 		shutterOpen, shutterClose);
 
 		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
-
+*/
 		c->AttributeEnd();
 	}
 	
-	delete fmat;
+	//delete fmat;
 	return 0;
 
 }
