@@ -18,6 +18,7 @@ private: // see .sli file for details on variables
     
     RtFloat m_xmin, m_xmax, m_ymin, m_ymax, m_zmin, m_zmax, m_k_flap, m_k_bend, m_k_oscillate, m_length, m_frequency, m_displacementBound, m_bonecount;
     
+	char* m_project_path;
     char* m_cache_body_0;
     char* m_cache_body_1;
     char* m_cache_body_2;

@@ -64,7 +64,7 @@ RIBGenDestroy( RIBGen *g )
 }
 
 /*---------------------------------------------------------*/
-fishGen::fishGen() :
+fishGen::fishGen() : m_project_path(0L),
     m_cache_body_0(0L),
     m_cache_body_1(0L),
     m_cache_body_2(0L),
@@ -158,7 +158,11 @@ fishGen::SetArgs(RIBContext *c,
     
     for(i=0;i<n;i++)
     {
-    	if( !strcmp(args[i], "string CacheFileBody0") )
+	if(!strcmp(args[i], "string projectpath"))
+	{
+		RIBContextUtil::GetStringValue(vals[i], &m_project_path);
+	}
+    else if( !strcmp(args[i], "string CacheFileBody0") )
 	{
 	    RIBContextUtil::GetStringValue(vals[i], &m_cache_body_0);
  	}
@@ -212,31 +216,31 @@ fishGen::SetArgs(RIBContext *c,
 	//{
 	//    RIBContextUtil::GetFloatValue(vals[i], &m_zmax);
 	//}
-	else
-	if( !strcmp(args[i], "float Kflap") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_k_flap);
-	}
-	else if( !strcmp(args[i], "float Kbend") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_k_bend);
-	}
-	else if( !strcmp(args[i], "float Koscillate") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_k_oscillate);
-	}
-	else if( !strcmp(args[i], "float Length") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_length);
-	}
-	else if( !strcmp(args[i], "float bonecount") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_bonecount);
-	}
-	else if( !strcmp(args[i], "float Frequency") )
-	{
-	    RIBContextUtil::GetFloatValue(vals[i], &m_frequency);
-	}
+	//else
+	//if( !strcmp(args[i], "float Kflap") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_k_flap);
+	//}
+	//else if( !strcmp(args[i], "float Kbend") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_k_bend);
+	//}
+	//else if( !strcmp(args[i], "float Koscillate") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_k_oscillate);
+	//}
+	//else if( !strcmp(args[i], "float Length") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_length);
+	//}
+	//else if( !strcmp(args[i], "float bonecount") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_bonecount);
+	//}
+	//else if( !strcmp(args[i], "float Frequency") )
+	//{
+	//    RIBContextUtil::GetFloatValue(vals[i], &m_frequency);
+	//}
 	else if( !strcmp(args[i], "float displacementBound") )
 	{
 	    RIBContextUtil::GetFloatValue(vals[i], &m_displacementBound);
@@ -326,11 +330,29 @@ fishGen::Bound( RIBContext *, RtBound  )
 int
 fishGen::GenRIB( RIBContext *c )
 {
-	MString sproj;
-	MGlobal::executeCommand(MString ("string $p = `workspace -q -fn`"), sproj);
+	std::string sproj = m_project_path;
+	std::string b0 = sproj+m_cache_body_0;
+	std::string b1 = sproj+m_cache_body_1;
+	std::string b2 = sproj+m_cache_body_2;
+	std::string b3 = sproj+m_cache_body_3;
+	std::string tt0 = m_cache_teeth_top_0;
+	std::string tt1 = m_cache_teeth_top_1;
+	std::string tt2 = m_cache_teeth_top_2;
+	std::string tt3 = m_cache_teeth_top_3;
+	std::string tb0 = m_cache_teeth_bottom_0;
+	std::string tb1 = m_cache_teeth_bottom_1;
+	std::string tb2 = m_cache_teeth_bottom_2;
+	std::string tb3 = m_cache_teeth_bottom_3;
+	std::string e0 = m_cache_eye_0;
+	std::string e1 = m_cache_eye_1;
+	std::string e2 = m_cache_eye_2;
+	std::string e3 = m_cache_eye_3;
+		
+	//MString sproj;
+	//MGlobal::executeCommand(MString ("string $p = `workspace -q -fn`"), sproj);
 	
-	std::string pp = sproj.asChar();
-	int iclear = pp.find_last_of('/', pp.size()-1);
+	//std::string pp = sproj.asChar();
+	//int iclear = pp.find_last_of('/', pp.size()-1);
 	
 	MAnimControl ftime;
 	MTime mayatime = ftime.currentTime();
@@ -389,6 +411,29 @@ fishGen::GenRIB( RIBContext *c )
 	
 	MString sfile;
 	MFnDependencyNode(ocache).findPlug("cacheName").getValue(sfile);
+	
+	MString scache = MFnDependencyNode(ocache).name();
+	
+	MGlobal::executeCommand( MString("getAttr ")+ scache +".flapping", t, false, false );
+	m_k_flap = t;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ scache +".bending", t, false, false );
+	m_k_bend = t;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ scache +".oscillate", t, false, false );
+	m_k_oscillate = t;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ scache +".length", t, false, false );
+	m_length = t;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ scache +".oscillate", t, false, false );
+	m_k_oscillate = t;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ scache +".boneCount", t, false, false );
+	m_bonecount = t;
+	
+	MGlobal::executeCommand( MString("getAttr ")+ scache +".frequency", t, false, false );
+	m_frequency = t;
 	
 	sfile = sfile + "." + 250*(int)mayatime.value() + ".pdc";
 	
@@ -541,22 +586,6 @@ fishGen::GenRIB( RIBContext *c )
 			
 		}
 
-		std::string b0 = m_cache_body_0;
-		std::string b1 = m_cache_body_1;
-		std::string b2 = m_cache_body_2;
-		std::string b3 = m_cache_body_3;
-		std::string tt0 = m_cache_teeth_top_0;
-		std::string tt1 = m_cache_teeth_top_1;
-		std::string tt2 = m_cache_teeth_top_2;
-		std::string tt3 = m_cache_teeth_top_3;
-		std::string tb0 = m_cache_teeth_bottom_0;
-		std::string tb1 = m_cache_teeth_bottom_1;
-		std::string tb2 = m_cache_teeth_bottom_2;
-		std::string tb3 = m_cache_teeth_bottom_3;
-		std::string e0 = m_cache_eye_0;
-		std::string e1 = m_cache_eye_1;
-		std::string e2 = m_cache_eye_2;
-		std::string e3 = m_cache_eye_3;
 		
    // 		sharedpath(b0, iclear, hostname);
    // 		sharedpath(b1, iclear, hostname);

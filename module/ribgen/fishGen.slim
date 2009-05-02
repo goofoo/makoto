@@ -29,32 +29,41 @@ slim 1 appearance pixardb {
     instance dso fishGen $SLIMMASTER {
     	description {A RIB Generator that emits RIB fish.}
     subtype ribgen
-    
+    parameter string projectpath {
+    	label "Project Path"
+    	default {$PROJ/}
+    }
     parameter string bodySurface {
     	description {Name of the surface shader attached to the primitive. Leave it as null if no per-object shader is needed.}
     	label "Body Surface"
     	default {null}
+		subtype file
     }
     parameter string bodyDisplacement {
     	description {Name of the displacement shader attached to the primitive. Leave it as null if no per-object shader is needed.}
     	label "Body Displacement"
     	default {null}
+		subtype file
     }
     parameter string CacheFileBody0 {
     	label "Cache Body Finest"
     	default {$PROJ/data/pSphereShape1.rmc}
+		subtype file
     }
     parameter string CacheFileBody1 {
     	label "Cache Body High"
     	default {$PROJ/data/pSphereShape1.rmc}
+		subtype file
     }
     parameter string CacheFileBody2 {
     	label "Cache Body Medium"
     	default {$PROJ/data/pSphereShape1.rmc}
+		subtype file
     }
     parameter string CacheFileBody3 {
     	label "Cache Body Low"
     	default {$PROJ/data/pSphereShape1.rmc}
+		subtype file
     }
 
     parameter string teethSurface {
@@ -128,72 +137,6 @@ slim 1 appearance pixardb {
     parameter float displacementBound {
       label "Displacement Bound"
       default 1.0
-    }
-    parameter float XMin {
-      label "XMin"
-      subtype slider
-      range {-100 100}
-      default -1
-    }
-    parameter float XMax {
-      label "XMax"
-      subtype slider
-      range {-100 100}
-      default 1
-    }
-    parameter float YMin {
-      label "YMin"
-      subtype slider
-      range {-100 100}
-      default -1
-    }
-    parameter float YMax {
-      label "YMax"
-      subtype slider
-      range {-100 100}
-      default 1
-    }
-    parameter float ZMin {
-      label "ZMin"
-      subtype slider
-      range {-100 100}
-      default -1
-    }
-    parameter float ZMax {
-      label "ZMax"
-      subtype slider
-      range {-100 100}
-      default 1
-    }
-    parameter float Kflap {
-      label "Flap Strength"
-      default 1
-    }
-    parameter float Kbend {
-      label "Bend Strength"
-      default 1
-    }
-    parameter float Koscillate {
-      label "Oscillate Strength"
-      default 1
-    }
-    parameter float Length {
-      label "Length"
-      subtype slider
-      range {0 100}
-      default 20
-    }
-    parameter float bonecount {
-      label "Bone Count"
-      subtype slider
-      range {4 30 1}
-      default 20
-    }
-    parameter float Frequency {
-      label "Frequency"
-      subtype slider
-      range {0 10}
-      default 1
     }
   }
 }
