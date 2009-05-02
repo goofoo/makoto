@@ -45,7 +45,7 @@
 				OutputFile="..\module\procedural\fishProcedural.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\Pixar\devkit\lib"
+				AdditionalLibraryDirectories="D:\local\glut;D:\Pixar\devkit\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/getArrayValue.pdb"
 				SubSystem="2"
@@ -148,7 +148,7 @@
 				RelativePath="..\shared\fishSkin.cpp">
 			</File>
 			<File
-				RelativePath="..\shared\rmcMesh.cpp">
+				RelativePath="..\shared\FMCFMesh.cpp">
 			</File>
 		</Filter>
 	</Files>

@@ -13,9 +13,9 @@ CfishSkin::~CfishSkin(void)
 	if(m_weight != NULL) delete[] m_weight;
 }
 
-void CfishSkin::bind(CrmcMesh* mesh, CfishBone* bone)
+void CfishSkin::bind(FMCFMesh* mesh, CfishBone* bone)
 {
-	int num_vertices = mesh->getVerticesCount();
+	int num_vertices = mesh->getNumVertex();
 	m_id = new unsigned char[2*num_vertices];
 	m_weight = new float[2*num_vertices];
 	
@@ -24,7 +24,8 @@ void CfishSkin::bind(CrmcMesh* mesh, CfishBone* bone)
 	
 	for(int i=0; i<num_vertices; i++)
 	{
-		XYZ pt = mesh->getVertexById(i);
+		XYZ pt;
+		mesh->getVertex(pt, i);
 		float zcomp = pt.z;
 		if(zcomp>0)
 		{

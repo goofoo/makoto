@@ -1,5 +1,4 @@
 #include "fishData.h"
-#include "../shared/zFMatrix44f.h"
 #include "../shared/fishSkin.h"
 
 fishData::fishData(string& parameter): pMesh(NULL)
@@ -19,7 +18,7 @@ fishData::fishData(string& parameter): pMesh(NULL)
 
 void fishData::generateRIB(RtFloat detail)
 {
-	pMesh = new CrmcMesh();
+	pMesh = new FMCFMesh();
 	int stat = 0;
 	
 	// level of detail operation
@@ -63,6 +62,18 @@ void fishData::emit(const char* name)
 		return;
 	}
 	
+	float* uarray = new float[pMesh->getNumFaceVertex()];
+	float* varray = new float[pMesh->getNumFaceVertex()];
+	
+	pMesh->facevaryingS(uarray);
+	pMesh->facevaryingT(varray);
+	
+	RtToken tags[] = {"creasemethod", "interpolateboundary"};
+	RtInt nargs[] = {0,0,1,1,0,0};
+	RtInt intargs[] = {1};
+	RtFloat* floatargs;
+	RtToken stringargs[] = {"chaikin"};
+	
 		CfishBone* m_bone = new CfishBone();
 		CfishSkin* m_skin = new CfishSkin();
 
@@ -76,16 +87,15 @@ void fishData::emit(const char* name)
 		
 		m_skin->bind(pMesh, m_bone);
 		
-		zFMatrix44f* fmatrix = new zFMatrix44f();
 		int bone0, bone1;
 		float weight0, weight1;
 		XYZ vec0, vec1, vec3, vec4;
 		MATRIX44F mat0, mat1;
 		if(m_do_mblur == 0)
 		{
-			for(unsigned int i=0; i<pMesh->getVerticesCount(); i++)
+			for(unsigned int i=0; i<pMesh->getNumVertex(); i++)
 			{
-				vec0 = pMesh->getVertexById(i);
+				pMesh->getVertex(vec0, i);
 				vec1 = vec0;
 				
 				m_skin->getWeightsById(i, bone0, weight0, bone1, weight1);
@@ -101,34 +111,39 @@ void fishData::emit(const char* name)
 				vec1.y -= vec4.y;
 				vec1.z -= vec4.z;
 				
-				fmatrix->transform(vec0, mat0);
-				fmatrix->transform(vec1, mat1);
+				//fmatrix->transform(vec0, mat0);
+				//fmatrix->transform(vec1, mat1);
+				mat0.transform(vec0);
+				mat1.transform(vec1);
 				
 				pMesh->getVertexById(i).x = vec0.x*weight0 + vec1.x*weight1;
 				pMesh->getVertexById(i).y = vec0.y*weight0 + vec1.y*weight1;
 				pMesh->getVertexById(i).z = vec0.z*weight0 + vec1.z*weight1;
 				
-				vec0 = pMesh->getNormalById(i);
-				vec1 = vec0;
+				//vec0 = pMesh->getNormalById(i);
+				//vec1 = vec0;
 				
-				fmatrix->ntransform(vec0, mat0);
-				fmatrix->ntransform(vec1, mat1);
+				//fmatrix->ntransform(vec0, mat0);
+				//fmatrix->ntransform(vec1, mat1);
+				//mat0.transformAsNormal(vec0);
+				//mat1.transformAsNormal(vec1);
 				
-				pMesh->getNormalById(i).x = vec0.x*weight0 + vec1.x*weight1;
-				pMesh->getNormalById(i).y = vec0.y*weight0 + vec1.y*weight1;
-				pMesh->getNormalById(i).z = vec0.z*weight0 + vec1.z*weight1;
+				//pMesh->getNormalById(i).x = vec0.x*weight0 + vec1.x*weight1;
+				//pMesh->getNormalById(i).y = vec0.y*weight0 + vec1.y*weight1;
+				//pMesh->getNormalById(i).z = vec0.z*weight0 + vec1.z*weight1;
 			}
 			
-			RiPointsGeneralPolygons( (RtInt)pMesh->getNumberOfFaces(), (RtInt*)pMesh->getNLoops(), (RtInt*)pMesh->getNVertices(), (RtInt*)pMesh->getVertices(), "P", (RtPoint*)pMesh->getCvs(), "N", (RtPoint*)pMesh->getNormals(), "facevarying float s", (RtFloat*)pMesh->getCoordS(), "facevarying float t", (RtFloat*)pMesh->getCoordT(), RI_NULL);
+			//RiPointsGeneralPolygons( (RtInt)pMesh->getNumberOfFaces(), (RtInt*)pMesh->getNLoops(), (RtInt*)pMesh->getNVertices(), (RtInt*)pMesh->getVertices(), "P", (RtPoint*)pMesh->getCvs(), "N", (RtPoint*)pMesh->getNormals(), "facevarying float s", (RtFloat*)pMesh->getCoordS(), "facevarying float t", (RtFloat*)pMesh->getCoordT(), RI_NULL);
+			RiHierarchicalSubdivisionMesh("catmull-clark", (RtInt)pMesh->getNumFace(),  (RtInt*)pMesh->nverts(), (RtInt*)pMesh->verts(), (RtInt)2, tags, nargs, intargs, floatargs, stringargs, "P", (RtPoint*)pMesh->points(), "facevarying float s", (RtFloat*)uarray, "facevarying float t", (RtFloat*)varray, RI_NULL );
 		}
 		else
 		{
-			XYZ* upd_vertex = new XYZ[pMesh->getVerticesCount()];
-			XYZ* upd_normal = new XYZ[pMesh->getVerticesCount()];
+			XYZ* upd_vertex = new XYZ[pMesh->getNumVertex()];
+			//XYZ* upd_normal = new XYZ[pMesh->getNumVertex()];
 			
-			for(unsigned int i=0; i<pMesh->getVerticesCount(); i++)
+			for(unsigned int i=0; i<pMesh->getNumVertex(); i++)
 			{
-				vec0 = pMesh->getVertexById(i);
+				pMesh->getVertex(vec0, i);
 				vec1 = vec0;
 				
 				m_skin->getWeightsById(i, bone0, weight0, bone1, weight1);
@@ -144,28 +159,32 @@ void fishData::emit(const char* name)
 				vec1.y -= vec4.y;
 				vec1.z -= vec4.z;
 				
-				fmatrix->transform(vec0, mat0);
-				fmatrix->transform(vec1, mat1);
+				//fmatrix->transform(vec0, mat0);
+				//fmatrix->transform(vec1, mat1);
+				mat0.transform(vec0);
+				mat1.transform(vec1);
 				
 				upd_vertex[i].x = vec0.x*weight0 + vec1.x*weight1;
 				upd_vertex[i].y = vec0.y*weight0 + vec1.y*weight1;
 				upd_vertex[i].z = vec0.z*weight0 + vec1.z*weight1;
 				
-				vec0 = pMesh->getNormalById(i);
-				vec1 = vec0;
+				//vec0 = pMesh->getNormalById(i);
+				//vec1 = vec0;
 				
-				fmatrix->ntransform(vec0, mat0);
-				fmatrix->ntransform(vec1, mat1);
+				//fmatrix->ntransform(vec0, mat0);
+				//fmatrix->ntransform(vec1, mat1);
+				//mat0.transformAsNormal(vec0);
+				//mat1.transformAsNormal(vec1);
 				
-				upd_normal[i].x = vec0.x*weight0 + vec1.x*weight1;
-				upd_normal[i].y = vec0.y*weight0 + vec1.y*weight1;
-				upd_normal[i].z = vec0.z*weight0 + vec1.z*weight1;
+				//upd_normal[i].x = vec0.x*weight0 + vec1.x*weight1;
+				//upd_normal[i].y = vec0.y*weight0 + vec1.y*weight1;
+				//upd_normal[i].z = vec0.z*weight0 + vec1.z*weight1;
 			}
 			
 			m_bone->setTime(m_time_offset + (m_motion_end - m_motion_begin)*6.0);
 			m_bone->compose();
 			
-			for(unsigned int i=0; i<pMesh->getVerticesCount(); i++)
+			for(unsigned int i=0; i<pMesh->getNumVertex(); i++)
 			{
 				vec0 = pMesh->getVertexById(i);
 				vec1 = vec0;
@@ -183,34 +202,41 @@ void fishData::emit(const char* name)
 				vec1.y -= vec4.y;
 				vec1.z -= vec4.z;
 				
-				fmatrix->transform(vec0, mat0);
-				fmatrix->transform(vec1, mat1);
+				//fmatrix->transform(vec0, mat0);
+				//fmatrix->transform(vec1, mat1);
+				mat0.transform(vec0);
+				mat1.transform(vec1);
 				
 				pMesh->getVertexById(i).x = vec0.x*weight0 + vec1.x*weight1;
 				pMesh->getVertexById(i).y = vec0.y*weight0 + vec1.y*weight1;
 				pMesh->getVertexById(i).z = vec0.z*weight0 + vec1.z*weight1;
 				
-				vec0 = pMesh->getNormalById(i);
-				vec1 = vec0;
+				//vec0 = pMesh->getNormalById(i);
+				//vec1 = vec0;
 				
-				fmatrix->ntransform(vec0, mat0);
-				fmatrix->ntransform(vec1, mat1);
+				//fmatrix->ntransform(vec0, mat0);
+				//fmatrix->ntransform(vec1, mat1);
+				//mat0.transformAsNormal(vec0);
+				//mat1.transformAsNormal(vec1);
 				
-				pMesh->getNormalById(i).x = vec0.x*weight0 + vec1.x*weight1;
-				pMesh->getNormalById(i).y = vec0.y*weight0 + vec1.y*weight1;
-				pMesh->getNormalById(i).z = vec0.z*weight0 + vec1.z*weight1;
+				//pMesh->getNormalById(i).x = vec0.x*weight0 + vec1.x*weight1;
+				//pMesh->getNormalById(i).y = vec0.y*weight0 + vec1.y*weight1;
+				//pMesh->getNormalById(i).z = vec0.z*weight0 + vec1.z*weight1;
 			}
 			
 			RiMotionBegin( 2, (RtFloat)m_motion_begin, (RtFloat)m_motion_end );
-			RiPointsGeneralPolygons( (RtInt)pMesh->getNumberOfFaces(), (RtInt*)pMesh->getNLoops(), (RtInt*)pMesh->getNVertices(), (RtInt*)pMesh->getVertices(), "P", (RtPoint*)upd_vertex, "N", (RtPoint*)upd_normal, "facevarying float s", (RtFloat*)pMesh->getCoordS(), "facevarying float t", (RtFloat*)pMesh->getCoordT(), RI_NULL);
-			RiPointsGeneralPolygons( (RtInt)pMesh->getNumberOfFaces(), (RtInt*)pMesh->getNLoops(), (RtInt*)pMesh->getNVertices(), (RtInt*)pMesh->getVertices(), "P", (RtPoint*)pMesh->getCvs(), "N", (RtPoint*)pMesh->getNormals(), "facevarying float s", (RtFloat*)pMesh->getCoordS(), "facevarying float t", (RtFloat*)pMesh->getCoordT(), RI_NULL);
+			//RiPointsGeneralPolygons( (RtInt)pMesh->getNumberOfFaces(), (RtInt*)pMesh->getNLoops(), (RtInt*)pMesh->getNVertices(), (RtInt*)pMesh->getVertices(), "P", (RtPoint*)upd_vertex, "N", (RtPoint*)upd_normal, "facevarying float s", (RtFloat*)pMesh->getCoordS(), "facevarying float t", (RtFloat*)pMesh->getCoordT(), RI_NULL);
+			//RiPointsGeneralPolygons( (RtInt)pMesh->getNumberOfFaces(), (RtInt*)pMesh->getNLoops(), (RtInt*)pMesh->getNVertices(), (RtInt*)pMesh->getVertices(), "P", (RtPoint*)pMesh->getCvs(), "N", (RtPoint*)pMesh->getNormals(), "facevarying float s", (RtFloat*)pMesh->getCoordS(), "facevarying float t", (RtFloat*)pMesh->getCoordT(), RI_NULL);
+			RiHierarchicalSubdivisionMesh("catmull-clark", (RtInt)pMesh->getNumFace(),  (RtInt*)pMesh->nverts(), (RtInt*)pMesh->verts(), (RtInt)2, tags, nargs, intargs, floatargs, stringargs, "P", (RtPoint*)upd_vertex, "facevarying float s", (RtFloat*)uarray, "facevarying float t", (RtFloat*)varray, RI_NULL );
+			RiHierarchicalSubdivisionMesh("catmull-clark", (RtInt)pMesh->getNumFace(),  (RtInt*)pMesh->nverts(), (RtInt*)pMesh->verts(), (RtInt)2, tags, nargs, intargs, floatargs, stringargs, "P", (RtPoint*)pMesh->points(), "facevarying float s", (RtFloat*)uarray, "facevarying float t", (RtFloat*)varray, RI_NULL );
 			RiMotionEnd();
 			
 			delete[] upd_vertex;
-			delete[] upd_normal;
+			//delete[] upd_normal;
 		}
-
-		delete fmatrix;
+		
+	delete[] uarray;
+	delete[] varray;
 
 		if(m_bone) delete m_bone;
 		if(m_skin) delete m_skin;

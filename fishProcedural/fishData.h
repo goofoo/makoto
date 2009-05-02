@@ -3,7 +3,7 @@
 #include <string>
 #include <ri.h>
 
-#include "../shared/rmcMesh.h"
+#include "../shared/FMCFMesh.h"
 
 using namespace std;
 
@@ -22,7 +22,7 @@ private:
 	float m_time_offset, m_angle_flap, m_angle_bend, m_angle_oscillate, m_length, m_bone_count, m_frequency, m_motion_begin, m_motion_end;
 	int m_do_mblur;
 	
-	CrmcMesh* pMesh;
+	FMCFMesh* pMesh;
 	
 	void emit(const char* name);
 };

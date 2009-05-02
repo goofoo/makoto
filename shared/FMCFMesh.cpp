@@ -265,4 +265,14 @@ void FMCFMesh::getCenterAndSize(XYZ& center, float& size) const
 		else if(dy > dx && dy >dz) size = dy;
 			else size = dz;
 }
+
+void FMCFMesh::facevaryingS(float* res) const
+{
+	for(int i=0; i<m_num_face_vertices; i++) res[i] = coord_s[uvs[i]];
+}
+
+void FMCFMesh::facevaryingT(float* res) const
+{
+	for(int i=0; i<m_num_face_vertices; i++) res[i] = 1.0 - coord_t[uvs[i]];
+}
 //:~

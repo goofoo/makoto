@@ -615,7 +615,7 @@ fishGen::GenRIB( RIBContext *c )
 		usingMotionBlur, 
 		shutterOpen, shutterClose);
 		
-		RtString args[] = { "plugins/afish.dll", sbuf };
+		RtString args[] = { "plugins/fishProcedural.dll", sbuf };
 		
 		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
 		
