@@ -397,6 +397,20 @@ struct MATRIX44F
 		v[3][2] = t.z;
 	}
 	
+	void translate(const XYZ& t)
+	{
+		v[3][0] += t.x;
+		v[3][1] += t.y;
+		v[3][2] += t.z;
+	}
+	
+	void translate(const float x, const float y, const float z)
+	{
+		v[3][0] += x;
+		v[3][1] += y;
+		v[3][2] += z;
+	}
+	
 	void setTranslation(float x, float y, float z)
 	{
 		v[3][0] = x;
@@ -525,27 +539,76 @@ struct MATRIX44F
 		float m00 = v[0][0]* other(0,0) + v[0][1]* other(1,0)  + v[0][2]* other(2,0) + v[0][3]* other(3,0);
 		float m01 = v[0][0]* other(0,1) + v[0][1]* other(1,1)  + v[0][2]* other(2,1) + v[0][3]* other(3,1);
 		float m02 = v[0][0]* other(0,2) + v[0][1]* other(1,2)  + v[0][2]* other(2,2) + v[0][3]* other(3,2);
-		float m03 = v[0][0]* other(0,3) + v[0][1]* other(1,3)  + v[0][2]* other(2,3) + v[0][3]* other(3,2);
+		float m03 = v[0][0]* other(0,3) + v[0][1]* other(1,3)  + v[0][2]* other(2,3) + v[0][3]* other(3,3);
 		
 		float m10 = v[1][0]* other(0,0) + v[1][1]* other(1,0)  + v[1][2]* other(2,0) + v[1][3]* other(3,0);
 		float m11 = v[1][0]* other(0,1) + v[1][1]* other(1,1)  + v[1][2]* other(2,1) + v[1][3]* other(3,1);
 		float m12 = v[1][0]* other(0,2) + v[1][1]* other(1,2)  + v[1][2]* other(2,2) + v[1][3]* other(3,2);
-		float m13 = v[1][0]* other(0,3) + v[1][1]* other(1,3)  + v[1][2]* other(2,3) + v[1][3]* other(3,2);
+		float m13 = v[1][0]* other(0,3) + v[1][1]* other(1,3)  + v[1][2]* other(2,3) + v[1][3]* other(3,3);
 		
 		float m20 = v[2][0]* other(0,0) + v[2][1]* other(1,0)  + v[2][2]* other(2,0) + v[2][3]* other(3,0);
 		float m21 = v[2][0]* other(0,1) + v[2][1]* other(1,1)  + v[2][2]* other(2,1) + v[2][3]* other(3,1);
 		float m22 = v[2][0]* other(0,2) + v[2][1]* other(1,2)  + v[2][2]* other(2,2) + v[2][3]* other(3,2);
-		float m23 = v[2][0]* other(0,3) + v[2][1]* other(1,3)  + v[2][2]* other(2,3) + v[2][3]* other(3,2);
+		float m23 = v[2][0]* other(0,3) + v[2][1]* other(1,3)  + v[2][2]* other(2,3) + v[2][3]* other(3,3);
 		
 		float m30 = v[3][0]* other(0,0) + v[3][1]* other(1,0)  + v[3][2]* other(2,0) + v[3][3]* other(3,0);
 		float m31 = v[3][0]* other(0,1) + v[3][1]* other(1,1)  + v[3][2]* other(2,1) + v[3][3]* other(3,1);
 		float m32 = v[3][0]* other(0,2) + v[3][1]* other(1,2)  + v[3][2]* other(2,2) + v[3][3]* other(3,2);
-		float m33 = v[3][0]* other(0,3) + v[3][1]* other(1,3)  + v[3][2]* other(2,3) + v[3][3]* other(3,2);
+		float m33 = v[3][0]* other(0,3) + v[3][1]* other(1,3)  + v[3][2]* other(2,3) + v[3][3]* other(3,3);
 		
 		v[0][0] = m00; v[0][1] = m01; v[0][2] = m02; v[0][3] = m03;
 		v[1][0] = m10; v[1][1] = m11; v[1][2] = m12; v[1][3] = m13;
 		v[2][0] = m20; v[2][1] = m21; v[2][2] = m22; v[2][3] = m23;
-		v[0][0] = m30; v[3][1] = m31; v[3][2] = m32; v[3][3] = m33;
+		v[3][0] = m30; v[3][1] = m31; v[3][2] = m32; v[3][3] = m33;
+	}
+	
+	void multiply( const MATRIX44F& other )
+	{
+		float m00 = v[0][0]* other(0,0) + v[0][1]* other(1,0)  + v[0][2]* other(2,0) + v[0][3]* other(3,0);
+		float m01 = v[0][0]* other(0,1) + v[0][1]* other(1,1)  + v[0][2]* other(2,1) + v[0][3]* other(3,1);
+		float m02 = v[0][0]* other(0,2) + v[0][1]* other(1,2)  + v[0][2]* other(2,2) + v[0][3]* other(3,2);
+		float m03 = v[0][0]* other(0,3) + v[0][1]* other(1,3)  + v[0][2]* other(2,3) + v[0][3]* other(3,3);
+		
+		float m10 = v[1][0]* other(0,0) + v[1][1]* other(1,0)  + v[1][2]* other(2,0) + v[1][3]* other(3,0);
+		float m11 = v[1][0]* other(0,1) + v[1][1]* other(1,1)  + v[1][2]* other(2,1) + v[1][3]* other(3,1);
+		float m12 = v[1][0]* other(0,2) + v[1][1]* other(1,2)  + v[1][2]* other(2,2) + v[1][3]* other(3,2);
+		float m13 = v[1][0]* other(0,3) + v[1][1]* other(1,3)  + v[1][2]* other(2,3) + v[1][3]* other(3,3);
+		
+		float m20 = v[2][0]* other(0,0) + v[2][1]* other(1,0)  + v[2][2]* other(2,0) + v[2][3]* other(3,0);
+		float m21 = v[2][0]* other(0,1) + v[2][1]* other(1,1)  + v[2][2]* other(2,1) + v[2][3]* other(3,1);
+		float m22 = v[2][0]* other(0,2) + v[2][1]* other(1,2)  + v[2][2]* other(2,2) + v[2][3]* other(3,2);
+		float m23 = v[2][0]* other(0,3) + v[2][1]* other(1,3)  + v[2][2]* other(2,3) + v[2][3]* other(3,3);
+		
+		float m30 = v[3][0]* other(0,0) + v[3][1]* other(1,0)  + v[3][2]* other(2,0) + v[3][3]* other(3,0);
+		float m31 = v[3][0]* other(0,1) + v[3][1]* other(1,1)  + v[3][2]* other(2,1) + v[3][3]* other(3,1);
+		float m32 = v[3][0]* other(0,2) + v[3][1]* other(1,2)  + v[3][2]* other(2,2) + v[3][3]* other(3,2);
+		float m33 = v[3][0]* other(0,3) + v[3][1]* other(1,3)  + v[3][2]* other(2,3) + v[3][3]* other(3,3);
+		
+		v[0][0] = m00; v[0][1] = m01; v[0][2] = m02; v[0][3] = m03;
+		v[1][0] = m10; v[1][1] = m11; v[1][2] = m12; v[1][3] = m13;
+		v[2][0] = m20; v[2][1] = m21; v[2][2] = m22; v[2][3] = m23;
+		v[3][0] = m30; v[3][1] = m31; v[3][2] = m32; v[3][3] = m33;
+	}
+	
+	void rotateY(const float angle)
+	{
+		MATRIX44F tmp;
+		tmp.setIdentity();
+		tmp.v[0][0] = cos(angle);
+		tmp.v[0][2] = -sin(angle);
+		tmp.v[2][0] = sin(angle);
+		tmp.v[2][2] = cos(angle);
+		
+		multiply(tmp);
+	}
+	
+	void scale(const float val)
+	{
+		MATRIX44F tmp;
+		tmp.setIdentity();
+		tmp.v[0][0] = tmp.v[1][1] = tmp.v[2][2] = val;
+		
+		multiply(tmp);
 	}
 };
 

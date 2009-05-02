@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <maya/MPxNode.h>
+#include <maya/MPxLocatorNode.h>
 #include <maya/MTypeId.h> 
 #include <maya/MPointArray.h>
+#include <maya/MVectorArray.h>
 #include "../shared/fishBone.h"
 
 
@@ -17,7 +19,7 @@
     }
 
 
-class fishVizNode : public MPxNode
+class fishVizNode : public MPxLocatorNode
 {
 public:
 	fishVizNode();
@@ -28,33 +30,25 @@ public:
 
 	static  void *          creator();
 	static  MStatus         initialize();
+	
+	virtual void            draw( M3dView & view, const MDagPath & path, 
+								  M3dView::DisplayStyle style,
+								  M3dView::DisplayStatus status );
+
+	virtual bool            isBounded() const;
 
 public: 
 	static	MTypeId		id;
 
 
 	static MObject aInMesh;
-
-	static MObject aPosition;
-	static MObject aVelocity;
-	static MObject aUpVector;
-	static MObject aViewVector;
-	static MObject aScalePP;	
-	static MObject ainmass;
-	static MObject aTimeOffset;
-	static MObject aAmplitude;
-	static MObject aBend;	
 	static MObject aNBone;
-
 	static MObject aOscillate;
-
 	static MObject aFrequency;
 	static MObject aFlapping;
 	static MObject aBending;
-	
 	static MObject aLength;
 	static MObject aHead;
-	
 	static MObject acachename;
 	static MObject atime;
 
@@ -68,4 +62,10 @@ private:
 	CfishBone* m_pBone;
 	
 	void poseBones(float l, int n, float time, float freq, float ampl, float bend, float kf, float kb, float ko);
+	
+	MVectorArray ptc_positions;
+	MVectorArray ptc_velocities;
+	MVectorArray ptc_ups;
+	MVectorArray ptc_views;
+	float m_fish_length;
 };

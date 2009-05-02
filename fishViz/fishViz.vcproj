@@ -88,7 +88,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(MAYATREE)\include"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION70)\include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile=".\Debug/shellNode.pch"
@@ -104,11 +104,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
-				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaFX.lib Foundation.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaFX.lib Foundation.lib OpenMayaUI.lib opengl32.lib"
 				OutputFile="..\module\plug-ins\fishViz.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\Maya7.0\lib"
+				AdditionalLibraryDirectories="$(MAYA_LOCATION70)\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/shellNode.pdb"
 				SubSystem="2"
@@ -220,34 +220,16 @@
 				RelativePath="..\shared\fishBone.cpp">
 			</File>
 			<File
-				RelativePath="..\shared\fishBone.h">
-			</File>
-			<File
 				RelativePath=".\fishVizMain.cpp">
 			</File>
 			<File
 				RelativePath=".\fishVizNode.cpp">
 			</File>
 			<File
-				RelativePath=".\fishVizNode.h">
-			</File>
-			<File
 				RelativePath="..\shared\pdcFile.cpp">
 			</File>
 			<File
-				RelativePath="..\shared\pdcFile.h">
-			</File>
-			<File
-				RelativePath="..\shared\zFMatrix44f.cpp">
-			</File>
-			<File
-				RelativePath="..\shared\zFMatrix44f.h">
-			</File>
-			<File
 				RelativePath="..\shared\zWorks.cpp">
-			</File>
-			<File
-				RelativePath="..\shared\zWorks.h">
 			</File>
 		</Filter>
 		<Filter

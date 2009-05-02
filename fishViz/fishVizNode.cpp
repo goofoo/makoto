@@ -23,33 +23,17 @@
 #include "fishVizNode.h"
 #include "../shared/zAttrWorks.h"
 #include "../shared/zWorks.h"
-#include "../shared/zFMatrix44f.h"
 #include "../shared/pdcFile.h"
 
 MTypeId fishVizNode::id( 0x00027380 );
 MObject fishVizNode::aInMesh;
-
-MObject fishVizNode::aScalePP;
-MObject fishVizNode::aPosition;
-MObject fishVizNode::aVelocity;
-MObject fishVizNode::aUpVector;
-MObject fishVizNode::aViewVector;
-
-MObject fishVizNode::aTimeOffset; //
-
-MObject fishVizNode::aAmplitude;
-MObject fishVizNode::aBend;
 MObject fishVizNode::aOscillate;
 MObject fishVizNode::aFlapping;
 MObject fishVizNode::aBending;
-MObject fishVizNode::ainmass;
 MObject fishVizNode::aNBone;
 MObject fishVizNode::aLength;
-
 MObject fishVizNode::acachename;
 MObject fishVizNode::atime;
-
-//MObject fishVizNode::aHead;
 MObject fishVizNode::aFrequency;
 
 MObject fishVizNode::outMesh;
@@ -68,18 +52,13 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 {    
     MStatus status;
 	
-	
 	MObject arbitaryMesh = data.inputValue(aInMesh).asMesh();
-	MVectorArray ptc_positions = zGetVectorArrayAttr(data, aPosition);
-	MVectorArray ptc_velocities = zGetVectorArrayAttr(data, aVelocity);
-	
-	MVectorArray ptc_ups = zGetVectorArrayAttr(data, aUpVector);
-	MVectorArray ptc_views = zGetVectorArrayAttr(data, aViewVector);
-	MDoubleArray ptc_time_offset = zGetDoubleArrayAttr(data, aTimeOffset);
-	MDoubleArray ptc_amplitude = zGetDoubleArrayAttr(data, aAmplitude);
-	MDoubleArray ptc_bend = zGetDoubleArrayAttr(data, aBend);
-	MDoubleArray ptc_scale = zGetDoubleArrayAttr(data, aScalePP);
-	MDoubleArray masses = zGetDoubleArrayAttr(data, ainmass);
+
+	MDoubleArray ptc_time_offset;
+	MDoubleArray ptc_amplitude;
+	MDoubleArray ptc_bend;
+	MDoubleArray ptc_scale;
+	MDoubleArray masses;
 	
 	MString cacheName = data.inputValue(acachename, &status).asString();
 	MTime currentTime = data.inputValue(atime, &status).asTime();
@@ -88,12 +67,8 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 	pdcFile* fpdc = new pdcFile();
 	if(fpdc->load(cacheName.asChar())==1)
 	{
-		MGlobal::displayInfo(MString("FishViz loaded cache file: ")+cacheName);
+		//MGlobal::displayInfo(MString("FishViz loaded cache file: ")+cacheName);
 		fpdc->readPositions(ptc_positions, ptc_velocities, ptc_ups, ptc_views, ptc_time_offset, ptc_amplitude, ptc_bend, ptc_scale, masses);
-	
-		MObject counto;
-		zWorks::getConnectedNode(counto, MPlug(thisMObject(), ainmass));
-		MFnDependencyNode(counto).findPlug("count").setValue(fpdc->getParticleCount());
 	}
 	else MGlobal::displayWarning(MString("FishViz cannot open cache file: ")+cacheName);
 	
@@ -108,18 +83,18 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 		}
 	}
 	
+	delete fpdc;
+	
 	double flapping = zGetDoubleAttr(data, aFlapping);
 	double bending= zGetDoubleAttr(data, aBending);
 	double oscillate= zGetDoubleAttr(data, aOscillate);
 	double length = zGetDoubleAttr(data, aLength);
-	
+	m_fish_length = length;
 	double frequency = zGetDoubleAttr(data, aFrequency);
-	// double head = zGetDoubleAttr(data, aHead);
 	unsigned num_bones = zGetIntAttr(data, aNBone);
 	
 	unsigned int nptc = ptc_positions.length();
 	MPointArray vertices;
-	zFMatrix44f* fmat = new zFMatrix44f();
 	MATRIX44F mat44, mat_bone;
 	XYZ vert, front, up, side;
 	MDataHandle outputHandle = data.outputValue(outMesh, &status);
@@ -147,7 +122,6 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 		{
 			
 			// calculate the bone transformations
-			//m_pBone->compose();
 			poseBones(length, num_bones, ptc_time_offset[i], frequency, ptc_amplitude[i], ptc_bend[i], flapping, bending, oscillate);
 			
 			front.x = ptc_views[i].x;
@@ -157,16 +131,16 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 			up.y = ptc_ups[i].y;
 			up.z = ptc_ups[i].z;
 			
-			side = fmat->vcross(front, up);
-			fmat->vnormalize(side);
+			side = front.cross(up);
+			side.normalize();
 			
-			up = fmat->vcross(side, front);
-			fmat->vnormalize(up);
+			up = side.cross(front);
+			up.normalize();
 			
-			fmat->reset(mat44);
-			fmat->setOrientation(mat44, side, up, front);
-			fmat->scale(mat44, ptc_scale[i]);
-			fmat->translate(mat44, ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
+			mat44.setIdentity();
+			mat44.setOrientations(side, up, front);
+			mat44.scale(ptc_scale[i]);
+			mat44.setTranslation(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
 			
 			for(unsigned int j=0; j<inmeshnv; j++)
 			{
@@ -182,9 +156,9 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 				mat_bone = m_pBone->getBoneById(bone_id);
 				vert.z -= -length/(num_bones-1)*bone_id;
 				
-				fmat->transform(vert, mat_bone);
+				mat_bone.transform(vert);
+				mat44.transform(vert);
 				
-				fmat->transform(vert, mat44);
 				vertices.append(MPoint(vert.x, vert.y, vert.z));
 			}
 			for(unsigned int j=0; j<inmeshnp; j++)
@@ -235,8 +209,7 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		MObject m_mesh = outputHandle.asMesh();
 		MFnMesh meshFn(m_mesh);
-		//meshFn.getPoints(vertices);
-		
+
 		unsigned  inmeshnv, inmeshnp;
 		MPointArray pinmesh;
 		MIntArray count_inmesh;
@@ -246,9 +219,7 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 		int acc=0;
 		for(unsigned int i=0; i<nptc; i++)
 		{
-
 			// calculate the bone transformations
-			//m_pBone->compose();
 			poseBones(length, num_bones, ptc_time_offset[i], frequency, ptc_amplitude[i], ptc_bend[i], flapping, bending, oscillate);
 			
 			front.x = ptc_views[i].x;
@@ -258,16 +229,16 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 			up.y = ptc_ups[i].y;
 			up.z = ptc_ups[i].z;
 			
-			side = fmat->vcross(front, up);
-			fmat->vnormalize(side);
+			side = front.cross(up);
+			side.normalize();
 			
-			up = fmat->vcross(side, front);
-			fmat->vnormalize(up);
+			up = side.cross(front);
+			up.normalize();
 			
-			fmat->reset(mat44);
-			fmat->setOrientation(mat44, side, up, front);
-			fmat->scale(mat44, ptc_scale[i]);
-			fmat->translate(mat44, ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
+			mat44.setIdentity();
+			mat44.setOrientations(side, up, front);
+			mat44.scale(ptc_scale[i]);
+			mat44.setTranslation(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
 			
 			for(unsigned int j=0; j<inmeshnv; j++)
 			{
@@ -283,12 +254,10 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 				mat_bone = m_pBone->getBoneById(bone_id);
 				vert.z -= -length/(num_bones-1)*bone_id;
 				
-				fmat->transform(vert, mat_bone);
+				mat_bone.transform(vert);
+				mat44.transform(vert);
 				
-				fmat->transform(vert, mat44);
 				vertices[j+acc] = MPoint(vert.x, vert.y, vert.z);
-				
-				
 			}
 			acc += inmeshnv;
 		}
@@ -299,7 +268,7 @@ MStatus fishVizNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		
 	}
-	delete fmat;
+	//delete fmat;
 	data.setClean( plug );
 	
 	
@@ -330,42 +299,6 @@ MStatus fishVizNode::initialize()
 	stat = zCreateTypedAttr(aInMesh, MString("inMesh"), MString("inm"), MFnData::kMesh);
 	zCheckStatus(stat, "failed to add in mesh attr");
 	stat = addAttribute( aInMesh );
-	
-	stat = zCreateTypedAttr(aPosition, MString("position"), MString("pos"), MFnData::kVectorArray);
-	zCheckStatus(stat, "failed to add position attr");
-	stat = addAttribute(aPosition);
-	
-	stat = zCreateTypedAttr(aVelocity, MString("velocity"), MString("vel"), MFnData::kVectorArray);
-	zCheckStatus(stat, "failed to add velocity attr");
-	stat = addAttribute(aVelocity);
-
-	stat = zCreateTypedAttr(aUpVector, MString("upVector"), MString("up"), MFnData::kVectorArray);
-	zCheckStatus(stat, "failed to add up attr");
-	stat = addAttribute(aUpVector);
-	
-	stat = zCreateTypedAttr(aViewVector, MString("viewVector"), MString("view"), MFnData::kVectorArray);
-	zCheckStatus(stat, "failed to add view attr");
-	stat = addAttribute(aViewVector);
-	
-	stat = zCreateTypedAttr(aTimeOffset, MString("timeOffset"), MString("tof"), MFnData::kDoubleArray);
-	zCheckStatus(stat, "failed to add time offset attr");
-	stat = addAttribute(aTimeOffset);
-	
-	stat = zCreateTypedAttr(aAmplitude, MString("amplitude"), MString("amp"), MFnData::kDoubleArray);
-	zCheckStatus(stat, "failed to add amplitude attr");
-	stat = addAttribute(aAmplitude);
-	
-	stat = zCreateTypedAttr(aBend, MString("bend"), MString("bend"), MFnData::kDoubleArray);
-	zCheckStatus(stat, "failed to add bend attr");
-	stat = addAttribute(aBend);
-	
-	stat = zCreateTypedAttr(aScalePP, MString("scalePP"), MString("sca"), MFnData::kDoubleArray);
-	zCheckStatus(stat, "failed to add scale pp attr");
-	stat = addAttribute(aScalePP);
-	
-	stat = zCreateTypedAttr(ainmass, MString("mass"), MString("mass"), MFnData::kDoubleArray);
-	zCheckStatus(stat, "failed to add mass attr");
-	stat = addAttribute(ainmass);
 	
 	zCheckStatus(zWorks::createIntAttr(aNBone, "boneCount", "bnc", 20, 4), "failed to create n bone attr");
 	zCheckStatus(addAttribute(aNBone), "failed to add n bone attr");
@@ -398,21 +331,13 @@ MStatus fishVizNode::initialize()
 	zCheckStatus(stat, "ERROR creating time");
 	zCheckStatus(addAttribute(atime), "ERROR adding time");
 	
-	stat = attributeAffects( aPosition, outMesh );
-
-	stat = attributeAffects( aUpVector, outMesh );
-	stat = attributeAffects( aTimeOffset, outMesh );
-	stat = attributeAffects( aScalePP, outMesh );
 	stat = attributeAffects( aNBone, outMesh );
-	
-
 	stat = attributeAffects( aFrequency, outMesh );
 	stat = attributeAffects( aFlapping, outMesh );
 	stat = attributeAffects( aBending, outMesh );
 	stat = attributeAffects( aOscillate, outMesh );
 	stat = attributeAffects( aLength, outMesh );
-
-	//stat = attributeAffects( aHead, outMesh );
+	stat = attributeAffects( atime, outMesh );
 	stat = attributeAffects( aInMesh, outMesh );
 	
 	return MS::kSuccess;
@@ -443,3 +368,41 @@ void fishVizNode::poseBones(float l, int n, float time, float freq, float ampl, 
 	// calculate the bone transformations
 	m_pBone->compose();
 }
+
+bool fishVizNode::isBounded() const
+{ 
+	return false;
+}
+
+void fishVizNode::draw( M3dView & view, const MDagPath & /*path*/, 
+							 M3dView::DisplayStyle style,
+							 M3dView::DisplayStatus status )
+{
+	view.beginGL(); 
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	unsigned num_ptc = ptc_positions.length();
+
+	glBegin(GL_LINES);
+	glColor3f(0,0,1);
+	for(unsigned i=0; i<num_ptc; i++)
+	{
+		glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
+		glVertex3f(ptc_positions[i].x+ptc_velocities[i].x, ptc_positions[i].y+ptc_velocities[i].y, ptc_positions[i].z+ptc_velocities[i].z);
+	}
+	//glColor3f(0,1,0);
+	//for(unsigned i=0; i<num_ptc; i++)
+	//{
+	//	glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
+	//	glVertex3f(ptc_positions[i].x+ptc_ups[i].x*m_fish_length, ptc_positions[i].y+ptc_ups[i].y*m_fish_length, ptc_positions[i].z+ptc_ups[i].z*m_fish_length);
+	//}
+	glColor3f(1,0,0);
+	for(unsigned i=0; i<num_ptc; i++)
+	{
+		glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
+		glVertex3f(ptc_positions[i].x-ptc_views[i].x*m_fish_length, ptc_positions[i].y-ptc_views[i].y*m_fish_length, ptc_positions[i].z-ptc_views[i].z*m_fish_length);
+	}
+	glEnd();
+	glPopAttrib();
+	view.endGL();
+}
+//:~
