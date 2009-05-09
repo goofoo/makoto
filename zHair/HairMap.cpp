@@ -126,11 +126,18 @@ void hairMap::draw()
 	
 	delete[] parray;
 	
-	glBegin(GL_POINTS);
+	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
-		glVertex3f(pbuf[i].x, pbuf[i].y, pbuf[i].z);
+		//glVertex3f(pbuf[i].x, pbuf[i].y, pbuf[i].z);
+		XYZ ppre = pbuf[i];
+		for(short j = 1; j< guide_data[bind_data[i]].num_seg; j++) 
+		{
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+			ppre += guide_data[bind_data[i]].disp_v[j];
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+		}
 	}
 	glEnd();
 	
@@ -259,8 +266,6 @@ void hairMap::drawGuide()
 
 	glBegin(GL_LINES);
 	MPoint cen;
-	float r,g,b;
-	int acc=0;
 	for(int i=0; i<num_guide; i++) 
 	{
 		glColor3f(guide_data[i].dsp_col.x, guide_data[i].dsp_col.y, guide_data[i].dsp_col.z);
