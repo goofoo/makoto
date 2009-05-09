@@ -46,11 +46,11 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			int npt = m_base->dice();
 			MGlobal::displayInfo(MString("ZHair diced ") + npt + " samples");
 			m_base->initGuide();
-			npt = m_base->saveDguide( );
-			if(npt == 1)
-				MGlobal::displayInfo("Save Dguide data successed");
-			else
-				MGlobal::displayInfo("Save Dguide data failed");
+			//npt = m_base->saveDguide( );
+			//if(npt == 1)
+			//	MGlobal::displayInfo("Save Dguide data successed");
+			//else
+			//	MGlobal::displayInfo("Save Dguide data failed");
 			m_base->bind();	
 		}
 	    

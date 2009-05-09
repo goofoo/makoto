@@ -20,9 +20,8 @@ struct Dguide
 {
 	short num_seg;
 	XYZ dsp_col;
-	XYZ* P;
-	XYZ* N;
-	XYZ* T;
+	XYZ ori_p, ori_side, ori_up;
+	XYZ* disp_v;
 };
 
 class hairMap
@@ -43,8 +42,8 @@ public:
 	void initGuide();
 	void drawGuide();
 
-	int saveDguide();
-	void loadDguide();
+	//int saveDguide();
+	//void loadDguide();
 	
 private:
 	char has_base, has_guide;
