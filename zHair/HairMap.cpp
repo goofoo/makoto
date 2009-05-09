@@ -12,6 +12,9 @@
 #include <maya/MItMeshVertex.h>
 #include <maya/MFnMeshData.h>
 #include <maya/MItMeshPolygon.h>
+#include <iostream>
+#include <fstream>
+using namespace std;
 
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0)
 {
@@ -236,14 +239,13 @@ void hairMap::bind()
 			}
 		}
 	}
-	
+
 	delete[] pbuf;
 }
 
 void hairMap::drawGuide()
 {
 	if(!has_guide || !guide_data) return;
-
 	glBegin(GL_LINES);
 	MPoint cen;
 	float r,g,b;
@@ -262,4 +264,47 @@ void hairMap::drawGuide()
 	
 	glEnd();
 }
+
+int hairMap::saveDguide()
+{
+	ofstream outfile;
+	outfile.open("C:/guideData.dat", ios_base::out | ios_base::binary);
+	if(!outfile.is_open()) return 0;
+	outfile.write((char*)&num_guide,sizeof(num_guide));
+	for(int i = 0;i<num_guide;i++)
+	{
+		outfile.write((char*)&guide_data[i].num_seg,sizeof(guide_data[i].num_seg));
+		outfile.write((char*)&guide_data[i].dsp_col,sizeof(XYZ));
+		outfile.write((char*)guide_data[i].P,guide_data[i].num_seg*sizeof(XYZ));
+		outfile.write((char*)guide_data[i].N,guide_data[i].num_seg*sizeof(XYZ));
+		outfile.write((char*)guide_data[i].T,guide_data[i].num_seg*sizeof(XYZ));	
+	}
+	outfile.close();
+	return 1;
+}
+
+void hairMap::loadDguide( )
+{
+	ifstream infile;
+	infile.open("C:/guideData.dat", ios_base::in | ios_base::binary);
+	//unsigned num_guide;
+	infile.read((char*)&num_guide,sizeof(num_guide));
+    guide_data = new Dguide[num_guide];
+	for(int i = 0;i<num_guide;i++)
+	{
+		infile.read((char*)&guide_data[i].num_seg, sizeof(guide_data[i].num_seg));
+		infile.read((char*)&guide_data[i].dsp_col, sizeof(XYZ) );
+
+		guide_data[i].P = new XYZ[guide_data[i].num_seg];
+		guide_data[i].N = new XYZ[guide_data[i].num_seg];
+		guide_data[i].T = new XYZ[guide_data[i].num_seg];
+
+		infile.read((char*)guide_data[i].P,guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)guide_data[i].N,guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)guide_data[i].T,guide_data[i].num_seg*sizeof(XYZ));
+	}
+	infile.close();	
+	return ;
+}
+
 //~:

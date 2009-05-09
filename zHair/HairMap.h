@@ -42,6 +42,10 @@ public:
 	void draw();
 	void initGuide();
 	void drawGuide();
+
+	int saveDguide();
+	void loadDguide();
+	
 private:
 	char has_base, has_guide;
 	MObject obase, oguide;
