@@ -34,6 +34,16 @@ public:
 	double getS(int id) const {return coord_s[id]; }
 	double getT(int id) const {return coord_t[id]; }
 	
+	XYZ& getVertexById( int id ) { return cvs[id]; }
+	XYZ& getNormalById( int id ) { return normals[id]; }
+	
+	int* nverts() const {return faceCount;}
+	int* verts() const {return vertices;}
+	XYZ* points() const {return cvs;}
+	void facevaryingS(float* res) const;
+	void facevaryingT(float* res) const;
+	void rmanVertices(int* res) const;
+	
 	void getVertAndNormal(XYZ& p, XYZ& n, unsigned int id) const
 	{
 		p = cvs[id];

@@ -1,8 +1,8 @@
 /// :
 // meshCacheCmd.cpp
-// Version 1.2.8
+// Version 2.0.0
 // Mesh cache file writer
-// updated: 05/07/08
+// updated: 01/05/09
 //
 #include "../shared/zWorks.h"
 #include "meshCacheCmd.h"
@@ -29,6 +29,7 @@ MSyntax vxCache::newSyntax()
 	syntax.addFlag("-p", "-path", MSyntax::kString);
 	syntax.addFlag("-n", "-name", MSyntax::kString);
 	syntax.addFlag("-w", "-world", MSyntax::kBoolean);
+	syntax.addFlag("-sg", "-single", MSyntax::kBoolean);
 	
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -82,7 +83,8 @@ MStatus vxCache::doIt( const MArgList& args )
 
 		cache_name = surface;
 		
-		sprintf( filename, "%s/%s.%d.mcf", cache_path.asChar(), cache_name.asChar(), frame );
+		if(argData.isFlagSet("-sg")) sprintf( filename, "%s/%s.mcf", cache_path.asChar(), cache_name.asChar() );
+		else sprintf( filename, "%s/%s.%d.mcf", cache_path.asChar(), cache_name.asChar(), frame );
 
 		MDagPath surfDag;
 

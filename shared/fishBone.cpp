@@ -1,5 +1,4 @@
 #include "fishbone.h"
-#include "zFMatrix44f.h"
 #include "zMath.h"
 
 CfishBone::CfishBone(void):m_n_bones(20)
@@ -46,16 +45,14 @@ void CfishBone::setLength(float l)
 
 void CfishBone::compose()
 {
-	zFMatrix44f* fmatrix = new zFMatrix44f();
-	fmatrix->reset(m_skeleton[0]);
-	
 	float rad_t_0 = m_time*PI*m_frequency;
 	float rad_t = rad_t_0;
 	float angle = m_angle_prim*sin(rad_t);
 	
 	float fswing = sin(rad_t)*deg2rad(m_angle_oscillate);
 	
-	fmatrix->rotateY(m_skeleton[0], fswing);
+	m_skeleton[0].setIdentity();
+	m_skeleton[0].rotateY(fswing);
 	
 	for(int i=1; i<m_n_bones; i++)
 	{
@@ -63,17 +60,13 @@ void CfishBone::compose()
 		
 		angle = m_angle_prim*sin(rad_t)/(float)m_n_bones + m_angle_offset/m_n_bones;
 		
-		fmatrix->reset(m_skeleton[i]);
-		
-		fmatrix->rotateY(m_skeleton[i], -fswing/m_n_bones*2);
-		fmatrix->rotateY(m_skeleton[i], deg2rad(angle));
-		
-		fmatrix->translate(m_skeleton[i], 0,0,-m_spacing);
+		m_skeleton[i].setIdentity();
+		m_skeleton[i].rotateY(-fswing/m_n_bones*2);
+		m_skeleton[i].rotateY(deg2rad(angle));
+		m_skeleton[i].translate(0,0,-m_spacing);
 
-		fmatrix->multiply(m_skeleton[i], m_skeleton[i-1]);
+		m_skeleton[i] *= m_skeleton[i-1];
 	}
-	
-	delete fmatrix;
 }
 
 const MATRIX44F& CfishBone::getBoneById(int id)

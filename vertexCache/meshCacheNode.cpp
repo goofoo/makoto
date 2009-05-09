@@ -1,8 +1,8 @@
 /// :
 // meshCacheNode.cpp
-// Version 1.2.6
+// Version 1.2.7
 // Mesh cache file loader
-// updated: 31/03/08
+// updated: 01/05/09
 //
 
 //#define REQUIRE_IOSTREAM
@@ -64,8 +64,12 @@ MStatus meshCacheNode::compute( const MPlug& plug, MDataBlock& data )
 	FMCFMesh mesh;
 	if(mesh.load(filename) != 1)
 	{
-		MGlobal::displayError( MString("Failed to open file: ") + filename );
-		return MS::kFailure;
+		sprintf( filename, "%s.mcf", path.asChar());
+		if(mesh.load(filename) != 1)
+		{
+			MGlobal::displayError( MString("Failed to open file: ") + filename );
+			return MS::kFailure;
+		}
 	}
 	
 	int lo_n_vertex = mesh.getNumVertex();
