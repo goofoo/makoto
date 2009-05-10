@@ -67,9 +67,9 @@ int hairMap::dice()
 		sum_area += (float)area;
 	}
 	
-	float epsilon = sqrt(sum_area/n_tri/2/16);
+	float epsilon = sqrt(sum_area/n_tri/2/4);
 
-	int estimate_ncell = n_tri*16*2;
+	int estimate_ncell = n_tri*4*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -125,17 +125,18 @@ void hairMap::draw()
 	}
 	
 	delete[] parray;
-	
+	XYZ ppre, dv, axis(0,1,0);
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
-		//glVertex3f(pbuf[i].x, pbuf[i].y, pbuf[i].z);
-		XYZ ppre = pbuf[i];
+		ppre = pbuf[i];
 		for(short j = 1; j< guide_data[bind_data[i]].num_seg; j++) 
 		{
 			glVertex3f(ppre.x, ppre.y, ppre.z);
-			ppre += guide_data[bind_data[i]].disp_v[j];
+			dv = guide_data[bind_data[i]].disp_v[j];
+			dv.rotateAroundAxis(axis, 1.f);
+			ppre += dv;
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 		}
 	}
@@ -263,7 +264,7 @@ void hairMap::bind()
 void hairMap::drawGuide()
 {
 	if(!has_guide || !guide_data) return;
-
+XYZ axis(0,1,0);
 	glBegin(GL_LINES);
 	MPoint cen;
 	for(int i=0; i<num_guide; i++) 
@@ -273,8 +274,18 @@ void hairMap::drawGuide()
 		for(short j = 1; j< guide_data[i].num_seg; j++) 
 		{
 			glVertex3f(ppre.x, ppre.y, ppre.z);
+			
+			XYZ dv = guide_data[i].disp_v[j];
+			dv.rotateAroundAxis(axis, twist);
+			
+			glVertex3f(ppre.x+dv.x, ppre.y+dv.y, ppre.z+dv.z);
+			
+			glVertex3f(ppre.x, ppre.y, ppre.z);
 			ppre += guide_data[i].disp_v[j];
 			glVertex3f(ppre.x, ppre.y, ppre.z);
+			
+			
+			
 		}
 	}
 	

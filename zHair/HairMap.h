@@ -45,6 +45,8 @@ public:
 	//int saveDguide();
 	//void loadDguide();
 	
+	void setTwist(const float val) {twist = val;}
+	
 private:
 	char has_base, has_guide;
 	MObject obase, oguide;
@@ -53,5 +55,6 @@ private:
 	Dguide* guide_data;
 	unsigned num_guide;
 	unsigned* bind_data;
+	float twist;
 };
 #endif

@@ -253,6 +253,28 @@ struct XYZ
 		y = a*sin(ang);
 	}
 	
+	void rotateAroundAxis(const XYZ& axis, float theta)
+	{
+		XYZ ori(x,y,z);
+		float l = ori.length();
+		ori.normalize();
+		
+		XYZ up = ori.cross(axis);
+		up.normalize();
+		
+		XYZ side = ori - axis*(axis.dot(ori));
+		
+		up *=side.length();
+		
+		ori += side*(cos(theta*6.28) - 1);
+		ori += up*sin(theta*6.28);
+		
+		ori.normalize();
+		x = ori.x*l;
+		y = ori.y*l;
+		z = ori.z*l;
+	}
+	
 	float x,y,z;
 };
 

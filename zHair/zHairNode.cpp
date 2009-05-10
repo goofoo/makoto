@@ -53,6 +53,8 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			//	MGlobal::displayInfo("Save Dguide data failed");
 			m_base->bind();	
 		}
+		
+		m_base->setTwist(data.inputValue(aExposure).asFloat());
 	    
 		data.setClean(plug);
 	}
@@ -66,7 +68,7 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glPointSize(2);
-	if(m_base->hasBase()) m_base->draw();
+	//if(m_base->hasBase()) m_base->draw();
 	m_base->drawGuide();
 	glPopAttrib();
 	view.endGL();
