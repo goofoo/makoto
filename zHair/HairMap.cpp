@@ -146,14 +146,17 @@ void hairMap::draw()
 			XYZ rt = axisobj;
 			rt.rotateAroundAxis(XYZ(1,0,0), twist*j*dv.length()/axisobj.length());
 			mat.transformAsNormal(rt);
+
 			axisworld = rt;
 			//glVertex3f(guide_data[bind_data[i]].P[j].x, guide_data[bind_data[i]].P[j].y, guide_data[bind_data[i]].P[j].z);
 			//glVertex3f(guide_data[bind_data[i]].P[j].x+axisworld.x, guide_data[bind_data[i]].P[j].y+axisworld.y, guide_data[bind_data[i]].P[j].z+axisworld.z);
-		
 			axisworld.normalize();
 			
 			glVertex3f(ppre.x, ppre.y, ppre.z);
-			
+
+			XYZ rot2p = ppre + dv -  guide_data[bind_data[i]].P[j];
+			dv.rotateAlong(rot2p, -clumping);
+
 			dv.rotateAroundAxis(axisworld, -twist);
 			ppre += dv;
 			glVertex3f(ppre.x, ppre.y, ppre.z);

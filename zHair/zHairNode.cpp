@@ -53,8 +53,13 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			//	MGlobal::displayInfo("Save Dguide data failed");
 			m_base->bind();	
 		}
+		else
+		{
+		
+		}
 		
 		m_base->setTwist(data.inputValue(aExposure).asFloat());
+		m_base->setClumping(data.inputValue(aSize).asFloat());
 	    
 		data.setClean(plug);
 	}
@@ -99,22 +104,25 @@ MStatus HairNode::initialize()
 	    MFnNumericAttribute nAttr; 
     MFnTypedAttribute tAttr;
 	
-	aExposure = nAttr.create("exposure", "exposure",
-						  MFnNumericData::kFloat, 1.f, &status);
+	aExposure = nAttr.create("twist", "twt",
+						  MFnNumericData::kFloat, 0.f, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( nAttr.setStorable(true));
     CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(1.f));
+    CHECK_MSTATUS( nAttr.setDefault(0.f));
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
+	nAttr.setMin(-1);
+	nAttr.setMax(1);
 	
-	aSize = nAttr.create("size", "size",
-						  MFnNumericData::kFloat, 900.f, &status);
+	aSize = nAttr.create("clumping", "clp",
+						  MFnNumericData::kFloat, 0.f, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( nAttr.setStorable(true));
     CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(900.f));
-    CHECK_MSTATUS( nAttr.setMin(1.f));
+    CHECK_MSTATUS( nAttr.setDefault(0.f));
+    CHECK_MSTATUS( nAttr.setMin(-1.f));
+	nAttr.setMax(1);
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
 	
@@ -154,6 +162,7 @@ MStatus HairNode::initialize()
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
 	attributeAffects( aExposure, aoutput );
+	attributeAffects( aSize, aoutput );
 	attributeAffects( aworldSpace, aoutput );
 	attributeAffects( agrowth, aoutput );
 	attributeAffects( aguide, aoutput );

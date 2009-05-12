@@ -276,6 +276,17 @@ struct XYZ
 		z = ori.z*l;
 	}
 	
+	void rotateAlong(const XYZ& v, float eta)
+	{
+		XYZ ori(x,y,z);
+		float l = ori.length();
+		ori += v*eta;
+		ori.normalize();
+		x = ori.x*l;
+		y = ori.y*l;
+		z = ori.z*l;
+	}
+		
 	float angleToVec(const XYZ& a, XYZ& axis) const
 	{
 		XYZ buf(x,y,z); buf.normalize();

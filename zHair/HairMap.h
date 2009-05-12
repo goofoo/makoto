@@ -48,6 +48,7 @@ public:
 	void loadDguide();
 	
 	void setTwist(const float val) {twist = val;}
+	void setClumping(const float val) {clumping = val;}
 	
 private:
 	char has_base, has_guide;
@@ -57,7 +58,7 @@ private:
 	Dguide* guide_data;
 	unsigned num_guide;
 	unsigned* bind_data;
-	float twist;
+	float twist, clumping;
 	MATRIX44F* guide_spaceinv;
 };
 #endif
