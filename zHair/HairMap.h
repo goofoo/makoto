@@ -20,8 +20,10 @@ struct Dguide
 {
 	short num_seg;
 	XYZ dsp_col;
-	XYZ ori_p, ori_side, ori_up;
-	XYZ* disp_v;
+	XYZ* P;
+	XYZ* N;
+	XYZ* T;
+	XYZ* dispv;
 };
 
 class hairMap
@@ -42,8 +44,8 @@ public:
 	void initGuide();
 	void drawGuide();
 
-	//int saveDguide();
-	//void loadDguide();
+	int saveDguide();
+	void loadDguide();
 	
 	void setTwist(const float val) {twist = val;}
 	
@@ -56,5 +58,6 @@ private:
 	unsigned num_guide;
 	unsigned* bind_data;
 	float twist;
+	MATRIX44F* guide_spaceinv;
 };
 #endif

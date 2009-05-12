@@ -255,24 +255,34 @@ struct XYZ
 	
 	void rotateAroundAxis(const XYZ& axis, float theta)
 	{
+		if(theta==0) return;
 		XYZ ori(x,y,z);
 		float l = ori.length();
 		ori.normalize();
 		
-		XYZ up = ori.cross(axis);
+		XYZ up = axis.cross(ori);
 		up.normalize();
 		
 		XYZ side = ori - axis*(axis.dot(ori));
 		
 		up *=side.length();
 		
-		ori += side*(cos(theta*6.28) - 1);
-		ori += up*sin(theta*6.28);
+		ori += side*(cos(theta) - 1);
+		ori += up*sin(theta);
 		
 		ori.normalize();
 		x = ori.x*l;
 		y = ori.y*l;
 		z = ori.z*l;
+	}
+	
+	float angleToVec(const XYZ& a, XYZ& axis) const
+	{
+		XYZ buf(x,y,z); buf.normalize();
+		XYZ abuf = a; abuf.normalize();
+		axis = buf.cross(abuf);
+		axis.normalize();
+		return acos(abuf.dot(buf));
 	}
 	
 	float x,y,z;

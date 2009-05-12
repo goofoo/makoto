@@ -68,7 +68,7 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glPointSize(2);
-	//if(m_base->hasBase()) m_base->draw();
+	if(m_base->hasBase()) m_base->draw();
 	m_base->drawGuide();
 	glPopAttrib();
 	view.endGL();
@@ -105,8 +105,6 @@ MStatus HairNode::initialize()
     CHECK_MSTATUS( nAttr.setStorable(true));
     CHECK_MSTATUS( nAttr.setKeyable(true));
     CHECK_MSTATUS( nAttr.setDefault(1.f));
-    CHECK_MSTATUS( nAttr.setSoftMin(-10.f));
-    CHECK_MSTATUS( nAttr.setSoftMax(10.f));
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
 	

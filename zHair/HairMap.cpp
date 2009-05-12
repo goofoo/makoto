@@ -16,7 +16,7 @@
 #include <fstream>
 using namespace std;
 
-hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0)
+hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0)
 {
 }
 hairMap::~hairMap() 
@@ -24,6 +24,7 @@ hairMap::~hairMap()
 	if(ddice) delete[] ddice;
 	if(guide_data) delete[] guide_data;
 	if(bind_data) delete[] bind_data;
+	if(guide_spaceinv) delete[] guide_spaceinv;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -67,9 +68,9 @@ int hairMap::dice()
 		sum_area += (float)area;
 	}
 	
-	float epsilon = sqrt(sum_area/n_tri/2/4);
+	float epsilon = sqrt(sum_area/n_tri/2/3);
 
-	int estimate_ncell = n_tri*4*2;
+	int estimate_ncell = n_tri*3*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -125,17 +126,35 @@ void hairMap::draw()
 	}
 	
 	delete[] parray;
-	XYZ ppre, dv, axis(0,1,0);
+	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
-		ppre = pbuf[i];
-		for(short j = 1; j< guide_data[bind_data[i]].num_seg; j++) 
+		ppre = pbuf[i]; 
+		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
+		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
+		axisobj.x = 0;
+		for(short j = 0; j< guide_data[bind_data[i]].num_seg; j++) 
 		{
+			dv = guide_data[bind_data[i]].dispv[j];
+			MATRIX44F mat;
+			
+			XYZ binor = guide_data[bind_data[i]].N[j].cross(guide_data[bind_data[i]].T[j]);
+			mat.setOrientations(guide_data[bind_data[i]].T[j], binor, guide_data[bind_data[i]].N[j]);
+			
+			XYZ rt = axisobj;
+			rt.rotateAroundAxis(XYZ(1,0,0), twist*j*dv.length()/axisobj.length());
+			mat.transformAsNormal(rt);
+			axisworld = rt;
+			//glVertex3f(guide_data[bind_data[i]].P[j].x, guide_data[bind_data[i]].P[j].y, guide_data[bind_data[i]].P[j].z);
+			//glVertex3f(guide_data[bind_data[i]].P[j].x+axisworld.x, guide_data[bind_data[i]].P[j].y+axisworld.y, guide_data[bind_data[i]].P[j].z+axisworld.z);
+		
+			axisworld.normalize();
+			
 			glVertex3f(ppre.x, ppre.y, ppre.z);
-			dv = guide_data[bind_data[i]].disp_v[j];
-			dv.rotateAroundAxis(axis, 1.f);
+			
+			dv.rotateAroundAxis(axisworld, -twist);
 			ppre += dv;
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 		}
@@ -157,6 +176,9 @@ void hairMap::initGuide()
 	
 	num_guide = faceIter.count()/5;
 	guide_data = new Dguide[num_guide];
+	
+	if(guide_spaceinv) delete[] guide_spaceinv;
+	guide_spaceinv = new MATRIX44F[num_guide];
 
 	MPoint cen;
 	MVector nor, tang;
@@ -171,7 +193,10 @@ void hairMap::initGuide()
 		if(i%5 ==0)
 		{
 			guide_data[patch_id].num_seg = 5;
-			guide_data[patch_id].disp_v = new XYZ[5];
+			guide_data[patch_id].P = new XYZ[5];
+			guide_data[patch_id].N = new XYZ[5];
+			guide_data[patch_id].T = new XYZ[5];
+			guide_data[patch_id].dispv = new XYZ[5];
 
 			r = rand( )%31/31.f;
 			g = rand( )%71/71.f;
@@ -181,27 +206,39 @@ void hairMap::initGuide()
 		
 		cen = faceIter.center (  MSpace::kObject);
 		pcur = XYZ(cen.x, cen.y, cen.z);
-		if(i%5==0) 
-		{
-			guide_data[patch_id].ori_p = pcur;
-			ppre = pcur;
-		}
+		
+		guide_data[patch_id].P[i%5] = pcur;
 		
 		faceIter.getNormal ( nor,  MSpace::kObject );
-		if(i%5==0) guide_data[patch_id].ori_up = XYZ(nor.x, nor.y, nor.z);
+		guide_data[patch_id].N[i%5] = XYZ(nor.x, nor.y, nor.z);
 		
 		faceIter.getVertices (vertlist);
 		
 		meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
 		tang = nor^tang;
 		tang.normalize();
-		if(i%5==0) guide_data[patch_id].ori_side = XYZ(tang.x, tang.y, tang.z);
+		guide_data[patch_id].T[i%5] = XYZ(tang.x, tang.y, tang.z);
 		
-		if(i%5==0) ppre = pcur;
+		MPoint corner0, corner1;
+		meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+		meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
 		
-		guide_data[patch_id].disp_v[i%5] = pcur-ppre;
-		if(i%5 !=0) ppre = pcur;
-
+		MVector dv = corner0 - cen + corner1 - cen;
+		
+		guide_data[patch_id].dispv[i%5] = XYZ(dv.x, dv.y, dv.z);
+		
+		XYZ side = guide_data[patch_id].dispv[i%5].cross(guide_data[patch_id].N[i%5]);
+		side.normalize();
+		guide_data[patch_id].T[i%5] = guide_data[patch_id].N[i%5].cross(side);
+		guide_data[patch_id].T[i%5].normalize();
+		
+		if(i%5 ==0)
+		{
+			guide_spaceinv[patch_id].setIdentity();
+			XYZ binor = guide_data[patch_id].N[0].cross(guide_data[patch_id].T[0]);
+			guide_spaceinv[patch_id].setOrientations(guide_data[patch_id].T[0], binor, guide_data[patch_id].N[0]);
+			guide_spaceinv[patch_id].inverse();
+		}
 	}
 }
 
@@ -247,7 +284,7 @@ void hairMap::bind()
 		float min_dist = 10e6;
 		for(unsigned j=0; j<num_guide; j++)
 		{
-			togd = pbuf[i] - guide_data[j].ori_p;
+			togd = pbuf[i] - guide_data[j].P[0];
 			dist = togd.length();
 			
 			if(dist < min_dist)
@@ -264,34 +301,32 @@ void hairMap::bind()
 void hairMap::drawGuide()
 {
 	if(!has_guide || !guide_data) return;
-XYZ axis(0,1,0);
 	glBegin(GL_LINES);
-	MPoint cen;
+
+	XYZ pp;
 	for(int i=0; i<num_guide; i++) 
 	{
 		glColor3f(guide_data[i].dsp_col.x, guide_data[i].dsp_col.y, guide_data[i].dsp_col.z);
-		XYZ ppre = guide_data[i].ori_p;
-		for(short j = 1; j< guide_data[i].num_seg; j++) 
+		for(short j = 0; j< guide_data[i].num_seg; j++) 
 		{
-			glVertex3f(ppre.x, ppre.y, ppre.z);
-			
-			XYZ dv = guide_data[i].disp_v[j];
-			dv.rotateAroundAxis(axis, twist);
-			
-			glVertex3f(ppre.x+dv.x, ppre.y+dv.y, ppre.z+dv.z);
-			
-			glVertex3f(ppre.x, ppre.y, ppre.z);
-			ppre += guide_data[i].disp_v[j];
-			glVertex3f(ppre.x, ppre.y, ppre.z);
-			
-			
-			
+			XYZ pp = guide_data[i].P[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			pp += guide_data[i].N[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			pp = guide_data[i].P[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			pp += guide_data[i].T[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			//pp = guide_data[i].P[j] - guide_data[i].dispv[j]/2;
+			//glVertex3f(pp.x, pp.y, pp.z);
+			//pp += guide_data[i].dispv[j];
+			//glVertex3f(pp.x, pp.y, pp.z);
 		}
 	}
 	
 	glEnd();
 }
-/*
+
 int hairMap::saveDguide()
 {
 	ofstream outfile;
@@ -332,5 +367,4 @@ void hairMap::loadDguide( )
 	infile.close();	
 	return ;
 }
-*/
 //~:
