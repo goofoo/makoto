@@ -33,8 +33,18 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		MObject ogrow = data.inputValue(agrowth).asMesh();
 		if(!ogrow.isNull()) m_base->setBase(ogrow);
 		
-		MObject oguide = data.inputValue(aguide).asMesh();
-		if(!oguide.isNull()) m_base->setGuide(oguide);
+		MArrayDataHandle hArray = data.inputArrayValue(aguide);
+		int n_guide = hArray.elementCount();
+		MObjectArray guidelist;
+		for(int i=0; i<n_guide; i++)
+		{
+			guidelist.append(hArray.inputValue().asMesh());
+			hArray.next();
+		}
+		
+		m_base->setGuide(guidelist);
+		//MObject oguide = data.inputValue(aguide).asMesh();
+		//if(!oguide.isNull()) m_base->setGuide(oguide);
 		
 		//MMatrix mat = data.inputValue(aworldSpace).asMatrix();
 		MTime currentTime = data.inputValue(acurrenttime, &status).asTime();
@@ -72,7 +82,7 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glPointSize(2);
-	if(m_base->hasBase()) m_base->draw();
+	m_base->draw();
 	m_base->drawGuide();
 	glPopAttrib();
 	view.endGL();
@@ -154,7 +164,7 @@ MStatus HairNode::initialize()
 	zWorks::createTypedAttr(agrowth, MString("growMesh"), MString("gm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(agrowth), "ERROR adding grow mesh");
 	
-	zWorks::createTypedAttr(aguide, MString("guideMesh"), MString("gdm"), MFnData::kMesh);
+	zWorks::createTypedArrayAttr(aguide, MString("guideMesh"), MString("gdm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(aguide), "ERROR adding guide mesh");
 	
 	astartframe = numAttr.create( "startFrame", "sf", MFnNumericData::kInt, 1 );

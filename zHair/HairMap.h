@@ -14,6 +14,7 @@
 #include <maya/MPoint.h>
 #include <maya/MPointArray.h>
 #include <maya/MVectorArray.h>
+#include <maya/MObjectArray.h>
 #include "../shared/DiceTriangle.h"
 
 struct Dguide
@@ -33,7 +34,7 @@ public:
 	~hairMap();
 	
 	void setBase(const MObject& mesh);
-	void setGuide(const MObject& mesh);
+	void setGuide(const MObjectArray& meshes);
 	char hasBase() const {return has_base;}
 	char hasGuide() const {return has_guide;}
 	
@@ -54,11 +55,12 @@ public:
 	
 private:
 	char has_base, has_guide;
-	MObject obase, oguide;
+	MObject obase;
+	MObjectArray oguide;
 	DiceParam* ddice;
 	int n_samp, n_vert;
 	Dguide* guide_data;
-	unsigned num_guide;
+	unsigned num_guide, num_guideobj;
 	unsigned* bind_data;
 	float twist, clumping, knoise;
 	MATRIX44F* guide_spaceinv;
