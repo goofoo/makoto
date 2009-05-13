@@ -1,0 +1,11 @@
+global proc unlockAllSelected()
+{
+	string $sel[] =`ls -sl`;
+	string $an;
+	for($an in $sel)
+	{
+		lockNode -lock off $an;
+
+	}
+}
+unlockAllSelected;

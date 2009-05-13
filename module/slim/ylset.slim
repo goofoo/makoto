@@ -585,32 +585,32 @@ extensions zhang pxsl {
 		}
 		else if(mode == "_black")
 	   	{
-	   		_color = SurfaceColor;
-			_colorA = colorA;
-			_colorB = colorB;
-			_colorC = colorC;
-			_colorD = colorD;
-			_colorE = colorE;
-			_colorF = colorF;
-			_colorG = colorG;
-			_colorH = colorH;
-	   		_diffuse = cDiffuse;
-			_diffuse_fill = cDiffuse1;
-			_diffuse_back = cDiffuse2;
-			_specular = cSpecular;
-			_specular_fill = cSpecular1;
-			_specular_back = cSpecular2;
-	   		_reflection = cReflection;
-			_refraction = cRefraction;
-	   		_rim = cRim;
-	   		_ambient = cAmbient;
+	   		_color = SurfaceColor*SurfaceOpacity;
+			_colorA = colorA*SurfaceOpacity;
+			_colorB = colorB*SurfaceOpacity;
+			_colorC = colorC*SurfaceOpacity;
+			_colorD = colorD*SurfaceOpacity;
+			_colorE = colorE*SurfaceOpacity;
+			_colorF = colorF*SurfaceOpacity;
+			_colorG = colorG*SurfaceOpacity;
+			_colorH = colorH*SurfaceOpacity;
+	   		_diffuse = cDiffuse*SurfaceOpacity;
+			_diffuse_fill = cDiffuse1*SurfaceOpacity;
+			_diffuse_back = cDiffuse2*SurfaceOpacity;
+			_specular = cSpecular*SurfaceOpacity;
+			_specular_fill = cSpecular1*SurfaceOpacity;
+			_specular_back = cSpecular2*SurfaceOpacity;
+	   		_reflection = cReflection*SurfaceOpacity;
+			_refraction = cRefraction*SurfaceOpacity;
+	   		_rim = cRim*SurfaceOpacity;
+	   		_ambient = cAmbient*SurfaceOpacity;
 			_depth = fDepth;
 			_occlusion = comp(cOcclusion,0);
 			_objectID = cID;
 			_shadow = cShadow;
-			_epiderm = cEpiderm;
-			_subderm = cSubderm;
-			_backscattering = cBackscattering;
+			_epiderm = cEpiderm*SurfaceOpacity;
+			_subderm = cSubderm*SurfaceOpacity;
+			_backscattering = cBackscattering*SurfaceOpacity;
 	   		CI = 0;
 	   	}
 		else
