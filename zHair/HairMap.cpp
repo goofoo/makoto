@@ -187,8 +187,19 @@ void hairMap::initGuide()
 	MStatus status;
 	MFnMesh meshFn(oguide, &status);
 	MItMeshPolygon faceIter(oguide, &status);
+// find per-patch number of segment
+	int nend = 0;
+	int nconn;
+	for(; !faceIter.isDone(); faceIter.next()) 
+	{
+		faceIter.numConnectedFaces (nconn);
+		if(nconn==1) nend++;
+	}
+	nend /= 2;
 	
-	num_guide = faceIter.count()/5;
+	int nseg = meshFn.numPolygons()/nend;
+	
+	num_guide = faceIter.count()/nseg;
 	guide_data = new Dguide[num_guide];
 	
 	if(guide_spaceinv) delete[] guide_spaceinv;
@@ -200,17 +211,18 @@ void hairMap::initGuide()
 	float r,g,b;
 	int patch_id;
 	XYZ pcur, ppre;
+	faceIter.reset();
 	for(int i=0; !faceIter.isDone(); faceIter.next(), i++) 
 	{
-		patch_id = i/5;
+		patch_id = i/nseg;
 		
-		if(i%5 ==0)
+		if(i%nseg ==0)
 		{
-			guide_data[patch_id].num_seg = 5;
-			guide_data[patch_id].P = new XYZ[5];
-			guide_data[patch_id].N = new XYZ[5];
-			guide_data[patch_id].T = new XYZ[5];
-			guide_data[patch_id].dispv = new XYZ[5];
+			guide_data[patch_id].num_seg = nseg;
+			guide_data[patch_id].P = new XYZ[nseg];
+			guide_data[patch_id].N = new XYZ[nseg];
+			guide_data[patch_id].T = new XYZ[nseg];
+			guide_data[patch_id].dispv = new XYZ[nseg];
 
 			r = rand( )%31/31.f;
 			g = rand( )%71/71.f;
@@ -221,17 +233,17 @@ void hairMap::initGuide()
 		cen = faceIter.center (  MSpace::kObject);
 		pcur = XYZ(cen.x, cen.y, cen.z);
 		
-		guide_data[patch_id].P[i%5] = pcur;
+		guide_data[patch_id].P[i%nseg] = pcur;
 		
 		faceIter.getNormal ( nor,  MSpace::kObject );
-		guide_data[patch_id].N[i%5] = XYZ(nor.x, nor.y, nor.z);
+		guide_data[patch_id].N[i%nseg] = XYZ(nor.x, nor.y, nor.z);
 		
 		faceIter.getVertices (vertlist);
 		
 		meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
 		tang = nor^tang;
 		tang.normalize();
-		guide_data[patch_id].T[i%5] = XYZ(tang.x, tang.y, tang.z);
+		guide_data[patch_id].T[i%nseg] = XYZ(tang.x, tang.y, tang.z);
 		
 		MPoint corner0, corner1;
 		meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
@@ -239,14 +251,14 @@ void hairMap::initGuide()
 		
 		MVector dv = corner0 - cen + corner1 - cen;
 		
-		guide_data[patch_id].dispv[i%5] = XYZ(dv.x, dv.y, dv.z);
+		guide_data[patch_id].dispv[i%nseg] = XYZ(dv.x, dv.y, dv.z);
 		
-		XYZ side = guide_data[patch_id].dispv[i%5].cross(guide_data[patch_id].N[i%5]);
+		XYZ side = guide_data[patch_id].dispv[i%nseg].cross(guide_data[patch_id].N[i%nseg]);
 		side.normalize();
-		guide_data[patch_id].T[i%5] = guide_data[patch_id].N[i%5].cross(side);
-		guide_data[patch_id].T[i%5].normalize();
+		guide_data[patch_id].T[i%nseg] = guide_data[patch_id].N[i%nseg].cross(side);
+		guide_data[patch_id].T[i%nseg].normalize();
 		
-		if(i%5 ==0)
+		if(i%nseg ==0)
 		{
 			guide_spaceinv[patch_id].setIdentity();
 			XYZ binor = guide_data[patch_id].N[0].cross(guide_data[patch_id].T[0]);
@@ -254,6 +266,71 @@ void hairMap::initGuide()
 			guide_spaceinv[patch_id].inverse();
 		}
 	}
+}
+
+void hairMap::updateGuide()
+{
+	MStatus status;
+	MFnMesh meshFn(oguide, &status);
+	MItMeshPolygon faceIter(oguide, &status);
+// find per-patch number of segment
+	int nend = 0;
+	int nconn;
+	for(; !faceIter.isDone(); faceIter.next()) 
+	{
+		faceIter.numConnectedFaces (nconn);
+		if(nconn==1) nend++;
+	}
+	nend /= 2;
+	
+	int nseg = meshFn.numPolygons()/nend;
+	MPoint cen;
+	MVector nor, tang;
+	MIntArray vertlist;
+	int patch_id;
+	XYZ pcur, ppre;
+	faceIter.reset();
+	for(int i=0; !faceIter.isDone(); faceIter.next(), i++) 
+	{
+		patch_id = i/nseg;
+		
+		cen = faceIter.center (  MSpace::kObject);
+		pcur = XYZ(cen.x, cen.y, cen.z);
+		
+		guide_data[patch_id].P[i%nseg] = pcur;
+		
+		faceIter.getNormal ( nor,  MSpace::kObject );
+		guide_data[patch_id].N[i%nseg] = XYZ(nor.x, nor.y, nor.z);
+		
+		faceIter.getVertices (vertlist);
+		
+		meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
+		tang = nor^tang;
+		tang.normalize();
+		guide_data[patch_id].T[i%nseg] = XYZ(tang.x, tang.y, tang.z);
+		
+		MPoint corner0, corner1;
+		meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+		meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+		
+		MVector dv = corner0 - cen + corner1 - cen;
+		
+		guide_data[patch_id].dispv[i%nseg] = XYZ(dv.x, dv.y, dv.z);
+		
+		XYZ side = guide_data[patch_id].dispv[i%nseg].cross(guide_data[patch_id].N[i%nseg]);
+		side.normalize();
+		guide_data[patch_id].T[i%nseg] = guide_data[patch_id].N[i%nseg].cross(side);
+		guide_data[patch_id].T[i%nseg].normalize();
+		
+		if(i%nseg ==0)
+		{
+			guide_spaceinv[patch_id].setIdentity();
+			XYZ binor = guide_data[patch_id].N[0].cross(guide_data[patch_id].T[0]);
+			guide_spaceinv[patch_id].setOrientations(guide_data[patch_id].T[0], binor, guide_data[patch_id].N[0]);
+			guide_spaceinv[patch_id].inverse();
+		}
+	}
+
 }
 
 void hairMap::bind()

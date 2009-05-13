@@ -54,10 +54,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			//	MGlobal::displayInfo("Save Dguide data failed");
 			m_base->bind();	
 		}
-		else
-		{
-		
-		}
+		else m_base->updateGuide();
 		
 		m_base->setTwist(data.inputValue(aExposure).asFloat());
 		m_base->setClumping(data.inputValue(aSize).asFloat());

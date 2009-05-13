@@ -42,6 +42,7 @@ public:
 	
 	void draw();
 	void initGuide();
+	void updateGuide();
 	void drawGuide();
 
 	int saveDguide();
