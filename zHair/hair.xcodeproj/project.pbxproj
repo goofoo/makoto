@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F6F232E0FBA8F32003D0615 /* FNoise.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F6F232C0FBA8F32003D0615 /* FNoise.h */; };
+		7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F232D0FBA8F32003D0615 /* FNoise.cpp */; };
 		7FE58B9F0FB61F5800187112 /* HairMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */; };
 		7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */; };
 		7FE58BA30FB61F7300187112 /* zHairNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA20FB61F7300187112 /* zHairNode.cpp */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7F6F232C0FBA8F32003D0615 /* FNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FNoise.h; path = ../shared/FNoise.h; sourceTree = SOURCE_ROOT; };
+		7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HairMap.cpp; sourceTree = "<group>"; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
 		7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zHairNode.cpp; sourceTree = "<group>"; };
@@ -48,6 +52,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F6F232C0FBA8F32003D0615 /* FNoise.h */,
+				7F6F232D0FBA8F32003D0615 /* FNoise.cpp */,
 				7FE58BA90FB61FAC00187112 /* zWorks.cpp */,
 				7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */,
 				7FE58BA20FB61F7300187112 /* zHairNode.cpp */,
@@ -86,6 +92,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7F6F232E0FBA8F32003D0615 /* FNoise.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +143,7 @@
 				7FE58BA30FB61F7300187112 /* zHairNode.cpp in Sources */,
 				7FE58BA80FB61F9E00187112 /* DiceTriangle.cpp in Sources */,
 				7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */,
+				7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,6 +12,7 @@
 #include <maya/MItMeshVertex.h>
 #include <maya/MFnMeshData.h>
 #include <maya/MItMeshPolygon.h>
+#include "../shared/FNoise.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -126,6 +127,12 @@ void hairMap::draw()
 	}
 	
 	delete[] parray;
+	
+	int g_seed = 13;
+	FNoise fnoi;
+	
+	float noi;
+	
 	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i++)
@@ -155,10 +162,14 @@ void hairMap::draw()
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 
 			XYZ rot2p = ppre + dv -  guide_data[bind_data[i]].P[j];
-			dv.rotateAlong(rot2p, -clumping);
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			dv.rotateAlong(rot2p, -clumping*noi);
 
-			dv.rotateAroundAxis(axisworld, -twist);
-			ppre += dv;
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			dv.rotateAroundAxis(axisworld, -twist*noi);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			ppre += dv*noi;
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 		}
 	}

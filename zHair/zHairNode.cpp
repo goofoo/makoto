@@ -13,6 +13,7 @@ MObject HairNode::aworldSpace;
 MObject HairNode::aoutput;
 MObject HairNode::agrowth;
 MObject HairNode::aguide;
+MObject HairNode::alengthnoise;
 
 HairNode::HairNode()
 {
@@ -60,6 +61,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		m_base->setTwist(data.inputValue(aExposure).asFloat());
 		m_base->setClumping(data.inputValue(aSize).asFloat());
+		m_base->setNoise(data.inputValue(alengthnoise).asFloat());
 	    
 		data.setClean(plug);
 	}
@@ -103,6 +105,15 @@ MStatus HairNode::initialize()
 	MStatus			 status;
 	    MFnNumericAttribute nAttr; 
     MFnTypedAttribute tAttr;
+	
+	alengthnoise = nAttr.create("noise", "noi",
+						  MFnNumericData::kFloat, 0.f, &status);
+    CHECK_MSTATUS( status );
+    CHECK_MSTATUS( nAttr.setStorable(true));
+    CHECK_MSTATUS( nAttr.setKeyable(true));
+    CHECK_MSTATUS( nAttr.setDefault(0.f));
+	nAttr.setMin(0);
+	nAttr.setMax(1);
 	
 	aExposure = nAttr.create("twist", "twt",
 						  MFnNumericData::kFloat, 0.f, &status);
@@ -157,10 +168,12 @@ MStatus HairNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
+	addAttribute(alengthnoise);
 	CHECK_MSTATUS( addAttribute(aSize));
 		CHECK_MSTATUS( addAttribute(aExposure));
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
+	attributeAffects( alengthnoise, aoutput );
 	attributeAffects( aExposure, aoutput );
 	attributeAffects( aSize, aoutput );
 	attributeAffects( aworldSpace, aoutput );

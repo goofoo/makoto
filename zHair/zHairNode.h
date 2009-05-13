@@ -57,6 +57,7 @@ public:
 	static MObject aoutput;
 	static MObject agrowth;
 	static MObject aguide;
+	static MObject alengthnoise;
 	static	MTypeId		id;
 	
 		// Cached internal values
