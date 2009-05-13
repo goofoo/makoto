@@ -280,6 +280,12 @@
 		vrLoc = 10897;
 	};
 	7F6F232C0FBA8F32003D0615 /* FNoise.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = FNoise.h;
+		path = /Users/jianzhang/Documents/plankton/shared/FNoise.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {780, 573}}";
 			sepNavSelRange = "{225, 24}";
@@ -1536,9 +1542,9 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {968, 7000}}";
+			sepNavIntBoundsRect = "{{0, 0}, {716, 7210}}";
 			sepNavSelRange = "{7922, 0}";
-			sepNavVisRange = "{7672, 992}";
+			sepNavVisRange = "{7747, 414}";
 			sepNavWindowFrame = "{{377, 67}, {867, 711}}";
 		};
 	};
@@ -1552,9 +1558,9 @@
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {691, 3668}}";
+			sepNavIntBoundsRect = "{{0, 0}, {691, 3724}}";
 			sepNavSelRange = "{1683, 0}";
-			sepNavVisRange = "{1327, 1013}";
+			sepNavVisRange = "{979, 1261}";
 			sepNavWindowFrame = "{{15, 64}, {750, 714}}";
 		};
 	};

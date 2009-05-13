@@ -19,7 +19,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.0.8 - 04/30/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.1.8 - 05/13/09", "Any");
 
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,
@@ -29,7 +29,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 
-	//MGlobal::executeCommand("source hdrviewerMenus.mel; hdrviewerCreateMenus;source slimcontrolMenus; slimcontrolCreateMenus();");
+	MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
 
 	return status;
 }
@@ -49,7 +49,7 @@ MStatus uninitializePlugin( MObject obj )
 		return status;
 	}
 
-	//MGlobal::executeCommand("hdrviewerRemoveMenus;slimcontrolRemoveMenus;");
+	MGlobal::executeCommand("zhairRemoveMenus;");
 	return status;
 }
 
