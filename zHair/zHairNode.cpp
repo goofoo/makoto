@@ -13,6 +13,7 @@ MObject HairNode::aworldSpace;
 MObject HairNode::aoutput;
 MObject HairNode::agrowth;
 MObject HairNode::aguide;
+MObject HairNode::alengthnoise;
 
 HairNode::HairNode()
 {
@@ -32,8 +33,18 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		MObject ogrow = data.inputValue(agrowth).asMesh();
 		if(!ogrow.isNull()) m_base->setBase(ogrow);
 		
-		MObject oguide = data.inputValue(aguide).asMesh();
-		if(!oguide.isNull()) m_base->setGuide(oguide);
+		MArrayDataHandle hArray = data.inputArrayValue(aguide);
+		int n_guide = hArray.elementCount();
+		MObjectArray guidelist;
+		for(int i=0; i<n_guide; i++)
+		{
+			guidelist.append(hArray.inputValue().asMesh());
+			hArray.next();
+		}
+		
+		m_base->setGuide(guidelist);
+		//MObject oguide = data.inputValue(aguide).asMesh();
+		//if(!oguide.isNull()) m_base->setGuide(oguide);
 		
 		//MMatrix mat = data.inputValue(aworldSpace).asMatrix();
 		MTime currentTime = data.inputValue(acurrenttime, &status).asTime();
@@ -53,6 +64,11 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			//	MGlobal::displayInfo("Save Dguide data failed");
 			m_base->bind();	
 		}
+		else m_base->updateGuide();
+		
+		m_base->setTwist(data.inputValue(aExposure).asFloat());
+		m_base->setClumping(data.inputValue(aSize).asFloat());
+		m_base->setNoise(data.inputValue(alengthnoise).asFloat());
 	    
 		data.setClean(plug);
 	}
@@ -66,7 +82,7 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glPointSize(2);
-	if(m_base->hasBase()) m_base->draw();
+	m_base->draw();
 	m_base->drawGuide();
 	glPopAttrib();
 	view.endGL();
@@ -97,24 +113,34 @@ MStatus HairNode::initialize()
 	    MFnNumericAttribute nAttr; 
     MFnTypedAttribute tAttr;
 	
-	aExposure = nAttr.create("exposure", "exposure",
-						  MFnNumericData::kFloat, 1.f, &status);
+	alengthnoise = nAttr.create("noise", "noi",
+						  MFnNumericData::kFloat, 0.f, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( nAttr.setStorable(true));
     CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(1.f));
-    CHECK_MSTATUS( nAttr.setSoftMin(-10.f));
-    CHECK_MSTATUS( nAttr.setSoftMax(10.f));
+    CHECK_MSTATUS( nAttr.setDefault(0.f));
+	nAttr.setMin(0);
+	nAttr.setMax(1);
+	
+	aExposure = nAttr.create("twist", "twt",
+						  MFnNumericData::kFloat, 0.f, &status);
+    CHECK_MSTATUS( status );
+    CHECK_MSTATUS( nAttr.setStorable(true));
+    CHECK_MSTATUS( nAttr.setKeyable(true));
+    CHECK_MSTATUS( nAttr.setDefault(0.f));
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
+	nAttr.setMin(-1);
+	nAttr.setMax(1);
 	
-	aSize = nAttr.create("size", "size",
-						  MFnNumericData::kFloat, 900.f, &status);
+	aSize = nAttr.create("clumping", "clp",
+						  MFnNumericData::kFloat, 0.f, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( nAttr.setStorable(true));
     CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(900.f));
-    CHECK_MSTATUS( nAttr.setMin(1.f));
+    CHECK_MSTATUS( nAttr.setDefault(0.f));
+    CHECK_MSTATUS( nAttr.setMin(-1.f));
+	nAttr.setMax(1);
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
 	
@@ -138,7 +164,7 @@ MStatus HairNode::initialize()
 	zWorks::createTypedAttr(agrowth, MString("growMesh"), MString("gm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(agrowth), "ERROR adding grow mesh");
 	
-	zWorks::createTypedAttr(aguide, MString("guideMesh"), MString("gdm"), MFnData::kMesh);
+	zWorks::createTypedArrayAttr(aguide, MString("guideMesh"), MString("gdm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(aguide), "ERROR adding guide mesh");
 	
 	astartframe = numAttr.create( "startFrame", "sf", MFnNumericData::kInt, 1 );
@@ -149,11 +175,14 @@ MStatus HairNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
+	addAttribute(alengthnoise);
 	CHECK_MSTATUS( addAttribute(aSize));
 		CHECK_MSTATUS( addAttribute(aExposure));
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
+	attributeAffects( alengthnoise, aoutput );
 	attributeAffects( aExposure, aoutput );
+	attributeAffects( aSize, aoutput );
 	attributeAffects( aworldSpace, aoutput );
 	attributeAffects( agrowth, aoutput );
 	attributeAffects( aguide, aoutput );

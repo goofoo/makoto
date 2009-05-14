@@ -12,11 +12,12 @@
 #include <maya/MItMeshVertex.h>
 #include <maya/MFnMeshData.h>
 #include <maya/MItMeshPolygon.h>
+#include "../shared/FNoise.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
 
-hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0)
+hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0)
 {
 }
 hairMap::~hairMap() 
@@ -24,6 +25,7 @@ hairMap::~hairMap()
 	if(ddice) delete[] ddice;
 	if(guide_data) delete[] guide_data;
 	if(bind_data) delete[] bind_data;
+	if(guide_spaceinv) delete[] guide_spaceinv;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -32,10 +34,15 @@ void hairMap::setBase(const MObject& mesh)
 	has_base = 1;
 }
 
-void hairMap::setGuide(const MObject& mesh)
+void hairMap::setGuide(const MObjectArray& meshes)
 {
-	oguide = mesh;
-	has_guide = 1;
+	oguide.clear();
+	for(unsigned i=0; i<meshes.length(); i++)
+	{
+		if(!meshes[i].isNull()) oguide.append(meshes[i]);
+	}
+	if(oguide.length()>0) has_guide = 1;
+	else  has_guide = 0;
 }
 
 int hairMap::dice()
@@ -67,9 +74,9 @@ int hairMap::dice()
 		sum_area += (float)area;
 	}
 	
-	float epsilon = sqrt(sum_area/n_tri/2/16);
+	float epsilon = sqrt(sum_area/n_tri/2/3);
 
-	int estimate_ncell = n_tri*16*2;
+	int estimate_ncell = n_tri*3*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -103,7 +110,7 @@ int hairMap::dice()
 
 void hairMap::draw()
 {
-	if(!has_base || n_samp < 1) return;
+	if(!has_base || n_samp < 1 || !has_guide || !guide_data) return;
 	
 	MStatus status;
 	MFnMesh meshFn(obase, &status );
@@ -126,11 +133,50 @@ void hairMap::draw()
 	
 	delete[] parray;
 	
-	glBegin(GL_POINTS);
+	int g_seed = 13;
+	FNoise fnoi;
+	
+	float noi;
+	
+	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
+	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
-		glVertex3f(pbuf[i].x, pbuf[i].y, pbuf[i].z);
+		ppre = pbuf[i]; 
+		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
+		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
+		axisobj.x = 0;
+		for(short j = 0; j< guide_data[bind_data[i]].num_seg; j++) 
+		{
+			dv = guide_data[bind_data[i]].dispv[j];
+			MATRIX44F mat;
+			
+			XYZ binor = guide_data[bind_data[i]].N[j].cross(guide_data[bind_data[i]].T[j]);
+			mat.setOrientations(guide_data[bind_data[i]].T[j], binor, guide_data[bind_data[i]].N[j]);
+			
+			XYZ rt = axisobj;
+			rt.rotateAroundAxis(XYZ(1,0,0), twist*j*dv.length()/axisobj.length());
+			mat.transformAsNormal(rt);
+
+			axisworld = rt;
+			//glVertex3f(guide_data[bind_data[i]].P[j].x, guide_data[bind_data[i]].P[j].y, guide_data[bind_data[i]].P[j].z);
+			//glVertex3f(guide_data[bind_data[i]].P[j].x+axisworld.x, guide_data[bind_data[i]].P[j].y+axisworld.y, guide_data[bind_data[i]].P[j].z+axisworld.z);
+			axisworld.normalize();
+			
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+
+			XYZ rot2p = ppre + dv -  guide_data[bind_data[i]].P[j];
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			dv.rotateAlong(rot2p, -clumping*noi);
+
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			dv.rotateAroundAxis(axisworld, -twist*noi);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			ppre += dv*noi;
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+		}
 	}
 	glEnd();
 	
@@ -140,60 +186,182 @@ void hairMap::draw()
 void hairMap::initGuide()
 {
 	if(!has_guide) return;
+
+	num_guideobj = oguide.length();
+	num_guide = 0;
+	MStatus status;
+	for(unsigned iguide=0; iguide<oguide.length(); iguide++)
+	{
+		MFnMesh meshFn(oguide[iguide], &status);
+		MItMeshPolygon faceIter(oguide[iguide], &status);
+// find per-patch number of segment
+		int nend = 0;
+		int nconn;
+		for(; !faceIter.isDone(); faceIter.next()) 
+		{
+			faceIter.numConnectedFaces (nconn);
+			if(nconn==1) nend++;
+		}
+		nend /= 2;
+		
+		int nseg = meshFn.numPolygons()/nend;
+		
+		num_guide += faceIter.count()/nseg;
+	}
+	//MGlobal::displayInfo(MString(" ")+num_guide);
 	
 	if(guide_data) delete[] guide_data;
-	
-	MStatus status;
-	MFnMesh meshFn(oguide, &status);
-	MItMeshPolygon faceIter(oguide, &status);
-	
-	num_guide = faceIter.count()/5;
 	guide_data = new Dguide[num_guide];
+	
+	if(guide_spaceinv) delete[] guide_spaceinv;
+	guide_spaceinv = new MATRIX44F[num_guide];
 
 	MPoint cen;
 	MVector nor, tang;
 	MIntArray vertlist;
 	float r,g,b;
-	int patch_id;
+	int patch_id, patch_acc =0;
 	XYZ pcur, ppre;
-	for(int i=0; !faceIter.isDone(); faceIter.next(), i++) 
+	for(unsigned iguide=0; iguide<oguide.length(); iguide++)
 	{
-		patch_id = i/5;
-		
-		if(i%5 ==0)
+		MFnMesh meshFn(oguide[iguide], &status);
+		MItMeshPolygon faceIter(oguide[iguide], &status);
+// find per-patch number of segment
+		int nend = 0;
+		int nconn;
+		for(; !faceIter.isDone(); faceIter.next()) 
 		{
-			guide_data[patch_id].num_seg = 5;
-			guide_data[patch_id].disp_v = new XYZ[5];
-
-			r = rand( )%31/31.f;
-			g = rand( )%71/71.f;
-			b = rand( )%11/11.f;
-			guide_data[patch_id].dsp_col = XYZ(r,g,b);
+			faceIter.numConnectedFaces (nconn);
+			if(nconn==1) nend++;
 		}
+		nend /= 2;
 		
-		cen = faceIter.center (  MSpace::kObject);
-		pcur = XYZ(cen.x, cen.y, cen.z);
-		if(i%5==0) 
+		int nseg = meshFn.numPolygons()/nend;
+		faceIter.reset();
+		for(int i=0; !faceIter.isDone(); faceIter.next(), i++) 
 		{
-			guide_data[patch_id].ori_p = pcur;
-			ppre = pcur;
-		}
-		
-		faceIter.getNormal ( nor,  MSpace::kObject );
-		if(i%5==0) guide_data[patch_id].ori_up = XYZ(nor.x, nor.y, nor.z);
-		
-		faceIter.getVertices (vertlist);
-		
-		meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
-		tang = nor^tang;
-		tang.normalize();
-		if(i%5==0) guide_data[patch_id].ori_side = XYZ(tang.x, tang.y, tang.z);
-		
-		if(i%5==0) ppre = pcur;
-		
-		guide_data[patch_id].disp_v[i%5] = pcur-ppre;
-		if(i%5 !=0) ppre = pcur;
+			patch_id = i/nseg + patch_acc;
+			
+			if(i%nseg ==0)
+			{
+				guide_data[patch_id].num_seg = nseg;
+				guide_data[patch_id].P = new XYZ[nseg];
+				guide_data[patch_id].N = new XYZ[nseg];
+				guide_data[patch_id].T = new XYZ[nseg];
+				guide_data[patch_id].dispv = new XYZ[nseg];
 
+				r = rand( )%31/31.f;
+				g = rand( )%71/71.f;
+				b = rand( )%11/11.f;
+				guide_data[patch_id].dsp_col = XYZ(r,g,b);
+			}
+			
+			cen = faceIter.center (  MSpace::kObject);
+			pcur = XYZ(cen.x, cen.y, cen.z);
+			
+			guide_data[patch_id].P[i%nseg] = pcur;
+			
+			faceIter.getNormal ( nor,  MSpace::kObject );
+			guide_data[patch_id].N[i%nseg] = XYZ(nor.x, nor.y, nor.z);
+			
+			faceIter.getVertices (vertlist);
+			
+			meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
+			tang = nor^tang;
+			tang.normalize();
+			guide_data[patch_id].T[i%nseg] = XYZ(tang.x, tang.y, tang.z);
+			
+			MPoint corner0, corner1;
+			meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+			meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+			
+			MVector dv = corner0 - cen + corner1 - cen;
+			
+			guide_data[patch_id].dispv[i%nseg] = XYZ(dv.x, dv.y, dv.z);
+			
+			XYZ side = guide_data[patch_id].dispv[i%nseg].cross(guide_data[patch_id].N[i%nseg]);
+			side.normalize();
+			guide_data[patch_id].T[i%nseg] = guide_data[patch_id].N[i%nseg].cross(side);
+			guide_data[patch_id].T[i%nseg].normalize();
+			
+			if(i%nseg ==0)
+			{
+				guide_spaceinv[patch_id].setIdentity();
+				XYZ binor = guide_data[patch_id].N[0].cross(guide_data[patch_id].T[0]);
+				guide_spaceinv[patch_id].setOrientations(guide_data[patch_id].T[0], binor, guide_data[patch_id].N[0]);
+				guide_spaceinv[patch_id].inverse();
+			}
+		}
+		patch_acc += nend;
+	}
+}
+
+void hairMap::updateGuide()
+{
+	if(!has_guide || !guide_data || oguide.length() != num_guideobj) return;
+	MStatus status;
+	MPoint cen;
+	MVector nor, tang;
+	MIntArray vertlist;
+	int patch_id, patch_acc =0;
+	XYZ pcur, ppre;
+	for(unsigned iguide=0; iguide<oguide.length(); iguide++)
+	{
+		MFnMesh meshFn(oguide[iguide], &status);
+		MItMeshPolygon faceIter(oguide[iguide], &status);
+// find per-patch number of segment
+		int nend = 0;
+		int nconn;
+		for(; !faceIter.isDone(); faceIter.next()) 
+		{
+			faceIter.numConnectedFaces (nconn);
+			if(nconn==1) nend++;
+		}
+		nend /= 2;
+		
+		int nseg = meshFn.numPolygons()/nend;
+		faceIter.reset();
+		for(int i=0; !faceIter.isDone(); faceIter.next(), i++) 
+		{
+			patch_id = i/nseg + patch_acc;
+			
+			cen = faceIter.center (  MSpace::kObject);
+			pcur = XYZ(cen.x, cen.y, cen.z);
+			
+			guide_data[patch_id].P[i%nseg] = pcur;
+			
+			faceIter.getNormal ( nor,  MSpace::kObject );
+			guide_data[patch_id].N[i%nseg] = XYZ(nor.x, nor.y, nor.z);
+			
+			faceIter.getVertices (vertlist);
+			
+			meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
+			tang = nor^tang;
+			tang.normalize();
+			guide_data[patch_id].T[i%nseg] = XYZ(tang.x, tang.y, tang.z);
+			
+			MPoint corner0, corner1;
+			meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+			meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+			
+			MVector dv = corner0 - cen + corner1 - cen;
+			
+			guide_data[patch_id].dispv[i%nseg] = XYZ(dv.x, dv.y, dv.z);
+			
+			XYZ side = guide_data[patch_id].dispv[i%nseg].cross(guide_data[patch_id].N[i%nseg]);
+			side.normalize();
+			guide_data[patch_id].T[i%nseg] = guide_data[patch_id].N[i%nseg].cross(side);
+			guide_data[patch_id].T[i%nseg].normalize();
+			
+			if(i%nseg ==0)
+			{
+				guide_spaceinv[patch_id].setIdentity();
+				XYZ binor = guide_data[patch_id].N[0].cross(guide_data[patch_id].T[0]);
+				guide_spaceinv[patch_id].setOrientations(guide_data[patch_id].T[0], binor, guide_data[patch_id].N[0]);
+				guide_spaceinv[patch_id].inverse();
+			}
+		}
+		patch_acc += nend;
 	}
 }
 
@@ -239,7 +407,7 @@ void hairMap::bind()
 		float min_dist = 10e6;
 		for(unsigned j=0; j<num_guide; j++)
 		{
-			togd = pbuf[i] - guide_data[j].ori_p;
+			togd = pbuf[i] - guide_data[j].P[0];
 			dist = togd.length();
 			
 			if(dist < min_dist)
@@ -256,20 +424,26 @@ void hairMap::bind()
 void hairMap::drawGuide()
 {
 	if(!has_guide || !guide_data) return;
-
 	glBegin(GL_LINES);
-	MPoint cen;
-	float r,g,b;
-	int acc=0;
+
+	XYZ pp;
 	for(int i=0; i<num_guide; i++) 
 	{
 		glColor3f(guide_data[i].dsp_col.x, guide_data[i].dsp_col.y, guide_data[i].dsp_col.z);
-		XYZ ppre = guide_data[i].ori_p;
-		for(short j = 1; j< guide_data[i].num_seg; j++) 
+		for(short j = 0; j< guide_data[i].num_seg; j++) 
 		{
-			glVertex3f(ppre.x, ppre.y, ppre.z);
-			ppre += guide_data[i].disp_v[j];
-			glVertex3f(ppre.x, ppre.y, ppre.z);
+			XYZ pp = guide_data[i].P[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			pp += guide_data[i].N[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			pp = guide_data[i].P[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			pp += guide_data[i].T[j];
+			glVertex3f(pp.x, pp.y, pp.z);
+			//pp = guide_data[i].P[j] - guide_data[i].dispv[j]/2;
+			//glVertex3f(pp.x, pp.y, pp.z);
+			//pp += guide_data[i].dispv[j];
+			//glVertex3f(pp.x, pp.y, pp.z);
 		}
 	}
 	

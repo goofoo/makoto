@@ -253,6 +253,49 @@ struct XYZ
 		y = a*sin(ang);
 	}
 	
+	void rotateAroundAxis(const XYZ& axis, float theta)
+	{
+		if(theta==0) return;
+		XYZ ori(x,y,z);
+		float l = ori.length();
+		ori.normalize();
+		
+		XYZ up = axis.cross(ori);
+		up.normalize();
+		
+		XYZ side = ori - axis*(axis.dot(ori));
+		
+		up *=side.length();
+		
+		ori += side*(cos(theta) - 1);
+		ori += up*sin(theta);
+		
+		ori.normalize();
+		x = ori.x*l;
+		y = ori.y*l;
+		z = ori.z*l;
+	}
+	
+	void rotateAlong(const XYZ& v, float eta)
+	{
+		XYZ ori(x,y,z);
+		float l = ori.length();
+		ori += v*eta;
+		ori.normalize();
+		x = ori.x*l;
+		y = ori.y*l;
+		z = ori.z*l;
+	}
+		
+	float angleToVec(const XYZ& a, XYZ& axis) const
+	{
+		XYZ buf(x,y,z); buf.normalize();
+		XYZ abuf = a; abuf.normalize();
+		axis = buf.cross(abuf);
+		axis.normalize();
+		return acos(abuf.dot(buf));
+	}
+	
 	float x,y,z;
 };
 
