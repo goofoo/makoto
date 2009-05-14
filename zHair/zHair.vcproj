@@ -394,6 +394,9 @@ copyIntoMaya.bat
 				RelativePath="..\shared\DiceTriangle.cpp">
 			</File>
 			<File
+				RelativePath="..\shared\FNoise.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\gBase.cpp">
 			</File>
 			<File
