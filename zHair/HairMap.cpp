@@ -244,8 +244,8 @@ void hairMap::bind()
 }
 
 void hairMap::drawGuide()
-{
-	if(!has_guide || !guide_data) return;
+{   
+	//if(!has_guide || !guide_data) return;
 	glBegin(GL_LINES);
 	MPoint cen;
 	float r,g,b;
@@ -306,5 +306,6 @@ void hairMap::loadDguide( )
 	infile.close();	
 	return ;
 }
+
 
 //~:

@@ -51,7 +51,7 @@ private:
 	MObject obase, oguide;
 	DiceParam* ddice;
 	int n_samp, n_vert;
-	Dguide* guide_data;
+    Dguide* guide_data;
 	unsigned num_guide;
 	unsigned* bind_data;
 };

@@ -63,7 +63,7 @@ public:
 	float m_exposure;
 	float m_size;
 	MString m_hdrname;
-	
+
 private :
 	hairMap* m_base;
 	bool	mAttributesChanged;
