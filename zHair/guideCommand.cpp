@@ -13,8 +13,36 @@
 #include <maya/MGlobal.h>
 #include <math.h>
 
+guide::guide():num_seg(5),seglength(0.2)
+//
+//	Description:
+//		guide constructor
+//
+{
+}
 
-MStatus guide::doIt( const MArgList& )
+guide::~guide()
+//
+//	Description:
+//		guide destructor
+//
+{
+}
+
+MSyntax guide::newSyntax()
+{
+	MSyntax syntax;
+
+	syntax.addFlag("-n", "-num_seg" ,MSyntax::kLong);
+	syntax.addFlag("-sl", "-seglength",MSyntax::kDouble );
+
+	syntax.enableQuery(false);
+	syntax.enableEdit(false);
+
+	return syntax;
+}
+
+MStatus guide::doIt( const MArgList& args)
 //
 //	Description:
 //		implements the MEL guide command.
@@ -29,8 +57,12 @@ MStatus guide::doIt( const MArgList& )
 //                     error is caught using a "catch" statement.
 //
 {
-	MGlobal::displayInfo("guide::doIt()");
-	MStatus status;
+	MStatus status ;
+	MArgDatabase argData(syntax(), args);
+    
+	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, num_seg );
+	if (argData.isFlagSet("-sl")) argData.getFlagArgument("-sl", 0, seglength );
+	
     MSelectionList slist;
 	MGlobal::getActiveSelectionList( slist );
 	
@@ -111,10 +143,20 @@ MStatus guide::redoIt()
 		for(int j = 0;j < num_seg;j++)
 		{
 			polygonCounts.append(4);
-			polygonConnects.append(2*j);
-			polygonConnects.append(2*j+1);
-			polygonConnects.append(2*j+2);
-			polygonConnects.append(2*j+3);
+			if((j+1)%2 == 0)
+			{
+				polygonConnects.append(2*j);
+			    polygonConnects.append(2*j+3);
+			    polygonConnects.append(2*j+2);
+			    polygonConnects.append(2*j+1);
+			}
+			else
+			{
+				polygonConnects.append(2*j+1);
+			    polygonConnects.append(2*j+2);
+			    polygonConnects.append(2*j+3);
+			    polygonConnects.append(2*j);
+			}
 			
 		}
 
@@ -200,20 +242,6 @@ void* guide::creator()
 	return new guide();
 }
 
-guide::guide()
-//
-//	Description:
-//		guide constructor
-//
-{
-}
 
-guide::~guide()
-//
-//	Description:
-//		guide destructor
-//
-{
-}
 
 
