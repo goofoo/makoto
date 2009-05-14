@@ -397,6 +397,12 @@ copyIntoMaya.bat
 				RelativePath="..\shared\gBase.cpp">
 			</File>
 			<File
+				RelativePath=".\HairDguideNode.cpp">
+			</File>
+			<File
+				RelativePath=".\HairDguideNode.h">
+			</File>
+			<File
 				RelativePath=".\HairMap.cpp">
 			</File>
 			<File

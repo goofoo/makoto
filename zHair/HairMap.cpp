@@ -275,7 +275,7 @@ void hairMap::drawGuide()
 	
 	glEnd();
 }
-/*
+
 int hairMap::saveDguide()
 {
 	ofstream outfile;
@@ -316,5 +316,4 @@ void hairMap::loadDguide( )
 	infile.close();	
 	return ;
 }
-*/
 //~:

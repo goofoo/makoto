@@ -10,6 +10,7 @@
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
 #include "zHairNode.h"
+#include "HairDguideNode.h"
 
 // The initializePlugin method is called by Maya when the
 // plugin is loaded. It registers the hwbruiseMapShader node
@@ -24,6 +25,13 @@ MStatus initializePlugin( MObject obj )
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,
 						 MPxNode::kLocatorNode );
+	if (!status) {
+		status.perror("registerNode");
+		return status;
+	}
+
+	status = plugin.registerNode( "HairDguide", HairDguideNode::id, &HairDguideNode::creator,
+								  &HairDguideNode::initialize,MPxNode::kLocatorNode );
 	if (!status) {
 		status.perror("registerNode");
 		return status;
@@ -44,6 +52,12 @@ MStatus uninitializePlugin( MObject obj )
 	MFnPlugin plugin( obj );
 	
 	status = plugin.deregisterNode( HairNode::id );
+	if (!status) {
+		status.perror("deregisterNode");
+		return status;
+	}
+
+	status = plugin.deregisterNode( HairDguideNode::id );
 	if (!status) {
 		status.perror("deregisterNode");
 		return status;
