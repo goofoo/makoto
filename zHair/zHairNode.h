@@ -58,6 +58,7 @@ public:
 	static MObject agrowth;
 	static MObject aguide;
 	static MObject alengthnoise;
+	static MObject asavemap;
 	static	MTypeId		id;
 	
 		// Cached internal values

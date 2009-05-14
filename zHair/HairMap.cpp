@@ -17,7 +17,9 @@
 #include <fstream>
 using namespace std;
 
-hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0)
+hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),
+parray(0),pconnection(0),
+sum_area(0.f)
 {
 }
 hairMap::~hairMap() 
@@ -26,6 +28,8 @@ hairMap::~hairMap()
 	if(guide_data) delete[] guide_data;
 	if(bind_data) delete[] bind_data;
 	if(guide_spaceinv) delete[] guide_spaceinv;
+	if(parray) delete[] parray;
+	if(pconnection) delete[] pconnection;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -45,25 +49,25 @@ void hairMap::setGuide(const MObjectArray& meshes)
 	else  has_guide = 0;
 }
 
-int hairMap::dice()
+void hairMap::updateBase()
 {
-	if(!has_base) return 0;
-	
+	if(!has_base) return;
+	MPointArray p_vert;
 	MStatus status;
 	MFnMesh meshFn(obase, &status );
-	MItMeshVertex vertIter(obase, &status);
-	MItMeshPolygon faceIter(obase, &status);
-	
-	MPointArray p_vert;
 	meshFn.getPoints ( p_vert, MSpace::kWorld );
-	n_vert = meshFn.numVertices(); 
-	XYZ* parray = new XYZ[n_vert];
+	n_vert = meshFn.numVertices();
+	
+	if(parray) delete[] parray; 
+	parray = new XYZ[n_vert];
 	
 	for(unsigned i=0; i<n_vert; i++) parray[i] = XYZ(p_vert[i].x, p_vert[i].y, p_vert[i].z);
+	
 	p_vert.clear();
 	
-	unsigned n_tri = 0;
-	float sum_area = 0;
+	MItMeshPolygon faceIter(obase, &status);
+	n_tri = 0;
+	sum_area = 0;
 	double area;
 	for( ; !faceIter.isDone(); faceIter.next() ) 
 	{
@@ -74,6 +78,30 @@ int hairMap::dice()
 		sum_area += (float)area;
 	}
 	
+	if(pconnection) delete[] pconnection;
+	pconnection = new int[n_tri*3];
+	
+	int acc = 0;
+	faceIter.reset();
+	for( ; !faceIter.isDone(); faceIter.next() ) 
+	{
+		MIntArray  vexlist;
+		faceIter.getVertices ( vexlist );
+		for( int i=vexlist.length()-2; i >0; i-- ) 
+		{
+			pconnection[acc] = vexlist[vexlist.length()-1];
+			pconnection[acc+1] = vexlist[i];
+			pconnection[acc+2] = vexlist[i-1];
+			
+			acc += 3;
+		}
+	}
+}
+
+int hairMap::dice()
+{
+	if(!pconnection || !parray) return 0;
+		
 	float epsilon = sqrt(sum_area/n_tri/2/3);
 
 	int estimate_ncell = n_tri*3*2;
@@ -85,53 +113,31 @@ int hairMap::dice()
 
 	DiceTriangle ftri;
 	int a, b, c;
-	faceIter.reset();
-	int seed = 12;
-	for( ; !faceIter.isDone(); faceIter.next() ) 
-	{
-		MIntArray  vexlist;
-		faceIter.getVertices ( vexlist );
-		for( int i=vexlist.length()-2; i >0; i-- ) 
-		{
-			a = vexlist[vexlist.length()-1];
-			b = vexlist[i];
-			c = vexlist[i-1];
-			
-			ftri.create(parray[a], parray[b], parray[c]);
-			ftri.setId(a, b, c);
-			ftri.rasterize(epsilon, ddice, n_samp, seed);seed++;
-		}
-	}
 	
-	delete[] parray;
+	int seed = 12;
+	for(unsigned i=0; i<n_tri; i++) 
+	{
+		a = pconnection[i*3];
+		b = pconnection[i*3+1];
+		c = pconnection[i*3+2];
+		
+		ftri.create(parray[a], parray[b], parray[c]);
+		ftri.setId(a, b, c);
+		ftri.rasterize(epsilon, ddice, n_samp, seed);seed++;
+	}
 	
 	return n_samp;	
 }
 
 void hairMap::draw()
 {
-	if(!has_base || n_samp < 1 || !has_guide || !guide_data) return;
-	
-	MStatus status;
-	MFnMesh meshFn(obase, &status );
-	
-	if(n_vert != meshFn.numVertices()) return;
-	
-	MPointArray p_vert;
-	meshFn.getPoints ( p_vert, MSpace::kWorld );
- 
-	XYZ* parray = new XYZ[n_vert];
-	
-	for(unsigned i=0; i<n_vert; i++) parray[i] = XYZ(p_vert[i].x, p_vert[i].y, p_vert[i].z);
-	p_vert.clear();
+	if(n_samp < 1 || !bind_data || !guide_data || !parray) return;
 	
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
 	}
-	
-	delete[] parray;
 	
 	int g_seed = 13;
 	FNoise fnoi;
@@ -367,35 +373,13 @@ void hairMap::updateGuide()
 
 void hairMap::bind()
 {
-	if(!has_guide || !guide_data || n_samp < 1) return;
-	
-	MStatus status;
-	MFnMesh meshFn(obase, &status );
-	
-	if(n_vert != meshFn.numVertices()) return;
-	
-	MPointArray p_vert;
-	meshFn.getPoints ( p_vert, MSpace::kWorld );
- 
-	XYZ* parray = new XYZ[n_vert];
-	
-	for(unsigned i=0; i<n_vert; i++) parray[i] = XYZ(p_vert[i].x, p_vert[i].y, p_vert[i].z);
-	p_vert.clear();
+	if(!guide_data || n_samp < 1) return;
 	
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
 	}
-	
-	delete[] parray;
-	
-	glBegin(GL_POINTS);
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		glVertex3f(pbuf[i].x, pbuf[i].y, pbuf[i].z);
-	}
-	glEnd();
 
 	if(bind_data) delete[] bind_data;
 	bind_data = new unsigned[n_samp];
@@ -440,30 +424,36 @@ void hairMap::drawGuide()
 			glVertex3f(pp.x, pp.y, pp.z);
 			pp += guide_data[i].T[j];
 			glVertex3f(pp.x, pp.y, pp.z);
-			//pp = guide_data[i].P[j] - guide_data[i].dispv[j]/2;
-			//glVertex3f(pp.x, pp.y, pp.z);
-			//pp += guide_data[i].dispv[j];
-			//glVertex3f(pp.x, pp.y, pp.z);
 		}
 	}
 	
 	glEnd();
 }
 
-int hairMap::saveDguide()
+int hairMap::saveDguide(const char* filename)
 {
 	ofstream outfile;
-	outfile.open("C:/guideData.dat", ios_base::out | ios_base::binary);
-	if(!outfile.is_open()) return 0;
-	outfile.write((char*)&num_guide,sizeof(num_guide));
+	outfile.open(filename, ios_base::out | ios_base::binary);
+	if(!outfile.is_open()) 
+	{
+		MGlobal::displayWarning(MString("Cannot open file: ")+filename);
+		return 0;
+	}
+	outfile.write((char*)&num_guide,sizeof(unsigned));
 	for(int i = 0;i<num_guide;i++)
 	{
 		outfile.write((char*)&guide_data[i].num_seg,sizeof(guide_data[i].num_seg));
-		outfile.write((char*)&guide_data[i].dsp_col,sizeof(XYZ));
-		outfile.write((char*)guide_data[i].P,guide_data[i].num_seg*sizeof(XYZ));
-		outfile.write((char*)guide_data[i].N,guide_data[i].num_seg*sizeof(XYZ));
-		outfile.write((char*)guide_data[i].T,guide_data[i].num_seg*sizeof(XYZ));	
+		//outfile.write((char*)&guide_data[i].dsp_col,sizeof(XYZ));
+		outfile.write((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
+		outfile.write((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
+		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
+		outfile.write((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));	
 	}
+	outfile.write((char*)&sum_area, sizeof(float));
+	outfile.write((char*)&n_tri, sizeof(unsigned));
+	outfile.write((char*)pconnection, sizeof(int)*n_tri*3);
+	outfile.write((char*)&n_vert, sizeof(unsigned));
+	outfile.write((char*)parray, sizeof(XYZ)*n_vert);
 	outfile.close();
 	return 1;
 }

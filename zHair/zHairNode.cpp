@@ -14,6 +14,7 @@ MObject HairNode::aoutput;
 MObject HairNode::agrowth;
 MObject HairNode::aguide;
 MObject HairNode::alengthnoise;
+MObject HairNode::asavemap;
 
 HairNode::HairNode()
 {
@@ -43,14 +44,30 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		}
 		
 		m_base->setGuide(guidelist);
-		//MObject oguide = data.inputValue(aguide).asMesh();
-		//if(!oguide.isNull()) m_base->setGuide(oguide);
+		m_base->updateBase();
 		
 		//MMatrix mat = data.inputValue(aworldSpace).asMatrix();
 		MTime currentTime = data.inputValue(acurrenttime, &status).asTime();
 		int frame = (int)currentTime.value();
 		
 		int startFrame = data.inputValue(astartframe, &status).asInt();
+		
+		MString cache_path, cache_start, proj_path;
+		MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj_path);
+		
+		MString spath = data.inputValue(aHDRName, &status).asString();
+		if(spath.length() <1)
+		{
+			cache_path = proj_path + "/data/" + MFnDependencyNode(thisMObject()).name() + "."+frame+".hair";
+			cache_start = proj_path + "/data/" + MFnDependencyNode(thisMObject()).name() + ".hair";
+		}
+		else
+		{
+			cache_path = spath + "/" + MFnDependencyNode(thisMObject()).name() + "."+frame+".hair";
+			cache_start = spath + "/" + MFnDependencyNode(thisMObject()).name() + ".hair";
+		}
+		
+		int isave = data.inputValue(asavemap, &status).asInt();
 		
 		if(startFrame == frame)
 		{
@@ -62,9 +79,24 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			//	MGlobal::displayInfo("Save Dguide data successed");
 			//else
 			//	MGlobal::displayInfo("Save Dguide data failed");
-			m_base->bind();	
+			m_base->bind();
+			if(isave==1) 
+			{
+				MGlobal::displayInfo(MString("Saving ")+cache_start);
+				m_base->saveDguide(cache_start.asChar());
+				MGlobal::displayInfo(MString("Saving ")+cache_path);
+				m_base->saveDguide(cache_path.asChar());
+			}
 		}
-		else m_base->updateGuide();
+		else 
+		{
+			m_base->updateGuide();
+			if(isave==1) 
+			{
+				MGlobal::displayInfo(MString("Saving ")+cache_path);
+				m_base->saveDguide(cache_path.asChar());
+			}
+		}
 		
 		m_base->setTwist(data.inputValue(aExposure).asFloat());
 		m_base->setClumping(data.inputValue(aSize).asFloat());
@@ -144,7 +176,7 @@ MStatus HairNode::initialize()
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
 	
-	aHDRName = tAttr.create("hdrName", "hdrname",
+	aHDRName = tAttr.create("cachePath", "cp",
 	MFnData::kString, MObject::kNullObj, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( tAttr.setStorable(true));
@@ -175,6 +207,11 @@ MStatus HairNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
+	asavemap = nAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
+	nAttr.setStorable(false);
+	nAttr.setKeyable(true);
+	addAttribute(asavemap);
+	
 	addAttribute(alengthnoise);
 	CHECK_MSTATUS( addAttribute(aSize));
 		CHECK_MSTATUS( addAttribute(aExposure));
@@ -188,6 +225,7 @@ MStatus HairNode::initialize()
 	attributeAffects( aguide, aoutput );
 	attributeAffects( astartframe, aoutput );
 	attributeAffects( acurrenttime, aoutput );
+	attributeAffects( asavemap, aoutput );
 	
 	return MS::kSuccess;
 }

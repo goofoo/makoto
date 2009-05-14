@@ -38,6 +38,8 @@ public:
 	char hasBase() const {return has_base;}
 	char hasGuide() const {return has_guide;}
 	
+	void updateBase();
+	
 	int dice();
 	void bind();
 	
@@ -46,7 +48,7 @@ public:
 	void updateGuide();
 	void drawGuide();
 
-	int saveDguide();
+	int saveDguide(const char* filename);
 	void loadDguide();
 	
 	void setTwist(const float val) {twist = val;}
@@ -58,10 +60,13 @@ private:
 	MObject obase;
 	MObjectArray oguide;
 	DiceParam* ddice;
-	int n_samp, n_vert;
+	int n_samp;
+	float sum_area;
+	int* pconnection;
+	XYZ* parray;
 
 	Dguide* guide_data;
-	unsigned num_guide, num_guideobj;
+	unsigned num_guide, num_guideobj, n_vert, n_tri;
 
 	unsigned* bind_data;
 	float twist, clumping, knoise;

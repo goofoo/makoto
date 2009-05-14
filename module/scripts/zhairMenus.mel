@@ -60,8 +60,8 @@ global proc zhairCreateMenus()
         menuItem -p zTools -l "Z Hair" -subMenu true zhairItems;
 			menuItem -l "Create Guider";
             menuItem -l "Create Hair" -c "zhair_attach";
-            menuItem -l "Save Cache" -c "openSaveBuiseMapWin";
-			menuItem -l "Load Cache" -c "openSaveBuiseMapWin";
+            menuItem -l "Save Cache" -c "openSaveHairMapWin";
+			menuItem -l "Load Cache" -c "openSaveHairMapWin";
             menuItem -divider true;
 			menuItem -l "Existing Hairs" -subMenu true -postMenuCommand zhair_findexisting zhair_existinghairs;
 			setParent -menu ..;
@@ -115,7 +115,7 @@ global proc zhair_findexisting()
 	}
 }
 
-global proc openSaveBuiseMapWin()
+global proc openSaveHairMapWin()
 {
 
 //If such a window already exists, destory it.
@@ -132,30 +132,15 @@ string $scroll = `scrollLayout -p $form`;
 columnLayout -adjustableColumn true;
 
 //column begin
-	optionMenuGrp -label "UV Set" -cw 1 120 -columnWidth 2 80 savezhairOptUV;
-		string $sel[] = `ls -sl`;
-		if(size($sel)>0)
-		{
-			select $sel[0];
-			string $mesh[] = `pickWalk -d down`;
-			
-			string $uvs[] = `polyUVSet -q -allUVSets $mesh[0]`;
-			string $ac;
-			for($ac in $uvs) menuItem -label $ac;
-		}
-
-	optionMenuGrp -label "Map Size" -cw 1 120 -columnWidth 2 80 savezhairOptSize;
-		menuItem -label "1024";
-		menuItem -label "2048";
-		menuItem -label "4096";
-	
+	textFieldButtonGrp
+     -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
+	 -bc "fileBrowser \"set_hairCacheDataPath\" \"Set Path\" \"\" 4"
+     savezhairCachePathGrp;
     
-	intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` savezhairOptRange;
-
-	text -al left -l "\nDescription: select the base mesh to save.";
+	text -al left -l "\nDescription: save cache on any hair node from playback start to end.\nWill save to /data of current project is path is not set.";
 
 //row begin
-button -l "Load" -c "doSavezhair;deleteUI savezhairWin"-p $row;
+button -l "Save" -c "doSavezhair;deleteUI savezhairWin"-p $row;
 button -l "Apply" -c "doSavezhair" -p $row;
 button -l "Close" -c "deleteUI savezhairWin" -p $row;
 
@@ -176,33 +161,20 @@ showWindow savezhairWin;
 
 global proc doSavezhair()
 {
-	string $sel[] = `ls -sl`;
-	select $sel[0];
-	string $mesh[] = `pickWalk -d down`;
-	
-	string $uvs[] = `polyUVSet -q -allUVSets $mesh[0]`;
-	
-	string $conn[] = `listConnections -d 1 -s 1 ( $mesh[0] + ".outMesh")`;
-	
-	int $iuv = `optionMenuGrp -q -select savezhairOptUV`;
-	
-	setAttr -type "string" ($conn[0] + ".uvset") $uvs[$iuv-1];
-	
-	int $isize = `optionMenuGrp -q -select savezhairOptSize`;
-	
-	if($isize==1) setAttr ($conn[0] + ".mapsize") 1024;
-	else if($isize==2) setAttr ($conn[0] + ".mapsize") 2048;
-	else setAttr ($conn[0] + ".mapsize") 4096;
+	string $node[] = `ls -type ZHairViz`;
+	string $an;
+	for($an in $node)
+	{
+		setAttr -type "string" ($an + ".cachePath") `textFieldButtonGrp -q -text savezhairCachePathGrp`;
+		setAttr ($an + ".saveMap") 1;
+	}
 
 	int $amount = 0;
-	progressWindow -title "Writing Bruise Map" -progress $amount -status "Completed: 0%" -isInterruptable true;
+	progressWindow -title "Writing Hair" -progress $amount -status "Completed: 0%" -isInterruptable true;
 
-	int $s = `intFieldGrp -q -v1 savezhairOptRange`;
-	int $e = `intFieldGrp -q -v2 savezhairOptRange`;
+	int $s = `playbackOptions -q -min`;
+	int $e = `playbackOptions -q -max`;
 	int $step = 1;
-	
-	setAttr ($conn[0] + ".startFrame") $s;
-	setAttr ($conn[0] + ".saveMap") 1;
 
 	int $i;
 	for( $i = $s; $i <= $e; $i++ ) 
@@ -215,13 +187,19 @@ global proc doSavezhair()
 		// Check if end condition has been reached
 		if ( `progressWindow -query -progress` > 100 ) break;
 
-		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%"); 
-		
-		//if( ($i-$s)%$step == 0 || $i==$e )
-		//	saveXMLSceneSingleFrame;
+		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
 	}
 	
 	progressWindow -endProgress;
 	
-	setAttr ($conn[0] + ".saveMap") 0;
+	for($an in $node)
+	{
+		setAttr ($an + ".saveMap") 0;
+	}
+}
+
+global proc int set_hairCacheDataPath(string $path, string $type)
+{
+	textFieldButtonGrp -e -text $path savezhairCachePathGrp;
+	return true;
 }
