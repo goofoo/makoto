@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="footPrintNode"
+	Name="hair"
 	ProjectGUID="{681412B0-F197-4A2F-9263-DEA2E8690146}">
 	<Platforms>
 		<Platform
@@ -103,10 +103,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
 				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib Foundation.lib opengl32.lib"
-				OutputFile=".\footPrintNode.mll"
+				OutputFile="..\module\plug-ins\ZHair2008.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION_2008)\lib"
+				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_2008)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/footPrintNode.pdb"
 				SubSystem="2"
@@ -152,7 +152,7 @@
 				AdditionalOptions="/GR /GS /EHsc"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".,..\..\include"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION_2008)\include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -169,10 +169,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
 				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib Foundation.lib opengl32.lib"
-				OutputFile=".\footPrintNode.mll"
+				OutputFile="..\module\plug-ins\ZHair2008.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\lib"
+				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_2008)\lib&quot;"
 				ProgramDatabaseFile=".\Release/footPrintNode.pdb"
 				SubSystem="2"
 				ImportLibrary=".\Release/footPrintNode.lib"
@@ -193,6 +193,134 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="2008|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR /GS /EHsc"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION_2008)\include"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				RuntimeLibrary="2"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".Debug/"
+				ProgramDataBaseFileName=".\Debug/footPrintNode.pdb"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib Foundation.lib opengl32.lib"
+				OutputFile="..\module\plug-ins\ZHair2008.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_2008)\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/footPrintNode.pdb"
+				SubSystem="2"
+				ImportLibrary=".\Debug/footPrintNode.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TypeLibraryName=".\Debug/footPrintNode.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="70|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR /GS /EHsc"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION70)\include"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				RuntimeLibrary="2"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".Debug/"
+				ProgramDataBaseFileName=".\Debug/footPrintNode.pdb"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib Foundation.lib opengl32.lib"
+				OutputFile="..\module\plug-ins\ZHair70.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION70)\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/footPrintNode.pdb"
+				SubSystem="2"
+				ImportLibrary=".\Debug/footPrintNode.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TypeLibraryName=".\Debug/footPrintNode.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
