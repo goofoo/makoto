@@ -13,8 +13,36 @@
 #include <maya/MGlobal.h>
 #include <math.h>
 
+guide::guide():num_seg(5),seglength(0.2)
+//
+//	Description:
+//		guide constructor
+//
+{
+}
 
-MStatus guide::doIt( const MArgList& )
+guide::~guide()
+//
+//	Description:
+//		guide destructor
+//
+{
+}
+
+MSyntax guide::newSyntax()
+{
+	MSyntax syntax;
+
+	syntax.addFlag("-n", "-num_seg" ,MSyntax::kLong);
+	syntax.addFlag("-sl", "-seglength",MSyntax::kDouble );
+
+	syntax.enableQuery(false);
+	syntax.enableEdit(false);
+
+	return syntax;
+}
+
+MStatus guide::doIt( const MArgList& args)
 //
 //	Description:
 //		implements the MEL guide command.
@@ -29,8 +57,12 @@ MStatus guide::doIt( const MArgList& )
 //                     error is caught using a "catch" statement.
 //
 {
-	MGlobal::displayInfo("guide::doIt()");
-	MStatus status;
+	MStatus status ;
+	MArgDatabase argData(syntax(), args);
+    
+	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, num_seg );
+	if (argData.isFlagSet("-sl")) argData.getFlagArgument("-sl", 0, seglength );
+	
     MSelectionList slist;
 	MGlobal::getActiveSelectionList( slist );
 	
@@ -98,30 +130,57 @@ MStatus guide::redoIt()
 //                     likely cause the undo queue to be purged
 //
 {
+	MStatus status;
 	MFnMesh meshFn;
+	MPoint mPoint;
+    MPointArray vertexArray;
+	MIntArray polygonCounts;
+    MIntArray polygonConnects;
+	MFloatArray uArray;
+	MFloatArray vArray;
+	MIntArray polygonUVs;
+	uArray.clear();
+	vArray.clear();
+	polygonUVs.clear();
+	vertexArray.clear();
+	polygonCounts.clear();
+	polygonConnects.clear();
+
 	for(unsigned int i = 0;i < pointArray.length();i++)
 	{
-		MPoint mPoint;
-	    MPointArray vertexArray;
-	    MIntArray polygonCounts;
-	    MIntArray polygonConnects;
-		vertexArray.clear();
-		polygonCounts.clear();
-		polygonConnects.clear();
+		
 		for(int j = 0;j < num_seg;j++)
 		{
 			polygonCounts.append(4);
-			polygonConnects.append(2*j);
-			polygonConnects.append(2*j+1);
-			polygonConnects.append(2*j+2);
-			polygonConnects.append(2*j+3);
+			if((j+1)%2 == 0)
+			{
+				polygonConnects.append((2*num_seg+2)*i+2*j);
+				//polygonUVs.append( 2*j );
+			    polygonConnects.append((2*num_seg+2)*i+2*j+3);
+				//polygonUVs.append( 2*j+3 );
+			    polygonConnects.append((2*num_seg+2)*i+2*j+2);
+				//polygonUVs.append( 2*j+2 );
+			    polygonConnects.append((2*num_seg+2)*i+2*j+1);
+				//polygonUVs.append( 2*j+1 );
+			}
+			else
+			{
+				polygonConnects.append((2*num_seg+2)*i+2*j+1);
+				//polygonUVs.append( 2*j+1 );
+			    polygonConnects.append((2*num_seg+2)*i+2*j+2);
+				//polygonUVs.append( 2*j+2 );
+			    polygonConnects.append((2*num_seg+2)*i+2*j+3);
+				//polygonUVs.append( 2*j+3 );
+			    polygonConnects.append((2*num_seg+2)*i+2*j);
+				//polygonUVs.append( 2*j );
+			}
 			
 		}
 
 		for(int j = 0;j < 2*num_seg+2;j++)
 		{
 			int ratio;
-			if(j < 4)
+			if(j< 4)
 				ratio = 0;
 			else{
 				ratio = (j-2)/2;
@@ -175,13 +234,11 @@ MStatus guide::redoIt()
 					vertexArray.append(MPoint(mPoint.x+0.5*seglength*normalArray[i].x+0.5*seglength*tangentArray[i].x,
 			                                  mPoint.y+0.5*seglength*normalArray[i].y+0.5*seglength*tangentArray[i].y,
 				                              mPoint.z+0.5*seglength*normalArray[i].z+0.5*seglength*tangentArray[i].z));
-			}
-
-			
+			}		
 		}
-		
-		MObject newMesh = meshFn.create(2*num_seg+2, num_seg,vertexArray,polygonCounts,polygonConnects,MObject::kNullObj );
+
 	}
+	MObject newMesh = meshFn.create((2*num_seg+2)*pointArray.length(), num_seg*pointArray.length(),vertexArray,polygonCounts,polygonConnects,MObject::kNullObj );
 	return MS::kSuccess;	
 }
 
@@ -200,20 +257,6 @@ void* guide::creator()
 	return new guide();
 }
 
-guide::guide()
-//
-//	Description:
-//		guide constructor
-//
-{
-}
 
-guide::~guide()
-//
-//	Description:
-//		guide destructor
-//
-{
-}
 
 

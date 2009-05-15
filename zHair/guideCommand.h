@@ -27,10 +27,11 @@
 #include <maya/MItMeshVertex.h>
 #include <maya/M3dView.h>
 #include <maya/MFnMesh.h>
+#include <maya/MSyntax.h>
+#include <maya/MArgDatabase.h>
 
 class MArgList;
-const short num_seg = 10;
-const double seglength = 0.2;
+
 
 class guide : public MPxCommand
 {
@@ -38,7 +39,7 @@ class guide : public MPxCommand
 public:
 				guide();
 	virtual		~guide();
-
+    static      MSyntax newSyntax();
 	MStatus		doIt( const MArgList& );
 	MStatus		redoIt();
 	static		void* creator();
@@ -54,6 +55,8 @@ private:
 	MVectorArray tangentArray;
 	int vertexCounts;
 	MPoint point;
+	int num_seg ;
+    double seglength ;
 
 	//MObject component;
 };

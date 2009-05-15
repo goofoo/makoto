@@ -38,7 +38,8 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 	
-	status = plugin.registerCommand( "guide", guide::creator );
+	status = plugin.registerCommand( "guide", guide::creator ,
+		                             guide::newSyntax);
 	if (!status) {
 		status.perror("registerCommand");
 		return status;
