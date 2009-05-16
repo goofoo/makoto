@@ -76,6 +76,114 @@ int pdcFile::load(const char* filename)
 	return stat;
 }
 
+int pdcFile::readPositionAndVelocity(MVectorArray& positions, MVectorArray& velocities)
+{
+	positions.clear();
+	velocities.clear();
+	positions.setLength(m_num_of_ptc);
+	velocities.setLength(m_num_of_ptc);
+	char * record = (char*) pheader + sizeof(struct pdcHeader);
+	int attribNameLen;
+	
+	for (int i=0; i<pheader->numAttributes; i++ )
+	{
+		if(pheader->byteOrder!=0) swapInt( record );
+		attribNameLen = (int) *record;
+		
+		record += 4;
+		
+		char* attribName = new char[attribNameLen + 1];
+		for (int j=0; j<attribNameLen; j++ )
+		{
+			attribName[j] = record[j];
+		}
+		attribName[attribNameLen] = '\0';  
+
+		record += attribNameLen;
+		
+		if(pheader->byteOrder!=0) swapInt( record );
+		int attribType = (int) *record;
+		//printf( "  attribType = %d  ", attribType );
+		record += 4; //Move record pointer
+		
+		//MGlobal::displayInfo(MString("type ") + attribType);
+		
+			switch ( attribType )
+			{
+				case 0: // Integer
+	
+						record += 4; //Move record pointer to next element
+						
+					break;
+	
+				case 1: // Integer Array
+	
+						record += 4*pheader->numParticles; //Move record pointer to next element
+						
+					break;
+	
+				case 2: // Double
+	
+						record += 8; //Move record pointer to next element
+						
+					break;
+	
+				case 3: // Double Array
+					record += 8*pheader->numParticles; //Move record pointer to next element
+					break;
+	
+				case 4: // Vector
+						record += 8*3; //Move record pointer to next element
+	
+					break;
+	
+				case 5: // Vector Array
+					if(MString(attribName) == MString("position"))
+					{
+						for(int j=0; j<pheader->numParticles; j++)
+						{
+							for(int k=0; k<3; k++)
+							{		
+								if(pheader->byteOrder!=0) swapDouble( record );
+
+								memcpy(&positions[j][k], record, sizeof(double));
+
+								record += 8; //Move record pointer to next element
+							}
+						}
+					}
+					else if(MString(attribName) == MString("velocity"))
+					{
+						for(int j=0; j<pheader->numParticles; j++)
+						{
+							for(int k=0; k<3; k++)
+							{
+								
+								if(pheader->byteOrder!=0) swapDouble( record );
+
+								memcpy(&velocities[j][k], record, sizeof(double));
+
+								record += 8; //Move record pointer to next element
+							}
+						}
+					}
+					else record += 8*3*pheader->numParticles;
+					break;
+	
+				default:  // Unknown
+					//printf( " Unkown Type\n"); 
+					//printf( "If ghostFrames is the last attirbute showing Unknown Type\n"); 
+					//printf( "All contents have been displayed correctly\n" );
+					//printf( "\"ghostFrames\" are usually at the end of the file and don't seem to contain anything\n" );
+					//exit( 1 );
+					break;
+			}
+		delete[] attribName;
+	}
+
+	return 0;
+}
+
 int pdcFile::readPositions(MVectorArray& positions, MVectorArray& velocities, MVectorArray& ups, MVectorArray& fronts, MDoubleArray& offsets, MDoubleArray& amplitudes, MDoubleArray& bends, MDoubleArray& scales, MDoubleArray& masses)
 {
 	positions.clear();

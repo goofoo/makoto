@@ -19,7 +19,7 @@
 #include <maya/MString.h> 
 #include <maya/MItMeshPolygon.h>
 #include <maya/MFnNurbsSurfaceData.h>
-
+#include "../shared/pdcFile.h"
 #include "bacteriaNode.h"
 #include "../shared/zAttrWorks.h"
 #include "../shared/zWorks.h"
@@ -33,7 +33,6 @@ MObject bacteriaNode::aLength;
 MObject bacteriaNode::acachename;
 MObject bacteriaNode::atime;
 MObject bacteriaNode::aFrequency;
-//MObject bacteriaNode::apos;
 MObject bacteriaNode::aoutput;
 
 bacteriaNode::bacteriaNode():m_num_fish(0), m_num_bone(20)
@@ -69,8 +68,17 @@ MStatus bacteriaNode::compute( const MPlug& plug, MDataBlock& data )
 		//unsigned int nptc = ptc_positions.length();
 		//MPointArray vertices;
 		MTime currentTime = data.inputValue(atime, &status).asTime();
-		int frame = (int)currentTime.value();
+		MString cacheName = data.inputValue(acachename, &status).asString();
+		cacheName = cacheName+"."+250*int(currentTime.value())+".pdc";
 		
+		pdcFile* fpdc = new pdcFile();
+		if(fpdc->load(cacheName.asChar())==1)
+		{
+			fpdc->readPositionAndVelocity(ptc_positions, ptc_velocities);
+		}
+		else MGlobal::displayWarning(MString("Bacteria cannot open cache file: ")+cacheName);
+		
+		delete fpdc;
 		//ptc_positions = zWorks::getVectorArrayAttr(data, apos);
 		//MGlobal::displayInfo("get pos");
 		//MDataHandle outputHandle = data.outputValue(aoutput, &status);
@@ -143,7 +151,6 @@ MStatus bacteriaNode::initialize()
 	//stat = attributeAffects( aOscillate, outMesh );
 	//stat = attributeAffects( aLength, outMesh );
 	attributeAffects( atime, aoutput );
-	//attributeAffects( apos, aoutput );
 	
 	return MS::kSuccess;
 }
@@ -168,12 +175,12 @@ void bacteriaNode::draw( M3dView & view, const MDagPath & /*path*/,
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	unsigned num_ptc = ptc_positions.length();
 
-	glBegin(GL_LINES);
+	glBegin(GL_POINTS);
 	glColor3f(0,0,1);
 	for(unsigned i=0; i<num_ptc; i++)
 	{
 		glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
-		glVertex3f(ptc_positions[i].x+0, ptc_positions[i].y+1, ptc_positions[i].z+0);
+		//glVertex3f(ptc_positions[i].x+0, ptc_positions[i].y+1, ptc_positions[i].z+0);
 	}
 	//glColor3f(0,1,0);
 	//for(unsigned i=0; i<num_ptc; i++)

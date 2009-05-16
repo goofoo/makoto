@@ -15,7 +15,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 	
-	//MGlobal::executeCommand("source fishMenus.mel; fishVizCreateMenus;");
+	MGlobal::executeCommand("source bacteriaMenus.mel; bacteriaVizCreateMenus;");
 
 	return status;
 }
@@ -31,6 +31,6 @@ MStatus uninitializePlugin( MObject obj)
 		return status;
 	}
 
-	//MGlobal::executeCommand("fishVizRemoveMenus;");
+	MGlobal::executeCommand("bacteriaVizRemoveMenus;");
 	return status;
 }

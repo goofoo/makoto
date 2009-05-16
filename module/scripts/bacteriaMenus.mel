@@ -1,0 +1,111 @@
+global proc bacteriaVizRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the bacteriaViz menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if bacteriaViz menu exists, delete it first.
+        else {
+            if(`menuItem -exists bacteriaVizItems` ) deleteUI bacteriaVizItems;
+        }
+    }
+}
+
+global proc bacteriaVizCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the bacteriaViz menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if bacteriaViz menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists bacteriaVizItems` ) deleteUI bacteriaVizItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "bacteria" -subMenu true bacteriaVizItems;
+            menuItem -l "Create Viz" -c bacteriaSetupWnd;
+            setParent -menu ..;
+    }
+}
+
+global proc bacteriaSetup()
+{
+	string $log;
+	
+	string $viz = `createNode bacteriaViz`;
+	setAttr -type "string" ($viz+".cacheName") (`textFieldGrp -q -text bacteriagrpcachename`);
+
+	connectAttr -f time1.outTime ($viz+".currentTime");
+	
+	string $dummy = `createNode -n dummy transform`;
+	connectAttr -f ($viz+".output") ($dummy+".translateY");
+	playbackOptions -min `floatFieldGrp -q -v1 bacteriagrprange` -max `floatFieldGrp -q -v2 bacteriagrprange`;
+}
+
+global proc bacteriaSetupWnd()
+{
+	
+//If such a window already exists, destory it.
+if ( (`window -exists wndbacteriaSetup`) == true ) deleteUI wndbacteriaSetup;
+
+//Create the window.
+window -title "bacteria AI Cache Reader" -wh 400 320 wndbacteriaSetup;
+columnLayout -adjustableColumn true; //Start of the column.
+text -l "";
+text -l ("Current project: "+`workspace -q -fn`);
+text -l "";
+separator -style "single";
+textFieldButtonGrp -cw 1 100 -cw 2 190 -bl "..." -bc "bacteria_loadPDC" -label "Cache Name" -text  "" bacteriagrpcachename;
+floatFieldGrp -cw 1 100 -label "Start/End" -nf 2 -v1 1 -v2 200 bacteriagrprange;
+separator -style "single";
+button -l "Import" -c "bacteriaSetup";
+
+//Show it.
+showWindow wndbacteriaSetup; 
+}
+
+global proc bacteria_loadPDC()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"particles/*.pdc")`;
+	
+	string $buffer[];
+	$numTokens = `tokenize $path "." $buffer`;
+	
+	textFieldButtonGrp -e -text $buffer[0] bacteriagrpcachename;
+}

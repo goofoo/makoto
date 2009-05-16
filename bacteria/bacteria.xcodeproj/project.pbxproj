@@ -8,19 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F232D0FBA8F32003D0615 /* FNoise.cpp */; };
-		7FE58BA80FB61F9E00187112 /* DiceTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */; };
 		7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA90FB61FAC00187112 /* zWorks.cpp */; };
 		7FFB47860FBE3F5600C8F9AB /* bacteriaMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB47840FBE3F5600C8F9AB /* bacteriaMain.cpp */; };
 		7FFB47870FBE3F5600C8F9AB /* bacteriaNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */; };
+		7FFB47AB0FBEA3F500C8F9AB /* pdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB47AA0FBEA3F500C8F9AB /* pdcFile.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
-		7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiceTriangle.cpp; path = ../shared/DiceTriangle.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
-		7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = zhairMenus.mel; path = ../module/scripts/zhairMenus.mel; sourceTree = SOURCE_ROOT; };
 		7FFB47840FBE3F5600C8F9AB /* bacteriaMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bacteriaMain.cpp; sourceTree = "<group>"; };
 		7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bacteriaNode.cpp; sourceTree = "<group>"; };
+		7FFB47AA0FBEA3F500C8F9AB /* pdcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pdcFile.cpp; path = ../shared/pdcFile.cpp; sourceTree = SOURCE_ROOT; };
+		7FFB47B60FBEB0C800C8F9AB /* bacteriaMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = bacteriaMenus.mel; path = ../module/scripts/bacteriaMenus.mel; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* Bacteria.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = Bacteria.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -49,11 +49,11 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7FFB47AA0FBEA3F500C8F9AB /* pdcFile.cpp */,
 				7FFB47840FBE3F5600C8F9AB /* bacteriaMain.cpp */,
 				7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */,
 				7F6F232D0FBA8F32003D0615 /* FNoise.cpp */,
 				7FE58BA90FB61FAC00187112 /* zWorks.cpp */,
-				7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -69,7 +69,7 @@
 		8A7F063208688F460064D097 /* Mel */ = {
 			isa = PBXGroup;
 			children = (
-				7FFB47620FBE326900C8F9AB /* zhairMenus.mel */,
+				7FFB47B60FBEB0C800C8F9AB /* bacteriaMenus.mel */,
 			);
 			name = Mel;
 			sourceTree = "<group>";
@@ -133,11 +133,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FE58BA80FB61F9E00187112 /* DiceTriangle.cpp in Sources */,
 				7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */,
 				7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */,
 				7FFB47860FBE3F5600C8F9AB /* bacteriaMain.cpp in Sources */,
 				7FFB47870FBE3F5600C8F9AB /* bacteriaNode.cpp in Sources */,
+				7FFB47AB0FBEA3F500C8F9AB /* pdcFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

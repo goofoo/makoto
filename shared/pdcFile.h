@@ -26,6 +26,7 @@ public:
 	
 	int load(const char* filename);
 	int readPositions(MVectorArray& positions, MVectorArray& velocities, MVectorArray& ups, MVectorArray& fronts, MDoubleArray& offsets, MDoubleArray& amplitudes, MDoubleArray& bends, MDoubleArray& scales, MDoubleArray& masses);
+	int readPositionAndVelocity(MVectorArray& positions, MVectorArray& velocities);
 	int getParticleCount() {return m_num_of_ptc;}
 	
 

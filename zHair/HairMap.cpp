@@ -148,7 +148,7 @@ void hairMap::draw()
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i++)
 	{
-		glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
+		//glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
 		ppre = pbuf[i]; 
 		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
 		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);

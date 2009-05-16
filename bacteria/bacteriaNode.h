@@ -47,7 +47,6 @@ public:
 	static MObject aHead;
 	static MObject acachename;
 	static MObject atime;
-	//static MObject apos;
     
     // Output
     static  MObject aoutput;
@@ -55,9 +54,7 @@ public:
 private:
 	unsigned int m_num_fish, m_num_bone;
 	
-	MVectorArray ptc_positions;
-	MVectorArray ptc_velocities;
-	MVectorArray ptc_ups;
-	MVectorArray ptc_views;
+	MVectorArray ptc_positions, ptc_velocities;
+
 	float m_fish_length;
 };
