@@ -440,7 +440,7 @@ int hairMap::saveDguide(const char* filename)
 		return 0;
 	}
 	outfile.write((char*)&num_guide,sizeof(unsigned));
-	for(int i = 0;i<num_guide;i++)
+	for(unsigned i = 0;i<num_guide;i++)
 	{
 		outfile.write((char*)&guide_data[i].num_seg,sizeof(guide_data[i].num_seg));
 		//outfile.write((char*)&guide_data[i].dsp_col,sizeof(XYZ));
@@ -458,26 +458,47 @@ int hairMap::saveDguide(const char* filename)
 	return 1;
 }
 
-void hairMap::loadDguide( )
+int hairMap::loadDguide(const char* filename)
 {
 	ifstream infile;
-	infile.open("C:/guideData.dat", ios_base::in | ios_base::binary);
-	infile.read((char*)&num_guide,sizeof(num_guide));
+	infile.open(filename, ios_base::in | ios_base::binary);
+	if(!infile.is_open()) 
+	{
+		MGlobal::displayWarning(MString("Cannot open file: ")+filename);
+		return 0;
+	}
+	infile.read((char*)&num_guide,sizeof(unsigned));
+	
+	if(guide_data) delete[] guide_data;
     guide_data = new Dguide[num_guide];
-	for(int i = 0;i<num_guide;i++)
+	for(unsigned i = 0;i<num_guide;i++)
 	{
 		infile.read((char*)&guide_data[i].num_seg, sizeof(guide_data[i].num_seg));
-		infile.read((char*)&guide_data[i].dsp_col, sizeof(XYZ) );
 
 		guide_data[i].P = new XYZ[guide_data[i].num_seg];
 		guide_data[i].N = new XYZ[guide_data[i].num_seg];
 		guide_data[i].T = new XYZ[guide_data[i].num_seg];
+		guide_data[i].dispv = new XYZ[guide_data[i].num_seg];
 
-		infile.read((char*)guide_data[i].P,guide_data[i].num_seg*sizeof(XYZ));
-		infile.read((char*)guide_data[i].N,guide_data[i].num_seg*sizeof(XYZ));
-		infile.read((char*)guide_data[i].T,guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 	}
+	infile.read((char*)&sum_area,sizeof(float));
+	infile.read((char*)&n_tri,sizeof(unsigned));
+	
+	if(pconnection) delete[] pconnection;
+	pconnection = new int[n_tri*3];
+	infile.read((char*)pconnection, sizeof(int)*n_tri*3);
+	
+	infile.read((char*)&n_vert, sizeof(unsigned));
+	
+	if(parray) delete[] parray;
+	parray = new XYZ[n_vert];
+	infile.read((char*)parray, sizeof(XYZ)*n_vert);
+	
 	infile.close();	
-	return ;
+	return 1;
 }
 //~:

@@ -54,7 +54,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 //		data - object that provides access to the attributes for this node
 //
 {   
-	m_base->loadDguide();
+	m_base->loadDguide("null");
 	MStatus returnStatus;
  
 	// Check which output attribute we have been asked to compute.  If this 
@@ -106,9 +106,9 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 {
 	//loadDguide( );
 	view.beginGL(); 
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	//glPushAttrib(GL_ALL_ATTRIB_BITS);
 	m_base->drawGuide();
-	glPopAttrib();
+	//glPopAttrib();
 	view.endGL();
 }
 

@@ -13,7 +13,7 @@
 #include <maya/MGlobal.h>
 #include <math.h>
 
-guide::guide():num_seg(5),seglength(0.2)
+guide::guide():num_seg(5),seglength(1.f)
 //
 //	Description:
 //		guide constructor
@@ -33,8 +33,8 @@ MSyntax guide::newSyntax()
 {
 	MSyntax syntax;
 
-	syntax.addFlag("-n", "-num_seg" ,MSyntax::kLong);
-	syntax.addFlag("-sl", "-seglength",MSyntax::kDouble );
+	syntax.addFlag("-ns", "-numSegment" ,MSyntax::kLong);
+	syntax.addFlag("-sl", "-segmentLength",MSyntax::kDouble );
 
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -60,7 +60,7 @@ MStatus guide::doIt( const MArgList& args)
 	MStatus status ;
 	MArgDatabase argData(syntax(), args);
     
-	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, num_seg );
+	if (argData.isFlagSet("-ns")) argData.getFlagArgument("-ns", 0, num_seg );
 	if (argData.isFlagSet("-sl")) argData.getFlagArgument("-sl", 0, seglength );
 	
     MSelectionList slist;

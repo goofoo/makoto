@@ -58,7 +58,12 @@ global proc zhairCreateMenus()
        
         // append menu items
         menuItem -p zTools -l "Z Hair" -subMenu true zhairItems;
-			menuItem -l "Create Guider";
+			menuItem -l "Create Guider" -c "zhair_do_create_guider";
+			menuItem -l "Create Guider Options" -subMenu true zhair_guideroptions;
+				menuItem -l "5" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_ns;
+				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_sl;
+			setParent -menu ..;
+			menuItem -divider true;
             menuItem -l "Create Hair" -c "zhair_attach";
             menuItem -l "Save Cache" -c "openSaveHairMapWin";
 			menuItem -l "Load Cache" -c "openSaveHairMapWin";
@@ -113,6 +118,12 @@ global proc zhair_findexisting()
 		if(`menuItem -exists $mnu` ) deleteUI $mnu;
 		menuItem -l $an -c ("select -tgl "+$an) -p zhair_existinghairs $mnu;
 	}
+}
+
+global proc zhair_do_create_guider()
+{
+	string $cmd = "ZHairGuider -ns " + `menuItem -q -l zhair_guideroption_ns` + " -sl " + `menuItem -q -l zhair_guideroption_sl`;
+	eval($cmd);
 }
 
 global proc openSaveHairMapWin()
@@ -202,4 +213,21 @@ global proc int set_hairCacheDataPath(string $path, string $type)
 {
 	textFieldButtonGrp -e -text $path savezhairCachePathGrp;
 	return true;
+}
+
+global proc zhair_open_setcreateguideroptwin()
+{
+	//If such a window already exists, destory it.
+ if ( (`window -exists setguideroptWin`) == true ) deleteUI setguideroptWin;
+ 
+//Create the window.
+ window -title "Create ZHair Guider Options" -wh 400 300  -mb false setguideroptWin;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+	intFieldGrp -l "Number of Segment" -v1 5 -cc "menuItem -e -l `intFieldGrp -q -v1 zhair_guider_ns_grp` zhair_guideroption_ns" zhair_guider_ns_grp;
+	floatFieldGrp -l "Segment Length" -v1 1.0 -cc "menuItem -e -l `floatFieldGrp -q -v1 zhair_guider_sl_grp` zhair_guideroption_sl" zhair_guider_sl_grp;
+	button -l "Done" -c "deleteUI setguideroptWin";
+showWindow setguideroptWin;
 }

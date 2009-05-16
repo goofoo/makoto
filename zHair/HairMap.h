@@ -49,7 +49,7 @@ public:
 	void drawGuide();
 
 	int saveDguide(const char* filename);
-	void loadDguide();
+	int loadDguide(const char* filename);
 	
 	void setTwist(const float val) {twist = val;}
 	void setClumping(const float val) {clumping = val;}

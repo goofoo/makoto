@@ -21,7 +21,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.2.1 - 05/14/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.2.2 - 05/16/09", "Any");
 
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,
@@ -38,7 +38,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 	
-	status = plugin.registerCommand( "guide", guide::creator ,
+	status = plugin.registerCommand( "ZHairGuider", guide::creator ,
 		                             guide::newSyntax);
 	if (!status) {
 		status.perror("registerCommand");
@@ -71,7 +71,7 @@ MStatus uninitializePlugin( MObject obj )
 		return status;
 	}
 	
-	status = plugin.deregisterCommand( "guide" );
+	status = plugin.deregisterCommand( "ZHairGuider" );
 	if (!status) {
 		status.perror("deregisterCommand");
 		return status;
