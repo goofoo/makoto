@@ -69,16 +69,19 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 264122941;
-			PBXWorkspaceStateSaveDate = 264122941;
+			PBXPerProjectTemplateStateSaveDate = 264126246;
+			PBXWorkspaceStateSaveDate = 264126246;
 		};
 		perUserProjectItems = {
-			7FFB476D0FBE3B6C00C8F9AB /* PBXBookmark */ = 7FFB476D0FBE3B6C00C8F9AB /* PBXBookmark */;
-			7FFB476F0FBE3CC100C8F9AB /* PBXBookmark */ = 7FFB476F0FBE3CC100C8F9AB /* PBXBookmark */;
-			7FFB47750FBE3E7B00C8F9AB /* PBXTextBookmark */ = 7FFB47750FBE3E7B00C8F9AB /* PBXTextBookmark */;
-			7FFB47780FBE3E7B00C8F9AB /* PBXBookmark */ = 7FFB47780FBE3E7B00C8F9AB /* PBXBookmark */;
-			7FFB47790FBE3E7B00C8F9AB /* PBXTextBookmark */ = 7FFB47790FBE3E7B00C8F9AB /* PBXTextBookmark */;
-			7FFB477C0FBE3E7B00C8F9AB /* PBXTextBookmark */ = 7FFB477C0FBE3E7B00C8F9AB /* PBXTextBookmark */;
+			7FFB476D0FBE3B6C00C8F9AB = 7FFB476D0FBE3B6C00C8F9AB /* PBXBookmark */;
+			7FFB476F0FBE3CC100C8F9AB = 7FFB476F0FBE3CC100C8F9AB /* PBXBookmark */;
+			7FFB47750FBE3E7B00C8F9AB = 7FFB47750FBE3E7B00C8F9AB /* PBXTextBookmark */;
+			7FFB47780FBE3E7B00C8F9AB = 7FFB47780FBE3E7B00C8F9AB /* PBXBookmark */;
+			7FFB47790FBE3E7B00C8F9AB = 7FFB47790FBE3E7B00C8F9AB /* PBXTextBookmark */;
+			7FFB477C0FBE3E7B00C8F9AB = 7FFB477C0FBE3E7B00C8F9AB /* PBXTextBookmark */;
+			7FFB478A0FBE3FA900C8F9AB /* PBXTextBookmark */ = 7FFB478A0FBE3FA900C8F9AB /* PBXTextBookmark */;
+			7FFB478B0FBE3FA900C8F9AB /* PBXTextBookmark */ = 7FFB478B0FBE3FA900C8F9AB /* PBXTextBookmark */;
+			7FFB478F0FBE3FAA00C8F9AB /* PBXTextBookmark */ = 7FFB478F0FBE3FAA00C8F9AB /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -93,19 +96,17 @@
 		};
 	};
 	7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = guideCommand.cpp;
+		path = /Users/jianzhang/Documents/plankton/bacteria/guideCommand.cpp;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {974, 2758}}";
 			sepNavSelRange = "{1133, 0}";
 			sepNavVisRange = "{2532, 1001}";
 			sepNavWindowFrame = "{{15, 72}, {839, 701}}";
-		};
-	};
-	7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {780, 2436}}";
-			sepNavSelRange = "{2965, 0}";
-			sepNavVisRange = "{25, 891}";
-			sepNavWindowFrame = "{{582, 15}, {839, 701}}";
 		};
 	};
 	7FE58B990FB61EA800187112 /* Source Control */ = {
@@ -119,28 +120,18 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {808, 7168}}";
-			sepNavSelRange = "{13477, 0}";
-			sepNavVisRange = "{12193, 1345}";
-			sepNavWindowFrame = "{{266, 65}, {867, 711}}";
-		};
-	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = pluginMain.cpp;
+		path = /Users/jianzhang/Documents/plankton/bacteria/pluginMain.cpp;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {691, 1190}}";
 			sepNavSelRange = "{1895, 0}";
 			sepNavVisRange = "{779, 1066}";
 			sepNavWindowFrame = "{{386, 64}, {750, 714}}";
-		};
-	};
-	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {691, 4214}}";
-			sepNavSelRange = "{2129, 0}";
-			sepNavVisRange = "{0, 951}";
-			sepNavWindowFrame = "{{376, 62}, {750, 714}}";
 		};
 	};
 	7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */ = {
@@ -153,7 +144,7 @@
 	};
 	7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {884, 3430}}";
+			sepNavIntBoundsRect = "{{0, 0}, {884, 3290}}";
 			sepNavSelRange = "{3651, 0}";
 			sepNavVisRange = "{3299, 1113}";
 			sepNavWindowFrame = "{{15, 88}, {865, 685}}";
@@ -200,6 +191,41 @@
 		rType = 0;
 		vrLen = 1001;
 		vrLoc = 2532;
+	};
+	7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {476, 2828}}";
+			sepNavSelRange = "{2005, 40}";
+			sepNavVisRange = "{1777, 528}";
+		};
+	};
+	7FFB478A0FBE3FA900C8F9AB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "warning: unused variable 'frame'";
+		fRef = 7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */;
+		rLen = 1;
+		rLoc = 71;
+		rType = 1;
+	};
+	7FFB478B0FBE3FA900C8F9AB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */;
+		name = "bacteriaNode.cpp: 72";
+		rLen = 40;
+		rLoc = 2005;
+		rType = 0;
+		vrLen = 503;
+		vrLoc = 1777;
+	};
+	7FFB478F0FBE3FAA00C8F9AB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FFB47620FBE326900C8F9AB /* zhairMenus.mel */;
+		name = "zhairMenus.mel: 125";
+		rLen = 0;
+		rLoc = 3651;
+		rType = 0;
+		vrLen = 1113;
+		vrLoc = 3299;
 	};
 	D2AAC0620554660B00DB518D /* ZHair */ = {
 		activeExec = 0;
