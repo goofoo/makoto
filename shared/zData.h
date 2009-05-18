@@ -239,6 +239,13 @@ struct XYZ
 		x = y = z = v;
 	}
 	
+	void rotateXY(float ang)
+	{
+		float a = x;
+		x = a*cos(ang);
+		y = a*sin(ang);
+	}
+	
 	void rotateXZ(float ang)
 	{
 		float a = x;

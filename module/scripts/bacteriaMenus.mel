@@ -75,6 +75,17 @@ global proc bacteriaSetup()
 	string $dummy = `createNode -n dummy transform`;
 	connectAttr -f ($viz+".output") ($dummy+".translateY");
 	playbackOptions -min `floatFieldGrp -q -v1 bacteriagrprange` -max `floatFieldGrp -q -v2 bacteriagrprange`;
+	
+	string $cams[] = `ls -ca`;
+	int $atc = `optionMenuGrp -q -sl bacteriagrpeye`;
+	connectAttr -f ($cams[$atc-1]+".worldMatrix[0]") ($viz+".cameraMatrix");
+	select -r $cams[$atc-1];
+	string $cam[] = `pickWalk -d down`;
+	connectAttr -f ($cam[0] +".nearClipPlane") ($viz+".nearClip");
+	connectAttr -f ($cam[0] +".farClipPlane") ($viz+".farClip");
+	connectAttr -f ($cam[0] +".focalLength") ($viz+".focalLength"); 
+	connectAttr -f ($cam[0] +".horizontalFilmAperture") ($viz+".horizontalFilmAperture");
+	connectAttr -f ($cam[0] +".verticalFilmAperture") ($viz+".verticalFilmAperture");
 }
 
 global proc bacteriaSetupWnd()
@@ -90,6 +101,12 @@ text -l "";
 text -l ("Current project: "+`workspace -q -fn`);
 text -l "";
 separator -style "single";
+string $cams[] = `ls -ca`;
+	string $ac;
+	optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 80 bacteriagrpeye;
+		for($ac in $cams) menuItem -label `listRelatives -p $ac`;
+	setParent..;
+
 textFieldButtonGrp -cw 1 100 -cw 2 190 -bl "..." -bc "bacteria_loadPDC" -label "Cache Name" -text  "" bacteriagrpcachename;
 floatFieldGrp -cw 1 100 -label "Start/End" -nf 2 -v1 1 -v2 200 bacteriagrprange;
 separator -style "single";

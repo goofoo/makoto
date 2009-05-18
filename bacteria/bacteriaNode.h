@@ -5,7 +5,8 @@
 #include <maya/MTypeId.h> 
 #include <maya/MPointArray.h>
 #include <maya/MVectorArray.h>
-
+#include <maya/MMatrix.h>
+#include "../shared/zData.h"
 
 #define Rad(x)	((x)*FPI/180.0F)
 #define Deg(x)	((x)*180.0F/FPI)
@@ -47,6 +48,12 @@ public:
 	static MObject aHead;
 	static MObject acachename;
 	static MObject atime;
+	static  MObject         amatrix;
+	static  MObject         anear;
+	static  MObject         afar;
+	static	MObject		ahapeture;
+	static	MObject		avapeture;
+	static	MObject		afocallength;
     
     // Output
     static  MObject aoutput;
@@ -57,4 +64,8 @@ private:
 	MVectorArray ptc_positions, ptc_velocities;
 
 	float m_fish_length;
+	float nearClip, farClip, h_apeture, v_apeture, fl;
+
+	MATRIX44F eyespace, eyespaceinv;
+	float fsize, frot;
 };

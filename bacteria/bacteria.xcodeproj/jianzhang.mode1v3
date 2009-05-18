@@ -216,7 +216,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FFB47CB0FBEC2BF00C8F9AB</string>
+						<string>7FFB485D0FC0EF7000C8F9AB</string>
 						<key>history</key>
 						<array>
 							<string>7FFB47BA0FBEB82100C8F9AB</string>
@@ -235,14 +235,14 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>543 146 707 605 0 0 1280 778 </string>
+				<string>540 153 707 605 0 0 1280 778 </string>
 			</dict>
 		</dict>
 		<dict>
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7FFB47CC0FBEC2BF00C8F9AB</string>
+				<string>7FFB48550FC0EEA400C8F9AB</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>bacteriaNode.h</string>
 				<key>PBXSplitModuleInNavigatorKey</key>
@@ -250,16 +250,16 @@
 					<key>Split0</key>
 					<dict>
 						<key>PBXProjectModuleGUID</key>
-						<string>7FFB47CD0FBEC2BF00C8F9AB</string>
+						<string>7FFB48560FC0EEA400C8F9AB</string>
 						<key>PBXProjectModuleLabel</key>
 						<string>bacteriaNode.h</string>
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FFB47D00FBEC2BF00C8F9AB</string>
+						<string>7FFB485E0FC0EF7000C8F9AB</string>
 						<key>history</key>
 						<array>
-							<string>7FFB47CE0FBEC2BF00C8F9AB</string>
+							<string>7FFB48570FC0EEA400C8F9AB</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -271,35 +271,35 @@
 			<key>Geometry</key>
 			<dict>
 				<key>Frame</key>
-				<string>{{0, 20}, {750, 505}}</string>
+				<string>{{0, 20}, {554, 524}}</string>
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>15 227 750 546 0 0 1280 778 </string>
+				<string>45 151 554 565 0 0 1280 778 </string>
 			</dict>
 		</dict>
 		<dict>
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7FFB47D20FBEC2BF00C8F9AB</string>
+				<string>7FFB48210FC0E00F00C8F9AB</string>
 				<key>PBXProjectModuleLabel</key>
-				<string>meshGen.cpp</string>
+				<string>meshCacheVizNode.cpp</string>
 				<key>PBXSplitModuleInNavigatorKey</key>
 				<dict>
 					<key>Split0</key>
 					<dict>
 						<key>PBXProjectModuleGUID</key>
-						<string>7FFB47D30FBEC2BF00C8F9AB</string>
+						<string>7FFB48220FC0E00F00C8F9AB</string>
 						<key>PBXProjectModuleLabel</key>
-						<string>meshGen.cpp</string>
+						<string>meshCacheVizNode.cpp</string>
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FFB47D60FBEC2BF00C8F9AB</string>
+						<string>7FFB485F0FC0EF7000C8F9AB</string>
 						<key>history</key>
 						<array>
-							<string>7FFB47D40FBEC2BF00C8F9AB</string>
+							<string>7FFB48230FC0E00F00C8F9AB</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -311,51 +311,11 @@
 			<key>Geometry</key>
 			<dict>
 				<key>Frame</key>
-				<string>{{0, 20}, {750, 505}}</string>
+				<string>{{0, 20}, {836, 571}}</string>
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>39 129 750 546 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>7FFB47C00FBEBA6300C8F9AB</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>bacteriaMenus.mel</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FFB47C10FBEBA6300C8F9AB</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>bacteriaMenus.mel</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FFB47D80FBEC2BF00C8F9AB</string>
-						<key>history</key>
-						<array>
-							<string>7FFB47C20FBEBA6300C8F9AB</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {473, 512}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>143 179 473 553 0 0 1280 778 </string>
+				<string>38 140 836 612 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -440,8 +400,8 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>4</integer>
-									<integer>1</integer>
+									<integer>8</integer>
+									<integer>7</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -465,7 +425,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>552 137 690 397 0 0 1280 778 </string>
+						<string>559 133 690 397 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -502,7 +462,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {482, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>552 137 690 397 0 0 1280 778 </string>
+								<string>559 133 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -522,7 +482,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {482, 351}}</string>
 								<key>RubberWindowFrame</key>
-								<string>552 137 690 397 0 0 1280 778 </string>
+								<string>559 133 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -683,14 +643,13 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>7FE58BA50FB61F9000187112</string>
-		<string>7FFB47C00FBEBA6300C8F9AB</string>
+		<string>7FFB48210FC0E00F00C8F9AB</string>
 		<string>/Users/jianzhang/Documents/plankton/bacteria/bacteria.xcodeproj</string>
-		<string>7FFB47D20FBEC2BF00C8F9AB</string>
-		<string>7FFB47CC0FBEC2BF00C8F9AB</string>
+		<string>7FFB48550FC0EEA400C8F9AB</string>
 		<string>7FFB47BD0FBEBA6300C8F9AB</string>
 	</array>
 	<key>WindowString</key>
-	<string>552 137 690 397 0 0 1280 778 </string>
+	<string>559 133 690 397 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -706,12 +665,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>bacteriaNode.cpp</string>
+								<string>bacteriaNode.h</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -728,8 +689,6 @@
 							<string>218pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>

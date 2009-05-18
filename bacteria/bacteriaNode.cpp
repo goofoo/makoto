@@ -24,7 +24,7 @@
 #include "../shared/zAttrWorks.h"
 #include "../shared/zWorks.h"
 
-MTypeId bacteriaNode::id( 0x0003718 );
+MTypeId bacteriaNode::id( 0x0003018 );
 
 MObject bacteriaNode::aOscillate;
 MObject bacteriaNode::aFlapping;
@@ -34,6 +34,12 @@ MObject bacteriaNode::acachename;
 MObject bacteriaNode::atime;
 MObject bacteriaNode::aFrequency;
 MObject bacteriaNode::aoutput;
+MObject bacteriaNode::amatrix;
+MObject bacteriaNode::anear;
+MObject bacteriaNode::afar;
+MObject bacteriaNode::ahapeture;
+MObject bacteriaNode::avapeture;
+MObject bacteriaNode::afocallength;
 
 bacteriaNode::bacteriaNode():m_num_fish(0), m_num_bone(20)
 {
@@ -48,25 +54,35 @@ MStatus bacteriaNode::compute( const MPlug& plug, MDataBlock& data )
     MStatus status;
 	if(plug == aoutput)
 	{
-		//MDoubleArray ptc_time_offset;
-		//MDoubleArray ptc_amplitude;
-		//MDoubleArray ptc_bend;
-		//MDoubleArray ptc_scale;
-		//MDoubleArray masses;
-		//
-		//MString cacheName = data.inputValue(acachename, &status).asString();
-		//MTime currentTime = data.inputValue(atime, &status).asTime();
-		//cacheName = cacheName+"."+250*int(currentTime.value())+".pdc";
-		//
-		//double flapping = zGetDoubleAttr(data, aFlapping);
-		//double bending= zGetDoubleAttr(data, aBending);
-		//double oscillate= zGetDoubleAttr(data, aOscillate);
-		//double length = zGetDoubleAttr(data, aLength);
-		//m_fish_length = length;
-		//double frequency = zGetDoubleAttr(data, aFrequency);
-		//
-		//unsigned int nptc = ptc_positions.length();
-		//MPointArray vertices;
+		MObject mat_obj = data.inputValue(amatrix, &status).data();
+		MFnMatrixData mat_data( mat_obj );
+		MMatrix cammat = mat_data.matrix();
+		
+		eyespace.setIdentity();
+		eyespace.v[0][0] = cammat.matrix[0][0];
+		eyespace.v[0][1] = cammat.matrix[0][1];
+		eyespace.v[0][2] = cammat.matrix[0][2];
+		eyespace.v[1][0] = cammat.matrix[1][0];
+		eyespace.v[1][1] = cammat.matrix[1][1];
+		eyespace.v[1][2] = cammat.matrix[1][2];
+		eyespace.v[2][0] = cammat.matrix[2][0];
+		eyespace.v[2][1] = cammat.matrix[2][1];
+		eyespace.v[2][2] = cammat.matrix[2][2];
+		eyespace.v[3][0] = cammat.matrix[3][0];
+		eyespace.v[3][1] = cammat.matrix[3][1];
+		eyespace.v[3][2] = cammat.matrix[3][2];
+		eyespaceinv = eyespace;
+		eyespaceinv.inverse();
+		
+		fsize = data.inputValue(aFrequency, &status).asDouble();
+		frot = data.inputValue(aFlapping, &status).asDouble();
+		
+		nearClip = data.inputValue(anear, &status).asFloat();
+		farClip = data.inputValue(afar, &status).asFloat();
+		h_apeture = data.inputValue(ahapeture, &status).asFloat();
+		v_apeture = data.inputValue(avapeture, &status).asFloat();
+		fl = data.inputValue(afocallength, &status).asFloat();
+		
 		MTime currentTime = data.inputValue(atime, &status).asTime();
 		MString cacheName = data.inputValue(acachename, &status).asString();
 		cacheName = cacheName+"."+250*int(currentTime.value())+".pdc";
@@ -99,16 +115,9 @@ void* bacteriaNode::creator()
 // Attribute Setup and Maintenance //
 /////////////////////////////////////
 
-
-
-
-
 MStatus bacteriaNode::initialize()
 {
 	MStatus stat;
-	
-	//zWorks::createVectorArrayAttr(apos, "inPosition","inpos");
-	//addAttribute( apos );
 	
 	MFnNumericAttribute nAttr; 
 	aoutput = nAttr.create( "output", "output", MFnNumericData::kInt, 1 );
@@ -117,11 +126,11 @@ MStatus bacteriaNode::initialize()
 	nAttr.setKeyable(false);
 	addAttribute( aoutput );
 	
-	stat = zCreateKeyableDoubleAttr(aFrequency, MString("frequency"), MString("feq"), 1.0);
-	zCheckStatus(stat, "failed to add frequency attr");
+	stat = zCreateKeyableDoubleAttr(aFrequency, MString("size"), MString("sz"), 1.0);
+	zCheckStatus(stat, "failed to add size attr");
 	stat = addAttribute( aFrequency);
 	
-	stat = zCreateKeyableDoubleAttr(aFlapping, MString("flapping"), MString("fpn"), 1.0);
+	stat = zCreateKeyableDoubleAttr(aFlapping, MString("rotate"), MString("rot"), 0.0);
 	zCheckStatus(stat, "failed to add flapping attr");
 	stat = addAttribute(aFlapping);
 	
@@ -145,12 +154,46 @@ MStatus bacteriaNode::initialize()
 	zCheckStatus(stat, "ERROR creating time");
 	zCheckStatus(addAttribute(atime), "ERROR adding time");
 	
-	//stat = attributeAffects( aFrequency, outMesh );
-	//stat = attributeAffects( aFlapping, outMesh );
-	//stat = attributeAffects( aBending, outMesh );
-	//stat = attributeAffects( aOscillate, outMesh );
-	//stat = attributeAffects( aLength, outMesh );
+	MFnTypedAttribute matAttr;
+	amatrix = matAttr.create( "cameraMatrix", "cm", MFnData::kMatrix );
+	matAttr.setStorable(false);
+	matAttr.setConnectable(true);
+	addAttribute( amatrix );
+	
+	anear = nAttr.create( "nearClip", "nc", MFnNumericData::kFloat, 0.1 );
+	nAttr.setStorable(false);
+	nAttr.setConnectable(true);
+	addAttribute( anear );
+	
+	afar = nAttr.create( "farClip", "fc", MFnNumericData::kFloat, 1000.0 );
+	nAttr.setStorable(false);
+	nAttr.setConnectable(true);
+	addAttribute( afar );
+	
+	ahapeture = nAttr.create( "horizontalFilmAperture", "hfa", MFnNumericData::kDouble );
+	nAttr.setStorable(false);
+	nAttr.setConnectable(true);
+	addAttribute( ahapeture );
+	
+	avapeture = nAttr.create( "verticalFilmAperture", "vfa", MFnNumericData::kDouble );
+	nAttr.setStorable(false);
+	nAttr.setConnectable(true);
+	addAttribute( avapeture );
+	
+	afocallength = nAttr.create( "focalLength", "fl", MFnNumericData::kDouble );
+	nAttr.setStorable(false);
+	nAttr.setConnectable(true);
+	addAttribute( afocallength );
+	
+	attributeAffects( amatrix, aoutput );
+	attributeAffects( anear, aoutput );
+	attributeAffects( afar, aoutput );
+	attributeAffects( ahapeture, aoutput );
+	attributeAffects( avapeture, aoutput );
+	attributeAffects( afocallength, aoutput );
 	attributeAffects( atime, aoutput );
+	attributeAffects( aFrequency, aoutput );
+	attributeAffects( aFlapping, aoutput );
 	
 	return MS::kSuccess;
 }
@@ -158,7 +201,6 @@ MStatus bacteriaNode::initialize()
 
 MStatus bacteriaNode::connectionMade ( const  MPlug & plug, const  MPlug & otherPlug, bool asSrc )
 {
-	
 	return MS::kUnknownParameter;
 }
 
@@ -176,24 +218,34 @@ void bacteriaNode::draw( M3dView & view, const MDagPath & /*path*/,
 	unsigned num_ptc = ptc_positions.length();
 
 	glBegin(GL_POINTS);
-	glColor3f(0,0,1);
+	//glColor3f(0,0,1);
+	for(unsigned i=0; i<num_ptc; i++) glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
+	glEnd();
+	
+	XYZ xvec(1,0,0), yvec, vert, zz(0,0,1), cen;
+	
+	xvec.rotateXY(frot);
+	yvec = zz.cross(xvec);
+	
+	eyespace.transformAsNormal(xvec);
+	eyespace.transformAsNormal(yvec);
+	
+	xvec *= fsize;
+	yvec *= fsize;
+	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	glBegin(GL_QUADS);
 	for(unsigned i=0; i<num_ptc; i++)
 	{
-		glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
-		//glVertex3f(ptc_positions[i].x+0, ptc_positions[i].y+1, ptc_positions[i].z+0);
+		cen =  XYZ(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
+		vert = cen - xvec - yvec;
+		glVertex3f(vert.x, vert.y, vert.z);
+		vert =  cen + xvec - yvec;
+		glVertex3f(vert.x, vert.y, vert.z);
+		vert =  cen + xvec + yvec;
+		glVertex3f(vert.x, vert.y, vert.z);
+		vert = cen - xvec + yvec;
+		glVertex3f(vert.x, vert.y, vert.z);
 	}
-	//glColor3f(0,1,0);
-	//for(unsigned i=0; i<num_ptc; i++)
-	//{
-	//	glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
-	//	glVertex3f(ptc_positions[i].x+ptc_ups[i].x*m_fish_length, ptc_positions[i].y+ptc_ups[i].y*m_fish_length, ptc_positions[i].z+ptc_ups[i].z*m_fish_length);
-	//}
-	//glColor3f(1,0,0);
-	//for(unsigned i=0; i<num_ptc; i++)
-	//{
-	//	glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
-	//	glVertex3f(ptc_positions[i].x-ptc_views[i].x*m_fish_length, ptc_positions[i].y-ptc_views[i].y*m_fish_length, ptc_positions[i].z-ptc_views[i].z*m_fish_length);
-	//}
 	glEnd();
 	glPopAttrib();
 	view.endGL();
