@@ -224,6 +224,15 @@
 				RelativePath=".\bacteriaNode.cpp">
 			</File>
 			<File
+				RelativePath=".\FBacteria.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\FNoise.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\pdcFile.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\zWorks.cpp">
 			</File>
 		</Filter>

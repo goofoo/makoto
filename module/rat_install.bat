@@ -1,3 +1,5 @@
+copy .\ribgen\bacteriaRibgen.dll "%RATTREE%\lib\plugins"
+copy .\ribgen\bacteriaRibgen.slim "%RATTREE%\lib\plugins"
 copy .\ribgen\meshRibgen.dll "%RATTREE%\lib\plugins"
 copy .\ribgen\meshRibgen.slim "%RATTREE%\lib\plugins"
 copy .\ribgen\fishGen.dll "%RATTREE%\lib\plugins"
