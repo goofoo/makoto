@@ -81,6 +81,26 @@ bacteriaGen::SetArgs(RIBContext *c,
 		{
 			RIBContextUtil::GetStringValue(vals[i], &m_image_file5);
 		}
+		else if(!strcmp(args[i], "float maxframe1"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &maxframe1);
+		}
+		else if(!strcmp(args[i], "float maxframe2"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &maxframe2);
+		}
+		else if(!strcmp(args[i], "float maxframe3"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &maxframe3);
+		}
+		else if(!strcmp(args[i], "float maxframe4"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &maxframe4);
+		}
+		else if(!strcmp(args[i], "float maxframe5"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &maxframe5);
+		}
 	/*else if( !strcmp(args[i], "float hdr_shadowed") )
 	{
 		RIBContextUtil::GetFloatValue(vals[i], &m_i_hdr_shadowed);
@@ -165,6 +185,8 @@ bacteriaGen::GenRIB( RIBContext *c )
 	
 	unsigned num_ptc = base->getNumBacteria();
 	XYZ cen, xvec, yvec, vert;
+	float frame_offset;
+	int iframe;
 	for(unsigned i=0; i<num_ptc; i++)
 	{
 		if(base->isInViewFrustum(i))
@@ -190,12 +212,38 @@ bacteriaGen::GenRIB( RIBContext *c )
 			vertices[11] = vert.z;
 			
 			float noi = base->getNoise2ById(i);
-			if(noi<0.2) sfile = m_image_file1;
-			else if(noi<0.4) sfile = m_image_file2;
-			else if(noi<0.6) sfile = m_image_file3;
-			else if(noi<0.8) sfile = m_image_file4;
-			else sfile = m_image_file5;
+			if(noi<0.2) 
+			{
+				sfile = m_image_file1;
+				frame_offset = maxframe1 * base->getNoise3ById(i);
+				iframe = int(frame+frame_offset)%(int)maxframe1;
+			}
+			else if(noi<0.4) 
+			{
+				sfile = m_image_file2;
+				frame_offset = maxframe2 * base->getNoise3ById(i);
+				iframe = int(frame+frame_offset)%(int)maxframe2;
+			}
+			else if(noi<0.6) 
+			{
+				sfile = m_image_file3;
+				frame_offset = maxframe3 * base->getNoise3ById(i);
+				iframe = int(frame+frame_offset)%(int)maxframe3;
+			}
+			else if(noi<0.8) 
+			{
+				sfile = m_image_file4;
+				frame_offset = maxframe4 * base->getNoise3ById(i);
+				iframe = int(frame+frame_offset)%(int)maxframe4;
+			}
+			else 
+			{
+				sfile = m_image_file5;
+				frame_offset = maxframe5 * base->getNoise3ById(i);
+				iframe = int(frame+frame_offset)%(int)maxframe5;
+			}
 			
+			zGlobal::changeFrameNumberFistDot4Digit(sfile, iframe);
 			const char* psfile = sfile.c_str();
 			c->Patch("bilinear", "P", (RtPoint*)vertices, (RtToken)sname.c_str(), (RtPointer)&psfile, RI_NULL);
 		}

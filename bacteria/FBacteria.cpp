@@ -48,6 +48,8 @@ void FBacteria::updateData(unsigned num_elm, const XYZ* parray, const XYZ* varra
 		data[i].noi = fnoi.randfint(seed);
 		seed += ((seed+13)*3)%191;
 		data[i].noi2 = fnoi.randfint(seed);
+		seed += ((seed+17)*19)%131;
+		data[i].noi3 = fnoi.randfint(seed);
 	}
 }
 

@@ -247,4 +247,19 @@ void zGlobal::saveFloatFile(const char* filename, const int nfloat, const float*
 	
 	return;
 }
+
+void zGlobal::changeFrameNumberFistDot4Digit(std::string& res, int frame)
+{
+	int first = res.find('.', 0);
+	if(first < 0) return;
+	
+	char mid[8];
+	if(frame<10) sprintf(mid, ".000%d.", frame);
+	else if(frame<100) sprintf(mid, ".00%d.", frame);
+	else if(frame<1000) sprintf(mid, ".0%d.", frame);
+	else sprintf(mid, ".%d.", frame);
+	
+	res.erase(first, 6);
+	res.insert(first, mid);
+}
 //:~

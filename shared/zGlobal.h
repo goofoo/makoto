@@ -30,6 +30,7 @@ public:
 		static void replacefilename(std::string& res, std::string& toreplace);
 		static void cutfilepath(std::string& res);
 		static void saveFloatFile(const char* filename, const int nfloat, const float* data);
+		static void changeFrameNumberFistDot4Digit(std::string& res, int frame);
 };
 #endif
 //:~
