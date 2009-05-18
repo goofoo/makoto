@@ -43,10 +43,12 @@ MObject bacteriaNode::afocallength;
 
 bacteriaNode::bacteriaNode():m_num_fish(0), m_num_bone(20)
 {
+	f_bac = new FBacteria();
 }
 
 bacteriaNode::~bacteriaNode() 
 {
+	delete f_bac;
 }
 
 MStatus bacteriaNode::compute( const MPlug& plug, MDataBlock& data )
@@ -58,6 +60,7 @@ MStatus bacteriaNode::compute( const MPlug& plug, MDataBlock& data )
 		MFnMatrixData mat_data( mat_obj );
 		MMatrix cammat = mat_data.matrix();
 		
+		MATRIX44F eyespace;
 		eyespace.setIdentity();
 		eyespace.v[0][0] = cammat.matrix[0][0];
 		eyespace.v[0][1] = cammat.matrix[0][1];
@@ -71,30 +74,55 @@ MStatus bacteriaNode::compute( const MPlug& plug, MDataBlock& data )
 		eyespace.v[3][0] = cammat.matrix[3][0];
 		eyespace.v[3][1] = cammat.matrix[3][1];
 		eyespace.v[3][2] = cammat.matrix[3][2];
-		eyespaceinv = eyespace;
-		eyespaceinv.inverse();
 		
+		f_bac->setSpace(eyespace);
+		
+		float fsize, frot;
 		fsize = data.inputValue(aFrequency, &status).asDouble();
 		frot = data.inputValue(aFlapping, &status).asDouble();
+		f_bac->setGlobal(fsize, frot);
 		
+		float nearClip, farClip, h_apeture, v_apeture, fl;
 		nearClip = data.inputValue(anear, &status).asFloat();
 		farClip = data.inputValue(afar, &status).asFloat();
 		h_apeture = data.inputValue(ahapeture, &status).asFloat();
 		v_apeture = data.inputValue(avapeture, &status).asFloat();
 		fl = data.inputValue(afocallength, &status).asFloat();
 		
+		f_bac->updateCamera(nearClip, farClip, h_apeture, v_apeture, fl);
+		
 		MTime currentTime = data.inputValue(atime, &status).asTime();
 		MString cacheName = data.inputValue(acachename, &status).asString();
 		cacheName = cacheName+"."+250*int(currentTime.value())+".pdc";
 		
+		MVectorArray ptc_positions, ptc_velocities;
 		pdcFile* fpdc = new pdcFile();
 		if(fpdc->load(cacheName.asChar())==1)
 		{
 			fpdc->readPositionAndVelocity(ptc_positions, ptc_velocities);
 		}
 		else MGlobal::displayWarning(MString("Bacteria cannot open cache file: ")+cacheName);
-		
 		delete fpdc;
+		
+		unsigned num_ptc = ptc_positions.length();
+		XYZ* pp = new XYZ[num_ptc];
+		XYZ* pv = new XYZ[num_ptc];
+		for(unsigned i=0; i<num_ptc; i++)
+		{
+			pp[i].x = ptc_positions[i].x;
+			pp[i].y = ptc_positions[i].y;
+			pp[i].z = ptc_positions[i].z;
+			pv[i].x = ptc_velocities[i].x;
+			pv[i].y = ptc_velocities[i].y;
+			pv[i].z = ptc_velocities[i].z;
+		}
+		
+		f_bac->updateData(num_ptc, pp, pv);
+		
+		delete[] pp;
+		delete[] pv;
+		ptc_positions.clear();
+		ptc_velocities.clear();
 		//ptc_positions = zWorks::getVectorArrayAttr(data, apos);
 		//MGlobal::displayInfo("get pos");
 		//MDataHandle outputHandle = data.outputValue(aoutput, &status);
@@ -170,17 +198,17 @@ MStatus bacteriaNode::initialize()
 	nAttr.setConnectable(true);
 	addAttribute( afar );
 	
-	ahapeture = nAttr.create( "horizontalFilmAperture", "hfa", MFnNumericData::kDouble );
+	ahapeture = nAttr.create( "horizontalFilmAperture", "hfa", MFnNumericData::kFloat );
 	nAttr.setStorable(false);
 	nAttr.setConnectable(true);
 	addAttribute( ahapeture );
 	
-	avapeture = nAttr.create( "verticalFilmAperture", "vfa", MFnNumericData::kDouble );
+	avapeture = nAttr.create( "verticalFilmAperture", "vfa", MFnNumericData::kFloat );
 	nAttr.setStorable(false);
 	nAttr.setConnectable(true);
 	addAttribute( avapeture );
 	
-	afocallength = nAttr.create( "focalLength", "fl", MFnNumericData::kDouble );
+	afocallength = nAttr.create( "focalLength", "fl", MFnNumericData::kFloat );
 	nAttr.setStorable(false);
 	nAttr.setConnectable(true);
 	addAttribute( afocallength );
@@ -215,38 +243,38 @@ void bacteriaNode::draw( M3dView & view, const MDagPath & /*path*/,
 {
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
-	unsigned num_ptc = ptc_positions.length();
+	unsigned num_ptc = f_bac->getNumBacteria();
 
 	glBegin(GL_POINTS);
-	//glColor3f(0,0,1);
-	for(unsigned i=0; i<num_ptc; i++) glVertex3f(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
-	glEnd();
-	
-	XYZ xvec(1,0,0), yvec, vert, zz(0,0,1), cen;
-	
-	xvec.rotateXY(frot);
-	yvec = zz.cross(xvec);
-	
-	eyespace.transformAsNormal(xvec);
-	eyespace.transformAsNormal(yvec);
-	
-	xvec *= fsize;
-	yvec *= fsize;
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	glBegin(GL_QUADS);
-	for(unsigned i=0; i<num_ptc; i++)
+	XYZ cen;
+	for(unsigned i=0; i<num_ptc; i++) 
 	{
-		cen =  XYZ(ptc_positions[i].x, ptc_positions[i].y, ptc_positions[i].z);
-		vert = cen - xvec - yvec;
-		glVertex3f(vert.x, vert.y, vert.z);
-		vert =  cen + xvec - yvec;
-		glVertex3f(vert.x, vert.y, vert.z);
-		vert =  cen + xvec + yvec;
-		glVertex3f(vert.x, vert.y, vert.z);
-		vert = cen - xvec + yvec;
-		glVertex3f(vert.x, vert.y, vert.z);
+		cen = f_bac->getPositionById(i);
+		glVertex3f(cen.x, cen.y, cen.z);
 	}
 	glEnd();
+
+	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	glBegin(GL_QUADS);
+	XYZ xvec, yvec, vert;
+	for(unsigned i=0; i<num_ptc; i++)
+	{
+		if(f_bac->isInViewFrustum(i))
+		{
+			cen =  f_bac->getPositionById(i);
+			f_bac->getSideAndUpById(i, xvec, yvec);
+			vert = cen - xvec - yvec;
+			glVertex3f(vert.x, vert.y, vert.z);
+			vert =  cen + xvec - yvec;
+			glVertex3f(vert.x, vert.y, vert.z);
+			vert =  cen + xvec + yvec;
+			glVertex3f(vert.x, vert.y, vert.z);
+			vert = cen - xvec + yvec;
+			glVertex3f(vert.x, vert.y, vert.z);
+		}
+	}
+	glEnd();
+	
 	glPopAttrib();
 	view.endGL();
 }

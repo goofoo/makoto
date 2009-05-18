@@ -12,6 +12,8 @@
 		7FFB47860FBE3F5600C8F9AB /* bacteriaMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB47840FBE3F5600C8F9AB /* bacteriaMain.cpp */; };
 		7FFB47870FBE3F5600C8F9AB /* bacteriaNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */; };
 		7FFB47AB0FBEA3F500C8F9AB /* pdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB47AA0FBEA3F500C8F9AB /* pdcFile.cpp */; };
+		7FFB486D0FC0F10D00C8F9AB /* FBacteria.h in Headers */ = {isa = PBXBuildFile; fileRef = 7FFB486B0FC0F10D00C8F9AB /* FBacteria.h */; };
+		7FFB486E0FC0F10D00C8F9AB /* FBacteria.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FFB486C0FC0F10D00C8F9AB /* FBacteria.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +23,8 @@
 		7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bacteriaNode.cpp; sourceTree = "<group>"; };
 		7FFB47AA0FBEA3F500C8F9AB /* pdcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pdcFile.cpp; path = ../shared/pdcFile.cpp; sourceTree = SOURCE_ROOT; };
 		7FFB47B60FBEB0C800C8F9AB /* bacteriaMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = bacteriaMenus.mel; path = ../module/scripts/bacteriaMenus.mel; sourceTree = SOURCE_ROOT; };
+		7FFB486B0FC0F10D00C8F9AB /* FBacteria.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBacteria.h; sourceTree = "<group>"; };
+		7FFB486C0FC0F10D00C8F9AB /* FBacteria.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FBacteria.cpp; sourceTree = "<group>"; };
 		D2AAC0630554660B00DB518D /* Bacteria.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = Bacteria.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -49,6 +53,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7FFB486B0FC0F10D00C8F9AB /* FBacteria.h */,
+				7FFB486C0FC0F10D00C8F9AB /* FBacteria.cpp */,
 				7FFB47AA0FBEA3F500C8F9AB /* pdcFile.cpp */,
 				7FFB47840FBE3F5600C8F9AB /* bacteriaMain.cpp */,
 				7FFB47850FBE3F5600C8F9AB /* bacteriaNode.cpp */,
@@ -88,15 +94,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7FFB486D0FC0F10D00C8F9AB /* FBacteria.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D2AAC0620554660B00DB518D /* ZHair */ = {
+		D2AAC0620554660B00DB518D /* bacteria */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "ZHair" */;
+			buildConfigurationList = 8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "bacteria" */;
 			buildPhases = (
 				D2AAC0600554660B00DB518D /* Headers */,
 				D2AAC0610554660B00DB518D /* Sources */,
@@ -106,7 +113,7 @@
 			);
 			dependencies = (
 			);
-			name = ZHair;
+			name = bacteria;
 			productName = footPrintNodePlugin;
 			productReference = D2AAC0630554660B00DB518D /* Bacteria.bundle */;
 			productType = "com.apple.product-type.library.dynamic";
@@ -123,7 +130,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2AAC0620554660B00DB518D /* ZHair */,
+				D2AAC0620554660B00DB518D /* bacteria */,
 			);
 		};
 /* End PBXProject section */
@@ -138,6 +145,7 @@
 				7FFB47860FBE3F5600C8F9AB /* bacteriaMain.cpp in Sources */,
 				7FFB47870FBE3F5600C8F9AB /* bacteriaNode.cpp in Sources */,
 				7FFB47AB0FBEA3F500C8F9AB /* pdcFile.cpp in Sources */,
+				7FFB486E0FC0F10D00C8F9AB /* FBacteria.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,7 +305,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "ZHair" */ = {
+		8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "bacteria" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A7F05EE086863A70064D097 /* Debug */,

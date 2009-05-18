@@ -7,6 +7,7 @@
 #include <maya/MVectorArray.h>
 #include <maya/MMatrix.h>
 #include "../shared/zData.h"
+#include "FBacteria.h"
 
 #define Rad(x)	((x)*FPI/180.0F)
 #define Deg(x)	((x)*180.0F/FPI)
@@ -60,12 +61,8 @@ public:
 
 private:
 	unsigned int m_num_fish, m_num_bone;
-	
-	MVectorArray ptc_positions, ptc_velocities;
 
 	float m_fish_length;
-	float nearClip, farClip, h_apeture, v_apeture, fl;
-
-	MATRIX44F eyespace, eyespaceinv;
-	float fsize, frot;
+	
+	FBacteria* f_bac;
 };
