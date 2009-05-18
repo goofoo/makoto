@@ -46,6 +46,8 @@ void FBacteria::updateData(unsigned num_elm, const XYZ* parray, const XYZ* varra
 		data[i].vel = varray[i];
 		int seed = 19 + i;
 		data[i].noi = fnoi.randfint(seed);
+		seed += ((seed+13)*3)%191;
+		data[i].noi2 = fnoi.randfint(seed);
 	}
 }
 
@@ -67,7 +69,7 @@ void FBacteria::getSideAndUpById(unsigned id, XYZ& side, XYZ& up) const
 	
 	XYZ zz(0,0,1);
 	
-	side.rotateXY(global_rotate + data[id].noi);
+	side.rotateXY(global_rotate + data[id].noi*6.28);
 	up = zz.cross(side);
 	
 		eyespace.transformAsNormal(side);

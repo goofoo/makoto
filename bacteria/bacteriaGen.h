@@ -48,9 +48,13 @@ public:
 
 private:
 	char* m_image_name;
-	char* m_image_file;
-	RtFloat m_i_hdr_shadowed, m_i_hdr_interreflection, m_i_hdr_subsurfacescat, m_i_hdr_backscat;
-	RtFloat m_i_lightsrc_shadowed, m_i_lightsrc_interreflection, m_i_lightsrc_subsurfacescat, m_i_double_sided;
+	char* m_image_file1;
+	char* m_image_file2;
+	char* m_image_file3;
+	char* m_image_file4;
+	char* m_image_file5;
+	//RtFloat m_i_hdr_shadowed, m_i_hdr_interreflection, m_i_hdr_subsurfacescat, m_i_hdr_backscat;
+	//RtFloat m_i_lightsrc_shadowed, m_i_lightsrc_interreflection, m_i_lightsrc_subsurfacescat, m_i_double_sided;
 };
 
 

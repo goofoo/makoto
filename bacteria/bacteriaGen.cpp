@@ -35,16 +35,12 @@ RIBGenDestroy( RIBGen *g )
 
 /*---------------------------------------------------------*/
 bacteriaGen::bacteriaGen() :
-m_i_hdr_shadowed(0),
-m_i_hdr_interreflection(0),
-m_i_hdr_subsurfacescat(0),
-m_i_hdr_backscat(0),
-m_i_lightsrc_shadowed(0),
-m_i_lightsrc_interreflection(0),
-m_i_lightsrc_subsurfacescat(0),
-m_i_double_sided(0),
 m_image_name(0L),
-m_image_file(0L)
+m_image_file1(0L),
+m_image_file2(0L),
+m_image_file3(0L),
+m_image_file4(0L),
+m_image_file5(0L)
 {   
 }
 
@@ -65,9 +61,25 @@ bacteriaGen::SetArgs(RIBContext *c,
 		{
 			RIBContextUtil::GetStringValue(vals[i], &m_image_name);
 		}
-		else if(!strcmp(args[i], "string imagefile"))
+		else if(!strcmp(args[i], "string imagefile1"))
 		{
-			RIBContextUtil::GetStringValue(vals[i], &m_image_file);
+			RIBContextUtil::GetStringValue(vals[i], &m_image_file1);
+		}
+		else if(!strcmp(args[i], "string imagefile2"))
+		{
+			RIBContextUtil::GetStringValue(vals[i], &m_image_file2);
+		}
+		else if(!strcmp(args[i], "string imagefile3"))
+		{
+			RIBContextUtil::GetStringValue(vals[i], &m_image_file3);
+		}
+		else if(!strcmp(args[i], "string imagefile4"))
+		{
+			RIBContextUtil::GetStringValue(vals[i], &m_image_file4);
+		}
+		else if(!strcmp(args[i], "string imagefile5"))
+		{
+			RIBContextUtil::GetStringValue(vals[i], &m_image_file5);
 		}
 	/*else if( !strcmp(args[i], "float hdr_shadowed") )
 	{
@@ -145,14 +157,11 @@ bacteriaGen::GenRIB( RIBContext *c )
 	bacteriaNode* bacteria = (bacteriaNode*)fnode.userNode();
 	const FBacteria* base = bacteria->getBase();
 	
-	MGlobal::displayInfo(m_image_file);
-	
 	RtFloat vertices[12] = {-1, -1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0};
 	
 	std::string sname = "constant string ";
 	sname += m_image_name;
-	std::string sfile = " ";
-	sfile += m_image_file;
+	std::string sfile;
 	
 	unsigned num_ptc = base->getNumBacteria();
 	XYZ cen, xvec, yvec, vert;
@@ -180,7 +189,15 @@ bacteriaGen::GenRIB( RIBContext *c )
 			vertices[10] = vert.y;
 			vertices[11] = vert.z;
 			
-			c->Patch("bilinear", "P", (RtPoint*)vertices, (RtToken)sname.c_str(), (RtPointer)&m_image_file, RI_NULL);
+			float noi = base->getNoise2ById(i);
+			if(noi<0.2) sfile = m_image_file1;
+			else if(noi<0.4) sfile = m_image_file2;
+			else if(noi<0.6) sfile = m_image_file3;
+			else if(noi<0.8) sfile = m_image_file4;
+			else sfile = m_image_file5;
+			
+			const char* psfile = sfile.c_str();
+			c->Patch("bilinear", "P", (RtPoint*)vertices, (RtToken)sname.c_str(), (RtPointer)&psfile, RI_NULL);
 		}
 	}
 

@@ -13,7 +13,7 @@
 struct ABacteria
 {
 	XYZ pos, vel;
-	float noi;
+	float noi, noi2;
 };
 
 class FBacteria
@@ -29,6 +29,7 @@ public:
 	unsigned getNumBacteria() const {return num_bac;}
 	XYZ& getPositionById(unsigned id) const {return data[id].pos;}
 	float getNoiseById(unsigned id) const {return data[id].noi;}
+	float getNoise2ById(unsigned id) const {return data[id].noi2;}
 	void getSideAndUpById(unsigned id, XYZ& side, XYZ& up) const;
 	char isInViewFrustum(unsigned id) const;
 private:

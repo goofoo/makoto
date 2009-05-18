@@ -36,48 +36,29 @@ slim 1 appearance zhangdb {
 		default {ImageFile_File}
 	}
 	
-	parameter string imagefile {
-		label {Image File}
+	parameter string imagefile1 {
+		label {Image File1}
 	    subtype texture
 	}
-     
-    collection void hdrcoll {
-		label "HDR"
-		state open
-	    parameter float hdr_shadowed {
-		label "Shadowed"
-		subtype switch
-		default 0
-	    }
-	    parameter float hdr_indirect {
-		label "Interreflection"
-		subtype switch
-		default 0
-	    }
-	    parameter float hdr_scat {
-		label "Subsurfacescatter"
-		subtype switch
-		default 0
-	    }
-		parameter float hdr_backscat {
-		label "Back-light Scatter"
-		subtype switch
-		default 0
-	    }
+	
+	parameter string imagefile2 {
+		label {Image File2}
+	    subtype texture
 	}
-	collection void lightsrccoll {
-		label "Light Source"
-		state open
-	    parameter float lightsrc_shadowed {
-		label "Shadowed"
-		subtype switch
-		default 0
-	    }
+	
+	parameter string imagefile3 {
+		label {Image File3}
+	    subtype texture
 	}
-	parameter float double_sided {
-		label "Double-Sided"
-		subtype switch
-		default 0
-	    }
+	
+	parameter string imagefile4 {
+		label {Image File4}
+	    subtype texture
+	}
+	
+	parameter string imagefile5 {
+		label {Image File5}
+	    subtype texture
+	}
   }
 }
