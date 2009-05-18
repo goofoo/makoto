@@ -6,6 +6,8 @@
  *  Copyright 2009 __MyCompanyName__. All rights reserved.
  *
  */
+ #ifndef _F_BACTERIA_H
+ #define _F_BACTERIA_H
 #include "../shared/zData.h"
 
 struct ABacteria
@@ -35,3 +37,4 @@ private:
 	unsigned num_bac;
 	float nearClip, farClip, horizontal_apeture, vertical_apeture, focal_length, global_size, global_rotate, h_fov, v_fov;
 };
+#endif

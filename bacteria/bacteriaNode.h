@@ -58,6 +58,8 @@ public:
     
     // Output
     static  MObject aoutput;
+	
+	const FBacteria* getBase() const {return f_bac;}
 
 private:
 	unsigned int m_num_fish, m_num_bone;

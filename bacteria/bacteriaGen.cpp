@@ -14,6 +14,8 @@
 #include "../shared/zGlobal.h"
 #include "../shared/zWorks.h"
 #include "bacteriaGen.h"
+#include "bacteriaNode.h"
+#include "FBacteria.h"
 
 using namespace std;
 
@@ -40,7 +42,9 @@ m_i_hdr_backscat(0),
 m_i_lightsrc_shadowed(0),
 m_i_lightsrc_interreflection(0),
 m_i_lightsrc_subsurfacescat(0),
-m_i_double_sided(0)
+m_i_double_sided(0),
+m_image_name(0L),
+m_image_file(0L)
 {   
 }
 
@@ -57,7 +61,15 @@ bacteriaGen::SetArgs(RIBContext *c,
 	//    	"bacteriaGen setargs: %d", n);
     for(i=0;i<n;i++)
     {
-	if( !strcmp(args[i], "float hdr_shadowed") )
+		if(!strcmp(args[i], "string imagename"))
+		{
+			RIBContextUtil::GetStringValue(vals[i], &m_image_name);
+		}
+		else if(!strcmp(args[i], "string imagefile"))
+		{
+			RIBContextUtil::GetStringValue(vals[i], &m_image_file);
+		}
+	/*else if( !strcmp(args[i], "float hdr_shadowed") )
 	{
 		RIBContextUtil::GetFloatValue(vals[i], &m_i_hdr_shadowed);
 	}
@@ -80,7 +92,7 @@ bacteriaGen::SetArgs(RIBContext *c,
 	else if( !strcmp(args[i], "float double_sided") )
 	{
 		RIBContextUtil::GetFloatValue(vals[i], &m_i_double_sided);
-	}
+	}*/
 	else
 	{
 	   c->ReportError( RIBContext::reInfo, 
@@ -108,7 +120,6 @@ bacteriaGen::GenRIB( RIBContext *c )
 	//else if(pass == RIBContext::rpShadow) c->ReportError( RIBContext::reInfo, "pass is shadow");
 	//else  c->ReportError( RIBContext::reInfo, "other pass");
 	
-	
 	RtBoolean usingMotionBlur = c->GetMotionBlur();
 	// Query motion related settings
 	RtFloat shutterOpen, shutterClose;
@@ -129,71 +140,49 @@ bacteriaGen::GenRIB( RIBContext *c )
 	
 	if(viznode.isNull()) return err;
 	
-	MString cachename, meshname;
-	
 	MFnDependencyNode fnode(viznode);
-/*	
-	if(!zWorks::getStringAttributeByName(fnode, "cachePath", cachename)) return err;
-	if(!zWorks::getStringAttributeByName(fnode, "meshName", meshname)) return err;
 	
-	string sname(cachename.asChar());
+	bacteriaNode* bacteria = (bacteriaNode*)fnode.userNode();
+	const FBacteria* base = bacteria->getBase();
 	
-	string sprt = cachename.asChar();
+	MGlobal::displayInfo(m_image_file);
 	
-	zGlobal::cutByLastSlash(sprt);
-	sprt += meshname.asChar();
-	sprt += ".1.prt";
+	RtFloat vertices[12] = {-1, -1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0};
 	
+	std::string sname = "constant string ";
+	sname += m_image_name;
+	std::string sfile = " ";
+	sfile += m_image_file;
 	
-	double dtime0, dtime1, t0;//t1;
-	t0 = (double)frame;
-	
-	MTime mt0;
-	if(fps == 24) mt0 = MTime(t0, MTime::Unit::kFilm);
-	else if(fps == 25) mt0 = MTime(t0, MTime::Unit::kPALFrame);
-	else mt0 = MTime(t0, MTime::Unit::kNTSCFrame);
-	
-	MDGContext ctx0(mt0);
-	zWorks::getDoubleAttributeByNameAndTime(fnode, "currentTime", ctx0, dtime0);
-	
-	//t1 = (double)frame + ((float)shutterClose - (float)shutterOpen)*(float)fps;
-	
-	zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
-	
-//	c->ReportError( RIBContext::reInfo, "bacteriaGen get motion: %f %f", (float)dtime0, (float)dtime1);
-	int iframe = zGlobal::safeConvertToInt(dtime0);
-	zGlobal::changeFrameNumber(sname, iframe);
-	zGlobal::changeFrameNumber(sprt, iframe);
-	
-	MGlobal::displayInfo(MString("MeshRIBGen emits ") + MString(vizname) + " linked to " + sname.c_str());
-	
-	int iblur = 0;
-	if(usingMotionBlur) iblur = 1;
-	if(pass == RIBContext::rpShadow) iblur = 0;
-	char sbuf[1024];
-	sprintf( sbuf, "%s %s %s %d %d %d %d %d %f %f %f %f %d %d", 
-	sname.c_str(), 
-	meshname.asChar(),
-	sprt.c_str(),
-	(int)m_i_hdr_shadowed,
-	(int)m_i_hdr_interreflection,
-	(int)m_i_hdr_subsurfacescat,
-	(int)m_i_hdr_backscat,
-	(int)m_i_lightsrc_shadowed,
-	shutterOpen, shutterClose,
-	(float)dtime0, (float)dtime1,
-	iblur, (int)m_i_double_sided);
-	
-	RtString args[] = { "plugins/meshCacheProcedural.dll", sbuf};
-	
-	RtBound mybound = { -1, 1, -1, 1, -1, 1 };
+	unsigned num_ptc = base->getNumBacteria();
+	XYZ cen, xvec, yvec, vert;
+	for(unsigned i=0; i<num_ptc; i++)
+	{
+		if(base->isInViewFrustum(i))
+		{
+			cen =  base->getPositionById(i);
+			base->getSideAndUpById(i, xvec, yvec);
+			
+			vert = cen - xvec - yvec;
+			vertices[0] = vert.x;
+			vertices[1] = vert.y;
+			vertices[2] = vert.z;
+			vert =  cen - xvec + yvec;
+			vertices[3] = vert.x;
+			vertices[4] = vert.y;
+			vertices[5] = vert.z;
+			vert =  cen + xvec - yvec;
+			vertices[6] = vert.x;
+			vertices[7] = vert.y;
+			vertices[8] = vert.z;
+			vert = cen + xvec + yvec;
+			vertices[9] = vert.x;
+			vertices[10] = vert.y;
+			vertices[11] = vert.z;
+			
+			c->Patch("bilinear", "P", (RtPoint*)vertices, (RtToken)sname.c_str(), (RtPointer)&m_image_file, RI_NULL);
+		}
+	}
 
-//c->ReportError( RIBContext::reInfo, "mesh cache ribgen complete %f %f %f %f %f %f", mybound[0], mybound[1], mybound[2], mybound[3], mybound[4], mybound[5]);
-    //c->AttributeBegin();
-		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
-	//c->AttributeEnd();
-*/
-	RtFloat vert[12] = {-1, -1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0};
-	c->Patch("bilinear", "P", (RtPoint*)vert, RI_NULL);
     return err;
 }

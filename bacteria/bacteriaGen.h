@@ -47,6 +47,8 @@ public:
     virtual int	    GenRIB( RIBContext *c );
 
 private:
+	char* m_image_name;
+	char* m_image_file;
 	RtFloat m_i_hdr_shadowed, m_i_hdr_interreflection, m_i_hdr_subsurfacescat, m_i_hdr_backscat;
 	RtFloat m_i_lightsrc_shadowed, m_i_lightsrc_interreflection, m_i_lightsrc_subsurfacescat, m_i_double_sided;
 };

@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
-				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib libxml2.lib"
+				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib opengl32.lib"
 				OutputFile="..\module\ribgen\bacteriaRibgen.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -141,6 +141,18 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
 				RelativePath=".\bacteriaGen.cpp">
+			</File>
+			<File
+				RelativePath=".\bacteriaNode.cpp">
+			</File>
+			<File
+				RelativePath=".\FBacteria.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\FNoise.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\pdcFile.cpp">
 			</File>
 			<File
 				RelativePath="..\..\Pixar\devkit\examples\ribgen\RIBContextUtil.cpp">

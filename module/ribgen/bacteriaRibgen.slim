@@ -30,6 +30,16 @@ slim 1 appearance zhangdb {
     	description {A RIB Generator that emits RIB for mesh data.
 	Attach to imported mesh cache viz node.}
     subtype ribgen
+	
+	parameter string imagename {
+		label {Image Name}
+		default {ImageFile_File}
+	}
+	
+	parameter string imagefile {
+		label {Image File}
+	    subtype texture
+	}
      
     collection void hdrcoll {
 		label "HDR"
