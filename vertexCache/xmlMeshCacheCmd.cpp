@@ -477,7 +477,26 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 
 		delete[] tang;
 		delete[] nor;
+// export per-vertex thickness
+		float* vgrd = new float[n_vert];
+		int pidx;
+		vertIter.reset();
+		for( unsigned int i=0; !vertIter.isDone(); vertIter.next(), i++ )
+		{
+			MIntArray connfaces;
+			vertIter.getConnectedFaces( connfaces );
+			float connarea = 0;
+			for(unsigned j=0; j<connfaces.length(); j++)
+			{
+				faceIter.setIndex(connfaces[j], pidx);
+				faceIter.getArea(area, MSpace::kWorld );
+				connarea += (float)area/faceIter.polygonVertexCount();
+			}
+			vgrd[i] = sqrt(connarea)/2;
+		}
+		xml_f.addGridSize(n_vert, vgrd);
 		
+		delete[] vgrd;
 		xml_f.dynamicEnd();
 		xml_f.addBBox(corner_l.x, corner_l.y, corner_l.z, corner_h.x, corner_h.y, corner_h.z);
 

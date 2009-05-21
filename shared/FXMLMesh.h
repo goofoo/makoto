@@ -127,7 +127,7 @@ public:
 	int getNumColorSet() const { return m_colorSet.size(); }
 	const char* getColorSetNameById(int idx) const { return m_colorSet[idx]->name.c_str(); }
 	const XYZ* getColorSetById(int idx) const { return m_colorSet[idx]->data; }
-	float getGrid() const {return m_grid;}
+	float getGrid(int idx) const {return m_grd[idx];}
 	
 /*dicing*/
 	void dice(float epsilon, pcdSample* res, int& n_res);
@@ -142,7 +142,7 @@ private:
 	int* m_vertices;
 	int* m_triangleConn;
 	XYZ* m_cvs;
-	//XYZ* m_subd_cvs;
+	float* m_grd;
 	XYZ* m_normals;
 	XYZ* m_tangents;
 	XYZ* m_draw_color;
@@ -166,7 +166,7 @@ private:
 	AttribList m_attrib;
 	
 	int findMesh(const char* meshname);
-	float m_grid;
+	//float m_grid;
 	XYZ usr_hdrCoeff[16];
 };
 

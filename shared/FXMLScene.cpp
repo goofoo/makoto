@@ -240,6 +240,20 @@ void FXMLScene::addTangent(int num, const XYZ* data)
 	dynamic_file.write((char*)data, sizeof(XYZ)*num);
 }
 
+void FXMLScene::addGridSize(int num, const float* data)
+{
+	int offset = (int)sizeof(float)*num;
+	doc.elementBegin("GridSize");
+	doc.addAttribute("loc", pos_d);
+	doc.addAttribute("size", offset);
+	doc.addAttribute("count", num);
+	doc.elementEnd();
+	
+	pos_d += offset;
+	
+	dynamic_file.write((char*)data, sizeof(float)*num);
+}
+
 void FXMLScene::addBBox(float x0, float y0, float z0, float x1, float y1, float z1)
 {
 	doc.elementBegin("bbox");

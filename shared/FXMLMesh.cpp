@@ -50,6 +50,7 @@ m_numFaceVertex(0),
 m_numVertex(0),
 m_i_skip_second(0), m_i_skip_third(0),
 m_pOpen(0), m_pClose(0),
+m_grd(0),
 m_isNull(1)
 {}
 
@@ -69,6 +70,7 @@ m_numFaceVertex(0),
 m_numVertex(0),
 m_i_skip_second(0), m_i_skip_third(0),
 m_pOpen(0), m_pClose(0),
+m_grd(0),
 m_isNull(1)
 {
 	resetHDRLighting();
@@ -353,6 +355,7 @@ void FXMLMesh::free()
 		if(m_color) delete[] m_color;
 		if(m_pOpen) delete[] m_pOpen;
 		if(m_pClose) delete[] m_pClose;
+		if(m_grd) delete[] m_grd;
 		m_uvSet.clear();
 		m_colorSet.clear();
 		m_isNull = 1;
@@ -389,7 +392,7 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 	m_area = doc.getFloatAttribByName("area");
 	m_numTriangle = doc.getIntAttribByName("num_triangle");
 	m_meshName = string(doc.getAttribByName("name"));
-	m_grid = sqrt(m_area/m_numTriangle/2);
+	//m_grid = sqrt(m_area/m_numTriangle/2);
 	
 	m_bbox0.x = m_bbox0.y = m_bbox0.z = 0.0f;
 	m_bbox1.x = m_bbox1.y = m_bbox1.z = 1.0f;
@@ -570,6 +573,17 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 				ffin.read((char*)m_tangents, size);
 			}
 		doc.setParent();
+		
+			m_grd = new float[m_numVertex];
+			
+			if(doc.getChildByName("GridSize") != 0)
+			{
+				pos = doc.getIntAttribByName("loc");
+				size = doc.getIntAttribByName("size");
+				ffin.seekg( pos, ios::beg );
+				ffin.read((char*)m_grd, size);
+			}
+		doc.setParent();
 
 		if(!m_color)
 		{
@@ -672,12 +686,12 @@ void FXMLMesh::drawTangentSpace() const
 		glColor3d(0,1,0);
 		glVertex3f(m_cvs[j].x, m_cvs[j].y, m_cvs[j].z);
 			
-		XYZ up = m_cvs[j] + m_normals[j]*m_grid;
+		XYZ up = m_cvs[j] + m_normals[j]*m_grd[j];
 		glVertex3f(up.x, up.y, up.z);
 			
 		glColor3d(1,0,0);
 		glVertex3f(m_cvs[j].x, m_cvs[j].y, m_cvs[j].z);
-		XYZ side = m_cvs[j] + m_tangents[j]*m_grid;
+		XYZ side = m_cvs[j] + m_tangents[j]*m_grd[j];
 		glVertex3f(side.x, side.y, side.z);
 	}
 	glEnd();
