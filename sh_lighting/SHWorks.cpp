@@ -382,14 +382,14 @@ void SHWorks::show(const CVisibilityBuffer* visibility)
 
 void SHWorks::saveRT(const FXMLScene* scene)
 {
+	float gridsize;
 	MeshList list = scene->getMesh();
 	TreeList shadow = scene->getShadowTree();
 	for(MeshList::iterator mesh=list.begin(); mesh != list.end(); mesh++)
 	{
 		const FXMLMesh* pMesh = *mesh;
 		cout<<" computing HDR Direct on "<<pMesh->getMeshName()<<endl;
-		float gridsize = pMesh->getGrid();
-		cout<<" grid size "<<gridsize<<endl;
+		//cout<<" grid size "<<gridsize<<endl;
 		int n_vert = pMesh->getNumVertex();
 		cout<<" n vertex "<<n_vert<<endl;
 		int n_bucket = n_vert/39;
@@ -403,6 +403,7 @@ void SHWorks::saveRT(const FXMLScene* scene)
 		{
 			pMesh->getVertex(Q, i);
 			pMesh->getNormal(ray , i);
+			gridsize = pMesh->getGrid(i);
 			Q += ray*gridsize;
 			pMesh->getTangent(tang , i);//if(n_vert>10000) cout<<" "<<Q.length();
 
@@ -439,14 +440,14 @@ void SHWorks::saveRT(const FXMLScene* scene)
 
 void SHWorks::saveLightRT(const FXMLScene* scene, const FQSPLAT* light)
 {
+	float gridsize;
 	m_max_buf = light->getNumSplat();
 	MeshList list = scene->getMesh();
 	TreeList shadow = scene->getShadowTree();
 	for(MeshList::iterator it=list.begin(); it != list.end(); ++it)
 	{
 		cout<<" computing HDR and Lightsource Direct on "<<(*it)->getMeshName()<<endl;
-		float gridsize = (*it)->getGrid();
-		cout<<" grid size "<<gridsize<<endl;
+		//cout<<" grid size "<<gridsize<<endl;
 		int n_vert = (*it)->getNumVertex();
 		cout<<" n vertex "<<n_vert<<endl;
 		int n_bucket = n_vert/37;
@@ -462,6 +463,7 @@ void SHWorks::saveLightRT(const FXMLScene* scene, const FQSPLAT* light)
 		{
 			(*it)->getVertex(Q, i);
 			(*it)->getNormal(ray , i);
+			gridsize = (*it)->getGrid(i);
 			Q += ray*gridsize;
 			(*it)->getTangent(tang , i);
 
@@ -516,6 +518,7 @@ void SHWorks::saveLightRT(const FXMLScene* scene, const FQSPLAT* light)
 
 void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibackscat)
 {
+	float gridsize;
 	MeshList list = scene->getMesh();
 	for(MeshList::iterator it=list.begin(); it != list.end(); ++it)
 	{
@@ -543,8 +546,8 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 			if(iscat==1 && (*it)->hasAttrib("skipScatter")!=1)
 			{
 				cout<<" computing Sub-Surface Scatter on "<<(*it)->getMeshName()<<endl;
-				float gridsize = (*it)->getGrid();
-				cout<<" grid size "<<gridsize<<endl;
+				
+				//cout<<" grid size "<<gridsize<<endl;
 				int n_vert = (*it)->getNumVertex();
 				cout<<" n vertex "<<n_vert<<endl;
 				int n_bucket = n_vert/37;
@@ -558,6 +561,7 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 				{
 					(*it)->getVertex(Q, i);
 					(*it)->getNormal(ray , i);
+					gridsize = (*it)->getGrid(i);
 					Q -= ray*gridsize;
 					(*it)->getTangent(tang , i);
 
@@ -600,8 +604,7 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 				scene->getSpaceZ(planez);
 				scene->getSpaceX(planex);
 				cout<<" back light source: "<<planez.x<<" "<<planez.y<<" "<<planez.z<<endl;
-				float gridsize = (*it)->getGrid();
-				cout<<" grid size "<<gridsize<<endl;
+				//cout<<" grid size "<<gridsize<<endl;
 				int n_vert = (*it)->getNumVertex();
 				cout<<" n vertex "<<n_vert<<endl;
 				int n_bucket = n_vert/37;
@@ -614,6 +617,7 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 				{
 					(*it)->getVertex(Q, i);
 					(*it)->getNormal(ray , i);
+					gridsize = (*it)->getGrid(i);
 					Q -= ray*gridsize/3;
 
 					b_vis->initialize();
@@ -647,6 +651,7 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 
 void SHWorks::saveIndirectRT(const FXMLScene* scene)
 {
+	float gridsize;
 	MeshList list = scene->getMesh();
 	//TreeList shadow = scene->getShadowTree();
 	const FQSPLAT* shadow = scene->getRTTree();
@@ -656,8 +661,7 @@ void SHWorks::saveIndirectRT(const FXMLScene* scene)
 		else
 		{
 			cout<<" computing Interreflection on "<<(*it)->getMeshName()<<endl;
-			float gridsize = (*it)->getGrid();
-			cout<<" grid size "<<gridsize<<endl;
+			//cout<<" grid size "<<gridsize<<endl;
 			int n_vert = (*it)->getNumVertex();
 			cout<<" n vertex "<<n_vert<<endl;
 			int n_bucket = n_vert/37;
@@ -670,6 +674,7 @@ void SHWorks::saveIndirectRT(const FXMLScene* scene)
 			{
 				(*it)->getVertex(Q, i);
 				(*it)->getNormal(ray , i);
+				gridsize = (*it)->getGrid(i);
 				Q += ray*gridsize;
 				(*it)->getTangent(tang , i);
 				
