@@ -506,12 +506,12 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 		
 		int formU, formV;
 		
-		if(fsurface.formInU() == MFnNurbsSurface::Form::kOpen ) formU = 0;
-		else if(fsurface.formInU() == MFnNurbsSurface::Form::kClosed ) formU = 1;
+		if(fsurface.formInU() == MFnNurbsSurface::kOpen ) formU = 0;
+		else if(fsurface.formInU() == MFnNurbsSurface::kClosed ) formU = 1;
 		else formU = 2;
 
-		if(fsurface.formInV() == MFnNurbsSurface::Form::kOpen ) formV = 0;
-		else if(fsurface.formInV() == MFnNurbsSurface::Form::kClosed ) formV = 1;
+		if(fsurface.formInV() == MFnNurbsSurface::kOpen ) formV = 0;
+		else if(fsurface.formInV() == MFnNurbsSurface::kClosed ) formV = 1;
 		else formV = 2;
 		
 		xml_f.nurbssurfaceBegin(surfacename.asChar(), degreeU, degreeV, formU, formV);

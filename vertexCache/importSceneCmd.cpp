@@ -157,13 +157,13 @@ MStatus XMLSceneCmd::doIt( const MArgList& args )
 				MFnNurbsSurface::Form fmu;
 				MFnNurbsSurface::Form fmv;
 				
-				if(formU ==0) fmu = MFnNurbsSurface::Form::kOpen;
-				else if(formU ==1) fmu = MFnNurbsSurface::Form::kClosed;
-				else fmu = MFnNurbsSurface::Form::kPeriodic;
+				if(formU ==0) fmu = MFnNurbsSurface::kOpen;
+				else if(formU ==1) fmu = MFnNurbsSurface::kClosed;
+				else fmu = MFnNurbsSurface::kPeriodic;
 				
-				if(formV ==0) fmv = MFnNurbsSurface::Form::kOpen;
-				else if(formV ==1) fmv = MFnNurbsSurface::Form::kClosed;
-				else fmv = MFnNurbsSurface::Form::kPeriodic;
+				if(formV ==0) fmv = MFnNurbsSurface::kOpen;
+				else if(formV ==1) fmv = MFnNurbsSurface::kClosed;
+				else fmv = MFnNurbsSurface::kPeriodic;
 				
 				std::string staticName = cache_path.asChar();
 				zGlobal::cutByFirstDot(staticName);

@@ -217,8 +217,9 @@ void zGlobal::cutfilepath(std::string& res)
 		res.erase(0, found);
 	}
 }
-
+#ifdef WIN32
 #include <windows.h>
+#endif
 #include <iostream>
 
 void zGlobal::saveFloatFile(const char* filename, const int nfloat, const float* data)
@@ -234,13 +235,13 @@ void zGlobal::saveFloatFile(const char* filename, const int nfloat, const float*
 
 	ffile.write((char*)data, nfloat*sizeof(float));
 	ffile.close();
-	
+#ifdef WIN32	
 	Sleep(1999);
 	
 	CopyFile(tmpfile.c_str(),filename,0);
 	
 	Sleep(1999);
-	
+#endif	
 	tmpfile = "del " + tmpfile;
 	
 	system(tmpfile.c_str());

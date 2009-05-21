@@ -1,0 +1,394 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7FB4B0210FC50458001E629C /* cacheTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0180FC50458001E629C /* cacheTransform.cpp */; };
+		7FB4B0220FC50458001E629C /* importSceneCmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0190FC50458001E629C /* importSceneCmd.cpp */; };
+		7FB4B0230FC50458001E629C /* meshCacheCmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B01A0FC50458001E629C /* meshCacheCmd.cpp */; };
+		7FB4B0240FC50458001E629C /* meshCacheNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B01B0FC50458001E629C /* meshCacheNode.cpp */; };
+		7FB4B0250FC50458001E629C /* meshCacheVizNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B01C0FC50458001E629C /* meshCacheVizNode.cpp */; };
+		7FB4B0260FC50458001E629C /* obj2mcf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B01D0FC50458001E629C /* obj2mcf.cpp */; };
+		7FB4B0270FC50458001E629C /* prtAttribNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B01E0FC50458001E629C /* prtAttribNode.cpp */; };
+		7FB4B0280FC50458001E629C /* vxCacheDeformer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */; };
+		7FB4B0290FC50458001E629C /* xmlMeshCacheCmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0200FC50458001E629C /* xmlMeshCacheCmd.cpp */; };
+		7FB4B03A0FC5061C001E629C /* FMCFMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0370FC5061C001E629C /* FMCFMesh.cpp */; };
+		7FB4B03B0FC5061C001E629C /* FXMLMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0380FC5061C001E629C /* FXMLMesh.cpp */; };
+		7FB4B03C0FC5061C001E629C /* FXMLScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0390FC5061C001E629C /* FXMLScene.cpp */; };
+		7FB4B03F0FC50640001E629C /* zXMLDoc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B03E0FC50640001E629C /* zXMLDoc.cpp */; };
+		7FB4B0430FC50676001E629C /* FColorSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0410FC50676001E629C /* FColorSet.cpp */; };
+		7FB4B0440FC50676001E629C /* FUVSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0420FC50676001E629C /* FUVSet.cpp */; };
+		7FB4B0480FC50695001E629C /* FQSPLAT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0460FC50695001E629C /* FQSPLAT.cpp */; };
+		7FB4B0490FC50695001E629C /* FTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0470FC50695001E629C /* FTriangle.cpp */; };
+		7FB4B04C0FC506B3001E629C /* zGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B04B0FC506B3001E629C /* zGlobal.cpp */; };
+		7FB4B0540FC5079A001E629C /* libxml.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FB4B0530FC5079A001E629C /* libxml.framework */; };
+		7FB4B0590FC507B4001E629C /* XMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0580FC507B4001E629C /* XMLUtil.cpp */; };
+		7FB4B05E0FC5087B001E629C /* VisibilityBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B05D0FC5087B001E629C /* VisibilityBuffer.cpp */; };
+		7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */; };
+		7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA90FB61FAC00187112 /* zWorks.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7FB4B0180FC50458001E629C /* cacheTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cacheTransform.cpp; sourceTree = "<group>"; };
+		7FB4B0190FC50458001E629C /* importSceneCmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = importSceneCmd.cpp; sourceTree = "<group>"; };
+		7FB4B01A0FC50458001E629C /* meshCacheCmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = meshCacheCmd.cpp; sourceTree = "<group>"; };
+		7FB4B01B0FC50458001E629C /* meshCacheNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = meshCacheNode.cpp; sourceTree = "<group>"; };
+		7FB4B01C0FC50458001E629C /* meshCacheVizNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = meshCacheVizNode.cpp; sourceTree = "<group>"; };
+		7FB4B01D0FC50458001E629C /* obj2mcf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = obj2mcf.cpp; sourceTree = "<group>"; };
+		7FB4B01E0FC50458001E629C /* prtAttribNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = prtAttribNode.cpp; sourceTree = "<group>"; };
+		7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vxCacheDeformer.cpp; sourceTree = "<group>"; };
+		7FB4B0200FC50458001E629C /* xmlMeshCacheCmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xmlMeshCacheCmd.cpp; sourceTree = "<group>"; };
+		7FB4B0370FC5061C001E629C /* FMCFMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FMCFMesh.cpp; path = ../shared/FMCFMesh.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B0380FC5061C001E629C /* FXMLMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FXMLMesh.cpp; path = ../shared/FXMLMesh.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B0390FC5061C001E629C /* FXMLScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FXMLScene.cpp; path = ../shared/FXMLScene.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B03E0FC50640001E629C /* zXMLDoc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zXMLDoc.cpp; path = ../shared/zXMLDoc.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B0410FC50676001E629C /* FColorSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FColorSet.cpp; path = ../shared/FColorSet.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B0420FC50676001E629C /* FUVSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FUVSet.cpp; path = ../shared/FUVSet.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B0460FC50695001E629C /* FQSPLAT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FQSPLAT.cpp; path = ../sh_lighting/FQSPLAT.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B0470FC50695001E629C /* FTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FTriangle.cpp; path = ../sh_lighting/FTriangle.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B04B0FC506B3001E629C /* zGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zGlobal.cpp; path = ../shared/zGlobal.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B0530FC5079A001E629C /* libxml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libxml.framework; path = /Library/Frameworks/libxml.framework; sourceTree = "<absolute>"; };
+		7FB4B0580FC507B4001E629C /* XMLUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XMLUtil.cpp; path = ../shared/XMLUtil.cpp; sourceTree = SOURCE_ROOT; };
+		7FB4B05D0FC5087B001E629C /* VisibilityBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VisibilityBuffer.cpp; path = ../sh_lighting/VisibilityBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
+		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
+		D2AAC0630554660B00DB518D /* meshCache.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = meshCache.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289988505E68E00004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FB4B0540FC5079A001E629C /* libxml.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* footPrintNodePlugin */ = {
+			isa = PBXGroup;
+			children = (
+				7FB4B0530FC5079A001E629C /* libxml.framework */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				8A7F063208688F460064D097 /* Mel */,
+				8A7F063308688F580064D097 /* Resources */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = footPrintNodePlugin;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7FB4B05D0FC5087B001E629C /* VisibilityBuffer.cpp */,
+				7FB4B0580FC507B4001E629C /* XMLUtil.cpp */,
+				7FB4B04B0FC506B3001E629C /* zGlobal.cpp */,
+				7FB4B0460FC50695001E629C /* FQSPLAT.cpp */,
+				7FB4B0470FC50695001E629C /* FTriangle.cpp */,
+				7FB4B0410FC50676001E629C /* FColorSet.cpp */,
+				7FB4B0420FC50676001E629C /* FUVSet.cpp */,
+				7FB4B03E0FC50640001E629C /* zXMLDoc.cpp */,
+				7FB4B0370FC5061C001E629C /* FMCFMesh.cpp */,
+				7FB4B0380FC5061C001E629C /* FXMLMesh.cpp */,
+				7FB4B0390FC5061C001E629C /* FXMLScene.cpp */,
+				7FB4B0180FC50458001E629C /* cacheTransform.cpp */,
+				7FB4B0190FC50458001E629C /* importSceneCmd.cpp */,
+				7FB4B01A0FC50458001E629C /* meshCacheCmd.cpp */,
+				7FB4B01B0FC50458001E629C /* meshCacheNode.cpp */,
+				7FB4B01C0FC50458001E629C /* meshCacheVizNode.cpp */,
+				7FB4B01D0FC50458001E629C /* obj2mcf.cpp */,
+				7FB4B01E0FC50458001E629C /* prtAttribNode.cpp */,
+				7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */,
+				7FB4B0200FC50458001E629C /* xmlMeshCacheCmd.cpp */,
+				7FE58BA90FB61FAC00187112 /* zWorks.cpp */,
+				7FE58BA00FB61F6700187112 /* pluginMain.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC0630554660B00DB518D /* meshCache.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8A7F063208688F460064D097 /* Mel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Mel;
+			sourceTree = "<group>";
+		};
+		8A7F063308688F580064D097 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC0600554660B00DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC0620554660B00DB518D /* MCache */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "MCache" */;
+			buildPhases = (
+				D2AAC0600554660B00DB518D /* Headers */,
+				D2AAC0610554660B00DB518D /* Sources */,
+				D289988505E68E00004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MCache;
+			productName = footPrintNodePlugin;
+			productReference = D2AAC0630554660B00DB518D /* meshCache.bundle */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 8A7F05F1086863A70064D097 /* Build configuration list for PBXProject "mcache" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* footPrintNodePlugin */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC0620554660B00DB518D /* MCache */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC0610554660B00DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */,
+				7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */,
+				7FB4B0210FC50458001E629C /* cacheTransform.cpp in Sources */,
+				7FB4B0220FC50458001E629C /* importSceneCmd.cpp in Sources */,
+				7FB4B0230FC50458001E629C /* meshCacheCmd.cpp in Sources */,
+				7FB4B0240FC50458001E629C /* meshCacheNode.cpp in Sources */,
+				7FB4B0250FC50458001E629C /* meshCacheVizNode.cpp in Sources */,
+				7FB4B0260FC50458001E629C /* obj2mcf.cpp in Sources */,
+				7FB4B0270FC50458001E629C /* prtAttribNode.cpp in Sources */,
+				7FB4B0280FC50458001E629C /* vxCacheDeformer.cpp in Sources */,
+				7FB4B0290FC50458001E629C /* xmlMeshCacheCmd.cpp in Sources */,
+				7FB4B03A0FC5061C001E629C /* FMCFMesh.cpp in Sources */,
+				7FB4B03B0FC5061C001E629C /* FXMLMesh.cpp in Sources */,
+				7FB4B03C0FC5061C001E629C /* FXMLScene.cpp in Sources */,
+				7FB4B03F0FC50640001E629C /* zXMLDoc.cpp in Sources */,
+				7FB4B0430FC50676001E629C /* FColorSet.cpp in Sources */,
+				7FB4B0440FC50676001E629C /* FUVSet.cpp in Sources */,
+				7FB4B0480FC50695001E629C /* FQSPLAT.cpp in Sources */,
+				7FB4B0490FC50695001E629C /* FTriangle.cpp in Sources */,
+				7FB4B04C0FC506B3001E629C /* zGlobal.cpp in Sources */,
+				7FB4B0590FC507B4001E629C /* XMLUtil.cpp in Sources */,
+				7FB4B05E0FC5087B001E629C /* VisibilityBuffer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8A7F05EE086863A70064D097 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = bundle;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				PREBINDING = NO;
+				PRODUCT_NAME = meshCache;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		8A7F05EF086863A70064D097 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = bundle;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				PREBINDING = NO;
+				PRODUCT_NAME = footPrintNode;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		8A7F05F0086863A70064D097 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = bundle;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				PREBINDING = NO;
+				PRODUCT_NAME = footPrintNode;
+			};
+			name = Default;
+		};
+		8A7F05F2086863A70064D097 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_DIRECTORY)/devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MAC_PLUGIN,
+					_BOOL,
+					REQUIRE_IOSTREAM,
+				);
+				HEADER_SEARCH_PATHS = "$(MAYA_DIRECTORY)/devkit/include/";
+				LIBRARY_SEARCH_PATHS = "$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS";
+				LIBRARY_STYLE = BUNDLE;
+				MAYA_DIRECTORY = /Applications/Autodesk/maya2008;
+				OTHER_LDFLAGS = (
+					"-lOpenMaya",
+					"-lFoundation",
+					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
+					"-lOpenMaya",
+					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
+					"-lFoundation",
+					"-framework",
+					AGL,
+					"-framework",
+					OpenGL,
+				);
+			};
+			name = Debug;
+		};
+		8A7F05F3086863A70064D097 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_DIRECTORY)/devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MAC_PLUGIN,
+					_BOOL,
+					REQUIRE_IOSTREAM,
+				);
+				HEADER_SEARCH_PATHS = "$(MAYA_DIRECTORY)/devkit/include/";
+				LIBRARY_SEARCH_PATHS = "$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS";
+				LIBRARY_STYLE = BUNDLE;
+				MAYA_DIRECTORY = /Applications/Autodesk/maya2008;
+				OTHER_LDFLAGS = (
+					"-lOpenMaya",
+					"-lFoundation",
+					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
+					"-lOpenMaya",
+					"-lOpenMayaUI",
+					"-lFoundation",
+					"-framework",
+					AGL,
+					"-framework",
+					OpenGL,
+				);
+			};
+			name = Release;
+		};
+		8A7F05F4086863A70064D097 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(MAYA_DIRECTORY)/devkit/include/maya/OpenMayaMac.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					MAC_PLUGIN,
+					_BOOL,
+					REQUIRE_IOSTREAM,
+				);
+				HEADER_SEARCH_PATHS = "$(MAYA_DIRECTORY)/devkit/include/";
+				LIBRARY_SEARCH_PATHS = "$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS";
+				MAYA_DIRECTORY = /Applications/Autodesk/maya2008;
+				OTHER_LDFLAGS = (
+					"-lOpenMaya",
+					"-lFoundation",
+					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
+					"-lOpenMaya",
+					"-lOpenMayaUI",
+					"-lFoundation",
+					"-framework",
+					AGL,
+					"-framework",
+					OpenGL,
+				);
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "MCache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A7F05EE086863A70064D097 /* Debug */,
+				8A7F05EF086863A70064D097 /* Release */,
+				8A7F05F0086863A70064D097 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		8A7F05F1086863A70064D097 /* Build configuration list for PBXProject "mcache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A7F05F2086863A70064D097 /* Debug */,
+				8A7F05F3086863A70064D097 /* Release */,
+				8A7F05F4086863A70064D097 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
