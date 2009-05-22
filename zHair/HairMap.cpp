@@ -407,13 +407,13 @@ void hairMap::bind()
 
 void hairMap::drawGuide()
 {
-	if(!has_guide || !guide_data) return;
+	if(!guide_data) return;
 	glBegin(GL_LINES);
 
 	XYZ pp;
 	for(int i=0; i<num_guide; i++) 
 	{
-		glColor3f(guide_data[i].dsp_col.x, guide_data[i].dsp_col.y, guide_data[i].dsp_col.z);
+		//glColor3f(guide_data[i].dsp_col.x, guide_data[i].dsp_col.y, guide_data[i].dsp_col.z);
 		for(short j = 0; j< guide_data[i].num_seg; j++) 
 		{
 			XYZ pp = guide_data[i].P[j];
@@ -430,7 +430,7 @@ void hairMap::drawGuide()
 	glEnd();
 }
 
-int hairMap::saveDguide(const char* filename)
+int hairMap::save(const char* filename)
 {
 	ofstream outfile;
 	outfile.open(filename, ios_base::out | ios_base::binary);
@@ -458,7 +458,7 @@ int hairMap::saveDguide(const char* filename)
 	return 1;
 }
 
-int hairMap::loadDguide(const char* filename)
+int hairMap::load(const char* filename)
 {
 	ifstream infile;
 	infile.open(filename, ios_base::in | ios_base::binary);

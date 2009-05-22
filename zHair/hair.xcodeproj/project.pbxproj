@@ -10,6 +10,7 @@
 		7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F232D0FBA8F32003D0615 /* FNoise.cpp */; };
 		7F6F241A0FBBFF4C003D0615 /* guideCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */; };
 		7F6F241C0FBBFF5F003D0615 /* HairDguideNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */; };
+		7F7BA3EA0FC67CA1002BA34B /* zGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F7BA3E90FC67CA1002BA34B /* zGlobal.cpp */; };
 		7FE58B9F0FB61F5800187112 /* HairMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */; };
 		7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */; };
 		7FE58BA30FB61F7300187112 /* zHairNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA20FB61F7300187112 /* zHairNode.cpp */; };
@@ -21,12 +22,13 @@
 		7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
 		7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guideCommand.cpp; sourceTree = "<group>"; };
 		7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HairDguideNode.cpp; sourceTree = "<group>"; };
+		7F7BA3E90FC67CA1002BA34B /* zGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zGlobal.cpp; path = ../shared/zGlobal.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HairMap.cpp; sourceTree = "<group>"; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
 		7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zHairNode.cpp; sourceTree = "<group>"; };
 		7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiceTriangle.cpp; path = ../shared/DiceTriangle.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
-		7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = zhairMenus.mel; path = ../module/scripts/zhairMenus.mel; sourceTree = SOURCE_ROOT; };
+		7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = zhairMenus.mel; path = ../module/scripts/zhairMenus.mel; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.c; };
 		D2AAC0630554660B00DB518D /* ZHair.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ZHair.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -55,6 +57,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F7BA3E90FC67CA1002BA34B /* zGlobal.cpp */,
 				7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */,
 				7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */,
 				7F6F232D0FBA8F32003D0615 /* FNoise.cpp */,
@@ -150,6 +153,7 @@
 				7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */,
 				7F6F241A0FBBFF4C003D0615 /* guideCommand.cpp in Sources */,
 				7F6F241C0FBBFF5F003D0615 /* HairDguideNode.cpp in Sources */,
+				7F7BA3EA0FC67CA1002BA34B /* zGlobal.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

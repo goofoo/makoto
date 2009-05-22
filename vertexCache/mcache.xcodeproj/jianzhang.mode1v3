@@ -202,86 +202,6 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7FB4B09C0FC543ED001E629C</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>xmlMeshCacheCmd.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FB4B09D0FC543ED001E629C</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>xmlMeshCacheCmd.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FB4B0AF0FC54938001E629C</string>
-						<key>history</key>
-						<array>
-							<string>7FB4B0990FC543AA001E629C</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {590, 564}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>488 157 590 605 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>7FB4B0A30FC544E8001E629C</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>FXMLScene.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FB4B0A40FC544E8001E629C</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>FXMLScene.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FB4B0B00FC54938001E629C</string>
-						<key>history</key>
-						<array>
-							<string>7FB4B0A10FC5447F001E629C</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {590, 564}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>569 153 590 605 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
 				<string>7FB4B0900FC541C6001E629C</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>FXMLMesh.cpp</string>
@@ -296,7 +216,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FB4B0B10FC54938001E629C</string>
+						<string>7FB4B0B30FC5D201001E629C</string>
 						<key>history</key>
 						<array>
 							<string>7FB4B0870FC54196001E629C</string>
@@ -336,7 +256,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FB4B0B20FC54938001E629C</string>
+						<string>7FB4B0B40FC5D201001E629C</string>
 						<key>history</key>
 						<array>
 							<string>7FB4B08A0FC541A6001E629C</string>
@@ -356,6 +276,86 @@
 				<false/>
 				<key>RubberWindowFrame</key>
 				<string>15 168 590 605 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>7FB4B09C0FC543ED001E629C</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>xmlMeshCacheCmd.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7FB4B09D0FC543ED001E629C</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>xmlMeshCacheCmd.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7FB4B0B60FC5D201001E629C</string>
+						<key>history</key>
+						<array>
+							<string>7FB4B0990FC543AA001E629C</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {590, 564}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>488 157 590 605 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>7FB4B0A30FC544E8001E629C</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>FXMLScene.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7FB4B0A40FC544E8001E629C</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>FXMLScene.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7FB4B0B70FC5D201001E629C</string>
+						<key>history</key>
+						<array>
+							<string>7FB4B0A10FC5447F001E629C</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {590, 564}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>569 153 590 605 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -682,12 +682,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7FE58BA50FB61F9000187112</string>
-		<string>7FB4B0930FC541C6001E629C</string>
-		<string>7FB4B0900FC541C6001E629C</string>
-		<string>/Users/jianzhang/Documents/plankton/vertexCache/mcache.xcodeproj</string>
 		<string>7FB4B0A30FC544E8001E629C</string>
 		<string>7FB4B09C0FC543ED001E629C</string>
+		<string>7FB4B0930FC541C6001E629C</string>
+		<string>7FB4B0900FC541C6001E629C</string>
+		<string>7FE58BA50FB61F9000187112</string>
+		<string>/Users/jianzhang/Documents/plankton/vertexCache/mcache.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>515 141 690 397 0 0 1280 778 </string>

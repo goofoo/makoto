@@ -11,16 +11,15 @@
 
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
+#include <maya/MFnTypedAttribute.h>
 #include <maya/MFnNumericAttribute.h>
+#include <maya/MGlobal.h>
 #include "HairDguideNode.h"
 #include "../shared/zData.h"
+#include "../shared/zGlobal.h"
 #include "HairMap.h"
 #include <iostream>
 #include <fstream>
-using namespace std;
-
-#include <maya/MGlobal.h>
-
 using namespace std;
 
 // You MUST change this to a unique value!!!  The id is a 32bit value used
@@ -30,17 +29,18 @@ using namespace std;
 MTypeId     HairDguideNode::id( 0x0002519 );
 
 // Example attributes
-// 
-MObject     HairDguideNode::input;        
-MObject     HairDguideNode::output;       
+//        
+MObject     HairDguideNode::output;
+MObject HairDguideNode::acachename;
+MObject HairDguideNode::aframe;       
 
-HairDguideNode::HairDguideNode() 
+HairDguideNode::HairDguideNode() : m_base(0)
 {
 	m_base = new hairMap();
 }
 HairDguideNode::~HairDguideNode() 
 {
-	delete m_base;
+	if(m_base) delete m_base;
 }
 
 MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
@@ -54,7 +54,6 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 //		data - object that provides access to the attributes for this node
 //
 {   
-	m_base->loadDguide("null");
 	MStatus returnStatus;
  
 	// Check which output attribute we have been asked to compute.  If this 
@@ -63,40 +62,23 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 	// 
 	if( plug == output )
 	{
-		// Get a handle to the input attribute that we will need for the
-		// computation.  If the value is being supplied via a connection 
-		// in the dependency graph, then this call will cause all upstream  
-		// connections to be evaluated so that the correct value is supplied.
-		// 
-		MDataHandle inputData = data.inputValue( input, &returnStatus );
-
-		if( returnStatus != MS::kSuccess )
-			MGlobal::displayError( "Node HairDguideNode cannot get value\n" );
-		else
+		double dtime = data.inputValue( aframe ).asDouble();
+		MString sname = data.inputValue( acachename).asString();
+		string sbuf(sname.asChar());
+		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
+		MGlobal::displayInfo(sbuf.c_str());
+		if(m_base) 
 		{
-			// Read the input value from the handle.
-			//
-			float result = inputData.asFloat();
-
-			// Get a handle to the output attribute.  This is similar to the
-			// "inputValue" call above except that no dependency graph 
-			// computation will be done as a result of this call.
-			// 
-			MDataHandle outputHandle = data.outputValue( HairDguideNode::output );
-			// This just copies the input value through to the output.  
-			// 
-			outputHandle.set( result );
-			// Mark the destination plug as being clean.  This will prevent the
-			// dependency graph from repeating this calculation until an input 
-			// of this node changes.
-			// 
-			data.setClean(plug);
+			int iss = m_base->load(sbuf.c_str());
+			MGlobal::displayInfo(MString("isloaded ")+iss);
 		}
-	} else {
-		return MS::kUnknownParameter;
+		
+		MDataHandle outputHandle = data.outputValue(output); 
+		outputHandle.set( 1.0 ); 
+		data.setClean(plug);
+		return MS::kSuccess;
 	}
-
-	return MS::kSuccess;
+	return MS::kUnknownParameter;
 }
 
 
@@ -107,7 +89,7 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 	//loadDguide( );
 	view.beginGL(); 
 	//glPushAttrib(GL_ALL_ATTRIB_BITS);
-	m_base->drawGuide();
+	if(m_base) m_base->drawGuide();
 	//glPopAttrib();
 	view.endGL();
 }
@@ -140,35 +122,36 @@ MStatus HairDguideNode::initialize()
 	// This sample creates a single input float attribute and a single
 	// output float attribute.
 	//
-	MFnNumericAttribute nAttr;
+	MFnNumericAttribute numAttr;
 	MStatus				stat;
 
-	input = nAttr.create( "input", "in", MFnNumericData::kFloat, 0.0 );
-	// Attribute will be written to files when this type of node is stored
- 	nAttr.setStorable(true);
-	// Attribute is keyable and will show up in the channel box
- 	nAttr.setKeyable(true);
-
-	output = nAttr.create( "output", "out", MFnNumericData::kFloat, 0.0 );
+	output = numAttr.create( "output", "out", MFnNumericData::kFloat, 0.0 );
 	// Attribute is read-only because it is an output attribute
-	nAttr.setWritable(false);
+	numAttr.setWritable(false);
 	// Attribute will not be written to files when this type of node is stored
-	nAttr.setStorable(false);
+	numAttr.setStorable(false);
 
-	// Add the attributes we have created to the node
-	//
-	stat = addAttribute( input );
-		if (!stat) { stat.perror("addAttribute"); return stat;}
 	stat = addAttribute( output );
 		if (!stat) { stat.perror("addAttribute"); return stat;}
+		
+	aframe = numAttr.create( "currentTime", "ct", MFnNumericData::kDouble, 1.0 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute( aframe );
+	
+	MFnTypedAttribute   stringAttr;
+	acachename = stringAttr.create( "cachePath", "cp", MFnData::kString );
+ 	stringAttr.setStorable(true);
+	stringAttr.setInternal(true);
+	addAttribute( acachename );
 
 	// Set up a dependency between the input and the output.  This will cause
 	// the output to be marked dirty when the input changes.  The output will
 	// then be recomputed the next time the value of the output is requested.
 	//
-	stat = attributeAffects( input, output );
-		if (!stat) { stat.perror("attributeAffects"); return stat;}
-
+	attributeAffects( aframe, output );
+	attributeAffects( acachename, output );
+	
 	return MS::kSuccess;
 
 }

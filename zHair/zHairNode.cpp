@@ -83,9 +83,9 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			if(isave==1) 
 			{
 				MGlobal::displayInfo(MString("Saving ")+cache_start);
-				m_base->saveDguide(cache_start.asChar());
+				m_base->save(cache_start.asChar());
 				MGlobal::displayInfo(MString("Saving ")+cache_path);
-				m_base->saveDguide(cache_path.asChar());
+				m_base->save(cache_path.asChar());
 			}
 		}
 		else 
@@ -94,7 +94,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			if(isave==1) 
 			{
 				MGlobal::displayInfo(MString("Saving ")+cache_path);
-				m_base->saveDguide(cache_path.asChar());
+				m_base->save(cache_path.asChar());
 			}
 		}
 		

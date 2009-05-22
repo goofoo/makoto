@@ -31,7 +31,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 
-	status = plugin.registerNode( "HairDguide", HairDguideNode::id, &HairDguideNode::creator,
+	status = plugin.registerNode( "ZHairCache", HairDguideNode::id, &HairDguideNode::creator,
 								  &HairDguideNode::initialize,MPxNode::kLocatorNode );
 	if (!status) {
 		status.perror("registerNode");
