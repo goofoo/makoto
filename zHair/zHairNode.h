@@ -48,6 +48,7 @@ public:
 											  MDGContext&);
 
 		// Attributes
+	static MObject afuzz;
 	static MObject  astartframe;
 	static MObject  acurrenttime;
 	static MObject  aExposure;

@@ -55,7 +55,8 @@ public:
 	
 	void setTwist(const float val) {twist = val;}
 	void setClumping(const float val) {clumping = val;}
-	void setNoise(const float val) {knoise = val;}
+	void setFuzz(const float val) {fuzz = val;}
+	void setKink(const float val) {kink = val;}
 	
 private:
 	char has_base, has_guide;
@@ -73,7 +74,7 @@ private:
 	unsigned num_guide, num_guideobj, n_vert, n_tri;
 
 	unsigned* bind_data;
-	float twist, clumping, knoise;
+	float twist, clumping, fuzz, kink;
 	MATRIX44F* guide_spaceinv;
 };
 #endif

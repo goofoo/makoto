@@ -46,7 +46,8 @@ public:
 
 	static MObject acachename;
 	static MObject aframe;
-	static MObject anoise;
+	static MObject afuzz;
+	static MObject akink;
 	static MObject atwist;
 	static MObject aclump;
 	// The typeid is a unique 32bit indentifier that describes this node.

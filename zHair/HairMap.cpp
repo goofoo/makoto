@@ -190,13 +190,13 @@ void hairMap::draw()
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 
 			XYZ rot2p = ppre + dv -  guide_data[bind_data[i]].P[j];
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 			dv.rotateAlong(rot2p, -clumping*noi);
 
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 			dv.rotateAroundAxis(axisworld, -twist*noi);
 			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*knoise; g_seed++;
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
 			ppre += dv*noi;
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 		}

@@ -4,6 +4,7 @@
 
 MTypeId HairNode::id( 0x0002518 );
 
+MObject HairNode::afuzz;
 MObject HairNode::astartframe;
 MObject HairNode::acurrenttime;
 MObject	HairNode::aExposure;
@@ -100,7 +101,8 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		m_base->setTwist(data.inputValue(aExposure).asFloat());
 		m_base->setClumping(data.inputValue(aSize).asFloat());
-		m_base->setNoise(data.inputValue(alengthnoise).asFloat());
+		m_base->setFuzz(data.inputValue(afuzz).asFloat());
+		m_base->setKink(data.inputValue(alengthnoise).asFloat());
 	    
 		data.setClean(plug);
 	}
@@ -142,39 +144,42 @@ void* HairNode::creator()
 MStatus HairNode::initialize()
 { 
 	MStatus			 status;
-	    MFnNumericAttribute nAttr; 
+	MFnNumericAttribute numAttr;
     MFnTypedAttribute tAttr;
 	
-	alengthnoise = nAttr.create("noise", "noi",
-						  MFnNumericData::kFloat, 0.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( nAttr.setStorable(true));
-    CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(0.f));
-	nAttr.setMin(0);
-	nAttr.setMax(1);
+	afuzz = numAttr.create( "fuzz", "fuzz", MFnNumericData::kFloat, 0.0 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(afuzz);
 	
-	aExposure = nAttr.create("twist", "twt",
+	alengthnoise = numAttr.create("kink", "kink",
 						  MFnNumericData::kFloat, 0.f, &status);
     CHECK_MSTATUS( status );
-    CHECK_MSTATUS( nAttr.setStorable(true));
-    CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(0.f));
-	nAttr.setCached( true );
-	nAttr.setInternal( true );
-	nAttr.setMin(-1);
-	nAttr.setMax(1);
+    CHECK_MSTATUS( numAttr.setStorable(true));
+    CHECK_MSTATUS( numAttr.setKeyable(true));
+	addAttribute(alengthnoise);
 	
-	aSize = nAttr.create("clumping", "clp",
+	aExposure = numAttr.create("twist", "twt",
 						  MFnNumericData::kFloat, 0.f, &status);
     CHECK_MSTATUS( status );
-    CHECK_MSTATUS( nAttr.setStorable(true));
-    CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(0.f));
-    CHECK_MSTATUS( nAttr.setMin(-1.f));
-	nAttr.setMax(1);
-	nAttr.setCached( true );
-	nAttr.setInternal( true );
+    CHECK_MSTATUS( numAttr.setStorable(true));
+    CHECK_MSTATUS( numAttr.setKeyable(true));
+    CHECK_MSTATUS( numAttr.setDefault(0.f));
+	numAttr.setCached( true );
+	numAttr.setInternal( true );
+	numAttr.setMin(-1);
+	numAttr.setMax(1);
+	
+	aSize = numAttr.create("clumping", "clp",
+						  MFnNumericData::kFloat, 0.f, &status);
+    CHECK_MSTATUS( status );
+    CHECK_MSTATUS( numAttr.setStorable(true));
+    CHECK_MSTATUS( numAttr.setKeyable(true));
+    CHECK_MSTATUS( numAttr.setDefault(0.f));
+    CHECK_MSTATUS( numAttr.setMin(-1.f));
+	numAttr.setMax(1);
+	numAttr.setCached( true );
+	numAttr.setInternal( true );
 	
 	aHDRName = tAttr.create("cachePath", "cp",
 	MFnData::kString, MObject::kNullObj, &status);
@@ -186,7 +191,6 @@ MStatus HairNode::initialize()
 	
 	zWorks::createMatrixAttr(aworldSpace, "worldSpace", "ws");
 	
-	MFnNumericAttribute numAttr;
 	aoutput = numAttr.create( "outval", "ov", MFnNumericData::kInt, 1 );
 	numAttr.setStorable(false);
 	numAttr.setWritable(false);
@@ -207,12 +211,11 @@ MStatus HairNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
-	asavemap = nAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
-	nAttr.setStorable(false);
-	nAttr.setKeyable(true);
+	asavemap = numAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
+	numAttr.setStorable(false);
+	numAttr.setKeyable(true);
 	addAttribute(asavemap);
 	
-	addAttribute(alengthnoise);
 	CHECK_MSTATUS( addAttribute(aSize));
 		CHECK_MSTATUS( addAttribute(aExposure));
 	CHECK_MSTATUS( addAttribute(aHDRName));
@@ -226,6 +229,7 @@ MStatus HairNode::initialize()
 	attributeAffects( astartframe, aoutput );
 	attributeAffects( acurrenttime, aoutput );
 	attributeAffects( asavemap, aoutput );
+	attributeAffects( afuzz, aoutput );
 	
 	return MS::kSuccess;
 }

@@ -33,7 +33,8 @@ MTypeId     HairDguideNode::id( 0x0002519 );
 MObject     HairDguideNode::output;
 MObject HairDguideNode::acachename;
 MObject HairDguideNode::aframe;
-MObject HairDguideNode::anoise;
+MObject HairDguideNode::afuzz;
+MObject HairDguideNode::akink;
 MObject HairDguideNode::atwist;
 MObject HairDguideNode::aclump;      
 
@@ -87,7 +88,8 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 			
 			m_base->setTwist(data.inputValue(atwist).asFloat());
 			m_base->setClumping(data.inputValue(aclump).asFloat());
-			m_base->setNoise(data.inputValue(anoise).asFloat());
+			m_base->setFuzz(data.inputValue(afuzz).asFloat());
+			m_base->setKink(data.inputValue(akink).asFloat());
 		}
 		
 		MDataHandle outputHandle = data.outputValue(output); 
@@ -141,10 +143,15 @@ MStatus HairDguideNode::initialize()
 	MFnNumericAttribute numAttr;
 	MStatus				stat;
 	
-	anoise = numAttr.create( "noising", "noi", MFnNumericData::kFloat, 0.0 );
+	afuzz = numAttr.create( "fuzz", "fuzz", MFnNumericData::kFloat, 0.0 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
-	addAttribute(anoise);
+	addAttribute(afuzz);
+	
+	akink = numAttr.create( "kink", "kink", MFnNumericData::kFloat, 0.0 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(akink);
 	
 	atwist = numAttr.create( "twisting", "twt", MFnNumericData::kFloat, 0.0 );
 	numAttr.setStorable(true);
@@ -182,7 +189,8 @@ MStatus HairDguideNode::initialize()
 	//
 	attributeAffects( aframe, output );
 	attributeAffects( acachename, output );
-	attributeAffects( anoise, output );
+	attributeAffects( afuzz, output );
+	attributeAffects( akink, output );
 	attributeAffects( atwist, output );
 	attributeAffects( aclump, output );
 	
