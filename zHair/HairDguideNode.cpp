@@ -36,7 +36,8 @@ MObject HairDguideNode::aframe;
 MObject HairDguideNode::afuzz;
 MObject HairDguideNode::akink;
 MObject HairDguideNode::atwist;
-MObject HairDguideNode::aclump;      
+MObject HairDguideNode::aclump; 
+MObject HairDguideNode::astep;     
 
 HairDguideNode::HairDguideNode() : m_base(0)
 {
@@ -90,6 +91,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 			m_base->setClumping(data.inputValue(aclump).asFloat());
 			m_base->setFuzz(data.inputValue(afuzz).asFloat());
 			m_base->setKink(data.inputValue(akink).asFloat());
+			m_base->setDrawAccuracy(data.inputValue(astep).asInt());
 		}
 		
 		MDataHandle outputHandle = data.outputValue(output); 
@@ -162,6 +164,11 @@ MStatus HairDguideNode::initialize()
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
 	addAttribute(aclump);
+	
+	astep = numAttr.create( "drawStep", "dsp", MFnNumericData::kInt, 1 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(astep);
 
 	output = numAttr.create( "output", "out", MFnNumericData::kFloat, 0.0 );
 	// Attribute is read-only because it is an output attribute
@@ -193,6 +200,7 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( akink, output );
 	attributeAffects( atwist, output );
 	attributeAffects( aclump, output );
+	attributeAffects( astep, output );
 	
 	return MS::kSuccess;
 

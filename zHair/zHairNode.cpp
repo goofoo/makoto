@@ -16,6 +16,7 @@ MObject HairNode::agrowth;
 MObject HairNode::aguide;
 MObject HairNode::alengthnoise;
 MObject HairNode::asavemap;
+MObject HairNode::astep;
 
 HairNode::HairNode()
 {
@@ -103,6 +104,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		m_base->setClumping(data.inputValue(aSize).asFloat());
 		m_base->setFuzz(data.inputValue(afuzz).asFloat());
 		m_base->setKink(data.inputValue(alengthnoise).asFloat());
+		m_base->setDrawAccuracy(data.inputValue(astep).asInt());
 	    
 		data.setClean(plug);
 	}
@@ -169,6 +171,7 @@ MStatus HairNode::initialize()
 	numAttr.setInternal( true );
 	numAttr.setMin(-1);
 	numAttr.setMax(1);
+	addAttribute(aExposure);
 	
 	aSize = numAttr.create("clumping", "clp",
 						  MFnNumericData::kFloat, 0.f, &status);
@@ -180,6 +183,12 @@ MStatus HairNode::initialize()
 	numAttr.setMax(1);
 	numAttr.setCached( true );
 	numAttr.setInternal( true );
+	addAttribute(aSize);
+	
+	astep = numAttr.create( "drawStep", "dsp", MFnNumericData::kInt, 1 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(astep);
 	
 	aHDRName = tAttr.create("cachePath", "cp",
 	MFnData::kString, MObject::kNullObj, &status);
@@ -216,8 +225,6 @@ MStatus HairNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(asavemap);
 	
-	CHECK_MSTATUS( addAttribute(aSize));
-		CHECK_MSTATUS( addAttribute(aExposure));
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
 	attributeAffects( alengthnoise, aoutput );
@@ -230,6 +237,7 @@ MStatus HairNode::initialize()
 	attributeAffects( acurrenttime, aoutput );
 	attributeAffects( asavemap, aoutput );
 	attributeAffects( afuzz, aoutput );
+	attributeAffects( astep, aoutput );
 	
 	return MS::kSuccess;
 }

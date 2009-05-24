@@ -19,7 +19,8 @@ using namespace std;
 
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
-sum_area(0.f)
+sum_area(0.f),
+draw_step(1)
 {
 }
 hairMap::~hairMap() 
@@ -162,7 +163,7 @@ void hairMap::draw()
 	
 	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
 	glBegin(GL_LINES);
-	for(unsigned i=0; i<n_samp; i++)
+	for(unsigned i=0; i<n_samp; i += draw_step)
 	{
 		//glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
 		//glColor3f(ddice[i].coords, ddice[i].coordt, 0);

@@ -50,6 +50,7 @@ public:
 	static MObject akink;
 	static MObject atwist;
 	static MObject aclump;
+	static MObject astep;
 	// The typeid is a unique 32bit indentifier that describes this node.
 	// It is used to save and retrieve nodes of this type from the binary
 	// file format.  If it is not unique, it will cause file IO problems.

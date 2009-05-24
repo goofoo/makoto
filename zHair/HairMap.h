@@ -57,6 +57,7 @@ public:
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
 	void setKink(const float val) {kink = val;}
+	void setDrawAccuracy(const int val) {if(val>0) draw_step = val;}
 	
 private:
 	char has_base, has_guide;
@@ -75,6 +76,7 @@ private:
 
 	unsigned* bind_data;
 	float twist, clumping, fuzz, kink;
+	unsigned draw_step;
 	MATRIX44F* guide_spaceinv;
 };
 #endif

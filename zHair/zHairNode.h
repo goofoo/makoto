@@ -60,6 +60,7 @@ public:
 	static MObject aguide;
 	static MObject alengthnoise;
 	static MObject asavemap;
+	static MObject astep;
 	static	MTypeId		id;
 	
 		// Cached internal values
