@@ -32,11 +32,15 @@ MTypeId     HairDguideNode::id( 0x0002519 );
 //        
 MObject     HairDguideNode::output;
 MObject HairDguideNode::acachename;
-MObject HairDguideNode::aframe;       
+MObject HairDguideNode::aframe;
+MObject HairDguideNode::anoise;
+MObject HairDguideNode::atwist;
+MObject HairDguideNode::aclump;      
 
 HairDguideNode::HairDguideNode() : m_base(0)
 {
 	m_base = new hairMap();
+	curname = "null";
 }
 HairDguideNode::~HairDguideNode() 
 {
@@ -66,11 +70,24 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		MString sname = data.inputValue( acachename).asString();
 		string sbuf(sname.asChar());
 		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
-		MGlobal::displayInfo(sbuf.c_str());
 		if(m_base) 
 		{
+			if(curname != sname)
+			{
+				curname = sname;
+				string head = sbuf;
+				zGlobal::cutByFirstDot(head);
+				head += ".hair";
+				m_base->load(head.c_str());
+				MGlobal::displayInfo(MString("nsamp ")+m_base->dice());
+				m_base->bind();
+			}
 			int iss = m_base->load(sbuf.c_str());
-			MGlobal::displayInfo(MString("isloaded ")+iss);
+			if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
+			
+			m_base->setTwist(data.inputValue(atwist).asFloat());
+			m_base->setClumping(data.inputValue(aclump).asFloat());
+			m_base->setNoise(data.inputValue(anoise).asFloat());
 		}
 		
 		MDataHandle outputHandle = data.outputValue(output); 
@@ -86,10 +103,9 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
                       M3dView::DisplayStyle style,
                       M3dView::DisplayStatus status )
 {
-	//loadDguide( );
 	view.beginGL(); 
 	//glPushAttrib(GL_ALL_ATTRIB_BITS);
-	if(m_base) m_base->drawGuide();
+	if(m_base) m_base->draw();
 	//glPopAttrib();
 	view.endGL();
 }
@@ -124,6 +140,21 @@ MStatus HairDguideNode::initialize()
 	//
 	MFnNumericAttribute numAttr;
 	MStatus				stat;
+	
+	anoise = numAttr.create( "noising", "noi", MFnNumericData::kFloat, 0.0 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(anoise);
+	
+	atwist = numAttr.create( "twisting", "twt", MFnNumericData::kFloat, 0.0 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(atwist);
+	
+	aclump = numAttr.create( "clumping", "cmp", MFnNumericData::kFloat, 0.0 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(aclump);
 
 	output = numAttr.create( "output", "out", MFnNumericData::kFloat, 0.0 );
 	// Attribute is read-only because it is an output attribute
@@ -151,6 +182,9 @@ MStatus HairDguideNode::initialize()
 	//
 	attributeAffects( aframe, output );
 	attributeAffects( acachename, output );
+	attributeAffects( anoise, output );
+	attributeAffects( atwist, output );
+	attributeAffects( aclump, output );
 	
 	return MS::kSuccess;
 

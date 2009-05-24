@@ -499,6 +499,17 @@ int hairMap::load(const char* filename)
 	infile.read((char*)parray, sizeof(XYZ)*n_vert);
 	
 	infile.close();	
+	
+	if(guide_spaceinv) delete[] guide_spaceinv;
+	guide_spaceinv = new MATRIX44F[num_guide];
+	
+	for(unsigned i = 0;i<num_guide;i++)
+	{
+		guide_spaceinv[i].setIdentity();
+		XYZ binor = guide_data[i].N[0].cross(guide_data[i].T[0]);
+		guide_spaceinv[i].setOrientations(guide_data[i].T[0], binor, guide_data[i].N[0]);
+		guide_spaceinv[i].inverse();
+	}
 	return 1;
 }
 //~:
