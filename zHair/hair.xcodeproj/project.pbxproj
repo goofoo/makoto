@@ -28,7 +28,7 @@
 		7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zHairNode.cpp; sourceTree = "<group>"; };
 		7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiceTriangle.cpp; path = ../shared/DiceTriangle.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
-		7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = zhairMenus.mel; path = ../module/scripts/zhairMenus.mel; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.c; };
+		7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = zhairMenus.mel; path = ../module/scripts/zhairMenus.mel; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* ZHair.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ZHair.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 

@@ -77,8 +77,8 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				curname = sname;
 				string head = sbuf;
 				zGlobal::cutByFirstDot(head);
-				head += ".hair";
-				m_base->load(head.c_str());
+				head += ".hairstart";
+				m_base->loadStart(head.c_str());
 				MGlobal::displayInfo(MString("nsamp ")+m_base->dice());
 				m_base->bind();
 			}

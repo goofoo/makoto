@@ -105,6 +105,20 @@ void DiceTriangle::setId(const int a, const int b, const int c)
 	id[2] = c;
 }
 
+void DiceTriangle::setS(const float sa, const float sb, const float sc)
+{
+	s[0] = sa;
+	s[1] = sb;
+	s[2] = sc;
+}
+
+void DiceTriangle::setT(const float ta, const float tb, const float tc)
+{
+	t[0] = ta;
+	t[1] = tb;
+	t[2] = tc;
+}
+
 float DiceTriangle::barycentric_coord(float ax, float ay, float bx, float by, float x, float y)
 {
 	return (ay - by)*x + (bx - ax)*y +ax*by - bx*ay;
@@ -190,6 +204,8 @@ void DiceTriangle::rasterize(const float delta, DiceParam* res, int& count, cons
 			res[count].id0 = id[0];
 			res[count].id1 = id[1];
 			res[count].id2 = id[2];
+			res[count].coords = alpha*s[0] + beta*s[1] + gamma*s[2];
+			res[count].coordt = alpha*t[0] + beta*t[1] + gamma*t[2];
 			
 			count++;
 		}

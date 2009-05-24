@@ -147,7 +147,7 @@ columnLayout -adjustableColumn true;
 	 -bc "fileBrowser \"set_hairCacheDataPath\" \"Set Path\" \"\" 4"
      savezhairCachePathGrp;
     
-	text -al left -l "\nDescription: save cache on any hair node from playback start to end.\nWill save to /data of current project is path is not set.";
+	text -al left -l "\nDescription: save cache on any hair node from playback start to end.\nWill save to /data of current project if path is not set.";
 
 //row begin
 button -l "Save" -c "doSavezhair;deleteUI savezhairWin"-p $row;

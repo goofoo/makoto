@@ -4,6 +4,7 @@ struct DiceParam
 {
 	float alpha, beta, gamma;
 	int id0, id1, id2;
+	float coords, coordt;
 };
 
 struct Dice2DParam
@@ -37,10 +38,13 @@ public:
 	static float calculate_longest_edge(const XYZ& p0, const XYZ& p1, const XYZ& p2);
 	
 	void setId(const int a, const int b, const int c);
+	void setS(const float sa, const float sb, const float sc);
+	void setT(const float ta, const float tb, const float tc);
 	
 private:
 	XYZ P[3], V[3], p_obj[3];
 	int id[3];
+	float s[3], t[3];
 	float edge_length[3];
 	MATRIX44F m_space;
 	float m_area;

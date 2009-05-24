@@ -49,7 +49,9 @@ public:
 	void drawGuide();
 
 	int save(const char* filename);
+	int saveStart(const char* filename);
 	int load(const char* filename);
+	int loadStart(const char* filename);
 	
 	void setTwist(const float val) {twist = val;}
 	void setClumping(const float val) {clumping = val;}
@@ -63,6 +65,8 @@ private:
 	int n_samp;
 	float sum_area;
 	int* pconnection;
+	float* uarray;
+	float* varray;
 	XYZ* parray;
 
 	Dguide* guide_data;

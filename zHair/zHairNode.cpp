@@ -59,12 +59,12 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		if(spath.length() <1)
 		{
 			cache_path = proj_path + "/data/" + MFnDependencyNode(thisMObject()).name() + "."+frame+".hair";
-			cache_start = proj_path + "/data/" + MFnDependencyNode(thisMObject()).name() + ".hair";
+			cache_start = proj_path + "/data/" + MFnDependencyNode(thisMObject()).name() + ".hairstart";
 		}
 		else
 		{
 			cache_path = spath + "/" + MFnDependencyNode(thisMObject()).name() + "."+frame+".hair";
-			cache_start = spath + "/" + MFnDependencyNode(thisMObject()).name() + ".hair";
+			cache_start = spath + "/" + MFnDependencyNode(thisMObject()).name() + ".hairstart";
 		}
 		
 		int isave = data.inputValue(asavemap, &status).asInt();
@@ -83,7 +83,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			if(isave==1) 
 			{
 				MGlobal::displayInfo(MString("Saving ")+cache_start);
-				m_base->save(cache_start.asChar());
+				m_base->saveStart(cache_start.asChar());
 				MGlobal::displayInfo(MString("Saving ")+cache_path);
 				m_base->save(cache_path.asChar());
 			}
