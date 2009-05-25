@@ -47,15 +47,7 @@ public:
     virtual int	    GenRIB( RIBContext *c );
 
 private:
-	char* m_image_name;
-	char* m_image_file1;
-	char* m_image_file2;
-	char* m_image_file3;
-	char* m_image_file4;
-	char* m_image_file5;
-	float maxframe1, maxframe2, maxframe3, maxframe4, maxframe5;
-	//RtFloat m_i_hdr_shadowed, m_i_hdr_interreflection, m_i_hdr_subsurfacescat, m_i_hdr_backscat;
-	//RtFloat m_i_lightsrc_shadowed, m_i_lightsrc_interreflection, m_i_lightsrc_subsurfacescat, m_i_double_sided;
+	float ndice;
 };
 
 

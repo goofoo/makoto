@@ -67,6 +67,10 @@ public:
 	float getBBox1Y() const {return bbox_high.y;}
 	float getBBox1Z() const {return bbox_high.z;}
 	const char* getCacheName() const {return m_cachename.c_str();}
+	float getTwist() const {return twist;}
+	float getClumping() const {return clumping;}
+	float getFuzz() const {return fuzz;}
+	float getKink() const {return kink;}
 	
 private:
 	char has_base, has_guide;

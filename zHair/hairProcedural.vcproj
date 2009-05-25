@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="hair_RIB_generator"
+	Name="hair_procedural_DSO"
 	ProjectGUID="{A88718BB-3524-45D1-B73D-DEE61CF595F4}"
 	Keyword="Win32Proj">
 	<Platforms>
@@ -23,8 +23,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-DNT"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(MAYA_LOCATION_70)\include&quot;;D:\local\iconv\include;D:\local\libxml\include;D:\Pixar\devkit\examples\ribgen;D:\pixar\devkit\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				AdditionalIncludeDirectories="D:\Pixar\devkit\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ZDSO_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -36,29 +36,25 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="4"
-				CompileAs="0"/>
+				CompileAs="2"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
-				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib opengl32.lib"
-				OutputFile="..\module\ribgen\bacteriaRibgen.dll"
+				AdditionalDependencies="prman.lib"
+				OutputFile="..\module\procedural\zhairProcedural.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_70)\lib&quot;"
+				AdditionalLibraryDirectories="D:\Pixar\devkit\lib;D:\local\glut"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/getArrayValue.pdb"
+				ProgramDatabaseFile=""
 				SubSystem="2"
 				ImportLibrary=""
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="
-
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -84,30 +80,26 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="-DNT"
-				Optimization="0"
-				InlineFunctionExpansion="0"
-				OmitFramePointers="FALSE"
-				AdditionalIncludeDirectories="D:\Pixar\devkit\include;&quot;$(MAYA_LOCATION_70)\include&quot;;D:\Pixar\devkit\examples\ribgen"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories="&quot;C:\Pixar\RenderManProServer-11.5.3\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;ZDSO_EXPORTS"
 				IgnoreStandardIncludePath="FALSE"
-				StringPooling="FALSE"
-				RuntimeLibrary="1"
-				EnableFunctionLevelLinking="FALSE"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="4"
-				CompileAs="0"/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
-				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib"
-				OutputFile="../module/ribgen/hairRibgen.dll"
+				OutputFile="$(OutDir)/array_reader.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_70)\lib&quot;;D:\Pixar\devkit\lib"
+				AdditionalLibraryDirectories="&quot;C:\Pixar\RenderManProServer-11.5.3\lib&quot;;C:\tricubic\lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -144,28 +136,13 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="..\shared\DiceTriangle.cpp">
+				RelativePath=".\hairProcedural.cpp">
 			</File>
 			<File
-				RelativePath="..\shared\FNoise.cpp">
-			</File>
-			<File
-				RelativePath=".\HairDguideNode.cpp">
-			</File>
-			<File
-				RelativePath=".\hairGen.cpp">
-			</File>
-			<File
-				RelativePath=".\HairMap.cpp">
-			</File>
-			<File
-				RelativePath="..\..\Pixar\devkit\examples\ribgen\RIBContextUtil.cpp">
+				RelativePath=".\RHair.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\zGlobal.cpp">
-			</File>
-			<File
-				RelativePath="..\shared\zWorks.cpp">
 			</File>
 		</Filter>
 	</Files>

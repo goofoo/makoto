@@ -3,7 +3,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hair", "hair.vcproj", "{681
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bacteria_RIB_generator", "hairGen.vcproj", "{A88718BB-3524-45D1-B73D-DEE61CF595F4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hair_RIB_generator", "hairGen.vcproj", "{A88718BB-3524-45D1-B73D-DEE61CF595F4}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hair_procedural_DSO", "hairProcedural.vcproj", "{A88718BB-3524-45D1-B73D-DEE61CF595F4}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -26,6 +30,16 @@ Global
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.Release.Build.0 = Release|Win32
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.ReleaseDebug.ActiveCfg = ReleaseDebug|Win32
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.ReleaseDebug.Build.0 = ReleaseDebug|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.2008.ActiveCfg = Release|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.2008.Build.0 = Release|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.70.ActiveCfg = Release|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.70.Build.0 = Release|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.Debug.ActiveCfg = Debug|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.Debug.Build.0 = Debug|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.Release.ActiveCfg = Release|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.Release.Build.0 = Release|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.ReleaseDebug.ActiveCfg = Release|Win32
+		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.ReleaseDebug.Build.0 = Release|Win32
 		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.2008.ActiveCfg = Release|Win32
 		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.2008.Build.0 = Release|Win32
 		{A88718BB-3524-45D1-B73D-DEE61CF595F4}.70.ActiveCfg = Release|Win32
