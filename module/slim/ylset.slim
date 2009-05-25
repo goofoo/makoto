@@ -427,6 +427,14 @@ extensions zhang pxsl {
 	       access output
 	       display hidden
 	}
+	
+	parameter color _normal {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
 
        collection shadingmodel shadingmodel {
 	   access output
@@ -478,6 +486,9 @@ extensions zhang pxsl {
 		extern color _epiderm;
 		extern color _subderm;
 		extern color _backscattering;
+		extern color _normal;
+		extern normal N;
+		normal Nn = normalize(N);
 	   	
 		if(mode == "_color") 
 	   	{
@@ -611,6 +622,7 @@ extensions zhang pxsl {
 			_epiderm = cEpiderm*SurfaceOpacity;
 			_subderm = cSubderm*SurfaceOpacity;
 			_backscattering = cBackscattering*SurfaceOpacity;
+			_normal = color((xcomp(Nn)+1.)/2., (ycomp(Nn)+1.)/2., (zcomp(Nn)+1.)/2.);
 	   		CI = 0;
 	   	}
 		else
