@@ -3,6 +3,8 @@
 #include "../shared/eigenSystem.h"
 #include "../shared/gBase.h"
 #define MAX_N_SPLAT 1548576
+#define MIN_CONE 0.5
+#define POOLSCALE 2.25
 
 FQSPLAT::FQSPLAT():m_himap(0),is_null(1),m_col_buf(0),m_coe_buf(0)
 {}
@@ -19,8 +21,8 @@ void FQSPLAT::create(pcdSample* rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec/2];
-	m_col_buf = new XYZ[n_rec/2];
+	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
+	m_col_buf = new XYZ[n_rec*POOLSCALE];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;
@@ -45,7 +47,7 @@ void FQSPLAT::createNoColor(pcdSample* rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec/2];
+	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;
@@ -76,8 +78,8 @@ void FQSPLAT::create(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec/2];
-	m_coe_buf = new CoeRec[n_rec/2];
+	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
+	m_coe_buf = new CoeRec[n_rec*POOLSCALE];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;
@@ -108,9 +110,9 @@ void FQSPLAT::createRTandColor(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec/2];
-	m_coe_buf = new CoeRec[n_rec/2];
-	m_col_buf = new XYZ[n_rec/2];
+	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
+	m_coe_buf = new CoeRec[n_rec*POOLSCALE];
+	m_col_buf = new XYZ[n_rec*POOLSCALE];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;
@@ -365,7 +367,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 	{
 		ap.is_leaf = 1;
 		res[nodeId] = ap;
-	
+		m_num_leaf++;
 		if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		count++;
 		return;
@@ -377,7 +379,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > -0.1))
+	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -438,7 +440,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 		ap.is_leaf = 1;
 		res[nodeId] = ap;
 		res_color[nodeId] = ac;
-	
+		m_num_leaf++;
 		if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		count++;
 		return;
@@ -451,7 +453,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > -0.1))
+	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -525,7 +527,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > -0.1))
+	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -602,7 +604,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > -0.1))
+	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -635,79 +637,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	createTree(data, coe_data, res, coe_res, color_res, count, b, 		ba, 	 level, nodeId, 2);
 	createTree(data, coe_data, res, coe_res, color_res, count, bb, 		hi, 	level, nodeId, 3);
 }
-/*
-void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_color, unsigned int& count, int lo, int hi, short level, int parent_id, short child_id)
-{
-	HierarchyQSPLATNode ap;
-	ap.level = level;
-	ap.is_leaf = 0;
-	unsigned int nodeId = count;
-	
-	if(hi==lo) 
-	{
-		ap.is_leaf = 1;
-		res[nodeId] = ap;
-			
-		if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
-	
-		count++;
-		return;
-	}
 
-	combineSamples(data, lo, hi, ap, res_color[nodeId]);
-	
-	res[nodeId] = ap;
-	
-	count++;
-	
-	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
-		
-	if(level>16 || (hi-lo < 9 && ap.cone > 0.91f))
-	{
-		res[nodeId].is_leaf = 1;
-		m_num_leaf++;
-		return;
-	}
-	
-	float xmin, xmax, ymin, ymax, zmin, zmax;
-	findCube1(data, lo, hi, xmin, xmax, ymin, ymax, zmin, zmax);
-	
-	float cx = (xmin + xmax)/2;
-	float cy = (ymin + ymax)/2;
-	float cz = (zmin + zmax)/2;
-	
-	float dx = xmax - cx;
-	float dy = ymax - cy;
-	float dz = zmax - cz;
-	
-	//float bound = dx + dy +dz;
-	float bound = dx;
-	if(dy > bound) bound = dy;
-	if(dz > bound) bound = dz; bound *= 1.733f;
-	
-	if(bound > res[nodeId].r) res[nodeId].r = bound;
-	
-	level++;
-	
-	DivideBy<XYZ> adivide;
-	
-	int aa, ab, a, b, ba, bb;
-	divideByAngle(adivide, data, cx, cy, cz, lo, hi, a, b);
-	
-	HierarchyQSPLATNode ta, tb;
-	combineSamples(data, lo, a, ta);
-	combineSamples(data, b, hi, tb);
-	
-	divideByAngle(adivide, data, ta.mean.x, ta.mean.y, ta.mean.z, lo, a, aa, ab);
-	divideByAngle(adivide, data, tb.mean.x, tb.mean.y, tb.mean.z, b, hi, ba, bb);
-	
-	createTree(data, res, res_color, count, lo, 		aa, 	 level, nodeId, 0);
-	createTree(data, res, res_color, count, ab, 		a, 	 level, nodeId, 1);
-	createTree(data, res, res_color, count, b, 		ba, 	 level, nodeId, 2);
-	createTree(data, res, res_color, count, bb, 		hi, 	level, nodeId, 3);
-
-}
-*/
 void FQSPLAT::lookup(const XYZ& origin, const XYZ& ray,  CVisibilityBuffer* visibility, const float bias) const
 {
 	recursive_lookup(origin, ray, 0, visibility, bias);
