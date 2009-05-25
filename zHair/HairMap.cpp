@@ -515,6 +515,7 @@ int hairMap::load(const char* filename)
 		MGlobal::displayWarning(MString("Cannot open file: ")+filename);
 		return 0;
 	}
+	m_cachename = filename;
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
 	if(guide_data) delete[] guide_data;
@@ -557,6 +558,21 @@ int hairMap::load(const char* filename)
 		XYZ binor = guide_data[i].N[0].cross(guide_data[i].T[0]);
 		guide_spaceinv[i].setOrientations(guide_data[i].T[0], binor, guide_data[i].N[0]);
 		guide_spaceinv[i].inverse();
+	}
+// calculate bbox	
+	bbox_low = XYZ(10e6, 10e6, 10e6);
+	bbox_high = XYZ(-10e6, -10e6, -10e6);
+	for(unsigned i = 0;i<num_guide;i++)
+	{
+		for(unsigned j = 0;j<guide_data[i].num_seg;j++)
+		{
+			if(guide_data[i].P[j].x < bbox_low.x) bbox_low.x = guide_data[i].P[j].x;
+			if(guide_data[i].P[j].y < bbox_low.y) bbox_low.y = guide_data[i].P[j].y;
+			if(guide_data[i].P[j].x < bbox_low.z) bbox_low.z = guide_data[i].P[j].z;
+			if(guide_data[i].P[j].x > bbox_high.x) bbox_high.x = guide_data[i].P[j].x;
+			if(guide_data[i].P[j].y > bbox_high.y) bbox_high.y = guide_data[i].P[j].y;
+			if(guide_data[i].P[j].x > bbox_high.z) bbox_high.z = guide_data[i].P[j].z;
+		}
 	}
 	return 1;
 }

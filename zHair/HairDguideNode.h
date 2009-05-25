@@ -34,6 +34,9 @@ public:
 	virtual void        draw( M3dView & view, const MDagPath & path, 
                               M3dView::DisplayStyle style,
                               M3dView::DisplayStatus status );
+							  
+	virtual bool            isBounded() const;
+	virtual MBoundingBox    boundingBox() const;
 
 	static  void*		creator();
 	static  MStatus		initialize();
@@ -56,6 +59,8 @@ public:
 	// file format.  If it is not unique, it will cause file IO problems.
 	//
 	static	MTypeId		id;
+	
+	const hairMap* getBase() const {return m_base;}
 private:
 	hairMap* m_base;
 	MString curname;

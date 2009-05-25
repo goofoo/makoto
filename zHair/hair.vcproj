@@ -365,9 +365,6 @@
 				RelativePath="..\shared\zGlobal.cpp">
 			</File>
 			<File
-				RelativePath=".\zHairDguideNode.cpp">
-			</File>
-			<File
 				RelativePath=".\zHairNode.cpp">
 			</File>
 			<File

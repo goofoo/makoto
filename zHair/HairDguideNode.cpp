@@ -114,6 +114,29 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 	view.endGL();
 }
 
+bool HairDguideNode::isBounded() const
+{ 
+	return true;
+}
+
+MBoundingBox HairDguideNode::boundingBox() const
+{ 
+	MPoint corner1( 0,0,0 );
+	MPoint corner2( 1,1,1 );
+	
+	if(m_base)
+	{
+		corner1.x = m_base->getBBox0X();
+		corner1.y = m_base->getBBox0Y();
+		corner1.z = m_base->getBBox0Z();
+		corner2.x = m_base->getBBox1X();
+		corner2.y = m_base->getBBox1Y();
+		corner2.z = m_base->getBBox1Z();
+	}
+
+	return MBoundingBox( corner1, corner2 );
+}
+
 void* HairDguideNode::creator()
 //
 //	Description:

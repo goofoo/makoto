@@ -16,6 +16,7 @@
 #include <maya/MVectorArray.h>
 #include <maya/MObjectArray.h>
 #include "../shared/DiceTriangle.h"
+#include <string>
 
 struct Dguide
 {
@@ -59,6 +60,14 @@ public:
 	void setKink(const float val) {kink = val;}
 	void setDrawAccuracy(const int val) {if(val>0) draw_step = val;}
 	
+	float getBBox0X() const {return bbox_low.x;}
+	float getBBox0Y() const {return bbox_low.y;}
+	float getBBox0Z() const {return bbox_low.z;}
+	float getBBox1X() const {return bbox_high.x;}
+	float getBBox1Y() const {return bbox_high.y;}
+	float getBBox1Z() const {return bbox_high.z;}
+	const char* getCacheName() const {return m_cachename.c_str();}
+	
 private:
 	char has_base, has_guide;
 	MObject obase;
@@ -78,5 +87,7 @@ private:
 	float twist, clumping, fuzz, kink;
 	unsigned draw_step;
 	MATRIX44F* guide_spaceinv;
+	XYZ bbox_low, bbox_high;
+	std::string m_cachename;
 };
 #endif
