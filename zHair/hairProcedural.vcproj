@@ -136,6 +136,15 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="..\shared\DiceTriangle.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\FNoise.cpp">
+			</File>
+			<File
+				RelativePath=".\HairCache.cpp">
+			</File>
+			<File
 				RelativePath=".\hairProcedural.cpp">
 			</File>
 			<File

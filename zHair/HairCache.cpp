@@ -14,7 +14,8 @@ using namespace std;
 
 HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
-sum_area(0.f)
+sum_area(0.f),ndice(24),
+nvertices(0),vertices(0)
 {
 }
 HairCache::~HairCache() 
@@ -27,15 +28,17 @@ HairCache::~HairCache()
 	if(pconnection) delete[] pconnection;
 	if(uarray) delete[] uarray;
 	if(varray) delete[] varray;
+	if(nvertices) delete[] nvertices;
+	if(vertices) delete[] vertices;
 }
 
 int HairCache::dice()
 {
 	if(!pconnection || !parray) return 0;
 		
-	float epsilon = sqrt(sum_area/n_tri/2/3);
+	float epsilon = sqrt(sum_area/n_tri/2/ndice);
 
-	int estimate_ncell = n_tri*3*2;
+	int estimate_ncell = n_tri*ndice*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -214,5 +217,71 @@ int HairCache::loadStart(const char* filename)
 		guide_spaceinv[i].inverse();
 	}
 	return 1;
+}
+
+void HairCache::create()
+{
+	if(n_samp < 1 || !bind_data || !guide_data || !parray) return;
+	
+	int npoints = 0;
+	if(nvertices) delete[] nvertices;
+	nvertices = new int[n_samp];
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		nvertices[i] = guide_data[bind_data[i]].num_seg;
+		npoints += nvertices[i];
+	}
+	
+	if(vertices) delete[] vertices;
+	vertices = new XYZ[npoints];
+	
+	XYZ* pbuf = new XYZ[n_samp];
+	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+
+	int g_seed = 13;
+	FNoise fnoi;
+	
+	float noi;
+	
+	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
+	unsigned acc=0;
+	for(unsigned i=0; i<n_samp; i++)
+	{
+		ppre = pbuf[i]; 
+		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
+		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
+		axisobj.x = 0;
+		for(short j = 0; j< guide_data[bind_data[i]].num_seg; j++) 
+		{
+			vertices[acc] = ppre;
+			acc++;
+			
+			dv = guide_data[bind_data[i]].dispv[j];
+			MATRIX44F mat;
+			
+			XYZ binor = guide_data[bind_data[i]].N[j].cross(guide_data[bind_data[i]].T[j]);
+			mat.setOrientations(guide_data[bind_data[i]].T[j], binor, guide_data[bind_data[i]].N[j]);
+			
+			XYZ rt = axisobj;
+			rt.rotateAroundAxis(XYZ(1,0,0), twist*j*dv.length()/axisobj.length());
+			mat.transformAsNormal(rt);
+
+			axisworld = rt;
+			
+			axisworld.normalize();
+
+			XYZ rot2p = ppre + dv -  guide_data[bind_data[i]].P[j];
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			dv.rotateAlong(rot2p, -clumping*noi);
+
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			dv.rotateAroundAxis(axisworld, -twist*noi);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+			ppre += dv*noi;
+		}
+	}
+	
+	delete[] pbuf;
 }
 //~:

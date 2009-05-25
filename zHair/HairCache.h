@@ -34,6 +34,9 @@ public:
 	int load(const char* filename);
 	int loadStart(const char* filename);
 	
+	void create();
+	
+	void setDiceNumber(const float val) {ndice = val;} 
 	void setTwist(const float val) {twist = val;}
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
@@ -45,7 +48,12 @@ public:
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
 	
+	int getNumCurves() const {return n_samp;}
+	const int* getNumVertices() const {return nvertices;}
+	const XYZ* points() const {return vertices;}
+	
 private:
+	float ndice;
 	DiceParam* ddice;
 	int n_samp;
 	float sum_area;
@@ -61,5 +69,7 @@ private:
 	float twist, clumping, fuzz, kink;
 	MATRIX44F* guide_spaceinv;
 	std::string m_cachename;
+	int* nvertices;
+	XYZ* vertices;
 };
 #endif

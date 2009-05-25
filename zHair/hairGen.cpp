@@ -150,6 +150,15 @@ hairGen::GenRIB( RIBContext *c )
 	
 	RtString args[] = { "plugins/zhairProcedural.dll", sbuf};
 	
+	RtBasis RiBSplineBasis =
+	{ 
+		-1/6.,  3/6., -3/6.,  1/6.,
+		 3/6., -6/6.,  3/6.,  0,
+		-3/6.,  0,     3/6.,  0,
+		 1/6.,  4/6.,  1/6.,  0
+	};
+	c->Basis(RiBSplineBasis, 1, RiBSplineBasis, 1);
+	
 	c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
 
     return err;

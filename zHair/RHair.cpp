@@ -1,4 +1,5 @@
 #include "RHair.h"
+#include "HairCache.h"
 #include "../shared/zGlobal.h"
 using namespace std;
 
@@ -26,6 +27,29 @@ RHair::~RHair()
 
 void RHair::generateRIB(RtFloat detail)
 {
+	HairCache* pHair = new HairCache();
+	pHair->setDiceNumber(m_ndice);
+	
+	string head = m_cache_name;
+	zGlobal::cutByFirstDot(head);
+	head += ".hairstart";
+	pHair->loadStart(head.c_str());
+	pHair->dice();
+	pHair->bind();
+	pHair->load(m_cache_name);
+	
+	pHair->setTwist(m_twist);
+	pHair->setClumping(m_clumping);
+	pHair->setFuzz(m_fuzz);
+	pHair->setKink(m_kink);
+			
+	pHair->create();
+	
+	float cwidth = 0.01f;
+	RiCurves("linear", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "constantwidth", (RtPointer)&cwidth, RI_NULL);
+	
+	delete pHair;
+	
 /*
 	FXMLMesh* pMesh = new FXMLMesh(m_cache_name, m_mesh_name);
 	
