@@ -59,6 +59,10 @@ public:
 	void setFuzz(const float val) {fuzz = val;}
 	void setKink(const float val) {kink = val;}
 	void setDrawAccuracy(const int val) {if(val>0) draw_step = val;}
+	void setRootColor(const float r, const float g, const float b) {root_color.x = r; root_color.y = g; root_color.z = b;}
+	void setTipColor(const float r, const float g, const float b) {tip_color.x = r; tip_color.y = g; tip_color.z = b;}
+	void setMutantColor(const float r, const float g, const float b) {mutant_color.x = r; mutant_color.y = g; mutant_color.z = b;}
+	void setMutantColorScale(const float v) {mutant_scale = v;}
 	
 	float getBBox0X() const {return bbox_low.x;}
 	float getBBox0Y() const {return bbox_low.y;}
@@ -88,10 +92,11 @@ private:
 	unsigned num_guide, num_guideobj, n_vert, n_tri;
 
 	unsigned* bind_data;
-	float twist, clumping, fuzz, kink;
+	float twist, clumping, fuzz, kink, mutant_scale;
 	unsigned draw_step;
 	MATRIX44F* guide_spaceinv;
 	XYZ bbox_low, bbox_high;
 	std::string m_cachename;
+	XYZ tip_color, root_color, mutant_color;
 };
 #endif

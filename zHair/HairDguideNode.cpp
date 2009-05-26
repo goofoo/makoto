@@ -17,6 +17,7 @@
 #include "HairDguideNode.h"
 #include "../shared/zData.h"
 #include "../shared/zGlobal.h"
+#include "../shared/zWorks.h"
 #include "HairMap.h"
 #include <iostream>
 #include <fstream>
@@ -37,7 +38,17 @@ MObject HairDguideNode::afuzz;
 MObject HairDguideNode::akink;
 MObject HairDguideNode::atwist;
 MObject HairDguideNode::aclump; 
-MObject HairDguideNode::astep;     
+MObject HairDguideNode::astep;
+MObject HairDguideNode::arootcolorr;
+MObject HairDguideNode::arootcolorg;
+MObject HairDguideNode::arootcolorb; 
+MObject HairDguideNode::atipcolorr;
+MObject HairDguideNode::atipcolorg;
+MObject HairDguideNode::atipcolorb;
+MObject HairDguideNode::amutantcolorr;
+MObject HairDguideNode::amutantcolorg;
+MObject HairDguideNode::amutantcolorb;  
+MObject HairDguideNode::amutantcolorscale;
 
 HairDguideNode::HairDguideNode() : m_base(0)
 {
@@ -92,6 +103,10 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 			m_base->setFuzz(data.inputValue(afuzz).asFloat());
 			m_base->setKink(data.inputValue(akink).asFloat());
 			m_base->setDrawAccuracy(data.inputValue(astep).asInt());
+			m_base->setRootColor(data.inputValue(arootcolorr).asDouble(), data.inputValue(arootcolorg).asDouble(), data.inputValue(arootcolorb).asDouble());
+			m_base->setTipColor(data.inputValue(atipcolorr).asDouble(), data.inputValue(atipcolorg).asDouble(), data.inputValue(atipcolorb).asDouble());
+			m_base->setMutantColor(data.inputValue(amutantcolorr).asDouble(), data.inputValue(amutantcolorg).asDouble(), data.inputValue(amutantcolorb).asDouble());
+			m_base->setMutantColorScale(data.inputValue(amutantcolorscale).asDouble());
 		}
 		
 		MDataHandle outputHandle = data.outputValue(output); 
@@ -212,7 +227,31 @@ MStatus HairDguideNode::initialize()
  	stringAttr.setStorable(true);
 	stringAttr.setInternal(true);
 	addAttribute( acachename );
-
+	
+	zWorks::createDoubleAttr(arootcolorr, "rootColorR", "rootColorR", 0.0);
+	zWorks::createDoubleAttr(arootcolorg, "rootColorG", "rootColorG", 0.0);
+	zWorks::createDoubleAttr(arootcolorb, "rootColorB", "rootColorB", 0.0);
+	addAttribute(arootcolorr);
+	addAttribute(arootcolorg);
+	addAttribute(arootcolorb);
+	
+	zWorks::createDoubleAttr(atipcolorr, "tipColorR", "tipColorR", 1.0);
+	zWorks::createDoubleAttr(atipcolorg, "tipColorG", "tipColorG", 1.0);
+	zWorks::createDoubleAttr(atipcolorb, "tipColorB", "tipColorB", 1.0);
+	addAttribute(atipcolorr);
+	addAttribute(atipcolorg);
+	addAttribute(atipcolorb);
+	
+	zWorks::createDoubleAttr(amutantcolorr, "mutantColorR", "mutantColorR", 1.0);
+	zWorks::createDoubleAttr(amutantcolorg, "mutantColorG", "mutantColorG", 1.0);
+	zWorks::createDoubleAttr(amutantcolorb, "mutantColorB", "mutantColorB", 1.0);
+	addAttribute(amutantcolorr);
+	addAttribute(amutantcolorg);
+	addAttribute(amutantcolorb);
+	
+	zWorks::createDoubleAttr(amutantcolorscale, "mutantColorScale", "mcs", 0.0);
+	addAttribute(amutantcolorscale);
+	
 	// Set up a dependency between the input and the output.  This will cause
 	// the output to be marked dirty when the input changes.  The output will
 	// then be recomputed the next time the value of the output is requested.
@@ -224,6 +263,16 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( atwist, output );
 	attributeAffects( aclump, output );
 	attributeAffects( astep, output );
+	attributeAffects( arootcolorr, output );
+	attributeAffects( arootcolorg, output );
+	attributeAffects( arootcolorb, output );
+	attributeAffects( atipcolorr, output );
+	attributeAffects( atipcolorg, output );
+	attributeAffects( atipcolorb, output );
+	attributeAffects( amutantcolorr, output );
+	attributeAffects( amutantcolorg, output );
+	attributeAffects( amutantcolorb, output );
+	attributeAffects( amutantcolorscale, output );
 	
 	return MS::kSuccess;
 

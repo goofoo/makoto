@@ -19,9 +19,12 @@ using namespace std;
 
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
-sum_area(0.f),
+sum_area(0.f),mutant_scale(0.f),
 draw_step(1)
 {
+	root_color.x = root_color.y = root_color.z = 0.f;
+	tip_color.x = tip_color.y = tip_color.z = 1.f;
+	mutant_color.x = mutant_color.y = mutant_color.z = 0.f;
 }
 hairMap::~hairMap() 
 {
@@ -161,10 +164,14 @@ void hairMap::draw()
 	
 	float noi;
 	
-	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
+	XYZ ppre, dv, axisobj, axisworld, guiderotaxis, cc;
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step)
 	{
+		noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
+		XYZ croot = root_color + (mutant_color - root_color)*noi;
+		XYZ ctip = tip_color + (mutant_color - tip_color)*noi;
+		XYZ dcolor = (ctip - croot)/(float)guide_data[bind_data[i]].num_seg;
 		//glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
 		//glColor3f(ddice[i].coords, ddice[i].coordt, 0);
 		ppre = pbuf[i]; 
@@ -188,6 +195,8 @@ void hairMap::draw()
 			//glVertex3f(guide_data[bind_data[i]].P[j].x+axisworld.x, guide_data[bind_data[i]].P[j].y+axisworld.y, guide_data[bind_data[i]].P[j].z+axisworld.z);
 			axisworld.normalize();
 			
+			cc = croot + dcolor * j;
+			glColor3f(cc.x, cc.y, cc.z);
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 
 			XYZ rot2p = ppre + dv -  guide_data[bind_data[i]].P[j];
@@ -199,6 +208,9 @@ void hairMap::draw()
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
 			ppre += dv*noi;
+			
+			cc = croot + dcolor * (j+1);
+			glColor3f(cc.x, cc.y, cc.z);
 			glVertex3f(ppre.x, ppre.y, ppre.z);
 		}
 	}

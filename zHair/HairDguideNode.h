@@ -54,6 +54,16 @@ public:
 	static MObject atwist;
 	static MObject aclump;
 	static MObject astep;
+	static MObject arootcolorr;
+	static MObject arootcolorg;
+	static MObject arootcolorb;
+	static MObject atipcolorr;
+	static MObject atipcolorg;
+	static MObject atipcolorb;
+	static MObject amutantcolorr;
+	static MObject amutantcolorg;
+	static MObject amutantcolorb;
+	static MObject amutantcolorscale;
 	// The typeid is a unique 32bit indentifier that describes this node.
 	// It is used to save and retrieve nodes of this type from the binary
 	// file format.  If it is not unique, it will cause file IO problems.
