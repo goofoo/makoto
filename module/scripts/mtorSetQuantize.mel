@@ -26,6 +26,18 @@ global proc mtorSetSingleQuantize(int $i, string $name, int $bits)
 	eval($cmd);
 }
 
+global proc m2ndselectallchan()
+{
+	int $stat = `checkBox -q -v m2ndsetallchanchk`;
+	string $chann[] = {"ckcol", "ckcola", "ckcolb", "ckcolc", "ckcold", "ckcole", "ckcolf",
+			"ckcolf", "ckcolg", "ckcolh", "ckcoli", "ckdif", "ckmat", "ckepi", 
+			"cksub", "ckbks", "ckrim", "ckamb", "ckref", "ckcau", "ckspe",
+			"ckkl", "ckfl", "ckbl", "ckdep", "cknor", "ckshd",
+			"ckdiffill", "ckdifback", "ckspefill", "ckspeback"};
+	string $an;
+	for($an in $chann) checkBox -e -v $stat $an;
+}
+
 global proc mtorSetQuantizeWnd()
 {
 	
@@ -33,99 +45,136 @@ global proc mtorSetQuantizeWnd()
 if ( (`window -exists wndmtorsetsnddsp`) == true ) deleteUI wndmtorsetsnddsp;
 
 //Create the window.
-window -title "MTOR Secondary Display Options" -wh 400 720 wndmtorsetsnddsp;
-columnLayout -adjustableColumn true; //Start of the column.
+window -title "MTOR Secondary Display Options" -wh 400 400 wndmtorsetsnddsp;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//Start of the column.
 text -l "Create a number of secondary display channels in global controls and select channels to set.\n";
+checkBox -v 1 -l "All" -cc "m2ndselectallchan" m2ndsetallchanchk;
 separator -style "single";
 rowColumnLayout -numberOfColumns 2 
 		-columnAttach 1 left 8
  		-columnWidth 1 30
 		-columnWidth 2 320;
 		
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolbits`) rbcolbits" ckcol;
+checkBox -label "" -v 1 ckcol;
 radioButtonGrp -numberOfRadioButtons 2 -label "color" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolabits`) rbcolabits" ckcola;
+checkBox -label "" -v 1 ckcola;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorA" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolabits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolbbits`) rbcolbbits" ckcolb;
+checkBox -label "" -v 1 ckcolb;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorB" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolbbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolcbits`) rbcolcbits" ckcolc;
+checkBox -label "" -v 1 ckcolc;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorC" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolcbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcoldbits`) rbcoldbits" ckcold;
+checkBox -label "" -v 1 ckcold;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorD" -labelArray2 "8-bit" "16-bit" -sl 2 rbcoldbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolebits`) rbcolebits" ckcole;
+checkBox -label "" -v 1 ckcole;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorE" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolebits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolfbits`) rbcolfbits" ckcolf;
+checkBox -label "" -v 1 ckcolf;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorF" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolfbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolgbits`) rbcolgbits" ckcolg;
+checkBox -label "" -v 1 ckcolg;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorG" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolgbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolhbits`) rbcolhbits" ckcolh;
+checkBox -label "" -v 1 ckcolh;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorH" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolhbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcolibits`) rbcolibits" ckcoli;
+checkBox -label "" -v 1 ckcoli;
 radioButtonGrp -numberOfRadioButtons 2 -label "colorI" -labelArray2 "8-bit" "16-bit" -sl 2 rbcolibits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbdifbits`) rbdifbits" ckdif;
+checkBox -label "" -v 1 ckdif;
 radioButtonGrp -numberOfRadioButtons 2 -label "diffuse" -labelArray2 "8-bit" "16-bit" -sl 2 rbdifbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbmatbits`) rbmatbits" ckmat;
+checkBox -label "" -v 1 ckdiffill;
+radioButtonGrp -numberOfRadioButtons 2 -label "diffuse_fill" -labelArray2 "8-bit" "16-bit" -sl 2 rbdiffillbits;
+
+checkBox -label "" -v 1 ckdifback;
+radioButtonGrp -numberOfRadioButtons 2 -label "diffuse_back" -labelArray2 "8-bit" "16-bit" -sl 2 rbdifbackbits;
+
+checkBox -label "" -v 1 ckmat;
 radioButtonGrp -numberOfRadioButtons 2 -label "matte" -labelArray2 "8-bit" "16-bit" -sl 2 rbmatbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbepibits`) rbepibits" ckepi;
+checkBox -label "" -v 1 ckepi;
 radioButtonGrp -numberOfRadioButtons 2 -label "epiderm" -labelArray2 "8-bit" "16-bit" -sl 2 rbepibits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbsubbits`) rbsubbits" cksub;
+checkBox -label "" -v 1 cksub;
 radioButtonGrp -numberOfRadioButtons 2 -label "subderm" -labelArray2 "8-bit" "16-bit" -sl 2 rbsubbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbbksbits`) rbbksbits" ckbks;
+checkBox -label "" -v 1 ckbks;
 radioButtonGrp -numberOfRadioButtons 2 -label "backscattering" -labelArray2 "8-bit" "16-bit" -sl 2 rbbksbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbrimbits`) rbrimbits" ckrim;
+checkBox -label "" -v 1 ckrim;
 radioButtonGrp -numberOfRadioButtons 2 -label "rim" -labelArray2 "8-bit" "16-bit" -sl 2 rbrimbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbambbits`) rbambbits" ckamb;
+checkBox -label "" -v 1 ckamb;
 radioButtonGrp -numberOfRadioButtons 2 -label "ambient" -labelArray2 "8-bit" "16-bit" -sl 1 rbambbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbrefbits`) rbrefbits" ckref;
+checkBox -label "" -v 1 ckref;
 radioButtonGrp -numberOfRadioButtons 2 -label "reflection" -labelArray2 "8-bit" "16-bit" -sl 1 rbrefbits;
 
-checkBox -label "" -v 0 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbcaubits`) rbcaubits" ckcau;
-radioButtonGrp -en 0 -numberOfRadioButtons 2 -label "caustic" -labelArray2 "8-bit" "16-bit" -sl 1 rbcaubits;
+checkBox -label "" -v 1 ckcau;
+radioButtonGrp -numberOfRadioButtons 2 -label "caustic" -labelArray2 "8-bit" "16-bit" -sl 1 rbcaubits;
 
-checkBox -label "" -v 0 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbspebits`) rbspebits" ckspe;
-radioButtonGrp -en 0 -numberOfRadioButtons 2 -label "specular" -labelArray2 "8-bit" "16-bit" -sl 1 rbspebits;
+checkBox -label "" -v 1 ckspe;
+radioButtonGrp -numberOfRadioButtons 2 -label "specular" -labelArray2 "8-bit" "16-bit" -sl 1 rbspebits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbklbits`) rbklbits" ckkl;
+checkBox -label "" -v 1 ckspefill;
+radioButtonGrp -numberOfRadioButtons 2 -label "specular_fill" -labelArray2 "8-bit" "16-bit" -sl 1 rbspefillbits;
+
+checkBox -label "" -v 1 ckspeback;
+radioButtonGrp -numberOfRadioButtons 2 -label "specular_back" -labelArray2 "8-bit" "16-bit" -sl 1 rbspebackbits;
+
+checkBox -label "" -v 1 ckkl;
 radioButtonGrp -numberOfRadioButtons 2 -label "keylight" -labelArray2 "8-bit" "16-bit" -sl 1 rbklbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbflbits`) rbflbits" ckfl;
+checkBox -label "" -v 1 ckfl;
 radioButtonGrp -numberOfRadioButtons 2 -label "filllight" -labelArray2 "8-bit" "16-bit" -sl 1 rbflbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbblbits`) rbblbits" ckbl;
+checkBox -label "" -v 1 ckbl;
 radioButtonGrp -numberOfRadioButtons 2 -label "backlight" -labelArray2 "8-bit" "16-bit" -sl 1 rbblbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbdepbits`) rbdepbits" ckdep;
+checkBox -label "" -v 1 ckdep;
 radioButtonGrp -numberOfRadioButtons 2 -label "depth" -labelArray2 "8-bit" "16-bit" -sl 2 rbdepbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbnorbits`) rbnorbits" cknor;
+checkBox -label "" -v 1 cknor;
 radioButtonGrp -numberOfRadioButtons 2 -label "normal" -labelArray2 "8-bit" "16-bit" -sl 1 rbnorbits;
 
-checkBox -label "" -v 1 -cc "radioButtonGrp -e -en (!`radioButtonGrp -q -en rbshdbits`) rbshdbits" ckshd;
+checkBox -label "" -v 1 ckshd;
 radioButtonGrp -numberOfRadioButtons 2 -label "shadow" -labelArray2 "8-bit" "16-bit" -sl 1 rbshdbits;
 
-setParent ..;
-separator -style "single";
-rowLayout -numberOfColumns 2 -columnWidth2 190 190 -columnAttach 1 "left" 10;
-button -l "Set Selected Channels" -c "mtorSetQuantize";
-button -l "Create Basic Shake Script" -c "mtorCreateShakeScript";
-setParent ..;
+//setParent ..;
+//separator -style "single";
+//rowLayout -numberOfColumns 2 -columnWidth2 190 190 -columnAttach 1 "left" 10;
+//button -l "Set Selected Channels" -c "mtorSetQuantize";
+//button -l "Create Basic Shake Script" -c "mtorCreateShakeScript";
+//setParent ..;
+//row begin
+button -l "Set Selected Channels" -c "mtorSetQuantize" -p $row;
+text -l "";
+button -l "Close" -c "deleteUI wndmtorsetsnddsp" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm    $row     "bottom" 2
+        -attachForm     $row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm    $scroll "left"   2
+        -attachControl    $scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
 
 //Show it.
 showWindow wndmtorsetsnddsp; 
@@ -189,6 +238,16 @@ global proc mtorSetQuantize()
 		$channel++;
 		mtorSetSingleQuantize($channel, "diffuse", `radioButtonGrp -q -sl rbdifbits`);
 	}
+	if(`checkBox -q -v ckdiffill`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "diffuse_fill", `radioButtonGrp -q -sl rbdiffillbits`);
+	}
+	if(`checkBox -q -v ckdifback`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "diffuse_back", `radioButtonGrp -q -sl rbdifbackbits`);
+	}
 	if(`checkBox -q -v ckmat`)
 	{
 		$channel++;
@@ -233,6 +292,16 @@ global proc mtorSetQuantize()
 	{
 		$channel++;
 		mtorSetSingleQuantize($channel, "specular", `radioButtonGrp -q -sl rbspebits`);
+	}
+	if(`checkBox -q -v ckspefill`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "specular_fill", `radioButtonGrp -q -sl rbspefillbits`);
+	}
+	if(`checkBox -q -v ckspeback`)
+	{
+		$channel++;
+		mtorSetSingleQuantize($channel, "specular_back", `radioButtonGrp -q -sl rbspebackbits`);
 	}
 	if(`checkBox -q -v ckkl`)
 	{

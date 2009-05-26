@@ -216,7 +216,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7BA5610FCC16E9002BA34B</string>
+						<string>7F7BA5660FCC2AE5002BA34B</string>
 						<key>history</key>
 						<array>
 							<string>7F7BA55D0FCC16DC002BA34B</string>
@@ -235,7 +235,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>386 120 750 658 0 0 1280 778 </string>
+				<string>367 120 750 658 0 0 1280 778 </string>
 			</dict>
 		</dict>
 		<dict>
@@ -256,7 +256,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7BA5620FCC16E9002BA34B</string>
+						<string>7F7BA5670FCC2AE5002BA34B</string>
 						<key>history</key>
 						<array>
 							<string>7F7BA5540FCC16D6002BA34B</string>
@@ -296,7 +296,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7BA5630FCC16E9002BA34B</string>
+						<string>7F7BA5680FCC2AE5002BA34B</string>
 						<key>history</key>
 						<array>
 							<string>7F7BA5580FCC16D6002BA34B</string>
@@ -336,7 +336,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7BA5640FCC16E9002BA34B</string>
+						<string>7F7BA56A0FCC2AE5002BA34B</string>
 						<key>history</key>
 						<array>
 							<string>7F7BA50C0FCC0943002BA34B</string>
@@ -392,8 +392,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -510,6 +508,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -686,8 +686,8 @@
 		<string>7F7BA4F40FCC0089002BA34B</string>
 		<string>7F7BA5560FCC16D6002BA34B</string>
 		<string>7F7BA4D30FC912A8002BA34B</string>
-		<string>/Users/jianzhang/Documents/plankton/zHair/hair.xcodeproj</string>
 		<string>7F7BA55F0FCC16E9002BA34B</string>
+		<string>/Users/jianzhang/Documents/plankton/zHair/hair.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>541 253 690 397 0 0 1280 778 </string>
