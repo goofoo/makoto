@@ -1081,7 +1081,7 @@ void FXMLMesh::dice(float epsilon, pcdSample* res, int& n_res)
 {
 	int a, b, c;
 	FTriangle ftri;
-	float min_area = epsilon*epsilon/32;
+	//float min_area = epsilon*epsilon/32;
 	for(int i=0; i<m_numTriangle; i++)
 	{
 		a = m_triangleConn[i*3];
@@ -1122,7 +1122,7 @@ void FXMLMesh::diceWithRT(float epsilon, pcdSample* res, CoeRec* coe_res, int& n
 	
 	int a, b, c;
 	FTriangle ftri;
-	float min_area = epsilon*epsilon/32;
+	//float min_area = epsilon*epsilon/32;
 	for(int i=0; i<m_numTriangle; i++)
 	{
 		a = m_triangleConn[i*3];

@@ -21,8 +21,9 @@ void FQSPLAT::create(pcdSample* rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
-	m_col_buf = new XYZ[n_rec*POOLSCALE];
+	int pool_size = n_rec*POOLSCALE;
+	m_himap = new HierarchyQSPLATNode[pool_size];
+	m_col_buf = new XYZ[pool_size];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;
@@ -47,7 +48,8 @@ void FQSPLAT::createNoColor(pcdSample* rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
+	int pool_size = n_rec*POOLSCALE;
+	m_himap = new HierarchyQSPLATNode[pool_size];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;
@@ -78,8 +80,9 @@ void FQSPLAT::create(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
-	m_coe_buf = new CoeRec[n_rec*POOLSCALE];
+	int pool_size = n_rec*POOLSCALE;
+	m_himap = new HierarchyQSPLATNode[pool_size];
+	m_coe_buf = new CoeRec[pool_size];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;
@@ -110,9 +113,10 @@ void FQSPLAT::createRTandColor(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 	int m_point_count = n_rec;
 	m_max_level = 13;
 	m_draw_level = 5;
-	m_himap = new HierarchyQSPLATNode[n_rec*POOLSCALE];
-	m_coe_buf = new CoeRec[n_rec*POOLSCALE];
-	m_col_buf = new XYZ[n_rec*POOLSCALE];
+	int pool_size = n_rec*POOLSCALE;
+	m_himap = new HierarchyQSPLATNode[pool_size];
+	m_coe_buf = new CoeRec[pool_size];
+	m_col_buf = new XYZ[pool_size];
 	
 		XYZ mean = findMean(rec, 0, m_point_count-1);
 		MATRIX44F objectSpace;

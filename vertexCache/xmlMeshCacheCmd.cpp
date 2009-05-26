@@ -227,6 +227,8 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 		
 		xml_f.triangleInfo(n_tri, f_area);
 		
+		float avg_grid = sqrt(f_area/n_tri)/2;
+		
 		MFnDependencyNode fnode(m_mesh_list[it].node());
 		MString smsg("prtMsg");
 		MPlug pmsg = fnode.findPlug( smsg, 1,  &status );
@@ -493,6 +495,7 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 				connarea += (float)area/faceIter.polygonVertexCount();
 			}
 			vgrd[i] = sqrt(connarea)/2;
+			if(vgrd[i] > avg_grid) vgrd[i] = avg_grid;
 		}
 		xml_f.addGridSize(n_vert, vgrd);
 		
