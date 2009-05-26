@@ -42,6 +42,10 @@ public:
 	void setFuzz(const float val) {fuzz = val;}
 	void setKink(const float val) {kink = val;}
 	void setWidth(const float v0, const float v1) {rootwidth = v0; tipwidth = v1;}
+	void setRootColor(const float r, const float g, const float b) {root_color.x = r; root_color.y = g; root_color.z = b;}
+	void setTipColor(const float r, const float g, const float b) {tip_color.x = r; tip_color.y = g; tip_color.z = b;}
+	void setMutantColor(const float r, const float g, const float b) {mutant_color.x = r; mutant_color.y = g; mutant_color.z = b;}
+	void setMutantColorScale(const float v) {mutant_scale = v;}
 	
 	const char* getCacheName() const {return m_cachename.c_str();}
 	float getTwist() const {return twist;}
@@ -55,6 +59,8 @@ public:
 	const float* getWidth() const {return widths;}
 	const float* getS() const {return coord_s;}
 	const float* getT() const {return coord_t;}
+	const XYZ* getRootColors() const {return rootColorArray;}
+	const XYZ* getTipColors() const {return tipColorArray;}
 	
 private:
 	float ndice, rootwidth, tipwidth;
@@ -70,12 +76,14 @@ private:
 	unsigned num_guide, n_vert, n_tri;
 
 	unsigned* bind_data;
-	float twist, clumping, fuzz, kink;
+	float twist, clumping, fuzz, kink, mutant_scale;
 	MATRIX44F* guide_spaceinv;
 	std::string m_cachename;
 	int* nvertices;
 	XYZ* vertices;
 	float* widths;
 	float *coord_s, *coord_t;
+	XYZ tip_color, root_color, mutant_color;
+	XYZ *rootColorArray, *tipColorArray;
 };
 #endif

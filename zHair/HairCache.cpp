@@ -15,7 +15,8 @@ using namespace std;
 HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
-nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0)
+nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
+rootColorArray(0), tipColorArray(0)
 {
 }
 HairCache::~HairCache() 
@@ -33,6 +34,8 @@ HairCache::~HairCache()
 	if(widths) delete[] widths;
 	if(coord_s) delete[] coord_s;
 	if(coord_t) delete[] coord_t;
+	if(rootColorArray) delete[] rootColorArray;
+	if(tipColorArray) delete[] tipColorArray;
 }
 
 int HairCache::dice()
@@ -263,16 +266,28 @@ void HairCache::create()
 		coord_t[i] = ddice[i].coordt;
 	}
 	
+	if(rootColorArray) delete[] rootColorArray;
+	if(tipColorArray) delete[] tipColorArray;
+	rootColorArray = new XYZ[n_samp];
+	tipColorArray = new XYZ[n_samp];
+	
+	int g_seed = 13;
+	FNoise fnoi;
+	
+	float noi;
+	
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
+		rootColorArray[i] = root_color + (mutant_color - root_color)*noi;
+		tipColorArray[i] = tip_color + (mutant_color - tip_color)*noi;
+	}
+	
 	if(vertices) delete[] vertices;
 	vertices = new XYZ[npoints];
 	
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-
-	int g_seed = 13;
-	FNoise fnoi;
-	
-	float noi;
 	
 	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
 	acc=0;

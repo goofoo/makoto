@@ -8,9 +8,13 @@ m_ndice(24)
 {
 	m_cache_name = new char[256];
 
-	int n = sscanf(parameter.c_str(), "%f %f %f %s %f %f %f %f %f %f %f %f %d", 
+	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %f %f %f %f %f %f %f %f %d", 
 	&m_ndice,
 	&m_width0, &m_width1,
+	&m_root_colorR, &m_root_colorG, &m_root_colorB, 
+	&m_tip_colorR, &m_tip_colorG, &m_tip_colorB, 
+	&m_mutant_colorR, &m_mutant_colorG, &m_mutant_colorB, 
+	&m_mutant_scale,
 	m_cache_name, 
 	&m_twist, 
 	&m_clumping, 
@@ -44,11 +48,18 @@ void RHair::generateRIB(RtFloat detail)
 	pHair->setFuzz(m_fuzz);
 	pHair->setKink(m_kink);
 	pHair->setWidth(m_width0, m_width1);
+	pHair->setRootColor(m_root_colorR, m_root_colorG, m_root_colorB);
+	pHair->setTipColor(m_tip_colorR, m_tip_colorG, m_tip_colorB);
+	pHair->setMutantColor(m_mutant_colorR, m_mutant_colorG, m_mutant_colorB);
+	pHair->setMutantColorScale(m_mutant_scale);
 			
 	pHair->create();
 	
 	float cwidth = 0.01f;
-	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), "uniform float hair_s", (RtFloat*)pHair->getS(), "uniform float hair_t", (RtFloat*)pHair->getT(), RI_NULL);
+	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), 
+	"uniform float hair_s", (RtFloat*)pHair->getS(), "uniform float hair_t", (RtFloat*)pHair->getT(), 
+	"uniform color root_color", (RtColor*)pHair->getRootColors(), "uniform color tip_color", (RtColor*)pHair->getTipColors(), 
+	RI_NULL);
 	
 	delete pHair;
 	
