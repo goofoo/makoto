@@ -48,7 +48,7 @@ void RHair::generateRIB(RtFloat detail)
 	pHair->create();
 	
 	float cwidth = 0.01f;
-	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), RI_NULL);
+	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), "uniform float hair_s", (RtFloat*)pHair->getS(), "uniform float hair_t", (RtFloat*)pHair->getT(), RI_NULL);
 	
 	delete pHair;
 	

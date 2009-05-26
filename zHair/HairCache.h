@@ -53,6 +53,8 @@ public:
 	const int* getNumVertices() const {return nvertices;}
 	const XYZ* points() const {return vertices;}
 	const float* getWidth() const {return widths;}
+	const float* getS() const {return coord_s;}
+	const float* getT() const {return coord_t;}
 	
 private:
 	float ndice, rootwidth, tipwidth;
@@ -74,5 +76,6 @@ private:
 	int* nvertices;
 	XYZ* vertices;
 	float* widths;
+	float *coord_s, *coord_t;
 };
 #endif

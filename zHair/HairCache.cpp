@@ -15,7 +15,7 @@ using namespace std;
 HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
-nvertices(0),vertices(0),widths(0)
+nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0)
 {
 }
 HairCache::~HairCache() 
@@ -31,6 +31,8 @@ HairCache::~HairCache()
 	if(nvertices) delete[] nvertices;
 	if(vertices) delete[] vertices;
 	if(widths) delete[] widths;
+	if(coord_s) delete[] coord_s;
+	if(coord_t) delete[] coord_t;
 }
 
 int HairCache::dice()
@@ -249,6 +251,16 @@ void HairCache::create()
 		}
 		widths[acc] = tipwidth;
 		acc++;
+	}
+	
+	if(coord_s) delete[] coord_s;
+	if(coord_t) delete[] coord_t;
+	coord_s = new float[n_samp];
+	coord_t = new float[n_samp];
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		coord_s[i] = ddice[i].coords;
+		coord_t[i] = ddice[i].coordt;
 	}
 	
 	if(vertices) delete[] vertices;
