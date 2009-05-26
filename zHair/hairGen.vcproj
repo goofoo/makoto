@@ -43,7 +43,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
 				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib opengl32.lib"
-				OutputFile="..\module\ribgen\bacteriaRibgen.dll"
+				OutputFile="..\module\ribgen\hairRibgen.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_70)\lib&quot;"

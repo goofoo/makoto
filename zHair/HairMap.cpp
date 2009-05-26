@@ -574,6 +574,9 @@ int hairMap::load(const char* filename)
 			if(guide_data[i].P[j].x > bbox_high.z) bbox_high.z = guide_data[i].P[j].z;
 		}
 	}
+	XYZ bboxcen = (bbox_low + bbox_high)/2;
+	bbox_low -= bboxcen - bbox_low;
+	bbox_high -= bboxcen - bbox_high;
 	return 1;
 }
 

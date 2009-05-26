@@ -228,7 +228,7 @@ void HairCache::create()
 	nvertices = new int[n_samp];
 	for(unsigned i=0; i<n_samp; i++) 
 	{
-		nvertices[i] = guide_data[bind_data[i]].num_seg;
+		nvertices[i] = guide_data[bind_data[i]].num_seg + 5;
 		npoints += nvertices[i];
 	}
 	
@@ -247,7 +247,13 @@ void HairCache::create()
 	unsigned acc=0;
 	for(unsigned i=0; i<n_samp; i++)
 	{
-		ppre = pbuf[i]; 
+		ppre = pbuf[i];
+
+		vertices[acc] = ppre;
+		acc++;
+		vertices[acc] = ppre;
+		acc++;
+			
 		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
 		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
 		axisobj.x = 0;
@@ -280,6 +286,12 @@ void HairCache::create()
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
 			ppre += dv*noi;
 		}
+		vertices[acc] = ppre;
+		acc++;
+		vertices[acc] = ppre;
+		acc++;
+		vertices[acc] = ppre;
+		acc++;
 	}
 	
 	delete[] pbuf;
