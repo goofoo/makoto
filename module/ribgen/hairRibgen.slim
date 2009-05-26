@@ -35,5 +35,19 @@ slim 1 appearance zhangdb {
 		label {Dice Number}
 	    default 24
 	}
+	
+	parameter float rootwidth {
+		label {Root Width}
+		subtype slider
+		range {0 .1 0.001}
+	    default 0.034
+	}
+	
+	parameter float tipwidth {
+		label {Tip Width}
+		subtype slider
+		range {0 .1 0.001}
+	    default 0.0
+	}
   }
 }

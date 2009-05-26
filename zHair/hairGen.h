@@ -47,7 +47,7 @@ public:
     virtual int	    GenRIB( RIBContext *c );
 
 private:
-	float ndice;
+	float ndice, rootwidth, tipwidth;
 };
 
 

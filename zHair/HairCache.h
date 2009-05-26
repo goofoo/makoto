@@ -41,6 +41,7 @@ public:
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
 	void setKink(const float val) {kink = val;}
+	void setWidth(const float v0, const float v1) {rootwidth = v0; tipwidth = v1;}
 	
 	const char* getCacheName() const {return m_cachename.c_str();}
 	float getTwist() const {return twist;}
@@ -51,9 +52,10 @@ public:
 	int getNumCurves() const {return n_samp;}
 	const int* getNumVertices() const {return nvertices;}
 	const XYZ* points() const {return vertices;}
+	const float* getWidth() const {return widths;}
 	
 private:
-	float ndice;
+	float ndice, rootwidth, tipwidth;
 	DiceParam* ddice;
 	int n_samp;
 	float sum_area;
@@ -71,5 +73,6 @@ private:
 	std::string m_cachename;
 	int* nvertices;
 	XYZ* vertices;
+	float* widths;
 };
 #endif

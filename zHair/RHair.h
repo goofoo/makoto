@@ -10,7 +10,7 @@ public:
 	void generateRIB(RtFloat detail);
     
 private:
-	float m_ndice;
+	float m_ndice, m_width0, m_width1;
 	char* m_cache_name;
 	float m_twist, m_clumping, m_fuzz, m_kink;
 	float m_shutter_open, m_shutter_close;

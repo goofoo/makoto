@@ -35,7 +35,7 @@ RIBGenDestroy( RIBGen *g )
 
 /*---------------------------------------------------------*/
 hairGen::hairGen() :
-ndice(24)
+ndice(24),rootwidth(0.034f), tipwidth(0.0f)
 {   
 }
 
@@ -55,6 +55,14 @@ hairGen::SetArgs(RIBContext *c,
 		if(!strcmp(args[i], "float dice"))
 		{
 			RIBContextUtil::GetFloatValue(vals[i], &ndice);
+		}
+		else if(!strcmp(args[i], "float rootwidth"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &rootwidth);
+		}
+		else if(!strcmp(args[i], "float tipwidth"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &tipwidth);
 		}
 		//else if(!strcmp(args[i], "string imagefile1"))
 		//{
@@ -137,8 +145,9 @@ hairGen::GenRIB( RIBContext *c )
 	if(usingMotionBlur && pass != RIBContext::rpShadow) iblur = 1;
 	
 	char sbuf[1024];
-	sprintf( sbuf, "%f %s %f %f %f %f %f %f %f %f %d", 
+	sprintf( sbuf, "%f %f %f %s %f %f %f %f %f %f %f %f %d", 
 	ndice,
+	rootwidth, tipwidth,
 	base->getCacheName(), 
 	base->getTwist(),
 	base->getClumping(),

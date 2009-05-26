@@ -15,7 +15,7 @@ using namespace std;
 HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
-nvertices(0),vertices(0)
+nvertices(0),vertices(0),widths(0)
 {
 }
 HairCache::~HairCache() 
@@ -30,6 +30,7 @@ HairCache::~HairCache()
 	if(varray) delete[] varray;
 	if(nvertices) delete[] nvertices;
 	if(vertices) delete[] vertices;
+	if(widths) delete[] widths;
 }
 
 int HairCache::dice()
@@ -223,13 +224,31 @@ void HairCache::create()
 {
 	if(n_samp < 1 || !bind_data || !guide_data || !parray) return;
 	
-	int npoints = 0;
+	int npoints = 0, nwidths = 0;
 	if(nvertices) delete[] nvertices;
 	nvertices = new int[n_samp];
 	for(unsigned i=0; i<n_samp; i++) 
 	{
 		nvertices[i] = guide_data[bind_data[i]].num_seg + 5;
 		npoints += nvertices[i];
+		nwidths += nvertices[i]-2;
+	}
+	
+	if(widths) delete[] widths;
+	widths = new float[nwidths];
+	unsigned acc=0;
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		widths[acc] = rootwidth;
+		acc++;
+		float dwidth = (tipwidth - rootwidth)/guide_data[bind_data[i]].num_seg;
+		for(short j = 0; j<= guide_data[bind_data[i]].num_seg; j++) 
+		{
+			widths[acc] = rootwidth + dwidth*j;
+			acc++;
+		}
+		widths[acc] = tipwidth;
+		acc++;
 	}
 	
 	if(vertices) delete[] vertices;
@@ -244,7 +263,7 @@ void HairCache::create()
 	float noi;
 	
 	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
-	unsigned acc=0;
+	acc=0;
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		ppre = pbuf[i];

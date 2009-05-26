@@ -8,8 +8,9 @@ m_ndice(24)
 {
 	m_cache_name = new char[256];
 
-	int n = sscanf(parameter.c_str(), "%f %s %f %f %f %f %f %f %f %f %d", 
+	int n = sscanf(parameter.c_str(), "%f %f %f %s %f %f %f %f %f %f %f %f %d", 
 	&m_ndice,
+	&m_width0, &m_width1,
 	m_cache_name, 
 	&m_twist, 
 	&m_clumping, 
@@ -42,11 +43,12 @@ void RHair::generateRIB(RtFloat detail)
 	pHair->setClumping(m_clumping);
 	pHair->setFuzz(m_fuzz);
 	pHair->setKink(m_kink);
+	pHair->setWidth(m_width0, m_width1);
 			
 	pHair->create();
 	
 	float cwidth = 0.01f;
-	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "constantwidth", (RtPointer)&cwidth, RI_NULL);
+	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), RI_NULL);
 	
 	delete pHair;
 	
