@@ -295,8 +295,9 @@ showWindow loadzhairWin;
 global proc zhair_modify()
 {
 	string $sel[] = `ls -sl`;
+	string $viz[] = `pickWalk -d down`;
 	string $an;
-	for($an in $sel)
+	for($an in $viz)
 	{
 		if(`nodeType $an` == "ZHairCache")
 		{
@@ -323,6 +324,15 @@ global proc zhair_modify()
 
 global proc open_zhair_modifywin()
 {
+	string $sel[] = `ls -sl`;
+	string $viz[] = `pickWalk -d down`;
+	string $an;
+	string $node;
+	for($an in $viz)
+	{
+		if(`nodeType $an` == "ZHairCache") $node = $an;
+	}
+	
 	//If such a window already exists, destory it.
  if ( (`window -exists editzhairWin`) == true ) deleteUI editzhairWin;
  
@@ -337,10 +347,10 @@ string $scroll = `scrollLayout -p $form`;
 columnLayout -adjustableColumn true;
 
 //column begin
-	colorSliderGrp -cw 1 110 -label "Root Color" -rgb 0 0 0 -cc "zhair_modify" zhairrootcolgrp;
-	colorSliderGrp -cw 1 110 -label "Tip Color" -rgb 1 1 1 -cc "zhair_modify" zhairtipcolgrp;
-	colorSliderGrp -cw 1 110 -label "Mutant Color" -rgb 1 1 1 -cc "zhair_modify" zhairmutantcolgrp;
-	floatSliderGrp -cw 1 110 -label "Mutant Scale" -field true -minValue 0.0 -maxValue 1.0 -value 0 -cc "zhair_modify" zhairmutantscalegrp;
+	colorSliderGrp -cw 1 110 -label "Root Color" -rgb `getAttr ($node +".rootColorR")` `getAttr ($node +".rootColorG")` `getAttr ($node +".rootColorB")` -cc "zhair_modify" zhairrootcolgrp;
+	colorSliderGrp -cw 1 110 -label "Tip Color" -rgb `getAttr ($node +".tipColorR")` `getAttr ($node +".tipColorG")` `getAttr ($node +".tipColorB")` -cc "zhair_modify" zhairtipcolgrp;
+	colorSliderGrp -cw 1 110 -label "Mutant Color" -rgb `getAttr ($node +".mutantColorR")` `getAttr ($node +".mutantColorG")` `getAttr ($node +".mutantColorB")` -cc "zhair_modify" zhairmutantcolgrp;
+	floatSliderGrp -cw 1 110 -label "Mutant Scale" -field true -minValue 0.0 -maxValue 1.0 -value `getAttr ($node +".mutantColorScale")` -cc "zhair_modify" zhairmutantscalegrp;
   
 //row begin
 //button -l "Save" -c "doloadzhair;deleteUI editzhairWin"-p $row;
