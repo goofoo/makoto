@@ -75,6 +75,16 @@ public:
 	float getClumping() const {return clumping;}
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
+	float getRootColorR() const {return root_color.x;}
+	float getRootColorG() const {return root_color.y;}
+	float getRootColorB() const {return root_color.z;}
+	float getTipColorR() const {return tip_color.x;}
+	float getTipColorG() const {return tip_color.y;}
+	float getTipColorB() const {return tip_color.z;}
+	float getMutantColorR() const {return mutant_color.x;}
+	float getMutantColorG() const {return mutant_color.y;}
+	float getMutantColorB() const {return mutant_color.z;}
+	float getMutantColorScale() const {return mutant_scale;}
 	
 private:
 	char has_base, has_guide;

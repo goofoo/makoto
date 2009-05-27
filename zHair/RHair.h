@@ -15,5 +15,9 @@ private:
 	float m_twist, m_clumping, m_fuzz, m_kink;
 	float m_shutter_open, m_shutter_close;
 	float m_hair_0, m_hair_1;
+	float m_root_colorR, m_root_colorG, m_root_colorB; 
+	float m_tip_colorR, m_tip_colorG, m_tip_colorB; 
+	float m_mutant_colorR, m_mutant_colorG, m_mutant_colorB; 
+	float m_mutant_scale;
 	int m_is_blur;
 };
