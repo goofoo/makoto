@@ -61,6 +61,7 @@ public:
 	const float* getT() const {return coord_t;}
 	const XYZ* getRootColors() const {return rootColorArray;}
 	const XYZ* getTipColors() const {return tipColorArray;}
+	const XYZ* getOs() const {return opacities;}
 	
 private:
 	float ndice, rootwidth, tipwidth;
@@ -84,6 +85,6 @@ private:
 	float* widths;
 	float *coord_s, *coord_t;
 	XYZ tip_color, root_color, mutant_color;
-	XYZ *rootColorArray, *tipColorArray;
+	XYZ *rootColorArray, *tipColorArray, *opacities;
 };
 #endif

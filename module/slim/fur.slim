@@ -8,6 +8,7 @@
 ## Fur Beneath surface
 ## Depth Range float
 ## fur.slim {
+## 	{ zhang,zhair#0	shadingmodel {Hair}		/Surface }
 ## 	{ zhang,Fur#0	shadingmodel {Fur}		/Surface }
 ## 	{ zhang,furDump#0	shadingmodel {Fur Dump}		/Surface }
 ## 	{ zhang,furDumpOcc#0	shadingmodel {Fur Dump Occlusion} /Surface }
@@ -17,6 +18,287 @@
 
 slim 1 extensions zhangdb {
 extensions zhang pxsl {
+
+template shadingmodel zhair {
+
+	parameter string sdisplay {
+ 		label "Display"
+	    description {
+		Choose the component to display in the primary render.
+	    }
+	    subtype selector
+	    range { color _color
+	    		colorA _colorA
+	    		colorB _colorB
+	    		colorC _colorC
+		    specular _specular
+		    keylight _keylight
+		    filllight _filllight
+		    backlight _backlight
+		    depth _depth
+		    shadow _shadow
+		    flattened _flattened
+		    
+		  }
+	    default _flattened
+	}
+
+	parameter float Kd {
+		label "Kd"
+		default 0.8
+	}
+	
+	parameter float Ks {
+		label "Ks"
+		default 0.5
+	}
+	
+	parameter float roughness {
+		label "Glossy"
+		default 0.05
+		range {0.001 0.1 0.001}
+	}
+	
+	parameter color cspec {
+		label "Specular Color"
+		default {1 1 1}
+	}
+	
+	parameter string srootcolor {
+	    label "Root Map"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter string stipcolor {
+	    label "Tip Map"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter string sspec {
+	    label "Specular Map"
+	    provider variable
+	    subtype texture
+	    default ""
+	}
+	
+	parameter float depth {
+		detail varying
+		detail mustvary "zhang,depthRange"
+	}
+	
+	parameter color root_color {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color tip_color {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter normal N_Srf {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+    parameter color _color {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	}
+		parameter color _colorA {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	
+		parameter color _colorB {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	
+		parameter color _colorC {
+	       detail varying
+	       provider primitive
+	       default "0 0 0"
+	       access output
+	       display hidden
+	} 
+	
+	parameter color _specular {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _keylight {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _filllight {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	} 
+	
+	parameter color _backlight {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _shadow {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+		parameter color _depth {
+	       detail varying
+	       provider primitive
+	       default "1 1 1"
+	       access output
+	       display hidden
+	   }
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslzhair(uniform string mode;
+				float Kd, Ks, roughness; color specflt;
+				uniform string rootmap, tipmap, specmap; 
+				float depth;
+		       output color CI;
+		       output color OI; )
+	   {
+	   	extern point P;
+	   	extern float s, t, v;
+		extern vector I, dPdv;
+		extern color root_color, tip_color;
+		extern normal N_Srf;
+		
+		color rootColor = root_color;
+		color tipColor = tip_color;
+		color speColor = specflt;
+		
+		if(rootmap != "")
+		{
+			rootColor *= color texture(rootmap,
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+		}
+		
+		if(tipmap != "")
+		{
+			tipColor *= color texture(tipmap,
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+		}
+		
+		if(specmap != "")
+		{
+			speColor *= color texture(specmap,
+			    	     s,
+				     1-t, 
+				    "swidth", 1,
+				    "twidth", 1,
+				    "filter", "box",
+				    "lerp", 0);
+		}
+		
+		vector T = normalize (dPdv);
+		vector V = -normalize(I);
+		float df2 = 0,diffterm=0;
+		color Cspec = 0, Cdiff = 0;
+		color mixed;
+		float rawspec;
+		color Cl2;
+		float vt;
+		
+		illuminance (P) 
+		{
+			float sq2;
+			df2=(T.normalize(L));  
+			df2*=df2;
+			df2=1.0-df2;
+			if (df2<0) df2=0;
+			else df2=sqrt(df2); 
+			
+			diffterm=df2;
+
+			vt =  V.T ;
+			sq2=1.0-vt*vt;
+			if (sq2<0) sq2=0;
+			else sq2=sqrt(sq2);
+			
+			rawspec = df2* sqrt( 1.0- vt * vt ) -  (normalize(L). T ) * vt;
+			if (rawspec<0) rawspec=0; 
+
+			Cl2=Cl;
+			
+			Cspec += Cl2*pow( rawspec, 1.0 / ( 3.0 * ( .101 - roughness ) ) )*.5;
+			Cdiff += Cl2*diffterm;
+		}
+			
+		mixed = mix( rootColor, tipColor, v );
+		
+		OI = Os;
+		CI = OI * mixed * Cdiff * Kd + Cspec * speColor * Ks ;
+	   }
+       }
+   }
+   
+
 
 template shadingmodel Fur {
 

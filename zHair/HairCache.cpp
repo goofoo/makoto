@@ -16,7 +16,7 @@ HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_space
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
 nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
-rootColorArray(0), tipColorArray(0)
+rootColorArray(0), tipColorArray(0), opacities(0)
 {
 }
 HairCache::~HairCache() 
@@ -36,6 +36,7 @@ HairCache::~HairCache()
 	if(coord_t) delete[] coord_t;
 	if(rootColorArray) delete[] rootColorArray;
 	if(tipColorArray) delete[] tipColorArray;
+	if(opacities) delete[] opacities;
 }
 
 int HairCache::dice()
@@ -253,6 +254,23 @@ void HairCache::create()
 			acc++;
 		}
 		widths[acc] = tipwidth;
+		acc++;
+	}
+	
+	if(opacities) delete[] opacities;
+	opacities = new XYZ[nwidths];
+	acc=0;
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		opacities[acc] = XYZ(1.f);
+		acc++;
+		float dos = 1.f/guide_data[bind_data[i]].num_seg;
+		for(short j = 0; j<= guide_data[bind_data[i]].num_seg; j++) 
+		{
+			opacities[acc] = XYZ(1.f - dos*j);
+			acc++;
+		}
+		opacities[acc] = XYZ(0.f);
 		acc++;
 	}
 	
