@@ -226,7 +226,7 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 
 bool hdrEnvNode::isBounded() const
 { 
-	return true;
+	return false;
 }
 
 MBoundingBox hdrEnvNode::boundingBox() const
