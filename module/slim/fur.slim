@@ -28,17 +28,14 @@ template shadingmodel zhair {
 	    }
 	    subtype selector
 	    range { color _color
-	    		colorA _colorA
-	    		colorB _colorB
-	    		colorC _colorC
-		    specular _specular
-		    keylight _keylight
-		    filllight _filllight
-		    backlight _backlight
-		    depth _depth
-		    shadow _shadow
-		    flattened _flattened
-		    
+				diffuse _diffuse
+				specular _specular
+				diffuse_fill _diffuse_fill
+				diffuse_back _diffuse_back
+				specular_fill _specular_fill
+				specular_back _specular_back
+				depth _depth
+				flattened _flattened
 		  }
 	    default _flattened
 	}
@@ -105,14 +102,7 @@ template shadingmodel zhair {
 	       access input
 	       display hidden
 	}
-	
-	parameter normal N_Srf {
-	       detail varying
-	       provider primitive
-	       default {0 0 0}
-	       access input
-	       display hidden
-	}
+
     parameter color _color {
 	       detail varying
 	       provider primitive
@@ -120,29 +110,14 @@ template shadingmodel zhair {
 	       access output
 	       display hidden
 	}
-		parameter color _colorA {
+
+	parameter color _diffuse {
 	       detail varying
 	       provider primitive
-	       default "0 0 0"
+	       default "0.0 0.0 0.0"
 	       access output
 	       display hidden
-	} 
-	
-		parameter color _colorB {
-	       detail varying
-	       provider primitive
-	       default "0 0 0"
-	       access output
-	       display hidden
-	} 
-	
-		parameter color _colorC {
-	       detail varying
-	       provider primitive
-	       default "0 0 0"
-	       access output
-	       display hidden
-	} 
+	}
 	
 	parameter color _specular {
 	       detail varying
@@ -152,7 +127,7 @@ template shadingmodel zhair {
 	       display hidden
 	}
 	
-	parameter color _keylight {
+	parameter color _diffuse_fill {
 	       detail varying
 	       provider primitive
 	       default "0.0 0.0 0.0"
@@ -160,7 +135,15 @@ template shadingmodel zhair {
 	       display hidden
 	}
 	
-	parameter color _filllight {
+		parameter color _diffuse_back {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _specular_fill {
 	       detail varying
 	       provider primitive
 	       default "0.0 0.0 0.0"
@@ -168,7 +151,7 @@ template shadingmodel zhair {
 	       display hidden
 	} 
 	
-	parameter color _backlight {
+	parameter color _specular_back {
 	       detail varying
 	       provider primitive
 	       default "0.0 0.0 0.0"
@@ -176,20 +159,14 @@ template shadingmodel zhair {
 	       display hidden
 	}
 	
-	parameter color _shadow {
-	       detail varying
-	       provider primitive
-	       default "0.0 0.0 0.0"
-	       access output
-	       display hidden
-	}
-		parameter color _depth {
+	parameter color _depth {
 	       detail varying
 	       provider primitive
 	       default "1 1 1"
 	       access output
 	       display hidden
-	   }
+	}
+	
        collection shadingmodel shadingmodel {
 	   access output
 	   display hidden
@@ -217,7 +194,6 @@ template shadingmodel zhair {
 	   	extern float s, t, v;
 		extern vector I, dPdv;
 		extern color root_color, tip_color;
-		extern normal N_Srf;
 		
 		color rootColor = root_color;
 		color tipColor = tip_color;
@@ -260,12 +236,13 @@ template shadingmodel zhair {
 		vector V = -normalize(I);
 		float df2 = 0,diffterm=0;
 		color Cspec = 0, Cdiff = 0;
+		color Cdiff_key = 0, Cspec_key = 0, Cdiff_fill = 0, Cspec_fill = 0, Cdiff_back = 0, Cspec_back = 0;
 		color mixed;
 		float rawspec;
 		color Cl2;
-		float vt;
+		float vt, contribspec, contribdiff;
 		
-		illuminance (P) 
+		illuminance ("keylight", P) 
 		{
 			float sq2;
 			df2=(T.normalize(L));  
@@ -286,14 +263,113 @@ template shadingmodel zhair {
 
 			Cl2=Cl;
 			
-			Cspec += Cl2*pow( rawspec, 1.0 / ( 3.0 * ( .101 - roughness ) ) )*.5;
-			Cdiff += Cl2*diffterm;
+			contribspec = 0;
+			lightsource("__nonspecular", contribspec);
+			
+			contribdiff = 0;
+			lightsource("__nondiffuse", contribdiff);
+			
+			Cspec_key += Cl2*pow( rawspec, 1.0 / ( 3.0 * ( .101 - roughness ) ) )*.5 * (1 - contribspec);
+			Cdiff_key += Cl2*diffterm * (1 - contribdiff);
+		}
+		
+		illuminance ("filllight", P) 
+		{
+			float sq2;
+			df2=(T.normalize(L));  
+			df2*=df2;
+			df2=1.0-df2;
+			if (df2<0) df2=0;
+			else df2=sqrt(df2); 
+			
+			diffterm=df2;
+
+			vt =  V.T ;
+			sq2=1.0-vt*vt;
+			if (sq2<0) sq2=0;
+			else sq2=sqrt(sq2);
+			
+			rawspec = df2* sqrt( 1.0- vt * vt ) -  (normalize(L). T ) * vt;
+			if (rawspec<0) rawspec=0; 
+
+			Cl2=Cl;
+			
+			contribspec = 0;
+			lightsource("__nonspecular", contribspec);
+			
+			contribdiff = 0;
+			lightsource("__nondiffuse", contribdiff);
+			
+			Cspec_fill += Cl2*pow( rawspec, 1.0 / ( 3.0 * ( .101 - roughness ) ) )*.5 * (1 - contribspec);
+			Cdiff_fill += Cl2*diffterm * (1 - contribdiff);
+		}
+		
+		illuminance ("backlight", P) 
+		{
+			float sq2;
+			df2=(T.normalize(L));  
+			df2*=df2;
+			df2=1.0-df2;
+			if (df2<0) df2=0;
+			else df2=sqrt(df2); 
+			
+			diffterm=df2;
+
+			vt =  V.T ;
+			sq2=1.0-vt*vt;
+			if (sq2<0) sq2=0;
+			else sq2=sqrt(sq2);
+			
+			rawspec = df2* sqrt( 1.0- vt * vt ) -  (normalize(L). T ) * vt;
+			if (rawspec<0) rawspec=0; 
+
+			Cl2=Cl;
+			
+			contribspec = 0;
+			lightsource("__nonspecular", contribspec);
+			
+			contribdiff = 0;
+			lightsource("__nondiffuse", contribdiff);
+			
+			Cspec_back += Cl2*pow( rawspec, 1.0 / ( 3.0 * ( .101 - roughness ) ) )*.5 * (1 - contribspec);
+			Cdiff_back += Cl2*diffterm * (1 - contribdiff);
 		}
 			
 		mixed = mix( rootColor, tipColor, v );
 		
+		Cspec = Cspec_key + Cspec_fill + Cspec_back;
+		Cdiff = Cdiff_key + Cdiff_fill + Cdiff_back;
+		
 		OI = Os;
-		CI = OI * mixed * Cdiff * Kd + Cspec * speColor * Ks ;
+						    
+		extern color _color;
+		extern color _diffuse;
+		extern color _specular;
+		extern color _diffuse_fill;
+		extern color _diffuse_back;
+		extern color _specular_fill;
+		extern color _specular_back;
+		extern color _depth;
+							
+		_color = mixed * Os;
+		_diffuse = Cdiff_key * Os;
+		_specular = Cspec_key * speColor;
+		_diffuse_fill = Cdiff_fill * Os;
+		_diffuse_back = Cdiff_back * Os;
+		_specular_fill = Cspec_fill * speColor;
+		_specular_back = Cspec_back * speColor;
+		_depth = depth;
+		
+		if(mode == "_color") CI = _color;
+		else if(mode == "_diffuse") CI = _diffuse;
+		else if(mode == "_specular") CI = _specular;
+		else if(mode == "_diffuse_fill") CI = _diffuse_fill;
+		else if(mode == "_diffuse_back") CI = _diffuse_back;
+		else if(mode == "_specular_fill") CI = _specular_fill;
+		else if(mode == "_specular_back") CI = _specular_back;
+		else if(mode == "_depth") CI = _depth;
+		else CI = OI * mixed * Cdiff * Kd + Cspec * speColor * Ks;
+		
 	   }
        }
    }
