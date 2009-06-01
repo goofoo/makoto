@@ -1,3 +1,5 @@
+#ifndef _DICETRIANGLE_H
+#define _DICETRIANGLE_H
 #include "../shared/zData.h"
 
 struct DiceParam
@@ -50,3 +52,4 @@ private:
 	float m_area;
 	float f120, f201, f012;
 };
+#endif

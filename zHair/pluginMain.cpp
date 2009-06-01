@@ -10,6 +10,7 @@
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
 #include "zHairNode.h"
+#include "FeatherNode.h"
 #include "HairDguideNode.h"
 #include "guideCommand.h"
 
@@ -21,7 +22,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.3.0 - 05/26/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.3.1 - 05/30/09", "Any");
 
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,
@@ -42,6 +43,14 @@ MStatus initializePlugin( MObject obj )
 		                             guide::newSyntax);
 	if (!status) {
 		status.perror("registerCommand");
+		return status;
+	}
+	
+	status = plugin.registerNode( "ZFeatherViz", FeatherNode::id, 
+						 &FeatherNode::creator, &FeatherNode::initialize,
+						 MPxNode::kLocatorNode );
+	if (!status) {
+		status.perror("registerNode");
 		return status;
 	}
 
@@ -74,6 +83,12 @@ MStatus uninitializePlugin( MObject obj )
 	status = plugin.deregisterCommand( "ZHairGuider" );
 	if (!status) {
 		status.perror("deregisterCommand");
+		return status;
+	}
+	
+	status = plugin.deregisterNode( FeatherNode::id );
+	if (!status) {
+		status.perror("deregisterNode");
 		return status;
 	}
 
