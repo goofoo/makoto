@@ -61,6 +61,7 @@ public:
 	static MObject alengthnoise;
 	static MObject asavemap;
 	static MObject astep;
+	static MObject aalternativepatch;
 	static	MTypeId		id;
 	
 		// Cached internal values

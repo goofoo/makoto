@@ -17,6 +17,7 @@ MObject HairNode::aguide;
 MObject HairNode::alengthnoise;
 MObject HairNode::asavemap;
 MObject HairNode::astep;
+MObject HairNode::aalternativepatch;
 
 HairNode::HairNode()
 {
@@ -70,6 +71,8 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		}
 		
 		int isave = data.inputValue(asavemap, &status).asInt();
+		
+		m_base->setPatchOrder(data.inputValue(aalternativepatch).asInt());
 		
 		if(startFrame == frame)
 		{
@@ -225,6 +228,11 @@ MStatus HairNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(asavemap);
 	
+	aalternativepatch = numAttr.create( "patchOrder", "pod", MFnNumericData::kInt, 0);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(aalternativepatch);
+	
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
 	attributeAffects( alengthnoise, aoutput );
@@ -238,6 +246,7 @@ MStatus HairNode::initialize()
 	attributeAffects( asavemap, aoutput );
 	attributeAffects( afuzz, aoutput );
 	attributeAffects( astep, aoutput );
+	attributeAffects( aalternativepatch, aoutput );
 	
 	return MS::kSuccess;
 }

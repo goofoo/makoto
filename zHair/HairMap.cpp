@@ -20,7 +20,7 @@ using namespace std;
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1)
+draw_step(1),order(0)
 {
 	root_color.x = root_color.y = root_color.z = 0.f;
 	tip_color.x = tip_color.y = tip_color.z = 1.f;
@@ -307,11 +307,21 @@ void hairMap::initGuide()
 			tang.normalize();
 			guide_data[patch_id].T[i%nseg] = XYZ(tang.x, tang.y, tang.z);
 			
-			MPoint corner0, corner1;
-			meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
-			meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
-			
-			MVector dv = corner0 - cen + corner1 - cen;
+			MPoint corner0, corner1, dv;
+			if(order == 0)
+			{
+				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+				meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+				
+				dv = corner0 - cen + corner1 - cen;
+			}
+			else
+			{
+				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+				meshFn.getPoint (vertlist[0], corner1, MSpace::kObject );
+				
+				dv = cen - corner1 + cen - corner0;
+			}
 			
 			guide_data[patch_id].dispv[i%nseg] = XYZ(dv.x, dv.y, dv.z);
 			
@@ -376,11 +386,21 @@ void hairMap::updateGuide()
 			tang.normalize();
 			guide_data[patch_id].T[i%nseg] = XYZ(tang.x, tang.y, tang.z);
 			
-			MPoint corner0, corner1;
-			meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
-			meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
-			
-			MVector dv = corner0 - cen + corner1 - cen;
+			MPoint corner0, corner1, dv;
+			if(order == 0)
+			{
+				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+				meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+				
+				dv = corner0 - cen + corner1 - cen;
+			}
+			else
+			{
+				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+				meshFn.getPoint (vertlist[0], corner1, MSpace::kObject );
+				
+				dv = cen - corner1 + cen -corner0;
+			}
 			
 			guide_data[patch_id].dispv[i%nseg] = XYZ(dv.x, dv.y, dv.z);
 			

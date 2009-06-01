@@ -54,6 +54,7 @@ public:
 	int load(const char* filename);
 	int loadStart(const char* filename);
 	
+	void setPatchOrder(const int val) {order = val;}
 	void setTwist(const float val) {twist = val;}
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
@@ -108,5 +109,6 @@ private:
 	XYZ bbox_low, bbox_high;
 	std::string m_cachename;
 	XYZ tip_color, root_color, mutant_color;
+	int order;
 };
 #endif
