@@ -341,7 +341,16 @@
 			Name="Source Files"
 			Filter="">
 			<File
+				RelativePath=".\curvePatchNode.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\DiceTriangle.cpp">
+			</File>
+			<File
+				RelativePath=".\FeatherMap.cpp">
+			</File>
+			<File
+				RelativePath=".\FeatherNode.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\FNoise.cpp">
