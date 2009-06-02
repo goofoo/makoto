@@ -11,7 +11,6 @@
 //
 
 #include <maya/MPxCommand.h>
-#include <maya/MFnMesh.h>
 #include <maya/MPointArray.h>
 #include <maya/MDoubleArray.h>
 #include <maya/MFloatPointArray.h>
@@ -26,7 +25,6 @@
 #include <maya/MArgList.h>
 #include <maya/MItMeshVertex.h>
 #include <maya/M3dView.h>
-#include <maya/MFnMesh.h>
 #include <maya/MSyntax.h>
 #include <maya/MArgDatabase.h>
 
@@ -41,24 +39,14 @@ public:
 	virtual		~guide();
     static      MSyntax newSyntax();
 	MStatus		doIt( const MArgList& );
-	MStatus		redoIt();
+	//MStatus		redoIt();
 	static		void* creator();
 
 private:
+	int num_seg ;
+    double seglength;
 	// Store the data you will need to undo the command here
 	//
-	MDagPath fDagPath;
-	MPointArray pointArray;
-	MVector tang;
-	MVector nor;
-	MVectorArray normalArray;
-	MVectorArray tangentArray;
-	int vertexCounts;
-	MPoint point;
-	int num_seg ;
-    double seglength ;
-
-	//MObject component;
 };
 
 #endif

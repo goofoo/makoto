@@ -7,7 +7,9 @@
 //
 // Author: Maya Plug-in Wizard 2.0
 //
-
+#include <maya/MFnMesh.h>
+#include <maya/MItMeshVertex.h>
+#include <maya/MFnNurbsCurve.h>
 #include "guideCommand.h"
 
 #include <maya/MGlobal.h>
@@ -60,6 +62,8 @@ MStatus guide::doIt( const MArgList& args)
 	MStatus status ;
 	MArgDatabase argData(syntax(), args);
     
+	MPoint point;
+	
 	if (argData.isFlagSet("-ns")) argData.getFlagArgument("-ns", 0, num_seg );
 	if (argData.isFlagSet("-sl")) argData.getFlagArgument("-sl", 0, seglength );
 	
@@ -78,15 +82,14 @@ MStatus guide::doIt( const MArgList& args)
 		displayError( "No components selected" );
 		return MS::kFailure;
 	}
-	pointArray.clear();
-	normalArray.clear();
-	tangentArray.clear();
+	
+	MPointArray pointArray;
+	MVector tang, nor;
+	MVectorArray normalArray, tangentArray;
 
+	MDagPath fDagPath;
 	list.getDagPath (fDagPath, component);
-	//switch(component.apiType())
-	//{
-		//case MFn::kMeshVertComponent:
-		//{
+
 	        MIntArray vertlist;
 			MIntArray facelist;
 			int index;
@@ -109,12 +112,24 @@ MStatus guide::doIt( const MArgList& args)
 				tang = tang^nor;
 				tangentArray.append( tang );
 			}
-			//break;
-		//}
-	//}
- return redoIt();
+	MFnNurbsCurve fcurve;
+	MDoubleArray knots;
+	for(unsigned j = 0;j <= num_seg;j++) knots.append(j);
+		
+	for(unsigned i = 0;i < pointArray.length();i++)
+	{
+		MPointArray cvs;
+		MPoint vert;
+		for(unsigned j = 0;j <= num_seg;j++)
+		{
+			vert = pointArray[i] + normalArray[i]*seglength*j;
+			cvs.append(vert);
+		}
+		fcurve.create ( cvs, knots, 1, MFnNurbsCurve::kOpen , 0, 0, MObject::kNullObj, &status );
+	}			
+	return status;
 }
-
+/*
 MStatus guide::redoIt()
 //
 //	Description:
@@ -175,9 +190,7 @@ MStatus guide::redoIt()
 	meshFn.assignUVs ( polygonCounts, polygonConnects );
 	return MS::kSuccess;	
 }
-
-
-
+*/
 void* guide::creator()
 //
 //	Description:
