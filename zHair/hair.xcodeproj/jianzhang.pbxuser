@@ -105,9 +105,9 @@
 	};
 	7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {780, 2772}}";
-			sepNavSelRange = "{1133, 0}";
-			sepNavVisRange = "{2532, 963}";
+			sepNavIntBoundsRect = "{{0, 0}, {590, 2996}}";
+			sepNavSelRange = "{2877, 0}";
+			sepNavVisRange = "{460, 1130}";
 			sepNavWindowFrame = "{{15, 72}, {839, 701}}";
 		};
 	};
@@ -142,7 +142,7 @@
 		fRef = 7F7BA5690FCC2AE5002BA34B /* HairMap.h */;
 		name = "HairMap.h: 95";
 		rLen = 12;
-		rLoc = 2482;
+		rLoc = 2532;
 		rType = 0;
 		vrLen = 1184;
 		vrLoc = 1465;
@@ -154,9 +154,9 @@
 		path = /Users/jianzhang/Documents/plankton/zHair/HairMap.h;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {788, 1568}}";
-			sepNavSelRange = "{2482, 12}";
-			sepNavVisRange = "{1118, 1765}";
+			sepNavIntBoundsRect = "{{0, 0}, {788, 1610}}";
+			sepNavSelRange = "{3226, 5}";
+			sepNavVisRange = "{2049, 1194}";
 			sepNavWindowFrame = "{{15, 85}, {542, 688}}";
 		};
 	};
@@ -185,7 +185,7 @@
 		fRef = 7F8E83650FD07CE20095DB34 /* HairMap.h */;
 		name = "HairMap.h: 84";
 		rLen = 12;
-		rLoc = 2482;
+		rLoc = 2532;
 		rType = 0;
 		vrLen = 1765;
 		vrLoc = 1118;
@@ -202,7 +202,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 27";
 		rLen = 0;
-		rLoc = 759;
+		rLoc = 768;
 		rType = 0;
 		vrLen = 1103;
 		vrLoc = 0;
@@ -212,7 +212,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 27";
 		rLen = 0;
-		rLoc = 759;
+		rLoc = 768;
 		rType = 0;
 		vrLen = 884;
 		vrLoc = 929;
@@ -240,10 +240,10 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {656, 9366}}";
-			sepNavSelRange = "{759, 0}";
-			sepNavVisRange = "{929, 884}";
-			sepNavWindowFrame = "{{164, 73}, {704, 705}}";
+			sepNavIntBoundsRect = "{{0, 0}, {968, 9492}}";
+			sepNavSelRange = "{18754, 0}";
+			sepNavVisRange = "{18123, 1291}";
+			sepNavWindowFrame = "{{474, 66}, {704, 705}}";
 		};
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
@@ -256,9 +256,9 @@
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {675, 4424}}";
-			sepNavSelRange = "{4544, 0}";
-			sepNavVisRange = "{4162, 1364}";
+			sepNavIntBoundsRect = "{{0, 0}, {675, 4452}}";
+			sepNavSelRange = "{2055, 13}";
+			sepNavVisRange = "{118, 942}";
 			sepNavWindowFrame = "{{24, 67}, {734, 700}}";
 		};
 	};
@@ -288,9 +288,9 @@
 	};
 	7FE735AB0FD1890600718607 /* FeatherMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {692, 9268}}";
-			sepNavSelRange = "{145, 7}";
-			sepNavVisRange = "{0, 1076}";
+			sepNavIntBoundsRect = "{{0, 0}, {968, 9212}}";
+			sepNavSelRange = "{17401, 0}";
+			sepNavVisRange = "{17893, 1143}";
 			sepNavWindowFrame = "{{60, 71}, {542, 688}}";
 		};
 	};
@@ -353,6 +353,12 @@
 		name = DiceTriangle.h;
 		path = /Users/jianzhang/Documents/plankton/zHair/../shared/DiceTriangle.h;
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {566, 742}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1110}";
+			sepNavWindowFrame = "{{578, 45}, {542, 688}}";
+		};
 	};
 	7FE735BF0FD18AEE00718607 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -372,8 +378,9 @@
 		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {439, 1834}}";
-			sepNavSelRange = "{406, 14}";
-			sepNavVisRange = "{387, 128}";
+			sepNavSelRange = "{420, 0}";
+			sepNavVisRange = "{387, 129}";
+			sepNavWindowFrame = "{{256, 76}, {542, 688}}";
 		};
 	};
 	7FE735C10FD18AEE00718607 /* PBXTextBookmark */ = {

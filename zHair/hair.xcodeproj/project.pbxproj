@@ -18,6 +18,7 @@
 		7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA90FB61FAC00187112 /* zWorks.cpp */; };
 		7FE735A40FD186A100718607 /* FeatherNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE735A30FD186A100718607 /* FeatherNode.cpp */; };
 		7FE735AC0FD1890600718607 /* FeatherMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE735AB0FD1890600718607 /* FeatherMap.cpp */; };
+		7FE735E50FD4FB2000718607 /* curvePatchNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
 		7FE735A30FD186A100718607 /* FeatherNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FeatherNode.cpp; sourceTree = "<group>"; };
 		7FE735AB0FD1890600718607 /* FeatherMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FeatherMap.cpp; sourceTree = "<group>"; };
+		7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = curvePatchNode.cpp; sourceTree = "<group>"; };
 		7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = zhairMenus.mel; path = ../module/scripts/zhairMenus.mel; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* ZHair.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ZHair.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -61,6 +63,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */,
 				7FE735AB0FD1890600718607 /* FeatherMap.cpp */,
 				7FE735A30FD186A100718607 /* FeatherNode.cpp */,
 				7F7BA3E90FC67CA1002BA34B /* zGlobal.cpp */,
@@ -162,6 +165,7 @@
 				7F7BA3EA0FC67CA1002BA34B /* zGlobal.cpp in Sources */,
 				7FE735A40FD186A100718607 /* FeatherNode.cpp in Sources */,
 				7FE735AC0FD1890600718607 /* FeatherMap.cpp in Sources */,
+				7FE735E50FD4FB2000718607 /* curvePatchNode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
