@@ -23,8 +23,6 @@
 #include <maya/MPxCommand.h>
 #include <maya/MObject.h>
 #include <maya/MArgList.h>
-#include <maya/MItMeshVertex.h>
-#include <maya/M3dView.h>
 #include <maya/MSyntax.h>
 #include <maya/MArgDatabase.h>
 
