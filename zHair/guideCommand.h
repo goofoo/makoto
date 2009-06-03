@@ -41,10 +41,12 @@ public:
 	static		void* creator();
 
 private:
-	int num_seg ;
-    double seglength;
+	int num_seg, num_strand;
+    double seglength, strand_dist;
 	// Store the data you will need to undo the command here
 	//
+	void strandCurve();
+	void createCurve();
 };
 
 #endif

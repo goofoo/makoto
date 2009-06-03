@@ -36,7 +36,6 @@ MObject HairDguideNode::acachename;
 MObject HairDguideNode::aframe;
 MObject HairDguideNode::afuzz;
 MObject HairDguideNode::akink;
-MObject HairDguideNode::atwist;
 MObject HairDguideNode::aclump; 
 MObject HairDguideNode::astep;
 MObject HairDguideNode::arootcolorr;
@@ -98,7 +97,6 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 			int iss = m_base->load(sbuf.c_str());
 			if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
 			
-			m_base->setTwist(data.inputValue(atwist).asFloat());
 			m_base->setClumping(data.inputValue(aclump).asFloat());
 			m_base->setFuzz(data.inputValue(afuzz).asFloat());
 			m_base->setKink(data.inputValue(akink).asFloat());
@@ -193,11 +191,6 @@ MStatus HairDguideNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(akink);
 	
-	atwist = numAttr.create( "twisting", "twt", MFnNumericData::kFloat, 0.0 );
-	numAttr.setStorable(true);
-	numAttr.setKeyable(true);
-	addAttribute(atwist);
-	
 	aclump = numAttr.create( "clumping", "cmp", MFnNumericData::kFloat, 0.0 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
@@ -260,7 +253,6 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( acachename, output );
 	attributeAffects( afuzz, output );
 	attributeAffects( akink, output );
-	attributeAffects( atwist, output );
 	attributeAffects( aclump, output );
 	attributeAffects( astep, output );
 	attributeAffects( arootcolorr, output );

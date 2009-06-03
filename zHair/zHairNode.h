@@ -51,7 +51,6 @@ public:
 	static MObject afuzz;
 	static MObject  astartframe;
 	static MObject  acurrenttime;
-	static MObject  aExposure;
 	static MObject  aHDRName;
 	static MObject  aSize;
 	static MObject aworldSpace;

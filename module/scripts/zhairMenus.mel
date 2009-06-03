@@ -58,10 +58,13 @@ global proc zhairCreateMenus()
        
         // append menu items
         menuItem -p zTools -l "Z Hair" -subMenu true zhairItems;
-			menuItem -l "Create Guider" -c "zhair_do_create_guider";
+			menuItem -l "Create Guider Curve" -c "zhair_do_create_guider";
+			menuItem -l "Strand Guider Curve" -c "zhair_do_strand_guider";
 			menuItem -l "Create Guider Options" -subMenu true zhair_guideroptions;
 				menuItem -l "5" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_ns;
 				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_sl;
+				menuItem -l "3" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_strandCount;
+				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_strandDist;
 			setParent -menu ..;
 			menuItem -divider true;
             menuItem -l "Create Hair" -c "zhair_attach";
@@ -124,7 +127,14 @@ global proc zhair_findexisting()
 
 global proc zhair_do_create_guider()
 {
-	string $cmd = "ZHairGuider -ns " + `menuItem -q -l zhair_guideroption_ns` + " -sl " + `menuItem -q -l zhair_guideroption_sl`;
+	string $cmd = "ZHairGuider -cc 1 -ns " + `menuItem -q -l zhair_guideroption_ns` + " -sl " + `menuItem -q -l zhair_guideroption_sl`;
+	eval($cmd);
+}
+
+global proc zhair_do_strand_guider()
+{
+	pickWalk -d down;
+	string $cmd = "ZHairGuider -sc 1 -sct " + `menuItem -q -l zhair_guideroption_strandCount` + " -sd " + `menuItem -q -l zhair_guideroption_strandDist`;
 	eval($cmd);
 }
 
@@ -237,6 +247,8 @@ columnLayout -adjustableColumn true;
 //column begin
 	intFieldGrp -l "Number of Segment" -v1 5 -cc "menuItem -e -l `intFieldGrp -q -v1 zhair_guider_ns_grp` zhair_guideroption_ns" zhair_guider_ns_grp;
 	floatFieldGrp -l "Segment Length" -v1 1.0 -cc "menuItem -e -l `floatFieldGrp -q -v1 zhair_guider_sl_grp` zhair_guideroption_sl" zhair_guider_sl_grp;
+	intFieldGrp -l "Number of Strand" -v1 3 -cc "menuItem -e -l `intFieldGrp -q -v1 zhair_guider_nstr_grp` zhair_guideroption_strandCount" zhair_guider_nstr_grp;
+	floatFieldGrp -l "Strand Distace" -v1 1.0 -cc "menuItem -e -l `floatFieldGrp -q -v1 zhair_guider_sd_grp` zhair_guideroption_strandDist" zhair_guider_sd_grp;
 	button -l "Done" -c "deleteUI setguideroptWin";
 showWindow setguideroptWin;
 }

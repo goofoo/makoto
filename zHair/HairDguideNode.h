@@ -51,7 +51,6 @@ public:
 	static MObject aframe;
 	static MObject afuzz;
 	static MObject akink;
-	static MObject atwist;
 	static MObject aclump;
 	static MObject astep;
 	static MObject arootcolorr;
