@@ -202,24 +202,24 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7F35FDEA0FD6532D00E5FCA9</string>
+				<string>7F35FDFD0FD6676000E5FCA9</string>
 				<key>PBXProjectModuleLabel</key>
-				<string>HairMap.cpp</string>
+				<string>zHairNode.cpp</string>
 				<key>PBXSplitModuleInNavigatorKey</key>
 				<dict>
 					<key>Split0</key>
 					<dict>
 						<key>PBXProjectModuleGUID</key>
-						<string>7F35FDEB0FD6532D00E5FCA9</string>
+						<string>7F35FDFE0FD6676000E5FCA9</string>
 						<key>PBXProjectModuleLabel</key>
-						<string>HairMap.cpp</string>
+						<string>zHairNode.cpp</string>
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F35FDEC0FD6532D00E5FCA9</string>
+						<string>7F35FDFF0FD6676000E5FCA9</string>
 						<key>history</key>
 						<array>
-							<string>7F35FDAB0FD57C8900E5FCA9</string>
+							<string>7F35FDFB0FD6674D00E5FCA9</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -231,51 +231,11 @@
 			<key>Geometry</key>
 			<dict>
 				<key>Frame</key>
-				<string>{{0, 20}, {653, 596}}</string>
+				<string>{{0, 20}, {734, 603}}</string>
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>295 134 653 637 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>7F35FDED0FD6532D00E5FCA9</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>HairMap.h</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7F35FDEE0FD6532D00E5FCA9</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>HairMap.h</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7F35FDEF0FD6532D00E5FCA9</string>
-						<key>history</key>
-						<array>
-							<string>7F35FDD40FD6526100E5FCA9</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {690, 601}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>15 131 690 642 0 0 1280 778 </string>
+				<string>24 123 734 644 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -382,7 +342,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>534 239 690 397 0 0 1280 778 </string>
+						<string>504 292 690 397 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -419,7 +379,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {482, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>534 239 690 397 0 0 1280 778 </string>
+								<string>504 292 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -441,7 +401,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {482, 351}}</string>
 								<key>RubberWindowFrame</key>
-								<string>534 239 690 397 0 0 1280 778 </string>
+								<string>504 292 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -601,16 +561,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7F35FDF00FD6532D00E5FCA9</string>
-		<string>7F35FDF10FD6532D00E5FCA9</string>
 		<string>7FE58BA50FB61F9000187112</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>7F35FDED0FD6532D00E5FCA9</string>
-		<string>7F35FDEA0FD6532D00E5FCA9</string>
 		<string>/Users/jianzhang/Documents/plankton/zHair/hair.xcodeproj</string>
+		<string>7F35FDFD0FD6676000E5FCA9</string>
 	</array>
 	<key>WindowString</key>
-	<string>534 239 690 397 0 0 1280 778 </string>
+	<string>504 292 690 397 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>

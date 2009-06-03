@@ -168,8 +168,6 @@ MStatus HairNode::initialize()
     CHECK_MSTATUS( numAttr.setStorable(true));
     CHECK_MSTATUS( numAttr.setKeyable(true));
     CHECK_MSTATUS( numAttr.setDefault(0.f));
-    CHECK_MSTATUS( numAttr.setMin(-1.f));
-	numAttr.setMax(1);
 	numAttr.setCached( true );
 	numAttr.setInternal( true );
 	addAttribute(aSize);

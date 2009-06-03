@@ -585,6 +585,7 @@ int hairMap::load(const char* filename)
 		guide_data[i].N = new XYZ[guide_data[i].num_seg];
 		guide_data[i].T = new XYZ[guide_data[i].num_seg];
 		guide_data[i].dispv = new XYZ[guide_data[i].num_seg];
+		guide_data[i].space = new MATRIX44F[guide_data[i].num_seg];
 
 		infile.read((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
@@ -605,7 +606,7 @@ int hairMap::load(const char* filename)
 	infile.read((char*)parray, sizeof(XYZ)*n_vert);
 	
 	infile.close();	
-	
+	/*
 	if(guide_spaceinv) delete[] guide_spaceinv;
 	guide_spaceinv = new MATRIX44F[num_guide];
 	
@@ -615,6 +616,17 @@ int hairMap::load(const char* filename)
 		XYZ binor = guide_data[i].N[0].cross(guide_data[i].T[0]);
 		guide_spaceinv[i].setOrientations(guide_data[i].T[0], binor, guide_data[i].N[0]);
 		guide_spaceinv[i].inverse();
+	}
+	*/
+	for(unsigned i = 0;i<num_guide;i++)
+	{
+		for(unsigned j=0; j<guide_data[i].num_seg; j++)
+		{
+			guide_data[i].space[j].setIdentity();
+			XYZ binor = guide_data[i].N[j].cross(guide_data[i].T[j]);
+			guide_data[i].space[j].setOrientations(guide_data[i].T[j], binor, guide_data[i].N[j]);
+			guide_data[i].space[j].setTranslation(guide_data[i].P[j]);
+		}
 	}
 // calculate bbox	
 	bbox_low = XYZ(10e6, 10e6, 10e6);
@@ -658,6 +670,7 @@ int hairMap::loadStart(const char* filename)
 		guide_data[i].N = new XYZ[guide_data[i].num_seg];
 		guide_data[i].T = new XYZ[guide_data[i].num_seg];
 		guide_data[i].dispv = new XYZ[guide_data[i].num_seg];
+		guide_data[i].space = new MATRIX44F[guide_data[i].num_seg];
 
 		infile.read((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
@@ -692,9 +705,14 @@ int hairMap::loadStart(const char* filename)
 	
 	for(unsigned i = 0;i<num_guide;i++)
 	{
-		guide_spaceinv[i].setIdentity();
-		XYZ binor = guide_data[i].N[0].cross(guide_data[i].T[0]);
-		guide_spaceinv[i].setOrientations(guide_data[i].T[0], binor, guide_data[i].N[0]);
+		for(unsigned j=0; j<guide_data[i].num_seg; j++)
+		{
+			guide_data[i].space[j].setIdentity();
+			XYZ binor = guide_data[i].N[j].cross(guide_data[i].T[j]);
+			guide_data[i].space[j].setOrientations(guide_data[i].T[j], binor, guide_data[i].N[j]);
+			guide_data[i].space[j].setTranslation(guide_data[i].P[j]);
+		}
+		guide_spaceinv[i] = guide_data[i].space[0];
 		guide_spaceinv[i].inverse();
 	}
 	return 1;
