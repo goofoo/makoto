@@ -26,6 +26,7 @@ struct Dguide
 	XYZ* N;
 	XYZ* T;
 	XYZ* dispv;
+	MATRIX44F* space;
 };
 
 class hairMap
@@ -55,7 +56,6 @@ public:
 	int loadStart(const char* filename);
 	
 	void setPatchOrder(const int val) {order = val;}
-	void setTwist(const float val) {twist = val;}
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
 	void setKink(const float val) {kink = val;}
@@ -72,7 +72,6 @@ public:
 	float getBBox1Y() const {return bbox_high.y;}
 	float getBBox1Z() const {return bbox_high.z;}
 	const char* getCacheName() const {return m_cachename.c_str();}
-	float getTwist() const {return twist;}
 	float getClumping() const {return clumping;}
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
@@ -103,7 +102,7 @@ private:
 	unsigned num_guide, num_guideobj, n_vert, n_tri;
 
 	unsigned* bind_data;
-	float twist, clumping, fuzz, kink, mutant_scale;
+	float clumping, fuzz, kink, mutant_scale;
 	unsigned draw_step;
 	MATRIX44F* guide_spaceinv;
 	XYZ bbox_low, bbox_high;

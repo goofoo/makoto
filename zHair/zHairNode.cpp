@@ -7,7 +7,6 @@ MTypeId HairNode::id( 0x0002518 );
 MObject HairNode::afuzz;
 MObject HairNode::astartframe;
 MObject HairNode::acurrenttime;
-MObject	HairNode::aExposure;
 MObject	HairNode::aSize;
 MObject	HairNode::aHDRName;
 MObject HairNode::aworldSpace;
@@ -103,7 +102,6 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			}
 		}
 		
-		m_base->setTwist(data.inputValue(aExposure).asFloat());
 		m_base->setClumping(data.inputValue(aSize).asFloat());
 		m_base->setFuzz(data.inputValue(afuzz).asFloat());
 		m_base->setKink(data.inputValue(alengthnoise).asFloat());
@@ -120,7 +118,7 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 {
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
-	glPointSize(2);
+	glShadeModel(GL_SMOOTH);
 	m_base->draw();
 	m_base->drawGuide();
 	glPopAttrib();
@@ -163,18 +161,6 @@ MStatus HairNode::initialize()
     CHECK_MSTATUS( numAttr.setStorable(true));
     CHECK_MSTATUS( numAttr.setKeyable(true));
 	addAttribute(alengthnoise);
-	
-	aExposure = numAttr.create("twist", "twt",
-						  MFnNumericData::kFloat, 0.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
-    CHECK_MSTATUS( numAttr.setDefault(0.f));
-	numAttr.setCached( true );
-	numAttr.setInternal( true );
-	numAttr.setMin(-1);
-	numAttr.setMax(1);
-	addAttribute(aExposure);
 	
 	aSize = numAttr.create("clumping", "clp",
 						  MFnNumericData::kFloat, 0.f, &status);
@@ -236,7 +222,6 @@ MStatus HairNode::initialize()
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
 	attributeAffects( alengthnoise, aoutput );
-	attributeAffects( aExposure, aoutput );
 	attributeAffects( aSize, aoutput );
 	attributeAffects( aworldSpace, aoutput );
 	attributeAffects( agrowth, aoutput );
@@ -263,17 +248,6 @@ HairNode::setInternalValueInContext( const MPlug& plug,
 		handledAttribute = true;
 		m_hdrname = (MString) handle.asString();
 	}
-
-	else if (plug == aExposure)
-	{
-		handledAttribute = true;
-		float val = handle.asFloat();
-		if (val != m_exposure)
-		{
-			m_exposure = val;
-			mAttributesChanged = true;
-		}
-	}
 	else if (plug == aSize)
 	{
 		handledAttribute = true;
@@ -295,12 +269,7 @@ HairNode::getInternalValueInContext( const MPlug& plug,
 											  MDGContext&)
 {
 	bool handledAttribute = false;
-	if (plug == aExposure)
-	{
-		handledAttribute = true;
-		handle.set( m_exposure );
-	}
-	else if (plug == aHDRName)
+	if (plug == aHDRName)
 	{
 		handledAttribute = true;
 		handle.set( m_hdrname );

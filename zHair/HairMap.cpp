@@ -22,8 +22,8 @@ parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
 draw_step(1),order(0)
 {
-	root_color.x = root_color.y = root_color.z = 0.f;
-	tip_color.x = tip_color.y = tip_color.z = 1.f;
+	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
+	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
 	mutant_color.x = mutant_color.y = mutant_color.z = 0.f;
 }
 hairMap::~hairMap() 
@@ -164,7 +164,7 @@ void hairMap::draw()
 	
 	float noi;
 	
-	XYZ ppre, dv, axisobj, axisworld, guiderotaxis, cc;
+	XYZ ppre, pcur, dv, ddv,axisobj, axisworld, guiderotaxis, cc, pobj;
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step)
 	{
@@ -174,14 +174,18 @@ void hairMap::draw()
 		XYZ dcolor = (ctip - croot)/(float)guide_data[bind_data[i]].num_seg;
 		//glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
 		//glColor3f(ddice[i].coords, ddice[i].coordt, 0);
-		ppre = pbuf[i]; 
+		ppre = pbuf[i];
+		
+		pobj = ppre;
+		guide_spaceinv[bind_data[i]].transform(pobj);
+		
 		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
 		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
 		axisobj.x = 0;
 		for(short j = 0; j< guide_data[bind_data[i]].num_seg; j++) 
 		{
 			dv = guide_data[bind_data[i]].dispv[j];
-			MATRIX44F mat;
+			/*MATRIX44F mat;
 			
 			XYZ binor = guide_data[bind_data[i]].N[j].cross(guide_data[bind_data[i]].T[j]);
 			mat.setOrientations(guide_data[bind_data[i]].T[j], binor, guide_data[bind_data[i]].N[j]);
@@ -191,8 +195,6 @@ void hairMap::draw()
 			mat.transformAsNormal(rt);
 
 			axisworld = rt;
-			//glVertex3f(guide_data[bind_data[i]].P[j].x, guide_data[bind_data[i]].P[j].y, guide_data[bind_data[i]].P[j].z);
-			//glVertex3f(guide_data[bind_data[i]].P[j].x+axisworld.x, guide_data[bind_data[i]].P[j].y+axisworld.y, guide_data[bind_data[i]].P[j].z+axisworld.z);
 			axisworld.normalize();
 			
 			cc = croot + dcolor * j;
@@ -206,8 +208,29 @@ void hairMap::draw()
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 			dv.rotateAroundAxis(axisworld, -twist*noi);
 			
+			
+			
+			cc = croot + dcolor * (j+1);
+			glColor3f(cc.x, cc.y, cc.z);
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+			*/
+			cc = croot + dcolor * j;
+			glColor3f(cc.x, cc.y, cc.z);
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			pcur = pobj*(noi - clumping);
+			guide_data[bind_data[i]].space[j].transform(pcur);
+			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
-			ppre += dv*noi;
+			dv *= noi;
+			pcur += dv;
+			
+			ddv = pcur - ppre;
+			ddv.normalize();
+			ddv *= dv.length();
+
+			ppre += ddv;
 			
 			cc = croot + dcolor * (j+1);
 			glColor3f(cc.x, cc.y, cc.z);
@@ -241,7 +264,6 @@ void hairMap::initGuide()
 		nend /= 2;
 		
 		int nseg = meshFn.numPolygons()/nend;
-		
 		num_guide += faceIter.count()/nseg;
 	}
 	//MGlobal::displayInfo(MString(" ")+num_guide);
@@ -257,7 +279,7 @@ void hairMap::initGuide()
 	MIntArray vertlist;
 	float r,g,b;
 	int patch_id, patch_acc =0;
-	XYZ pcur, ppre;
+	XYZ pcur, ppre, pcen;
 	for(unsigned iguide=0; iguide<oguide.length(); iguide++)
 	{
 		MFnMesh meshFn(oguide[iguide], &status);
@@ -285,6 +307,7 @@ void hairMap::initGuide()
 				guide_data[patch_id].N = new XYZ[nseg];
 				guide_data[patch_id].T = new XYZ[nseg];
 				guide_data[patch_id].dispv = new XYZ[nseg];
+				guide_data[patch_id].space = new MATRIX44F[nseg];
 
 				r = rand( )%31/31.f;
 				g = rand( )%71/71.f;
@@ -294,6 +317,7 @@ void hairMap::initGuide()
 			
 			cen = faceIter.center (  MSpace::kObject);
 			pcur = XYZ(cen.x, cen.y, cen.z);
+			pcen = pcur;
 			
 			guide_data[patch_id].P[i%nseg] = pcur;
 			
@@ -330,11 +354,14 @@ void hairMap::initGuide()
 			guide_data[patch_id].T[i%nseg] = guide_data[patch_id].N[i%nseg].cross(side);
 			guide_data[patch_id].T[i%nseg].normalize();
 			
+			guide_data[patch_id].space[i%nseg].setIdentity();
+			XYZ binor = guide_data[patch_id].N[i%nseg].cross(guide_data[patch_id].T[i%nseg]);
+			guide_data[patch_id].space[i%nseg].setOrientations(guide_data[patch_id].T[i%nseg], binor, guide_data[patch_id].N[i%nseg]);
+			guide_data[patch_id].space[i%nseg].setTranslation(pcen);
+			
 			if(i%nseg ==0)
 			{
-				guide_spaceinv[patch_id].setIdentity();
-				XYZ binor = guide_data[patch_id].N[0].cross(guide_data[patch_id].T[0]);
-				guide_spaceinv[patch_id].setOrientations(guide_data[patch_id].T[0], binor, guide_data[patch_id].N[0]);
+				guide_spaceinv[patch_id] = guide_data[patch_id].space[0];
 				guide_spaceinv[patch_id].inverse();
 			}
 		}
@@ -350,7 +377,7 @@ void hairMap::updateGuide()
 	MVector nor, tang;
 	MIntArray vertlist;
 	int patch_id, patch_acc =0;
-	XYZ pcur, ppre;
+	XYZ pcur, ppre, pcen;
 	for(unsigned iguide=0; iguide<oguide.length(); iguide++)
 	{
 		MFnMesh meshFn(oguide[iguide], &status);
@@ -373,6 +400,7 @@ void hairMap::updateGuide()
 			
 			cen = faceIter.center (  MSpace::kObject);
 			pcur = XYZ(cen.x, cen.y, cen.z);
+			pcen = pcur;
 			
 			guide_data[patch_id].P[i%nseg] = pcur;
 			
@@ -409,13 +437,10 @@ void hairMap::updateGuide()
 			guide_data[patch_id].T[i%nseg] = guide_data[patch_id].N[i%nseg].cross(side);
 			guide_data[patch_id].T[i%nseg].normalize();
 			
-			if(i%nseg ==0)
-			{
-				guide_spaceinv[patch_id].setIdentity();
-				XYZ binor = guide_data[patch_id].N[0].cross(guide_data[patch_id].T[0]);
-				guide_spaceinv[patch_id].setOrientations(guide_data[patch_id].T[0], binor, guide_data[patch_id].N[0]);
-				guide_spaceinv[patch_id].inverse();
-			}
+			guide_data[patch_id].space[i%nseg].setIdentity();
+			XYZ binor = guide_data[patch_id].N[i%nseg].cross(guide_data[patch_id].T[i%nseg]);
+			guide_data[patch_id].space[i%nseg].setOrientations(guide_data[patch_id].T[i%nseg], binor, guide_data[patch_id].N[i%nseg]);
+			guide_data[patch_id].space[i%nseg].setTranslation(pcen);
 		}
 		patch_acc += nend;
 	}
