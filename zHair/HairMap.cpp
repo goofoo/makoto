@@ -164,7 +164,7 @@ void hairMap::draw()
 	
 	float noi;
 	
-	XYZ ppre, pcur, dv, ddv,axisobj, axisworld, guiderotaxis, cc, pobj;
+	XYZ ppre, pcur, dv, ddv, cc, pobj;
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step)
 	{
@@ -179,9 +179,9 @@ void hairMap::draw()
 		pobj = ppre;
 		guide_spaceinv[bind_data[i]].transform(pobj);
 		
-		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
-		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
-		axisobj.x = 0;
+		//axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
+		//guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
+		//axisobj.x = 0;
 		for(short j = 0; j< guide_data[bind_data[i]].num_seg; j++) 
 		{
 			dv = guide_data[bind_data[i]].dispv[j];
@@ -441,6 +441,12 @@ void hairMap::updateGuide()
 			XYZ binor = guide_data[patch_id].N[i%nseg].cross(guide_data[patch_id].T[i%nseg]);
 			guide_data[patch_id].space[i%nseg].setOrientations(guide_data[patch_id].T[i%nseg], binor, guide_data[patch_id].N[i%nseg]);
 			guide_data[patch_id].space[i%nseg].setTranslation(pcen);
+			
+			if(i%nseg ==0)
+			{
+				guide_spaceinv[patch_id] = guide_data[patch_id].space[0];
+				guide_spaceinv[patch_id].inverse();
+			}
 		}
 		patch_acc += nend;
 	}
@@ -606,10 +612,10 @@ int hairMap::load(const char* filename)
 	infile.read((char*)parray, sizeof(XYZ)*n_vert);
 	
 	infile.close();	
-	/*
+	
 	if(guide_spaceinv) delete[] guide_spaceinv;
 	guide_spaceinv = new MATRIX44F[num_guide];
-	
+	/*
 	for(unsigned i = 0;i<num_guide;i++)
 	{
 		guide_spaceinv[i].setIdentity();
@@ -627,6 +633,8 @@ int hairMap::load(const char* filename)
 			guide_data[i].space[j].setOrientations(guide_data[i].T[j], binor, guide_data[i].N[j]);
 			guide_data[i].space[j].setTranslation(guide_data[i].P[j]);
 		}
+		guide_spaceinv[i] = guide_data[i].space[0];
+		guide_spaceinv[i].inverse();
 	}
 // calculate bbox	
 	bbox_low = XYZ(10e6, 10e6, 10e6);

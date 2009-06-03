@@ -20,6 +20,7 @@ struct Dguide
 	XYZ* N;
 	XYZ* T;
 	XYZ* dispv;
+	MATRIX44F* space;
 };
 
 class HairCache
@@ -37,7 +38,6 @@ public:
 	void create();
 	
 	void setDiceNumber(const float val) {ndice = val;} 
-	void setTwist(const float val) {twist = val;}
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
 	void setKink(const float val) {kink = val;}
@@ -48,7 +48,6 @@ public:
 	void setMutantColorScale(const float v) {mutant_scale = v;}
 	
 	const char* getCacheName() const {return m_cachename.c_str();}
-	float getTwist() const {return twist;}
 	float getClumping() const {return clumping;}
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
@@ -77,7 +76,7 @@ private:
 	unsigned num_guide, n_vert, n_tri;
 
 	unsigned* bind_data;
-	float twist, clumping, fuzz, kink, mutant_scale;
+	float clumping, fuzz, kink, mutant_scale;
 	MATRIX44F* guide_spaceinv;
 	std::string m_cachename;
 	int* nvertices;

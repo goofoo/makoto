@@ -1,6 +1,6 @@
 #ifndef ZDATA_H
 #define ZDATA_H
-
+#include <iostream>
 #include <math.h>
 #define PI 3.14159265358979323846
 
@@ -313,7 +313,7 @@ struct XYZ
 		normalize();
 		x *= leng;
 		y *= leng;
-		z *- leng;
+		z *= leng;
 	}
 	
 	float x,y,z;

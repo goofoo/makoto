@@ -12,7 +12,7 @@ public:
 private:
 	float m_ndice, m_width0, m_width1;
 	char* m_cache_name;
-	float m_twist, m_clumping, m_fuzz, m_kink;
+	float m_clumping, m_fuzz, m_kink;
 	float m_shutter_open, m_shutter_close;
 	float m_hair_0, m_hair_1;
 	float m_root_colorR, m_root_colorG, m_root_colorB; 

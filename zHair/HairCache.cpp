@@ -128,6 +128,7 @@ int HairCache::load(const char* filename)
 		guide_data[i].N = new XYZ[guide_data[i].num_seg];
 		guide_data[i].T = new XYZ[guide_data[i].num_seg];
 		guide_data[i].dispv = new XYZ[guide_data[i].num_seg];
+		guide_data[i].space = new MATRIX44F[guide_data[i].num_seg];
 
 		infile.read((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
@@ -149,14 +150,16 @@ int HairCache::load(const char* filename)
 	
 	infile.close();	
 	
-	if(guide_spaceinv) delete[] guide_spaceinv;
-	guide_spaceinv = new MATRIX44F[num_guide];
-	
 	for(unsigned i = 0;i<num_guide;i++)
 	{
-		guide_spaceinv[i].setIdentity();
-		XYZ binor = guide_data[i].N[0].cross(guide_data[i].T[0]);
-		guide_spaceinv[i].setOrientations(guide_data[i].T[0], binor, guide_data[i].N[0]);
+		for(unsigned j=0; j<guide_data[i].num_seg; j++)
+		{
+			guide_data[i].space[j].setIdentity();
+			XYZ binor = guide_data[i].N[j].cross(guide_data[i].T[j]);
+			guide_data[i].space[j].setOrientations(guide_data[i].T[j], binor, guide_data[i].N[j]);
+			guide_data[i].space[j].setTranslation(guide_data[i].P[j]);
+		}
+		guide_spaceinv[i] = guide_data[i].space[0];
 		guide_spaceinv[i].inverse();
 	}
 	
@@ -184,6 +187,7 @@ int HairCache::loadStart(const char* filename)
 		guide_data[i].N = new XYZ[guide_data[i].num_seg];
 		guide_data[i].T = new XYZ[guide_data[i].num_seg];
 		guide_data[i].dispv = new XYZ[guide_data[i].num_seg];
+		guide_data[i].space = new MATRIX44F[guide_data[i].num_seg];
 
 		infile.read((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
@@ -218,9 +222,14 @@ int HairCache::loadStart(const char* filename)
 	
 	for(unsigned i = 0;i<num_guide;i++)
 	{
-		guide_spaceinv[i].setIdentity();
-		XYZ binor = guide_data[i].N[0].cross(guide_data[i].T[0]);
-		guide_spaceinv[i].setOrientations(guide_data[i].T[0], binor, guide_data[i].N[0]);
+		for(unsigned j=0; j<guide_data[i].num_seg; j++)
+		{
+			guide_data[i].space[j].setIdentity();
+			XYZ binor = guide_data[i].N[j].cross(guide_data[i].T[j]);
+			guide_data[i].space[j].setOrientations(guide_data[i].T[j], binor, guide_data[i].N[j]);
+			guide_data[i].space[j].setTranslation(guide_data[i].P[j]);
+		}
+		guide_spaceinv[i] = guide_data[i].space[0];
 		guide_spaceinv[i].inverse();
 	}
 	return 1;
@@ -307,27 +316,30 @@ void HairCache::create()
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
 	
-	XYZ ppre, dv, axisobj, axisworld, guiderotaxis;
+	XYZ ppre, pcur, dv, ddv, pobj;
 	acc=0;
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		ppre = pbuf[i];
+		
+		pobj = ppre;
+		guide_spaceinv[bind_data[i]].transform(pobj);
 
 		vertices[acc] = ppre;
 		acc++;
 		vertices[acc] = ppre;
 		acc++;
 			
-		axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
-		guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
-		axisobj.x = 0;
+		//axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
+		//guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
+		//axisobj.x = 0;
 		for(short j = 0; j< guide_data[bind_data[i]].num_seg; j++) 
 		{
 			vertices[acc] = ppre;
 			acc++;
 			
 			dv = guide_data[bind_data[i]].dispv[j];
-			MATRIX44F mat;
+			/*MATRIX44F mat;
 			
 			XYZ binor = guide_data[bind_data[i]].N[j].cross(guide_data[bind_data[i]].T[j]);
 			mat.setOrientations(guide_data[bind_data[i]].T[j], binor, guide_data[bind_data[i]].N[j]);
@@ -349,6 +361,20 @@ void HairCache::create()
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
 			ppre += dv*noi;
+			*/
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			pcur = pobj*(noi - clumping);
+			guide_data[bind_data[i]].space[j].transform(pcur);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+			dv *= noi;
+			pcur += dv;
+			
+			ddv = pcur - ppre;
+			ddv.normalize();
+			ddv *= dv.length();
+
+			ppre += ddv;
 		}
 		vertices[acc] = ppre;
 		acc++;
