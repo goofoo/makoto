@@ -13,6 +13,7 @@
 #include "FeatherNode.h"
 #include "HairDguideNode.h"
 #include "guideCommand.h"
+#include "curvePatchNode.h"
 
 // The initializePlugin method is called by Maya when the
 // plugin is loaded. It registers the hwbruiseMapShader node
@@ -22,7 +23,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.3.1 - 05/30/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.3.3 - 06/03/09", "Any");
 
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,
@@ -49,6 +50,13 @@ MStatus initializePlugin( MObject obj )
 	status = plugin.registerNode( "ZFeatherViz", FeatherNode::id, 
 						 &FeatherNode::creator, &FeatherNode::initialize,
 						 MPxNode::kLocatorNode );
+	if (!status) {
+		status.perror("registerNode");
+		return status;
+	}
+	
+	status = plugin.registerNode( "Curve2Patch", curvePatchNode::id, 
+						 &curvePatchNode::creator, &curvePatchNode::initialize);
 	if (!status) {
 		status.perror("registerNode");
 		return status;
@@ -87,6 +95,12 @@ MStatus uninitializePlugin( MObject obj )
 	}
 	
 	status = plugin.deregisterNode( FeatherNode::id );
+	if (!status) {
+		status.perror("deregisterNode");
+		return status;
+	}
+	
+	status = plugin.deregisterNode( curvePatchNode::id );
 	if (!status) {
 		status.perror("deregisterNode");
 		return status;
