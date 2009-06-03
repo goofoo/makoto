@@ -60,6 +60,7 @@ global proc zhairCreateMenus()
         menuItem -p zTools -l "Z Hair" -subMenu true zhairItems;
 			menuItem -l "Create Guider Curve" -c "zhair_do_create_guider";
 			menuItem -l "Strand Guider Curve" -c "zhair_do_strand_guider";
+			menuItem -l "Create Guider Mesh" -c "zhair_do_mesh_guider";
 			menuItem -l "Create Guider Options" -subMenu true zhair_guideroptions;
 				menuItem -l "5" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_ns;
 				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_sl;
@@ -77,6 +78,36 @@ global proc zhairCreateMenus()
 			setParent -menu ..;
 		setParent -menu ..;
     }
+}
+
+global proc zhair_do_mesh_guider()
+{
+	string $sel[] = `ls -sl`;
+	if(size($sel) < 2) 
+	{
+		print("Select curve(s) and a poly meshe to create guider mesh!");
+		return;
+	}
+	
+	string $map =`createNode Curve2Patch`;
+	
+	int $numsel = size($sel);
+	int $i;
+	for($i=0; $i<$numsel-1; $i++)
+	{
+		select -r $sel[$i];
+		string $curve[] = `pickWalk -d down`;
+		connectAttr -f ($curve[0]+".worldSpace[0]") ($map+".guideMesh["+$i+"]");
+	}
+	
+	select -r $sel[$numsel-1];
+	string $mesh[] = `pickWalk -d down`;
+	connectAttr -f ($mesh[0]+".outMesh") ($map+".growMesh");
+	
+	string $cub[] = `polyCube -ch 0`;
+	select -r $cub[0];
+	$cub = `pickWalk -d down`;
+	connectAttr -f ($map+".outMesh") ($cub[0] + ".inMesh");
 }
 
 global proc zhair_attach()
@@ -110,7 +141,7 @@ global proc zhair_attach()
 	
 	setAttr ($map + ".startFrame") `playbackOptions -q -min`;
 	
-	 zhair_findexisting();
+	zhair_findexisting();
 }
 
 global proc zhair_findexisting()
