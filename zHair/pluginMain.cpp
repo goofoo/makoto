@@ -14,6 +14,7 @@
 #include "HairDguideNode.h"
 #include "guideCommand.h"
 #include "curvePatchNode.h"
+#include "combCurveTool.h"
 
 // The initializePlugin method is called by Maya when the
 // plugin is loaded. It registers the hwbruiseMapShader node
@@ -61,6 +62,9 @@ MStatus initializePlugin( MObject obj )
 		status.perror("registerNode");
 		return status;
 	}
+	
+	status = plugin.registerContextCommand( "combCurveToolContext",
+										    combCurveContextCmd::creator );
 
 	MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
 
@@ -105,9 +109,10 @@ MStatus uninitializePlugin( MObject obj )
 		status.perror("deregisterNode");
 		return status;
 	}
+	
+	status = plugin.deregisterContextCommand( "combCurveToolContext" );
 
 	MGlobal::executeCommand("zhairRemoveMenus;");
 
 	return status;
 }
-

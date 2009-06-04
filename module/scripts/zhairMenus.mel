@@ -68,6 +68,8 @@ global proc zhairCreateMenus()
 				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_strandDist;
 			setParent -menu ..;
 			menuItem -divider true;
+			menuItem -l "Comb Guider Curve" -c "zhair_comb";
+			menuItem -divider true;
             menuItem -l "Create Hair" -c "zhair_attach";
 			menuItem -l "Modify Selected Hair" -c "open_zhair_modifywin";
 			menuItem -divider true;
@@ -414,4 +416,10 @@ formLayout -edit
     $form;
 
 showWindow editzhairWin;
+}
+
+global proc zhair_comb()
+{
+	string $t = `combCurveToolContext`;
+	setToolTo $t;
 }

@@ -8,7 +8,17 @@ struct XY
 {
 	XY() {}
 	XY(float& _x, float& _y):x(_x), y(_y) {}
+	XY(short& _x, short& _y) 
+	{
+		x = _x;
+		y = _y;
+	}
 	float x,y;
+	
+	float distantTo(const XY& other)
+	{
+		return sqrt((x-other.x)*(x-other.x) + (y-other.y)*(y-other.y));
+	}
 };
 
 struct XYZ
