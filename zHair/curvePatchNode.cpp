@@ -76,10 +76,16 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 			
 			MPoint closestp;
 			MVector closestn;
-			fbase.getClosestPointAndNormal (cvs[0], closestp, closestn, MSpace::kObject);
-			MVector dir = cvs[1] - cvs[0];
-			dir.normalize();
-			MVector tangent = closestn^dir;
+			int closestPolygonID;
+			MIntArray vertexList;
+			MVector tangent;
+         
+			fbase.getClosestPointAndNormal (cvs[0], closestp, closestn, MSpace::kObject, &closestPolygonID );
+			fbase.getPolygonVertices(closestPolygonID,vertexList);
+			fbase.getFaceVertexTangent(closestPolygonID,vertexList[0],tangent,MSpace::kObject,NULL);
+			//MVector dir = cvs[1] - cvs[0];
+			//dir.normalize();
+			//MVector tangent = closestn^dir;
 			tangent.normalize();
 			
 			for(unsigned j = 0;j <= num_seg;j++)
