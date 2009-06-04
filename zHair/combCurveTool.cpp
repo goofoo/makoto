@@ -93,9 +93,6 @@ MStatus combCurveContext::doPress( MEvent & event )
 // Get the start position of the combCurve 
 //
 {
-	//combCurveTool * cmd = (combCurveTool*)newToolCommand();
-	//cmd->finalize();
-	
 	listAdjustment = MGlobal::kReplaceList;
 		// Figure out which modifier keys were pressed, and set up the
 	// listAdjustment parameter to reflect what to do with the selected points.

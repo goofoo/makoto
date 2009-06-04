@@ -47,6 +47,7 @@ private:
 	//
 	void strandCurve();
 	void createCurve();
+	void convertPatch();
 };
 
 #endif

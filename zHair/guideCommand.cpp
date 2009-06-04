@@ -10,8 +10,10 @@
 #include <maya/MFnMesh.h>
 #include <maya/MItMeshVertex.h>
 #include <maya/MFnNurbsCurve.h>
+#include <maya/MItMeshPolygon.h>
 #include "guideCommand.h"
 #include "../shared/zData.h"
+#include "../shared/zWorks.h"
 #include <maya/MGlobal.h>
 #include <math.h>
 
@@ -37,6 +39,7 @@ MSyntax guide::newSyntax()
 
 	syntax.addFlag("-cc", "-createCurve", MSyntax::kBoolean);
 	syntax.addFlag("-sc", "-strandCurve", MSyntax::kBoolean);
+	syntax.addFlag("-cp", "-convertPatch", MSyntax::kBoolean);
 	syntax.addFlag("-sct", "-strandCount", MSyntax::kLong);
 	syntax.addFlag("-sd", "-strandDistance", MSyntax::kDouble);
 	syntax.addFlag("-ns", "-numSegment", MSyntax::kLong);
@@ -74,71 +77,11 @@ MStatus guide::doIt( const MArgList& args)
 	
 	if(argData.isFlagSet("-sc")) strandCurve();
 	if(argData.isFlagSet("-cc")) createCurve();
+	if(argData.isFlagSet("-cp")) convertPatch();
     			
 	return MS::kSuccess;
 }
-/*
-MStatus guide::redoIt()
-//
-//	Description:
-//		implements redo for the MEL guide command. 
-//
-//		This method is called when the user has undone a command of this type
-//		and then redoes it.  No arguments are passed in as all of the necessary
-//		information is cached by the doIt method.
-//
-//	Return Value:
-//		MS::kSuccess - command succeeded
-//		MS::kFailure - redoIt failed.  this is a serious problem that will
-//                     likely cause the undo queue to be purged
-//
-{
-	MStatus status;
-	MFnMesh meshFn;
-	
-    MPointArray vertexArray;
-	MIntArray polygonCounts;
-    MIntArray polygonConnects;
-	MFloatArray uarray, varray;
-	vertexArray.clear();
-	polygonCounts.clear();
-	polygonConnects.clear();
 
-	unsigned acc=0;
-	for(unsigned i = 0;i < pointArray.length();i++)
-	{
-		
-		for(unsigned j = 0;j < num_seg;j++)
-		{
-			polygonCounts.append(4);
-			
-			polygonConnects.append(acc+2*j);
-			polygonConnects.append(acc+2*j+2);
-			polygonConnects.append(acc+2*j+3);
-			polygonConnects.append(acc+2*j+1);
-		}
-		
-		acc += 2*(num_seg+1);
-		
-		for(unsigned j = 0;j <= num_seg;j++)
-		{
-			MPoint vert;
-			vert = pointArray[i] - tangentArray[i]*0.5*seglength + normalArray[i]*seglength*j;
-			vertexArray.append(vert);
-			vert = pointArray[i] + tangentArray[i]*0.5*seglength + normalArray[i]*seglength*j;
-			vertexArray.append(vert);
-			uarray.append(0);
-			uarray.append(1.f/(float)num_seg);
-			varray.append(1.f/(float)num_seg*j);
-			varray.append(1.f/(float)num_seg*j);
-		}
-	}
-	MObject newMesh = meshFn.create((2*num_seg+2)*pointArray.length(), num_seg*pointArray.length(),vertexArray,polygonCounts,polygonConnects,MObject::kNullObj );
-	meshFn.setUVs ( uarray, varray );
-	meshFn.assignUVs ( polygonCounts, polygonConnects );
-	return MS::kSuccess;	
-}
-*/
 void* guide::creator()
 //
 //	Description:
@@ -291,6 +234,64 @@ void guide::createCurve()
 	}
 }
 
-
-
-
+void guide::convertPatch()
+{
+	MStatus status;
+	MSelectionList slist;
+	MGlobal::getActiveSelectionList( slist );
+	MItSelectionList iter( slist, MFn::kMesh, &status);
+	
+	MDagPath 	mdagPath;
+	MObject 	mComponent;
+	
+	for ( ; !iter.isDone(); iter.next() ) 
+	{
+		iter.getDagPath( mdagPath, mComponent );
+		mdagPath.extendToShape ();
+		
+		MGlobal::displayInfo(mdagPath.fullPathName());
+		
+		MItMeshPolygon faceIter(mdagPath);
+		int nend = 0;
+		int nconn;
+		for(; !faceIter.isDone(); faceIter.next()) 
+		{
+			faceIter.numConnectedFaces (nconn);
+			if(nconn==1) nend++;
+		}
+		nend /= 2;
+		
+		int nseg = faceIter.count() / nend;
+		
+		
+		
+		MDoubleArray knots;
+		for(unsigned j = 0;j <= nseg;j++) knots.append(j);
+		
+		MPointArray cvs;
+		
+		faceIter.reset();
+		for(int i=0; !faceIter.isDone(); faceIter.next(), i++) 
+		{
+			cvs.append(faceIter.center (MSpace::kObject));
+			if(i>0 && (i+1)%nseg==0)
+			{
+				MVector tip = cvs[nseg-2] - cvs[nseg-1];
+				for(unsigned j = 0;j < nseg;j++)
+				{
+					if(j<nseg-1) cvs[j] += (cvs[j] - cvs[j+1])/2;
+					else cvs[j] += tip/2;
+				}
+				
+				MPoint last = cvs[nseg-1] - tip;
+				cvs.append(last);
+				
+				MFnNurbsCurve fcurve;
+				fcurve.create ( cvs, knots, 1, MFnNurbsCurve::kOpen , 0, 0, MObject::kNullObj, &status );
+				cvs.clear();
+			}
+		}
+		
+		
+	}
+}

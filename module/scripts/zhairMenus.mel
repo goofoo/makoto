@@ -60,13 +60,15 @@ global proc zhairCreateMenus()
         menuItem -p zTools -l "Z Hair" -subMenu true zhairItems;
 			menuItem -l "Create Guider Curve" -c "zhair_do_create_guider";
 			menuItem -l "Strand Guider Curve" -c "zhair_do_strand_guider";
-			menuItem -l "Create Guider Mesh" -c "zhair_do_mesh_guider";
-			menuItem -l "Create Guider Options" -subMenu true zhair_guideroptions;
+			menuItem -l "Create Curve Options" -subMenu true zhair_guideroptions;
 				menuItem -l "5" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_ns;
 				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_sl;
 				menuItem -l "3" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_strandCount;
 				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_strandDist;
 			setParent -menu ..;
+			menuItem -divider true;
+			menuItem -l "Create Guider Mesh" -c "zhair_do_mesh_guider";
+			menuItem -l "Recover Guider Curve" -c "ZHairGuider -cp 1";
 			menuItem -divider true;
 			menuItem -l "Comb Guider Curve" -c "zhair_comb";
 			menuItem -divider true;
