@@ -22,6 +22,6 @@ global proc combCurveOptionValues(string $toolName)
  	// number of CVs
  	//
  	$set = eval("combCurveToolContext -q -opt " + $toolName);
- 	intSliderGrp -e -value $set combCurveOpt;
+ 	radioButtonGrp -e -select $set combCurveOpt;
 }
 

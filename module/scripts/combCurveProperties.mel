@@ -12,14 +12,9 @@ global proc combCurveProperties ()
 				frameLayout -cll true -cl false -l "combCurve Options" combCurveFrame;
 					columnLayout combCurveOptions;
 						separator -style "none";
-
-						intSliderGrp
-							-field 1
-							-label "Number of CVs"
-							-minValue 20
-							-maxValue 100
-							-value 1
-							combCurveOpt;
+							
+						radioButtonGrp -numberOfRadioButtons 4
+    -label "Brush" -labelArray4 "Free" "Tip" "Scale" "Noise" -cc "combCurveSetOpt(`radioButtonGrp -q -sl combCurveOpt`)" combCurveOpt;   
 
 					setParent ..; // combCurveOptions
 				setParent ..; // combCurveFrame
@@ -35,6 +30,10 @@ global proc combCurveProperties ()
 	combCurveSetCallbacks($parent);
 }
 
+global proc combCurveSetOpt(int $val)
+{
+	combCurveToolContext -e -opt $val `currentCtx`;
+}
 
 global proc combCurveSetCallbacks(string $parent)
 //

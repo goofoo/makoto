@@ -72,7 +72,7 @@ MStatus combCurveTool::finalize()
 	return MPxToolCommand::doFinalize( command );
 }
 
-combCurveContext::combCurveContext():mOpt(0)
+combCurveContext::combCurveContext():mOpt(1)
 {
 	setTitleString ( "combCurve Tool" );
 
