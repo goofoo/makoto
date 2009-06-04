@@ -1,0 +1,27 @@
+global proc combCurveValues(string $toolName) 
+{
+	string $parent = 
+		(`toolPropertyWindow -q -location` + "|combCurve|combCurveTabs|combCurveTab");
+	setParent $parent;
+
+	string $icon = "combCurveTool.xpm";
+	string $help = "";
+	toolPropertySetCommon $toolName $icon $help;
+
+	frameLayout -e -en true -cl false combCurveFrame;
+	combCurveOptionValues($toolName);
+
+	toolPropertySelect combCurve;
+}
+
+
+global proc combCurveOptionValues(string $toolName)
+{
+	int $set;
+
+ 	// number of CVs
+ 	//
+ 	$set = eval("combCurveToolContext -q -opt " + $toolName);
+ 	intSliderGrp -e -value $set combCurveOpt;
+}
+

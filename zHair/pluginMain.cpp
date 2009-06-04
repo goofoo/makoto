@@ -1,9 +1,7 @@
 /*
  *  pluginMain.cpp
- *  hwbruiseMapShader
  *
- *  2.4.5 - 04.18.08
- *  Generalize sph2vec(), pointing zenith to -Z axis
+ *  2.4.5 - 06.05.08
  *
  */
 
@@ -24,7 +22,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.3.3 - 06/03/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.4.1 - 06/05/09", "Any");
 
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,
@@ -64,7 +62,10 @@ MStatus initializePlugin( MObject obj )
 	}
 	
 	status = plugin.registerContextCommand( "combCurveToolContext",
-										    combCurveContextCmd::creator);
+										    combCurveContextCmd::creator,
+											"combCurveTool",
+											combCurveTool::creator,
+											combCurveTool::newSyntax);
 
 	MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
 
@@ -110,7 +111,7 @@ MStatus uninitializePlugin( MObject obj )
 		return status;
 	}
 	
-	status = plugin.deregisterContextCommand( "combCurveToolContext" );
+	status = plugin.deregisterContextCommand( "combCurveToolContext", "combCurveTool");
 
 	MGlobal::executeCommand("zhairRemoveMenus;");
 

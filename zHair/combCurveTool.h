@@ -19,7 +19,14 @@
 
 #include <maya/MPxContextCommand.h>
 #include <maya/MPxContext.h>
+#include <maya/MPxToolCommand.h> 
 #include <maya/MEvent.h>
+#include <maya/MToolsInfo.h>
+
+#include <maya/MSyntax.h>
+#include <maya/MArgParser.h>
+#include <maya/MArgDatabase.h>
+#include <maya/MArgList.h>
 
 #include <maya/MDagPathArray.h>
 #include <maya/MMatrix.h>
@@ -34,9 +41,22 @@
 
 #include "../shared/zData.h"
 
-//////////////////////////////////////////////
-// The user Context
-//////////////////////////////////////////////
+class combCurveTool : public MPxToolCommand
+{
+public:
+					combCurveTool(); 
+	virtual			~combCurveTool(); 
+	static void*	creator();
+
+	MStatus			doIt(const MArgList& args);
+	MStatus			parseArgs(const MArgList& args);
+	static MSyntax	newSyntax();
+	MStatus			finalize();
+
+private:
+	unsigned opt;
+};
+
 const char helpString[] =
 			"Click with left button or drag with middle button to select";
 
@@ -50,7 +70,10 @@ public:
 	virtual MStatus	doRelease( MEvent & event );
 	virtual MStatus	doEnterRegion( MEvent & event );
 	
+	virtual	void	getClassName(MString & name) const;
+	
 	void setOperation(unsigned val);
+	unsigned getOperation() const;
 
 private:
 	short					start_x, start_y;
@@ -68,10 +91,12 @@ class combCurveContextCmd : public MPxContextCommand
 {
 public:	
 						combCurveContextCmd();
+	virtual MStatus		doEditFlags();
+	virtual MStatus doQueryFlags();
 	virtual MPxContext*	makeObj();
 	static	void*		creator();
-	virtual MStatus		doEditFlags();
 	virtual MStatus		appendSyntax();
+	
 protected:
     combCurveContext*		fContext;
 };

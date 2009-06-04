@@ -3,6 +3,75 @@
 #include <maya/MItCurveCV.h>
 #include "../shared/zWorks.h"
 
+#define kOptFlag "-opt" 
+#define kOptFlagLong "-option"
+
+combCurveTool::~combCurveTool() {}
+
+combCurveTool::combCurveTool()
+{
+	setCommandString("combCurveToolCmd");
+}
+
+void* combCurveTool::creator()
+{
+	return new combCurveTool;
+}
+
+MSyntax combCurveTool::newSyntax()
+{
+	MSyntax syntax;
+
+	syntax.addFlag(kOptFlag, kOptFlagLong, MSyntax::kUnsigned);
+	
+	return syntax;
+}
+
+MStatus combCurveTool::doIt(const MArgList &args)
+//
+// Description
+//     Sets up the helix parameters from arguments passed to the
+//     MEL command.
+//
+{
+	MStatus status;
+
+	status = parseArgs(args);
+
+	return MS::kSuccess;
+}
+
+MStatus combCurveTool::parseArgs(const MArgList &args)
+{
+	MStatus status;
+	MArgDatabase argData(syntax(), args);
+	
+	if (argData.isFlagSet(kOptFlag)) {
+		unsigned tmp;
+		status = argData.getFlagArgument(kOptFlag, 0, tmp);
+		if (!status) {
+			status.perror("numCVs flag parsing failed");
+			return status;
+		}
+	}
+	
+	return MS::kSuccess;
+}
+
+MStatus combCurveTool::finalize()
+//
+// Description
+//     Command is finished, construct a string for the command
+//     for journalling.
+//
+{
+	MArgList command;
+	command.addArg(commandString());
+	command.addArg(MString(kOptFlag));
+	command.addArg((int)opt);
+	return MPxToolCommand::doFinalize( command );
+}
+
 combCurveContext::combCurveContext():mOpt(0)
 {
 	setTitleString ( "combCurve Tool" );
@@ -24,6 +93,9 @@ MStatus combCurveContext::doPress( MEvent & event )
 // Get the start position of the combCurve 
 //
 {
+	//combCurveTool * cmd = (combCurveTool*)newToolCommand();
+	//cmd->finalize();
+	
 	listAdjustment = MGlobal::kReplaceList;
 		// Figure out which modifier keys were pressed, and set up the
 	// listAdjustment parameter to reflect what to do with the selected points.
@@ -60,7 +132,7 @@ MStatus combCurveContext::doPress( MEvent & event )
 	clipNear = fnCamera.nearClippingPlane();
 	clipFar = fnCamera.farClippingPlane();
 	
-	zDisplayFloat2(clipNear, clipFar);
+	zDisplayFloat(mOpt);
 	
 	mat.setIdentity ();
 	mat.v[0][0] = -rightDir.x;
@@ -213,9 +285,20 @@ MStatus combCurveContext::doEnterRegion( MEvent & )
 	return setHelpString( helpString );
 }
 
+void combCurveContext::getClassName( MString & name ) const
+{
+	name.set("combCurve");
+}
+
 void combCurveContext::setOperation(unsigned val)
 {
 	mOpt = val;
+	MToolsInfo::setDirtyFlag(*this);
+}
+
+unsigned combCurveContext::getOperation() const
+{
+	return mOpt;
 }
 
 combCurveContextCmd::combCurveContextCmd() {}
@@ -237,10 +320,10 @@ MStatus combCurveContextCmd::doEditFlags()
 	
 	MArgParser argData = parser();
 	
-	if (argData.isFlagSet("mode")) 
+	if (argData.isFlagSet(kOptFlag)) 
 	{
 		unsigned mode;
-		status = argData.getFlagArgument("mode", 0, mode);
+		status = argData.getFlagArgument(kOptFlag, 0, mode);
 		if (!status) {
 			status.perror("mode flag parsing failed.");
 			return status;
@@ -251,11 +334,22 @@ MStatus combCurveContextCmd::doEditFlags()
 	return MS::kSuccess;
 }
 
+MStatus combCurveContextCmd::doQueryFlags()
+{
+	MArgParser argData = parser();
+	
+	if (argData.isFlagSet(kOptFlag)) {
+		setResult((int)fContext->getOperation());
+	}
+	
+	return MS::kSuccess;
+}
+
 MStatus combCurveContextCmd::appendSyntax()
 {
 	MSyntax mySyntax = syntax();
 	
-	if (MS::kSuccess != mySyntax.addFlag("mode", "mode", MSyntax::kUnsigned)) return MS::kFailure;
+	if (MS::kSuccess != mySyntax.addFlag(kOptFlag, kOptFlagLong, MSyntax::kUnsigned)) return MS::kFailure;
 
 	return MS::kSuccess;
 }

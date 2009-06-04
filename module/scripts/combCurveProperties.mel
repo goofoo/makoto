@@ -1,0 +1,62 @@
+global proc combCurveProperties ()
+{
+	setUITemplate -pushTemplate DefaultTemplate;
+
+	string $parent = `toolPropertyWindow -q -location`;
+    setParent $parent;
+	string $curctx = `currentCtx`;
+
+	columnLayout combCurve;
+		tabLayout -childResizable true combCurveTabs;
+			columnLayout combCurveTab;
+				frameLayout -cll true -cl false -l "combCurve Options" combCurveFrame;
+					columnLayout combCurveOptions;
+						separator -style "none";
+
+						intSliderGrp
+							-field 1
+							-label "Number of CVs"
+							-minValue 20
+							-maxValue 100
+							-value 1
+							combCurveOpt;
+
+					setParent ..; // combCurveOptions
+				setParent ..; // combCurveFrame
+			setParent ..; // combCurveTab
+		setParent ..; // combCurveTabs
+	setParent ..; // combCurve
+
+	// Name the tabs; -tl does not allow tab labelling upon creation
+	tabLayout -e -tl combCurveTab "Tool Defaults" combCurveTabs;
+
+	setUITemplate -popTemplate;
+
+	combCurveSetCallbacks($parent);
+}
+
+
+global proc combCurveSetCallbacks(string $parent)
+//
+//	Procedure Name:
+//		combCurveSetCallbacks
+//
+//	Description:
+//		associate control events with callbacks
+//
+//	Input Arguments:
+//		parent name.
+//
+//	Return Value:
+//		None.
+//
+{
+	setParent	$parent;
+	string		$whichCtx = `currentCtx`;
+
+ 	intSliderGrp -e
+ 		-cc ("combCurveToolContext -e -opt #1 `currentCtx`")
+ 		combCurveOpt;
+}
+
+
