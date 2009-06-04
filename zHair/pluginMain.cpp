@@ -64,7 +64,7 @@ MStatus initializePlugin( MObject obj )
 	}
 	
 	status = plugin.registerContextCommand( "combCurveToolContext",
-										    combCurveContextCmd::creator );
+										    combCurveContextCmd::creator);
 
 	MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
 

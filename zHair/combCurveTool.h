@@ -49,6 +49,8 @@ public:
 	virtual MStatus	doDrag( MEvent & event );
 	virtual MStatus	doRelease( MEvent & event );
 	virtual MStatus	doEnterRegion( MEvent & event );
+	
+	void setOperation(unsigned val);
 
 private:
 	short					start_x, start_y;
@@ -59,6 +61,7 @@ private:
 	MDagPathArray curveList;
 	MATRIX44F mat;
 	double clipNear, clipFar;
+	unsigned mOpt;
 };
 
 class combCurveContextCmd : public MPxContextCommand
@@ -67,4 +70,8 @@ public:
 						combCurveContextCmd();
 	virtual MPxContext*	makeObj();
 	static	void*		creator();
+	virtual MStatus		doEditFlags();
+	virtual MStatus		appendSyntax();
+protected:
+    combCurveContext*		fContext;
 };

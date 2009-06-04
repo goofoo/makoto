@@ -3,7 +3,7 @@
 #include <maya/MItCurveCV.h>
 #include "../shared/zWorks.h"
 
-combCurveContext::combCurveContext()
+combCurveContext::combCurveContext():mOpt(0)
 {
 	setTitleString ( "combCurve Tool" );
 
@@ -207,16 +207,23 @@ MStatus combCurveContext::doRelease( MEvent & event )
 	}
 	return MS::kSuccess;		
 }
+
 MStatus combCurveContext::doEnterRegion( MEvent & )
 {
 	return setHelpString( helpString );
+}
+
+void combCurveContext::setOperation(unsigned val)
+{
+	mOpt = val;
 }
 
 combCurveContextCmd::combCurveContextCmd() {}
 
 MPxContext* combCurveContextCmd::makeObj()
 {
-	return new combCurveContext();
+	fContext = new combCurveContext();
+	return fContext;
 }
 
 void* combCurveContextCmd::creator()
@@ -224,4 +231,32 @@ void* combCurveContextCmd::creator()
 	return new combCurveContextCmd;
 }
 
+MStatus combCurveContextCmd::doEditFlags()
+{
+	MStatus status = MS::kSuccess;
+	
+	MArgParser argData = parser();
+	
+	if (argData.isFlagSet("mode")) 
+	{
+		unsigned mode;
+		status = argData.getFlagArgument("mode", 0, mode);
+		if (!status) {
+			status.perror("mode flag parsing failed.");
+			return status;
+		}
+		fContext->setOperation(mode);
+	}
+	
+	return MS::kSuccess;
+}
+
+MStatus combCurveContextCmd::appendSyntax()
+{
+	MSyntax mySyntax = syntax();
+	
+	if (MS::kSuccess != mySyntax.addFlag("mode", "mode", MSyntax::kUnsigned)) return MS::kFailure;
+
+	return MS::kSuccess;
+}
 
