@@ -27,7 +27,7 @@ global proc combCurveProperties ()
 
 	setUITemplate -popTemplate;
 
-	combCurveSetCallbacks($parent);
+	//combCurveSetCallbacks($parent);
 }
 
 global proc combCurveSetOpt(int $val)
