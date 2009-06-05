@@ -130,8 +130,6 @@ MStatus combCurveContext::doPress( MEvent & event )
 	clipNear = fnCamera.nearClippingPlane();
 	clipFar = fnCamera.farClippingPlane();
 	
-	zDisplayFloat(mOpt);
-	
 	mat.setIdentity ();
 	mat.v[0][0] = -rightDir.x;
 	mat.v[0][1] = -rightDir.y;
@@ -186,7 +184,13 @@ MStatus combCurveContext::doDrag( MEvent & event )
 	switch (mOpt)
 	{
 		case 2 :
-			moveTip();
+			dragTip();
+			break;
+		case 3 :
+			scaleAll();
+			break;
+		case 4 :
+			deKink();
 			break;
 		default:
 			moveAll();
@@ -315,7 +319,7 @@ void combCurveContext::moveAll()
 	}
 }
 
-void combCurveContext::moveTip()
+void combCurveContext::dragTip()
 {
 	MPoint toNear, toFar;
 	view.viewToWorld ( last_x, last_y, toNear, toFar );
@@ -385,6 +389,93 @@ void combCurveContext::moveTip()
 			fCurve.setCVs (cvs, MSpace::kObject );
 			fCurve.updateCurve();
 		}
+	}
+}
+
+void combCurveContext::scaleAll()
+{
+	float mag = last_x - start_x - last_y + start_y;
+	mag /= 48;
+	
+	short vert_x, vert_y;
+	XY cursor(start_x, start_y);
+	
+	MStatus stat;
+	MVector disp;
+	XYZ pp;
+	for(unsigned i=0; i<curveList.length(); i++)
+	{
+		MFnNurbsCurve fCurve(curveList[i]);
+		int numCv = fCurve.numCVs();
+		MPointArray cvs;
+		fCurve.getCVs ( cvs, MSpace::kObject );
+		
+		pp = XYZ(cvs[0].x, cvs[0].y, cvs[0].z);
+		mat.transform(pp);
+		
+		if(pp.z > clipNear)
+		{
+			view.worldToView (cvs[0], vert_x, vert_y);
+					
+			XY pscrn(vert_x, vert_y);
+			float weight = pscrn.distantTo(cursor);
+			weight = 1.f - weight/64.f;
+			
+			if(weight>0)
+			{
+				for(unsigned j=1; j<numCv; j++) 
+				{
+					disp = cvs[j] - cvs[0];
+					disp *= 1.f + mag*weight;
+					cvs[j] = cvs[0] + disp;
+				}
+			}
+			fCurve.setCVs (cvs, MSpace::kObject );
+			fCurve.updateCurve();
+		}
+	}
+}
+
+void combCurveContext::deKink()
+{
+	float mag = last_x - start_x - last_y + start_y;
+	mag /= 48;
+	
+	short vert_x, vert_y;
+	XY cursor(start_x, start_y);
+	
+	MStatus stat;
+	MVector disp;
+	XYZ pp;
+	for(unsigned i=0; i<curveList.length(); i++)
+	{
+		MFnNurbsCurve fCurve(curveList[i]);
+		int numCv = fCurve.numCVs();
+		MPointArray cvs;
+		fCurve.getCVs ( cvs, MSpace::kObject );
+		
+		for(unsigned j=1; j<numCv-1; j++) 
+		{
+			pp = XYZ(cvs[j].x, cvs[j].y, cvs[j].z);
+			mat.transform(pp);
+			if(pp.z > clipNear)
+			{
+				view.worldToView (cvs[j], vert_x, vert_y);
+						
+				XY pscrn(vert_x, vert_y);
+				float weight = pscrn.distantTo(cursor);
+				weight = 1.f - weight/64.f;
+				
+				if(weight>0)
+				{
+					disp = (cvs[j-1] + cvs[j+1])/2 - cvs[j];
+					disp *= mag*weight;
+					cvs[j] += disp;
+				}
+			}
+		}
+		fCurve.setCVs (cvs, MSpace::kObject );
+		fCurve.updateCurve();
 	}
 }
 

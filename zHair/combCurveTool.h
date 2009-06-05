@@ -89,7 +89,9 @@ private:
 	unsigned mOpt;
 	
 	void moveAll();
-	void moveTip();
+	void dragTip();
+	void scaleAll();
+	void deKink();
 };
 
 class combCurveContextCmd : public MPxContextCommand

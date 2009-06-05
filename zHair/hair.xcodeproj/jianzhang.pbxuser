@@ -85,6 +85,14 @@
 			7FC8B3B70FD96DA500F27EF4 /* PBXTextBookmark */ = 7FC8B3B70FD96DA500F27EF4 /* PBXTextBookmark */;
 			7FC8B3B80FD96E5F00F27EF4 /* PBXTextBookmark */ = 7FC8B3B80FD96E5F00F27EF4 /* PBXTextBookmark */;
 			7FC8B3B90FD96E5F00F27EF4 /* PBXTextBookmark */ = 7FC8B3B90FD96E5F00F27EF4 /* PBXTextBookmark */;
+			7FC8B3BF0FD972FB00F27EF4 /* PBXTextBookmark */ = 7FC8B3BF0FD972FB00F27EF4 /* PBXTextBookmark */;
+			7FC8B3C00FD972FB00F27EF4 /* PBXTextBookmark */ = 7FC8B3C00FD972FB00F27EF4 /* PBXTextBookmark */;
+			7FC8B3C40FD975C800F27EF4 /* PBXTextBookmark */ = 7FC8B3C40FD975C800F27EF4 /* PBXTextBookmark */;
+			7FC8B3C50FD975C800F27EF4 /* PBXTextBookmark */ = 7FC8B3C50FD975C800F27EF4 /* PBXTextBookmark */;
+			7FC8B3C70FD9765B00F27EF4 /* PBXTextBookmark */ = 7FC8B3C70FD9765B00F27EF4 /* PBXTextBookmark */;
+			7FC8B3C80FD9765B00F27EF4 /* PBXTextBookmark */ = 7FC8B3C80FD9765B00F27EF4 /* PBXTextBookmark */;
+			7FC8B3CA0FD976A000F27EF4 /* PBXTextBookmark */ = 7FC8B3CA0FD976A000F27EF4 /* PBXTextBookmark */;
+			7FC8B3CB0FD976A000F27EF4 /* PBXTextBookmark */ = 7FC8B3CB0FD976A000F27EF4 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -116,9 +124,9 @@
 	};
 	7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {596, 6328}}";
-			sepNavSelRange = "{8733, 0}";
-			sepNavVisRange = "{7426, 994}";
+			sepNavIntBoundsRect = "{{0, 0}, {596, 7322}}";
+			sepNavSelRange = "{2975, 0}";
+			sepNavVisRange = "{2131, 1127}";
 			sepNavWindowFrame = "{{52, 89}, {539, 671}}";
 		};
 	};
@@ -155,7 +163,7 @@
 		comments = "error: 'class MDoubleArray' has no member named 'cleat'";
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		rLen = 1;
-		rLoc = 160;
+		rLoc = 158;
 		rType = 1;
 	};
 	7FC8B3A40FD96CC600F27EF4 /* PBXTextBookmark */ = {
@@ -163,7 +171,7 @@
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		name = "combCurveTool.cpp: 161";
 		rLen = 19;
-		rLoc = 3598;
+		rLoc = 3574;
 		rType = 0;
 		vrLen = 277;
 		vrLoc = 3458;
@@ -173,7 +181,7 @@
 		comments = "error: 'class MDoubleArray' has no member named 'cleat'";
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		rLen = 1;
-		rLoc = 160;
+		rLoc = 158;
 		rType = 1;
 	};
 	7FC8B3A90FD96CE900F27EF4 /* PBXTextBookmark */ = {
@@ -181,7 +189,7 @@
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		name = "combCurveTool.cpp: 161";
 		rLen = 0;
-		rLoc = 3613;
+		rLoc = 3589;
 		rType = 0;
 		vrLen = 310;
 		vrLoc = 3458;
@@ -190,7 +198,7 @@
 		isa = PBXTextBookmark;
 		fRef = 7FC8B3AF0FD96CEB00F27EF4 /* combCurveTool.h */;
 		rLen = 0;
-		rLoc = 2147483702;
+		rLoc = 2147483736;
 		rType = 0;
 	};
 	7FC8B3AF0FD96CEB00F27EF4 /* combCurveTool.h */ = {
@@ -212,13 +220,14 @@
 	};
 	7FC8B3B10FD96CEB00F27EF4 /* combCurveTool.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = combCurveTool.h;
 		path = /Users/jianzhang/Documents/plankton/zHair/combCurveTool.h;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {557, 1512}}";
-			sepNavSelRange = "{675, 0}";
-			sepNavVisRange = "{176, 907}";
+			sepNavIntBoundsRect = "{{0, 0}, {557, 1540}}";
+			sepNavSelRange = "{1988, 0}";
+			sepNavVisRange = "{1310, 980}";
 		};
 	};
 	7FC8B3B40FD96CEB00F27EF4 /* PBXTextBookmark */ = {
@@ -226,7 +235,7 @@
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		name = "combCurveTool.cpp: 367";
 		rLen = 0;
-		rLoc = 8363;
+		rLoc = 8409;
 		rType = 0;
 		vrLen = 998;
 		vrLoc = 7704;
@@ -236,7 +245,7 @@
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		name = "combCurveTool.cpp: 380";
 		rLen = 0;
-		rLoc = 8624;
+		rLoc = 8670;
 		rType = 0;
 		vrLen = 843;
 		vrLoc = 7995;
@@ -256,7 +265,7 @@
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		name = "combCurveTool.cpp: 387";
 		rLen = 0;
-		rLoc = 8733;
+		rLoc = 8779;
 		rType = 0;
 		vrLen = 994;
 		vrLoc = 7426;
@@ -270,6 +279,86 @@
 		rType = 0;
 		vrLen = 907;
 		vrLoc = 176;
+	};
+	7FC8B3BF0FD972FB00F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 430";
+		rLen = 0;
+		rLoc = 9571;
+		rType = 0;
+		vrLen = 862;
+		vrLoc = 8970;
+	};
+	7FC8B3C00FD972FB00F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FC8B3B10FD96CEB00F27EF4 /* combCurveTool.h */;
+		name = "combCurveTool.h: 91";
+		rLen = 0;
+		rLoc = 1937;
+		rType = 0;
+		vrLen = 967;
+		vrLoc = 1310;
+	};
+	7FC8B3C40FD975C800F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 475";
+		rLen = 0;
+		rLoc = 10441;
+		rType = 0;
+		vrLen = 835;
+		vrLoc = 9122;
+	};
+	7FC8B3C50FD975C800F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FC8B3B10FD96CEB00F27EF4 /* combCurveTool.h */;
+		name = "combCurveTool.h: 94";
+		rLen = 0;
+		rLoc = 1988;
+		rType = 0;
+		vrLen = 980;
+		vrLoc = 1310;
+	};
+	7FC8B3C70FD9765B00F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 469";
+		rLen = 0;
+		rLoc = 10318;
+		rType = 0;
+		vrLen = 874;
+		vrLoc = 9677;
+	};
+	7FC8B3C80FD9765B00F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FC8B3B10FD96CEB00F27EF4 /* combCurveTool.h */;
+		name = "combCurveTool.h: 94";
+		rLen = 0;
+		rLoc = 1988;
+		rType = 0;
+		vrLen = 980;
+		vrLoc = 1310;
+	};
+	7FC8B3CA0FD976A000F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 131";
+		rLen = 0;
+		rLoc = 2975;
+		rType = 0;
+		vrLen = 1127;
+		vrLoc = 2131;
+	};
+	7FC8B3CB0FD976A000F27EF4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FC8B3B10FD96CEB00F27EF4 /* combCurveTool.h */;
+		name = "combCurveTool.h: 94";
+		rLen = 0;
+		rLoc = 1988;
+		rType = 0;
+		vrLen = 980;
+		vrLoc = 1310;
 	};
 	7FE58B990FB61EA800187112 /* Source Control */ = {
 		isa = PBXSourceControlManager;
