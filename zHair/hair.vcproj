@@ -341,6 +341,9 @@
 			Name="Source Files"
 			Filter="">
 			<File
+				RelativePath=".\combCurveTool.cpp">
+			</File>
+			<File
 				RelativePath=".\curvePatchNode.cpp">
 			</File>
 			<File
