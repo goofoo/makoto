@@ -24,5 +24,6 @@ class XMLSceneCmd : public MPxCommand
 
   private:
 	MStatus parseArgs ( const MArgList& args );
+	MStatus getSceneInfo();
  };
  //:~

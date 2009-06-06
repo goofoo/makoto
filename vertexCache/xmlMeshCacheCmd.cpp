@@ -334,38 +334,42 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 				
 				acc = 0;
 				faceIter.reset();
-				for( ; !faceIter.isDone(); faceIter.next() ) 
+				MFloatArray uarray, varray;
+				if(faceIter.hasUVs (setNames[i], &status))
 				{
-					MFloatArray uarray, varray;
-					faceIter.getUVs ( uarray, varray, &setNames[i] );
-					for( int j=uarray.length()-1; j >=0 ; j-- ) 
+					for( ; !faceIter.isDone(); faceIter.next() ) 
 					{
-						scoord[acc] = uarray[j];
-						tcoord[acc] = 1.0 - varray[j];
-						acc++;
+						faceIter.getUVs ( uarray, varray, &setNames[i] );
+						for( int j=uarray.length()-1; j >=0 ; j-- ) 
+						{
+							scoord[acc] = uarray[j];
+							tcoord[acc] = 1.0 - varray[j];
+							acc++;
+						}
+					}
+					
+					
+					if(setNames[i] == "map1")
+					{
+						xml_f.uvSetBegin(setNames[i].asChar());
+						xml_f.addS("facevarying float s", meshFn.numFaceVertices(), scoord);
+						xml_f.addT("facevarying float t", meshFn.numFaceVertices(), tcoord);
+						xml_f.uvSetEnd();
+					}
+					else
+					{
+						xml_f.uvSetBegin(setNames[i].asChar());
+						string paramname("facevarying float u_");
+						paramname.append(setNames[i].asChar());
+						xml_f.addS(paramname.c_str(), meshFn.numFaceVertices(), scoord);
+						
+						paramname = "facevarying float v_";
+						paramname.append(setNames[i].asChar());
+						xml_f.addT(paramname.c_str(), meshFn.numFaceVertices(), tcoord);
+						xml_f.uvSetEnd();
 					}
 				}
-				
-				
-				if(setNames[i] == "map1")
-				{
-					xml_f.uvSetBegin(setNames[i].asChar());
-					xml_f.addS("facevarying float s", meshFn.numFaceVertices(), scoord);
-					xml_f.addT("facevarying float t", meshFn.numFaceVertices(), tcoord);
-					xml_f.uvSetEnd();
-				}
-				else
-				{
-					xml_f.uvSetBegin(setNames[i].asChar());
-					string paramname("facevarying float u_");
-					paramname.append(setNames[i].asChar());
-					xml_f.addS(paramname.c_str(), meshFn.numFaceVertices(), scoord);
-					
-					paramname = "facevarying float v_";
-					paramname.append(setNames[i].asChar());
-					xml_f.addT(paramname.c_str(), meshFn.numFaceVertices(), tcoord);
-					xml_f.uvSetEnd();
-				}
+				else MGlobal::displayWarning(MString("Skip empty uv set: ") + setNames[i]);
 				
 				delete[] scoord;
 				delete[] tcoord;

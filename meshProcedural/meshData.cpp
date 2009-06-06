@@ -9,10 +9,6 @@ meshData::meshData(std::string& parameter):
 m_i_hdr_shadowed(0), m_i_hdr_indirect(0), m_i_hdr_scat(0), m_i_hdr_backscat(0),
 m_i_lightsrc_shadowed(0), m_i_lightsrc_indirect(0), m_i_lightsrc_scat(0),m_i_double_sided(0)
 {
-	m_cache_name = new char[256];
-	m_mesh_name = new char[256];
-	m_prt_name = new char[256];
-
 	int n = sscanf(parameter.c_str(), "%s %s %s %d %d %d %d %d %f %f %f %f %d %d", 
 	m_cache_name, 
 	m_mesh_name,
@@ -30,7 +26,6 @@ m_i_lightsrc_shadowed(0), m_i_lightsrc_indirect(0), m_i_lightsrc_scat(0),m_i_dou
 
 meshData::~meshData() 
 {
-	delete[] m_cache_name;
 }
 
 void meshData::generateRIB(RtFloat detail)

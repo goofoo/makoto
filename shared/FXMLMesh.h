@@ -91,6 +91,7 @@ public:
 	const XYZ* pointsClose() const {return m_pClose;}
 	
 	int getNumUVSet() const { return m_uvSet.size(); }
+	const char* getUVSetName(int i) const {return m_uvSet[i]->name.c_str();}
 	const char* getSNameById(int i) const { return m_uvSet[i]->sname.c_str();}
 	const char* getTNameById(int i) const { return m_uvSet[i]->tname.c_str();}
 	const float* getSById(int i) const { return m_uvSet[i]->s;}

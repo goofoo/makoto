@@ -64,6 +64,7 @@ public:
 	double m_time;
 	//float m_size;
 	MString m_cachename, m_meshname;
+	const FXMLMesh* getMeshPointer() const { return m_pMesh; }
 	
 private :
 	FXMLMesh* m_pMesh;

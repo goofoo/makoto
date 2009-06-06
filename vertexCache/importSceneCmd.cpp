@@ -15,8 +15,10 @@
 #include <maya/MItMeshEdge.h>
 #include <maya/MFnMesh.h>
 #include <maya/MFnMeshData.h>
+#include "meshCacheVizNode.h"
 #include "../shared/zData.h"
 #include "../shared/ZXMLDoc.h"
+#include "../shared/FXMLMesh.h"
 #include "../shared/zGlobal.h"
 ////////////////////////////////////////
 //
@@ -36,6 +38,7 @@ MSyntax XMLSceneCmd::newSyntax()
 	syntax.addFlag("-p", "-path", MSyntax::kString);
 	syntax.addFlag("-m", "-mesh", MSyntax::kBoolean);
 	syntax.addFlag("-t", "-transform", MSyntax::kBoolean);
+	syntax.addFlag("-i", "-info", MSyntax::kBoolean);
 	
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -51,8 +54,9 @@ MStatus XMLSceneCmd::doIt( const MArgList& args )
 	
 	MArgDatabase argData(syntax(), args);
 	
-	MAnimControl timeControl;
-	MTime time = timeControl.currentTime();
+	//MAnimControl timeControl;
+	//MTime time = timeControl.currentTime();
+	if (argData.isFlagSet("-i")) return getSceneInfo();
 
 	MString proj;
 	MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj );
@@ -260,6 +264,53 @@ MStatus XMLSceneCmd::parseArgs( const MArgList& args )
 {
 	// Parse the arguments.
 	MStatus stat = MS::kSuccess;
+	return MS::kSuccess;
+}
+
+MStatus XMLSceneCmd::getSceneInfo()
+{
+	MStringArray existingnode;
+	MGlobal::executeCommand ("ls -type meshCacheViz", existingnode );
+	
+	MItDag itdag(MItDag::kDepthFirst, MFn::kPluginLocatorNode);
+	
+	for(unsigned i=0; i<existingnode.length(); i++)       
+	{ 
+		itdag.reset();
+		for(; !itdag.isDone(); itdag.next())
+		{
+			
+			MObject node = itdag.item();
+			
+			MFnDagNode pf(node);
+
+			if(pf.partialPathName()==existingnode[0])
+			{
+				meshCacheVizNode* pNode = (meshCacheVizNode*)pf.userNode();
+				const FXMLMesh* pMesh = pNode->getMeshPointer();
+				if(pMesh)
+				{
+					MString res("  Mesh - ");
+					res += pMesh->getMeshName();
+					res += "\n num vertices: ";
+					res += pMesh->getNumVertex();
+					res += "\n num faces: ";
+					res += pMesh->nfaces();
+					res += "\n num face vertices";
+					res += pMesh->getNumFaceVertex();
+					res += "\n uv set: ";
+					for(unsigned j=0; j<pMesh->getNumUVSet(); j++)
+					{
+						res += pMesh->getUVSetName(j);
+						if(j != pMesh->getNumUVSet()-1) res += " | ";
+					}
+					appendToResult(res);
+				}
+			}
+			
+		}
+	}
+	
 	return MS::kSuccess;
 }
 //:~

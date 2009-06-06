@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F1A58570FCC742F00F5A7ED</string>
+						<string>7FCAE5DE0FDA6A11000A0EB8</string>
 						<key>history</key>
 						<array>
-							<string>7F1A58500FCC71B900F5A7ED</string>
+							<string>7F1A58570FCC742F00F5A7ED</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -256,10 +256,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F1A58580FCC742F00F5A7ED</string>
+						<string>7FCAE5DF0FDA6A11000A0EB8</string>
 						<key>history</key>
 						<array>
-							<string>7FB4B0B60FC5D201001E629C</string>
+							<string>7F1A58580FCC742F00F5A7ED</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -296,10 +296,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F1A58590FCC742F00F5A7ED</string>
+						<string>7FCAE5E00FDA6A11000A0EB8</string>
 						<key>history</key>
 						<array>
-							<string>7FB4B0B70FC5D201001E629C</string>
+							<string>7F1A58590FCC742F00F5A7ED</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -406,7 +406,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 308}, {186, 338}}</string>
+							<string>{{0, 0}, {186, 338}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -506,9 +506,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F1A584B0FCC704600F5A7ED</string>
+				<string>7FCAE5DC0FDA6A11000A0EB8</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F1A584C0FCC704600F5A7ED</string>
+				<string>7FCAE5DD0FDA6A11000A0EB8</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -642,11 +642,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7FE58BA50FB61F9000187112</string>
 		<string>7FB4B0A30FC544E8001E629C</string>
 		<string>7FB4B09C0FC543ED001E629C</string>
-		<string>7F1A58520FCC71CA00F5A7ED</string>
 		<string>/Users/jianzhang/Documents/plankton/vertexCache/mcache.xcodeproj</string>
+		<string>7F1A58520FCC71CA00F5A7ED</string>
 	</array>
 	<key>WindowString</key>
 	<string>517 145 690 397 0 0 1280 778 </string>
