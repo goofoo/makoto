@@ -29,6 +29,7 @@
 #include <maya/MArgList.h>
 
 #include <maya/MDagPathArray.h>
+#include <maya/MDoubleArray.h>
 #include <maya/MMatrix.h>
 
 #if defined(OSMac_MachO_)
@@ -82,9 +83,15 @@ private:
 	MGlobal::ListAdjustment	listAdjustment;
 	M3dView					view;
 	MDagPathArray curveList;
+	MDoubleArray curveLen;
 	MATRIX44F mat;
 	double clipNear, clipFar;
 	unsigned mOpt;
+	
+	void moveAll();
+	void dragTip();
+	void scaleAll();
+	void deKink();
 };
 
 class combCurveContextCmd : public MPxContextCommand
