@@ -54,6 +54,7 @@
 		7FB4B0530FC5079A001E629C /* libxml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libxml.framework; path = /Library/Frameworks/libxml.framework; sourceTree = "<absolute>"; };
 		7FB4B0580FC507B4001E629C /* XMLUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XMLUtil.cpp; path = ../shared/XMLUtil.cpp; sourceTree = SOURCE_ROOT; };
 		7FB4B05D0FC5087B001E629C /* VisibilityBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VisibilityBuffer.cpp; path = ../sh_lighting/VisibilityBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		7FCAE6100FDA857A000A0EB8 /* vertexCacheMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vertexCacheMenus.mel; path = ../module/scripts/vertexCacheMenus.mel; sourceTree = SOURCE_ROOT; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
 		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* meshCache.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = meshCache.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -123,6 +124,7 @@
 		8A7F063208688F460064D097 /* Mel */ = {
 			isa = PBXGroup;
 			children = (
+				7FCAE6100FDA857A000A0EB8 /* vertexCacheMenus.mel */,
 			);
 			name = Mel;
 			sourceTree = "<group>";

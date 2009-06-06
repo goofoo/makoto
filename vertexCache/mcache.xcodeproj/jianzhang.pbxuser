@@ -123,32 +123,33 @@
 	};
 	7FB4B0190FC50458001E629C /* importSceneCmd.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {734, 3710}}";
-			sepNavSelRange = "{4255, 0}";
-			sepNavVisRange = "{3040, 405}";
+			sepNavIntBoundsRect = "{{0, 0}, {734, 4424}}";
+			sepNavSelRange = "{7409, 0}";
+			sepNavVisRange = "{6952, 960}";
+			sepNavWindowFrame = "{{405, 62}, {616, 716}}";
 		};
 	};
 	7FB4B01C0FC50458001E629C /* meshCacheVizNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {560, 3444}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 958}";
-			sepNavWindowFrame = "{{15, 112}, {590, 661}}";
+			sepNavIntBoundsRect = "{{0, 0}, {560, 3458}}";
+			sepNavSelRange = "{2195, 0}";
+			sepNavVisRange = "{3097, 1211}";
+			sepNavWindowFrame = "{{447, 106}, {590, 661}}";
 		};
 	};
 	7FB4B0200FC50458001E629C /* xmlMeshCacheCmd.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {596, 8386}}";
+			sepNavIntBoundsRect = "{{0, 0}, {698, 8484}}";
 			sepNavSelRange = "{12708, 0}";
-			sepNavVisRange = "{12070, 1064}";
+			sepNavVisRange = "{8588, 1193}";
 			sepNavWindowFrame = "{{481, 97}, {590, 661}}";
 		};
 	};
 	7FB4B0380FC5061C001E629C /* FXMLMesh.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {722, 16282}}";
-			sepNavSelRange = "{24328, 0}";
-			sepNavVisRange = "{24170, 290}";
+			sepNavIntBoundsRect = "{{0, 0}, {722, 16422}}";
+			sepNavSelRange = "{15792, 0}";
+			sepNavVisRange = "{15468, 826}";
 			sepNavWindowFrame = "{{292, 77}, {590, 661}}";
 		};
 	};
@@ -250,6 +251,14 @@
 			sepNavSelRange = "{519, 0}";
 			sepNavVisRange = "{1688, 1124}";
 			sepNavWindowFrame = "{{386, 64}, {750, 714}}";
+		};
+	};
+	7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {980, 8540}}";
+			sepNavSelRange = "{5701, 329}";
+			sepNavVisRange = "{5255, 1028}";
+			sepNavWindowFrame = "{{15, 57}, {616, 716}}";
 		};
 	};
 	D2AAC0620554660B00DB518D /* MCache */ = {

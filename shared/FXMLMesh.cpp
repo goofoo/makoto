@@ -680,6 +680,7 @@ void FXMLMesh::drawUV(int id) const
 
 void FXMLMesh::drawTangentSpace() const
 {
+	glPushAttrib( GL_ALL_ATTRIB_BITS );
 	glBegin(GL_LINES);
 	for(int j=0; j<m_numVertex; j++)
 	{
@@ -695,6 +696,7 @@ void FXMLMesh::drawTangentSpace() const
 		glVertex3f(side.x, side.y, side.z);
 	}
 	glEnd();
+	glPopAttrib();
 }
 
 void FXMLMesh::updateFrom(const char* filename)

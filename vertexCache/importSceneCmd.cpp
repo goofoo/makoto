@@ -39,6 +39,7 @@ MSyntax XMLSceneCmd::newSyntax()
 	syntax.addFlag("-m", "-mesh", MSyntax::kBoolean);
 	syntax.addFlag("-t", "-transform", MSyntax::kBoolean);
 	syntax.addFlag("-i", "-info", MSyntax::kBoolean);
+	syntax.addFlag("-u", "-uvinfo", MSyntax::kBoolean);
 	
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -57,6 +58,7 @@ MStatus XMLSceneCmd::doIt( const MArgList& args )
 	//MAnimControl timeControl;
 	//MTime time = timeControl.currentTime();
 	if (argData.isFlagSet("-i")) return getSceneInfo();
+	else if (argData.isFlagSet("-u")) return getSelectedUV();
 
 	MString proj;
 	MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj );
@@ -313,6 +315,38 @@ MStatus XMLSceneCmd::getSceneInfo()
 		}
 	}
 	
+	return MS::kSuccess;
+}
+
+MStatus XMLSceneCmd::getSelectedUV()
+{
+	MSelectionList selList;
+	MGlobal::getActiveSelectionList ( selList );
+
+	if ( selList.length() == 0 )
+	{
+		MGlobal:: displayError ( "Nothing is selected!" );
+		return MS::kSuccess;
+	}
+	
+	MItSelectionList iter( selList );
+	
+	MDagPath nodePath;		
+	iter.getDagPath( nodePath );
+	nodePath.extendToShape();
+	MFnDagNode pf(nodePath);
+	meshCacheVizNode* pNode = (meshCacheVizNode*)pf.userNode();
+	const FXMLMesh* pMesh = pNode->getMeshPointer();
+	if(pMesh)
+	{
+		MString res = pMesh->getMeshName();
+		appendToResult(res);
+		for(unsigned j=0; j<pMesh->getNumUVSet(); j++)
+		{
+			res = pMesh->getUVSetName(j);
+			appendToResult(res);
+		}
+	}
 	return MS::kSuccess;
 }
 //:~

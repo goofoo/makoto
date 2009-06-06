@@ -84,6 +84,8 @@ global proc meshCacheAppendMenuItems()
 	menuItem -l "Scene Information" -c "openSceneInformationWin";
 	menuItem -l "Change Data Path To" -c "fileBrowser \"set_xmlCacheDataPath\" \"Set Path\" \"\" 4";
 	menuItem -divider true;
+	menuItem -l "Check UV" -c "openxmlCheckUVWin";
+	menuItem -divider true;
 	menuItem -l "Show" -subMenu true;
 		menuItem -l "Wireframe" -c "mshc_sho(-1)";
 		menuItem -l "Tangent Space" -c "mshc_sho(-2)";
@@ -891,7 +893,7 @@ columnLayout -adjustableColumn true;
 
 	string $info[] = `importSceneCache -i 1`;
 	string $ai;
-	for($ai in $info) text -l $ai;
+	for($ai in $info) text -al left -l $ai;
 //row begin
 button -l "OK" -c "deleteUI sceneInformationWin" -p $row;
 text -l " " -p $row;
@@ -913,7 +915,61 @@ showWindow sceneInformationWin;
 
 }
 
+global proc xmlcchangeuv()
+{
+	string $sel[] = `ls -sl`;
+	if(size($sel)>0)
+	{
+		select -r $sel[0];
+		string $node[] = `pickWalk -d down`;
+		setAttr ($node[0] +".drawMode") (-2 - `optionMenuGrp -q -select xmluvsetnameOpt`);
+	}
+}
 
+global proc openxmlCheckUVWin()
+{
+//If such a window already exists, destory it.
+ if ( (`window -exists xmlcheckUVWin`) == true ) deleteUI xmlcheckUVWin;
+
+//Create the window.
+ window -title "vertexCache 4.1 - UV Info" -wh 400 300  -mb false xmlcheckUVWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+	string $uvinfo[] = `importSceneCache -uvinfo 1`;
+	if(size($uvinfo)>0) 
+	{
+		text -l $uvinfo[0];
+		optionMenuGrp -label "UVSet Name" -cc "xmlcchangeuv" -cw 1 120 -columnWidth 2 80 xmluvsetnameOpt;
+		int $i;
+		for($i=1; $i<size($uvinfo); $i++) menuItem -label $uvinfo[$i];
+		setParent..;
+	}
+//row begin
+button -l "OK" -c "deleteUI xmlcheckUVWin" -p $row;
+button -l "Reload"-c "openxmlCheckUVWin" -p $row;
+text -l " " -p $row;
+
+formLayout -edit
+        -attachNone     $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow xmlcheckUVWin;
+}
 
 global proc delete_all_mtorsubd()
 {

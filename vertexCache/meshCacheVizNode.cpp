@@ -81,12 +81,19 @@ void meshCacheVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 
 	if(m_pMesh) 
 	{
-		if(m_mode<0) 
+		if(m_mode<-2) m_pMesh->drawUV(-3-m_mode);
+		else if(m_mode<-1) 
 		{
 			glEnable(GL_CULL_FACE);
 			m_pMesh->drawNoColor();
 			glDisable(GL_CULL_FACE);
-			if(m_mode<-1) m_pMesh->drawTangentSpace();
+			m_pMesh->drawTangentSpace();
+		}
+		else if(m_mode<0) 
+		{
+			glEnable(GL_CULL_FACE);
+			m_pMesh->drawNoColor();
+			glDisable(GL_CULL_FACE);
 		}
 		else m_pMesh->draw();
 	}
@@ -106,14 +113,17 @@ MBoundingBox meshCacheVizNode::boundingBox() const
 	MPoint corner1( 0,0,0 );
 	MPoint corner2( 1,1,1 );
 	
-	if(m_pMesh)
+	if(m_mode>-3)
 	{
-		corner1.x = m_pMesh->getBBox0X();
-		corner1.y = m_pMesh->getBBox0Y();
-		corner1.z = m_pMesh->getBBox0Z();
-		corner2.x = m_pMesh->getBBox1X();
-		corner2.y = m_pMesh->getBBox1Y();
-		corner2.z = m_pMesh->getBBox1Z();
+		if(m_pMesh)
+		{
+			corner1.x = m_pMesh->getBBox0X();
+			corner1.y = m_pMesh->getBBox0Y();
+			corner1.z = m_pMesh->getBBox0Z();
+			corner2.x = m_pMesh->getBBox1X();
+			corner2.y = m_pMesh->getBBox1Y();
+			corner2.z = m_pMesh->getBBox1Z();
+		}
 	}
 
 	return MBoundingBox( corner1, corner2 );
