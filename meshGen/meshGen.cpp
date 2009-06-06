@@ -124,6 +124,14 @@ quadrics::GenRIB( RIBContext *c )
 	//if(pass == RIBContext::rpFinal) c->ReportError( RIBContext::reInfo, "pass is final");
 	//else if(pass == RIBContext::rpShadow) c->ReportError( RIBContext::reInfo, "pass is shadow");
 	//else  c->ReportError( RIBContext::reInfo, "other pass");
+	if(pass == RIBContext::rpShadow)
+	{
+		m_i_hdr_shadowed = 0;
+		m_i_hdr_interreflection = 0;
+		m_i_hdr_subsurfacescat = 0;
+		m_i_hdr_backscat = 0;
+		m_i_lightsrc_shadowed = 0;
+	}
 	
 	
 	RtBoolean usingMotionBlur = c->GetMotionBlur();
