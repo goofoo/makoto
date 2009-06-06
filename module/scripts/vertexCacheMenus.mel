@@ -79,6 +79,7 @@ global proc meshCacheAppendMenuItems()
 	menuItem -l "Edit PRT Attribute" -c "mcf_editAttr";
 	menuItem -divider true;
 	menuItem -l "Save Scene" -c "openSaveXMLSceneWin";
+	menuItem -l "Scene Information" -c "openSceneInformationWin";
 	menuItem -divider true;
 	menuItem -l "Load Scene" -c "openImportXMLSceneCacheWin";
 	menuItem -l "Change Data Path To" -c "fileBrowser \"set_xmlCacheDataPath\" \"Set Path\" \"\" 4";
@@ -459,6 +460,9 @@ formLayout -edit
 showWindow importMeshCacheWin;
 }
 
+
+
+
 global proc doImportMeshCache()
 {
 string $path = `textFieldGrp -q -text importMeshCachePath`;
@@ -546,6 +550,8 @@ setAttr ( $node + ".minFrame") `intFieldGrp -q -v1 importXMLMeshCacheRange`;
 setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importXMLMeshCacheRange`;
 //setAttr ( $node + ".frameStep") `intFieldGrp -q -v1 importMeshCacheStep`;
 }
+
+
 
 global proc mcf_addStringAttr(string $val)
 {
@@ -663,7 +669,7 @@ string $meshc[] = `importSceneCache -m 1 -p $path`;
 		setAttr ($meshc[$i+1]+".rotateZ") 0;
 		string $scsmd = "setAttr " + $meshc[$i+1]+".scale "+ $meshc[$i+2];
 		eval($scsmd);
-		
+
 		rename $node ($meshc[$i] + "_trans");
 		
 		select -r $meshc[$i+1];
@@ -776,13 +782,13 @@ global proc dosaveXMLScene()
 {
 		int $amount = 0;
 		progressWindow -title "Writing XML Scene" -progress $amount -status "Completed: 0%" -isInterruptable true;
- 
+
 		int $s = `intFieldGrp -q -v1 saveXMLSceneRange`;
 		int $e = `intFieldGrp -q -v2 saveXMLSceneRange`;
 		int $step = `intFieldGrp -q -v1 saveXMLSceneStep`;
 
 		int $i;
-		for( $i = $s; $i <= $e; $i++ ) 
+		for( $i = $s; $i <= $e; $i++ )
 		{
 			currentTime $i;
 			$amount = ($i+1-$s)/(1.0*($e+1-$s))*100;
@@ -806,7 +812,7 @@ global proc openSaveXMLSceneWin()
 
 //If such a window already exists, destory it.
  if ( (`window -exists saveXMLSceneWin`) == true ) deleteUI saveXMLSceneWin;
- 
+
 //Create the window.
  window -title "vertexCache 4.1 - Save Scene Options" -wh 400 300  -mb false saveXMLSceneWin;
 
@@ -837,7 +843,7 @@ optionMenuGrp -label "Back-Scatter Camera" -cw 1 120 -columnWidth 2 80 saveXMLSc
 	string $cams[] = `ls -ca`;
 	string $ac;
 	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
-	
+
 
 
 	optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 80 saveXMLSceneOptEye;
@@ -850,7 +856,7 @@ button -l "Apply" -c "dosaveXMLScene" -p $row;
 button -l "Close" -c "deleteUI saveXMLSceneWin" -p $row;
 
 formLayout -edit
-        -attachNone  $row     "top"
+        -attachNone     $row     "top"
         -attachForm     $row     "left"   2
         -attachForm	$row     "bottom" 2
         -attachForm 	$row     "right"  2
@@ -865,6 +871,48 @@ showWindow saveXMLSceneWin;
 
 }
 
+
+global proc openSceneInformationWin()
+{
+//If such a window already exists, destory it.
+ if ( (`window -exists saveXMLSceneWin`) == true ) deleteUI sceneInformationWin;
+
+//Create the window.
+ window -title "vertexCache 4.1 - Save Scene Options" -wh 400 300  -mb false sceneInformationWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+
+
+//row begin
+button -l "OK" -c "deleteUI sceneInformationWin" -p $row;
+text -l " " -p $row;
+text -l " " -p $row;
+
+formLayout -edit
+        -attachNone     $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow sceneInformationWin;
+
+}
+
+
+
 global proc delete_all_mtorsubd()
 {
 	string $sbd[] = `ls -type mtorSubdivNode`;
@@ -876,7 +924,7 @@ global proc domxSelbysg()
 {
 	int $issg = `optionMenuGrp -q -select mxAssignOptGS`;
 	string $ssg[] = `ls -type shadingEngine`;
-	
+
 	string $assed[] = `listConnections -sh 1 ($ssg[$issg-1]+".dagSetMembers")`;
 	select -cl  ;
 	int $id = 0;
@@ -945,7 +993,7 @@ paneLayout -configuration "vertical2";
  	    $outliner;
 		setParent..;
 		setParent..;
- 			
+
 
 columnLayout -adjustableColumn true;
 
@@ -1045,7 +1093,7 @@ global proc mshc_loadsingle()
 	sets -e -forceElement initialShadingGroup $shape;
 	setAttr -type "string" ($node + ".cachePath") $buffer[0];
 	delete -ch $shape;
-	
+
 	string $sname = $buffer[0];
 	$numTokens = `tokenize $sname "/" $buffer`;
 	rename $shape $buffer[$numTokens-1];
