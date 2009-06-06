@@ -2,14 +2,14 @@ global proc meshCacheRemoveMenus()
 {
 	global string $gMainWindow;
 	if ($gMainWindow != "") {
-		global string $gAnimationMenus[];
+		global string $gRenderingMenus[];
 		int $menuIndex = -1;
-		int $menuSize = `size $gAnimationMenus`;
+		int $menuSize = `size $gRenderingMenus`;
 		setParent $gMainWindow;
 
 		// iterate through the animation menu to find the meshCache menu.
 		for ($i = 0; $i < $menuSize; $i++) {
-			string $m = `match "meshCacheMenus" $gAnimationMenus[$i]`;
+			string $m = `match "meshCacheMenus" $gRenderingMenus[$i]`;
 			if ( $m != "" ) {
 				$menuIndex = $i;
 				break;
@@ -17,12 +17,12 @@ global proc meshCacheRemoveMenus()
 		}
 		// if not found, create it.
 		if ($menuIndex == -1) {
-			$gAnimationMenus[$menuSize] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+			$gRenderingMenus[$menuSize] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
 		}
 		// if meshCache menu exists, delete it first.
 		else {
-			deleteUI $gAnimationMenus[$menuIndex];
-			$gAnimationMenus[$menuIndex] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+			deleteUI $gRenderingMenus[$menuIndex];
+			$gRenderingMenus[$menuIndex] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
 		}
 		//meshCacheAppendMenuItems;
 	}
@@ -32,14 +32,14 @@ global proc meshCacheMakeMenus()
 {
 	global string $gMainWindow;
 	if ($gMainWindow != "") {
-		global string $gAnimationMenus[];
+		global string $gRenderingMenus[];
 		int $menuIndex = -1;
-		int $menuSize = `size $gAnimationMenus`;
+		int $menuSize = `size $gRenderingMenus`;
 		setParent $gMainWindow;
 
 		// iterate through the animation menu to find the meshCache menu.
 		for ($i = 0; $i < $menuSize; $i++) {
-			string $m = `match "meshCacheMenus" $gAnimationMenus[$i]`;
+			string $m = `match "meshCacheMenus" $gRenderingMenus[$i]`;
 			if ( $m != "" ) {
 				$menuIndex = $i;
 				break;
@@ -47,12 +47,12 @@ global proc meshCacheMakeMenus()
 		}
 		// if not found, create it.
 		if ($menuIndex == -1) {
-			$gAnimationMenus[$menuSize] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+			$gRenderingMenus[$menuSize] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
 		}
 		// if meshCache menu exists, delete it first.
 		else {
-			deleteUI $gAnimationMenus[$menuIndex];
-			$gAnimationMenus[$menuIndex] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
+			deleteUI $gRenderingMenus[$menuIndex];
+			$gRenderingMenus[$menuIndex] = `menu -l "*Vertex Cache" -aob true -to true meshCacheMenus`;
 		}
 		meshCacheAppendMenuItems;
 	}
