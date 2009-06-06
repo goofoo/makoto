@@ -79,9 +79,9 @@ global proc meshCacheAppendMenuItems()
 	menuItem -l "Edit PRT Attribute" -c "mcf_editAttr";
 	menuItem -divider true;
 	menuItem -l "Save Scene" -c "openSaveXMLSceneWin";
-	menuItem -l "Scene Information" -c "openSceneInformationWin";
 	menuItem -divider true;
 	menuItem -l "Load Scene" -c "openImportXMLSceneCacheWin";
+	menuItem -l "Scene Information" -c "openSceneInformationWin";
 	menuItem -l "Change Data Path To" -c "fileBrowser \"set_xmlCacheDataPath\" \"Set Path\" \"\" 4";
 	menuItem -divider true;
 	menuItem -l "Show" -subMenu true;
@@ -875,10 +875,10 @@ showWindow saveXMLSceneWin;
 global proc openSceneInformationWin()
 {
 //If such a window already exists, destory it.
- if ( (`window -exists saveXMLSceneWin`) == true ) deleteUI sceneInformationWin;
+ if ( (`window -exists sceneInformationWin`) == true ) deleteUI sceneInformationWin;
 
 //Create the window.
- window -title "vertexCache 4.1 - Save Scene Options" -wh 400 300  -mb false sceneInformationWin;
+ window -title "vertexCache 4.1 - Scene Info" -wh 400 300  -mb false sceneInformationWin;
 
 //Layout
 string $form = `formLayout -numberOfDivisions 100`;
@@ -889,7 +889,9 @@ columnLayout -adjustableColumn true;
 
 //column begin
 
-
+	string $info[] = `importSceneCache -i 1`;
+	string $ai;
+	for($ai in $info) text -l $ai;
 //row begin
 button -l "OK" -c "deleteUI sceneInformationWin" -p $row;
 text -l " " -p $row;

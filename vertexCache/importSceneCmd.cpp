@@ -304,6 +304,8 @@ MStatus XMLSceneCmd::getSceneInfo()
 						res += pMesh->getUVSetName(j);
 						if(j != pMesh->getNumUVSet()-1) res += " | ";
 					}
+					res += "\n path: ";
+					res += pMesh->getXMLName();
 					appendToResult(res);
 				}
 			}
