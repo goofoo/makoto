@@ -333,6 +333,70 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Maya2009|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR /GS /EHsc"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION_2009)\include"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				RuntimeLibrary="1"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".Debug/"
+				ProgramDataBaseFileName=".\Debug/footPrintNode.pdb"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib Foundation.lib opengl32.lib"
+				OutputFile="..\module\plug-ins\ZHair2009.mll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_2009)\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/footPrintNode.pdb"
+				SubSystem="2"
+				ImportLibrary=".\Debug/footPrintNode.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TypeLibraryName=".\Debug/footPrintNode.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
