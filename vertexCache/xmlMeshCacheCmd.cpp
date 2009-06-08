@@ -136,7 +136,7 @@ MStatus xmlMeshCache::doIt( const MArgList& args )
 	    
 	sprintf( file_name, "%s/%s.%d.scene", cache_path.asChar(), scene_name.asChar(), frame );
 
-	orderMesh();
+	//orderMesh();
 	save(file_name, frame);
 	MGlobal::displayInfo ( MString("Vertex Cache writes ") + file_name);
 
@@ -187,7 +187,7 @@ void xmlMeshCache::orderMesh()
 }
 
 void xmlMeshCache::save(const char* filename, int frameNumber)
-{
+{	
 	MStatus status;
 	FXMLScene xml_f;
 	xml_f.begin(filename, frameNumber);
@@ -195,7 +195,7 @@ void xmlMeshCache::save(const char* filename, int frameNumber)
 	{
 		m_mesh_list[it].extendToShape();
 		
-		MString surface = m_mesh_list[it].fullPathName();
+		MString surface = m_mesh_list[it].partialPathName();
 	
 		zWorks::validateFilePath(surface);
 

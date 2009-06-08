@@ -298,7 +298,7 @@ MStatus XMLSceneCmd::getSceneInfo()
 					res += pMesh->getNumVertex();
 					res += "\n num faces: ";
 					res += pMesh->nfaces();
-					res += "\n num face vertices";
+					res += "\n num face vertices: ";
 					res += pMesh->getNumFaceVertex();
 					res += "\n uv set: ";
 					for(unsigned j=0; j<pMesh->getNumUVSet(); j++)
