@@ -941,6 +941,14 @@ string $scroll = `scrollLayout -p $form`;
 
 columnLayout -adjustableColumn true;
 
+	string $sel[] = `ls -sl`;
+	if(size($sel)>0)
+	{
+		select -r $sel[0];
+		string $node[] = `pickWalk -d down`;
+		setAttr ($node[0] +".drawMode") -3;
+	}
+
 //column begin
 	string $uvinfo[] = `importSceneCache -uvinfo 1`;
 	if(size($uvinfo)>0) 
