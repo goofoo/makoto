@@ -1,0 +1,61 @@
+#pragma once
+
+#include <iostream>
+#include<stdlib.h>
+#include "E:\git_home\shared\zData.h"
+using namespace std;
+
+extern const int size ;
+extern const int range;
+extern XYZ array[];
+extern XYZ gainarray[];
+extern int sizegainarray;  
+extern XYZ val;
+static int depth = 0;
+
+class TreeNode
+{
+private:
+	TreeNode *firstChildren;
+	TreeNode *secondChildren;
+	TreeNode *thirdChildren;
+	TreeNode *fourthChildren;
+	TreeNode *fifthChildren;
+	TreeNode *sixthChildren;
+	TreeNode *seventhChildren;
+	TreeNode *eighthChildren;
+public:
+	int begin,end;
+	XYZ center;
+	float sidelength;
+	TreeNode():firstChildren(0),secondChildren(0),thirdChildren(0),fourthChildren(0),
+		       fifthChildren(0),sixthChildren(0),seventhChildren(0),eighthChildren(0),
+			   sidelength(0.0),center(),begin(0),end(0){ }
+	TreeNode(const int&item1,const int &item2 ):begin(item1),end(item2),center(),sidelength(0.0),
+		                                        firstChildren(0),secondChildren(0),thirdChildren(0),fourthChildren(0),
+		                                        fifthChildren(0),sixthChildren(0),seventhChildren(0),eighthChildren(0){}
+	friend class OcTree;
+};
+
+class OcTree
+{
+private:
+	TreeNode *tree;
+public:
+	OcTree( ) { tree = NULL;}
+    void FreeTreeNode(TreeNode *tree);
+	TreeNode* GetTreeNode(int begin,int end );
+	bool OcTreeEmpty() { return tree==NULL;}
+    int Depth(TreeNode *t);
+	int OcTreeDepth();
+	void CreateOcTree(TreeNode *t,XYZ array[],int begin,int end ,XYZ center,float sidelength,int level);
+	void SearchOcTree(TreeNode *t,XYZ val,int range );
+	TreeNode* GetRootNode(){return tree;}
+	void quick_sortX(XYZ array[],int first,int last);
+	void quick_sortY(XYZ array[],int first,int last);
+	void quick_sortZ(XYZ array[],int first,int last);
+	XYZ GetCenter(XYZ array[],int first,int last);
+	void GetChildren(XYZ center,float side);
+	float GetSideLength(XYZ array[],int first,int last);
+	void PrintOcTree(TreeNode *t);
+};
