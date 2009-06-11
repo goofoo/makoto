@@ -10,7 +10,7 @@ public:
 	zTiffImage(const char* filename);
 	~zTiffImage();
 	
-	void load(const char* filename);
+	char load(const char* filename);
 	
 	int getWidth() { return (int)width; }
 	int getHeight() { return (int)height; }
