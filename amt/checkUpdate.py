@@ -1,22 +1,30 @@
 log = './log.txt'
 time_gap = 86400
 
-def shoafile(path):
-	if time.time() - os.path.getmtime(path) < time_gap:
-		a = strftime("%a, %d %b %Y %H:%M:%S ", time.localtime(os.path.getmtime(path))) + path
-		print a
-		f = open(log, 'a')
-		f.write(a +'\n')
-		f.close()
+def sholog(path):
+        a = strftime("%a, %d %b %Y %H:%M:%S ", time.localtime(os.path.getmtime(path))) + path
+        print a
+        f = open(log, 'a')
+        f.write(a +'\n')
+        f.close()
+
+def hassubdir(path):
+        a = os.listdir(path)
+        for x in a:
+                if os.path.isdir(path+'/'+x):
+                        return 1
+        return 0
 	
 def lookforfiles(path):
-	if os.path.isfile(path):
-		shoafile(path)
-		return
-	else:
-		a = os.listdir(path)
-		for x in a:
-			lookforfiles(path+'/'+x)
+        if time.time() - os.path.getmtime(path) < time_gap:
+                if hassubdir(path):
+                        a = os.listdir(path)
+                        for x in a:
+                                if os.path.isdir(path+'/'+x):
+                                        lookforfiles(path+'/'+x)
+                else:
+                        sholog(path)
+
 	
 if __name__ == "__main__":
     import os, sys, time

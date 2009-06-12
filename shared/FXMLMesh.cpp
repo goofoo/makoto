@@ -575,6 +575,9 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 		doc.setParent();
 		
 			m_grd = new float[m_numVertex];
+// set average grid size in case no data is saved
+			float avg_sgrd = sqrt(m_area/m_numTriangle)/2;
+			for(unsigned iv = 0; iv<m_numVertex; iv++) m_grd[iv] = avg_sgrd;
 			
 			if(doc.getChildByName("GridSize") != 0)
 			{
