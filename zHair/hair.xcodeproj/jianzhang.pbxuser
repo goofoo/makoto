@@ -69,16 +69,16 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 266316092;
-			PBXWorkspaceStateSaveDate = 266316092;
+			PBXPerProjectTemplateStateSaveDate = 266510252;
+			PBXWorkspaceStateSaveDate = 266510252;
 		};
 		perUserProjectItems = {
-			7F6E0A3B0FE00A47000F1CF2 /* PBXTextBookmark */ = 7F6E0A3B0FE00A47000F1CF2 /* PBXTextBookmark */;
-			7F6E0A3C0FE00A47000F1CF2 /* PBXTextBookmark */ = 7F6E0A3C0FE00A47000F1CF2 /* PBXTextBookmark */;
-			7F6E0A3F0FE00A47000F1CF2 /* PBXTextBookmark */ = 7F6E0A3F0FE00A47000F1CF2 /* PBXTextBookmark */;
-			7F6E0A400FE00A47000F1CF2 /* PBXTextBookmark */ = 7F6E0A400FE00A47000F1CF2 /* PBXTextBookmark */;
-			7F7A53C30FDF006200F7DD57 /* PBXTextBookmark */ = 7F7A53C30FDF006200F7DD57 /* PBXTextBookmark */;
-			7F7A53C60FDF006200F7DD57 /* PBXTextBookmark */ = 7F7A53C60FDF006200F7DD57 /* PBXTextBookmark */;
+			7F6E0A3B0FE00A47000F1CF2 = 7F6E0A3B0FE00A47000F1CF2 /* PBXTextBookmark */;
+			7F6E0A3C0FE00A47000F1CF2 = 7F6E0A3C0FE00A47000F1CF2 /* PBXTextBookmark */;
+			7F6E0A3F0FE00A47000F1CF2 = 7F6E0A3F0FE00A47000F1CF2 /* PBXTextBookmark */;
+			7F6E0A400FE00A47000F1CF2 = 7F6E0A400FE00A47000F1CF2 /* PBXTextBookmark */;
+			7F7A53C30FDF006200F7DD57 = 7F7A53C30FDF006200F7DD57 /* PBXTextBookmark */;
+			7F7A53C60FDF006200F7DD57 = 7F7A53C60FDF006200F7DD57 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -108,7 +108,7 @@
 		isa = PBXTextBookmark;
 		fRef = 7FFB47620FBE326900C8F9AB /* zhairMenus.mel */;
 		rLen = 0;
-		rLoc = 2147483750;
+		rLoc = 13765;
 		rType = 0;
 	};
 	7F6E0A400FE00A47000F1CF2 /* PBXTextBookmark */ = {
@@ -210,9 +210,9 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {812, 10318}}";
+			sepNavIntBoundsRect = "{{0, 0}, {812, 10206}}";
 			sepNavSelRange = "{12824, 20}";
-			sepNavVisRange = "{12743, 827}";
+			sepNavVisRange = "{12738, 765}";
 			sepNavWindowFrame = "{{12, 66}, {653, 693}}";
 		};
 	};
@@ -226,7 +226,7 @@
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {675, 4130}}";
+			sepNavIntBoundsRect = "{{0, 0}, {675, 3444}}";
 			sepNavSelRange = "{3370, 0}";
 			sepNavVisRange = "{2672, 908}";
 			sepNavWindowFrame = "{{24, 67}, {734, 700}}";
@@ -274,10 +274,10 @@
 	};
 	7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {806, 6132}}";
+			sepNavIntBoundsRect = "{{0, 0}, {806, 6160}}";
 			sepNavSelRange = "{3907, 0}";
-			sepNavVisRange = "{3451, 898}";
-			sepNavWindowFrame = "{{382, 54}, {865, 685}}";
+			sepNavVisRange = "{3451, 870}";
+			sepNavWindowFrame = "{{382, 77}, {865, 685}}";
 		};
 	};
 	D2AAC0620554660B00DB518D /* ZHair */ = {
