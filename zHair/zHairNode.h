@@ -38,14 +38,6 @@ public:
 
 	static  void *          creator();
 	static  MStatus         initialize();
-	
-		// Internally cached attribute handling routines
-	virtual bool getInternalValueInContext( const MPlug&,
-											  MDataHandle&,
-											  MDGContext&);
-    virtual bool setInternalValueInContext( const MPlug&,
-											  const MDataHandle&,
-											  MDGContext&);
 
 		// Attributes
 	static MObject afuzz;
@@ -62,11 +54,6 @@ public:
 	static MObject astep;
 	static MObject aalternativepatch;
 	static	MTypeId		id;
-	
-		// Cached internal values
-	float m_exposure;
-	float m_size;
-	MString m_hdrname;
 
 private :
 	hairMap* m_base;

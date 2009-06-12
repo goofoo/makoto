@@ -2,8 +2,11 @@ copy .\ribgen\fishGen.dll D:\wamp\www\prt_release\ribgen
 copy .\ribgen\fishGen.slim D:\wamp\www\prt_release\ribgen
 copy .\ribgen\meshRibgen.dll D:\wamp\www\prt_release\ribgen
 copy .\ribgen\meshRibgen.slim D:\wamp\www\prt_release\ribgen
+copy .\ribgen\hairRibgen.dll D:\wamp\www\prt_release\ribgen
+copy .\ribgen\hairRibgen.slim D:\wamp\www\prt_release\ribgen
 copy .\procedural\meshCacheProcedural.dll D:\wamp\www\prt_release\procedural
 copy .\procedural\fishProcedural.dll D:\wamp\www\prt_release\procedural
+copy .\procedural\zhairProcedural.dll D:\wamp\www\prt_release\procedural
 copy .\slim\ace.slim D:\wamp\www\prt_release\slim
 copy .\slim\displacement_z.slim D:\wamp\www\prt_release\slim
 copy .\slim\eye.slim D:\wamp\www\prt_release\slim
@@ -18,6 +21,8 @@ copy .\plug-ins\meshCache2008.mll D:\wamp\www\prt_release\plug-ins
 copy .\plug-ins\HDREnvironmentViewer70.mll D:\wamp\www\prt_release\plug-ins
 copy .\plug-ins\HDREnvironmentViewer2008.mll D:\wamp\www\prt_release\plug-ins
 copy .\plug-ins\fishViz.mll D:\wamp\www\prt_release\plug-ins
+copy .\plug-ins\ZHair2008.mll D:\wamp\www\prt_release\plug-ins
+copy .\plug-ins\ZHair70.mll D:\wamp\www\prt_release\plug-ins
 copy TOR.ini D:\wamp\www\prt_release
 copy slim.ini D:\wamp\www\prt_release
 copy rat_install.bat D:\wamp\www\prt_release
@@ -27,3 +32,5 @@ copy .\scripts\slimcontrolMenus.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\mtorSetQuantize.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\fishMenus.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\exrSet2ndDisplay.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\zhairMenus.mel D:\wamp\www\prt_release\scripts
+copy .\application\prtServer.exe D:\wamp\www\prt_release\application

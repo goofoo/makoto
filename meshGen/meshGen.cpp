@@ -197,7 +197,7 @@ quadrics::GenRIB( RIBContext *c )
 	int iblur = 0;
 	if(usingMotionBlur) iblur = 1;
 	if(pass == RIBContext::rpShadow) iblur = 0;
-	char sbuf[1024];
+	char sbuf[4096];
 	sprintf( sbuf, "%s %s %s %d %d %d %d %d %f %f %f %f %d %d", 
 	sname.c_str(), 
 	meshname.asChar(),

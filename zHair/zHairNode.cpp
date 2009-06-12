@@ -169,7 +169,6 @@ MStatus HairNode::initialize()
     CHECK_MSTATUS( numAttr.setKeyable(true));
     CHECK_MSTATUS( numAttr.setDefault(0.f));
 	numAttr.setCached( true );
-	numAttr.setInternal( true );
 	addAttribute(aSize);
 	
 	astep = numAttr.create( "drawStep", "dsp", MFnNumericData::kInt, 1 );
@@ -183,7 +182,6 @@ MStatus HairNode::initialize()
     CHECK_MSTATUS( tAttr.setStorable(true));
     CHECK_MSTATUS( tAttr.setKeyable(false));
 	tAttr.setCached( true );
-	tAttr.setInternal( true );
 	
 	zWorks::createMatrixAttr(aworldSpace, "worldSpace", "ws");
 	
@@ -233,52 +231,4 @@ MStatus HairNode::initialize()
 	
 	return MS::kSuccess;
 }
-
-/* virtual */
-bool 
-HairNode::setInternalValueInContext( const MPlug& plug,
-												  const MDataHandle& handle,
-												  MDGContext&)
-{
-	bool handledAttribute = false;
-	if (plug == aHDRName)
-	{
-		handledAttribute = true;
-		m_hdrname = (MString) handle.asString();
-	}
-	else if (plug == aSize)
-	{
-		handledAttribute = true;
-		float val = handle.asFloat();
-		if (val != m_size)
-		{
-			m_size = val;
-			mAttributesChanged = true;
-		}
-	}
-
-	return handledAttribute;
-}
-
-/* virtual */
-bool
-HairNode::getInternalValueInContext( const MPlug& plug,
-											  MDataHandle& handle,
-											  MDGContext&)
-{
-	bool handledAttribute = false;
-	if (plug == aHDRName)
-	{
-		handledAttribute = true;
-		handle.set( m_hdrname );
-	}
-	else if (plug == aSize)
-	{
-		handledAttribute = true;
-		handle.set( m_size );
-	}
-
-	return handledAttribute;
-}
-
 //:~

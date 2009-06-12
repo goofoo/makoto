@@ -136,6 +136,66 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Maya2009|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="-DNT"
+				Optimization="0"
+				InlineFunctionExpansion="0"
+				OmitFramePointers="FALSE"
+				AdditionalIncludeDirectories="D:\Pixar\devkit\include;&quot;$(MAYA_LOCATION_70)\include&quot;;D:\Pixar\devkit\examples\ribgen"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				IgnoreStandardIncludePath="FALSE"
+				StringPooling="FALSE"
+				RuntimeLibrary="1"
+				EnableFunctionLevelLinking="FALSE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
+				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib"
+				OutputFile="../module/ribgen/hairRibgen.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_70)\lib&quot;;D:\Pixar\devkit\lib"
+				IgnoreAllDefaultLibraries="FALSE"
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(OutDir)/array_reader.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>

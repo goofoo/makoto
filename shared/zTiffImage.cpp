@@ -14,10 +14,10 @@ zTiffImage::~zTiffImage(void)
 	if(m_data) delete[] m_data;
 }
 
-void zTiffImage::load(const char* filename)
+char zTiffImage::load(const char* filename)
 {
 	TIFF *tif = TIFFOpen(filename, "r");
-	if(!tif) return;
+	if(!tif) return 0;
 	
 	TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &width); 
 	TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &height);
@@ -98,6 +98,6 @@ void zTiffImage::load(const char* filename)
 	
 	TIFFClose(tif);
 
-	return;
+	return 1;
 }
 //:~
