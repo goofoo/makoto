@@ -419,6 +419,9 @@
 				RelativePath="..\shared\FColorSet.cpp">
 			</File>
 			<File
+				RelativePath="..\shared\FFloatSet.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\FMCFMesh.cpp">
 			</File>
 			<File
