@@ -68,11 +68,12 @@ void meshData::generateRIB(RtFloat detail)
 			if(m_i_hdr_shadowed == 1.0f || m_i_lightsrc_shadowed == 1.0f)
 			{
 				zGlobal::changeFilenameExtension(sname, "prtu");
-				pMesh->appendColorSet("vertex color coeffu", sname.c_str());
+				pMesh->appendFloatSet("vertex float coeffu", sname.c_str());
+				
 				if(m_i_hdr_shadowed == 1.0f)
 				{
 					zGlobal::changeFilenameExtension(sname, "prt");
-					pMesh->appendColorSet("vertex color coeff", sname.c_str());
+					pMesh->appendFloatSet("vertex float coeff", sname.c_str());
 				}
 				if(m_i_lightsrc_shadowed == 1.0f)
 				{
@@ -92,21 +93,28 @@ void meshData::generateRIB(RtFloat detail)
 			if(m_i_hdr_scat == 1.0f)
 			{
 				zGlobal::changeFilenameExtension(sname, "prts");
-				pMesh->appendColorSet("vertex color coeffs", sname.c_str());
+				pMesh->appendFloatSet("vertex float coeffs", sname.c_str());
 				zGlobal::changeFilenameExtension(sname, "prte");
-				pMesh->appendColorSet("vertex color coeffe", sname.c_str());
+				pMesh->appendFloatSet("vertex float coeffe", sname.c_str());
 			}
 			
 			if(m_i_hdr_backscat == 1)
 			{
 				zGlobal::changeFilenameExtension(sname, "prtb");
-				pMesh->appendColorSet("vertex color coeffb", sname.c_str());
+				pMesh->appendFloatSet("vertex float coeffb", sname.c_str());
 			}
 			
 			for(int i=0; i< pMesh->getNumColorSet(); i++)
 			{
 				paramname[nparam] = (RtToken)pMesh->getColorSetNameById(i);
 				paramvalue[nparam] = (RtFloat*)pMesh->getColorSetById(i);
+				nparam++;
+			}
+			
+			for(int i=0; i< pMesh->getNumFloatSet(); i++)
+			{
+				paramname[nparam] = (RtToken)pMesh->getFloatSetNameById(i);
+				paramvalue[nparam] = (RtFloat*)pMesh->getFloatSetById(i);
 				nparam++;
 			}
 			
