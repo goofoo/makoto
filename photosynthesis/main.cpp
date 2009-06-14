@@ -1,44 +1,25 @@
 /*
 Syntax:
 */
-#include "../render/Buffer2D.h"
-#include "../render/EXRImage.h"
+#include "../shared/zFnEXR.h"
 #include <iostream>
 using namespace std;
 
 int main (int argc, char * const argv[]) {
     // insert code here...
-    cout << "Photosynthesis 0.0.1 06/15/09"<<endl;
-	
-	Buffer2D* buffer = new Buffer2D();
-	buffer->create(512, 512);
-	
-	TRIANGLE2D tri;
-	tri.s[0] = 0.2f;
-	tri.t[0] = 0.2f;
-	
-	tri.s[1] = 0.3f;
-	tri.t[1] = 0.1f;
-	
-	tri.s[2] = 0.25f;
-	tri.t[2] = 0.9f;
-	
-	buffer->rasterize(tri);
-	
-	tri.s[0] = 0.5f;
-	tri.t[0] = 0.32f;
-	
-	tri.s[1] = 0.83f;
-	tri.t[1] = 0.31f;
-	
-	tri.s[2] = 0.75f;
-	tri.t[2] = 0.49f;
-	
-	buffer->rasterize(tri);
-	
-	EXRImage::saveRGB("foo.exr", buffer->getWidth(), buffer->getHeight(), buffer->getR(), buffer->getG(), buffer->getB());
+    cout << "Photosynthesis 0.0.0 04/12/09"<<endl;
+	float* data = new float[640*480*4];
+	for(unsigned j=0; j<480; j++)
+		for(unsigned i=0; i<640; i++)
+		{
+			data[(j*640+i)*4] = float(i)/640;
+			data[(j*640+i)*4+1] = float(j)/480;
+			data[(j*640+i)*4+2] = 0;
+			data[(j*640+i)*4+3] = 1;
+		}
+	ZFnEXR::save(data, "foo.exr", 640, 480);
 
-	delete buffer;
+
 
 	return 0;
 
