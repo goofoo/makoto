@@ -10,6 +10,7 @@
 		7F72E1880FE55B5000B7FF9C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F72E1870FE55B5000B7FF9C /* main.cpp */; };
 		7F72E18D0FE55B7600B7FF9C /* Buffer2D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F72E18C0FE55B7600B7FF9C /* Buffer2D.cpp */; };
 		7F72E1A00FE563CF00B7FF9C /* EXRImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F72E19F0FE563CF00B7FF9C /* EXRImage.cpp */; };
+		7F98445E0FE621DA00E06F75 /* TIFFImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F98445D0FE621DA00E06F75 /* TIFFImage.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,7 @@
 		7F72E1870FE55B5000B7FF9C /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7F72E18C0FE55B7600B7FF9C /* Buffer2D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Buffer2D.cpp; path = ../render/Buffer2D.cpp; sourceTree = SOURCE_ROOT; };
 		7F72E19F0FE563CF00B7FF9C /* EXRImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EXRImage.cpp; path = ../render/EXRImage.cpp; sourceTree = SOURCE_ROOT; };
+		7F98445D0FE621DA00E06F75 /* TIFFImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TIFFImage.cpp; path = ../render/TIFFImage.cpp; sourceTree = SOURCE_ROOT; };
 		8DD76F6C0486A84900D96B5E /* fringe */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = fringe; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6859E8B029090EE04C91782 /* hello.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = hello.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -56,6 +58,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F98445D0FE621DA00E06F75 /* TIFFImage.cpp */,
 				7F72E19F0FE563CF00B7FF9C /* EXRImage.cpp */,
 				7F72E18C0FE55B7600B7FF9C /* Buffer2D.cpp */,
 				7F72E1870FE55B5000B7FF9C /* main.cpp */,
@@ -125,6 +128,7 @@
 				7F72E1880FE55B5000B7FF9C /* main.cpp in Sources */,
 				7F72E18D0FE55B7600B7FF9C /* Buffer2D.cpp in Sources */,
 				7F72E1A00FE563CF00B7FF9C /* EXRImage.cpp in Sources */,
+				7F98445E0FE621DA00E06F75 /* TIFFImage.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,6 +184,7 @@
 				OTHER_LDFLAGS = (
 					"-lHalf",
 					"-lIlmImf",
+					"-ltiff",
 				);
 				PREBINDING = NO;
 				SDKROOT = "";

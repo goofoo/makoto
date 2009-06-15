@@ -1,44 +1,55 @@
 /*
 Syntax:
 */
-#include "../render/Buffer2D.h"
+#include "../shared/zData.h"
 #include "../render/EXRImage.h"
+#include "../render/TIFFImage.h"
 #include <iostream>
 using namespace std;
 
 int main (int argc, char * const argv[]) {
     // insert code here...
-    cout << "Photosynthesis 0.0.1 06/15/09"<<endl;
+    cout << "Fringe Map 0.1.0 06/15/09"<<endl;
 	
-	Buffer2D* buffer = new Buffer2D();
-	buffer->create(512, 512);
+	TIFFImage* tiff = new TIFFImage("foo.tif");
+	int img_w = tiff->getWidth();
+	int img_h = tiff->getHeight();
+	int spp = tiff->getSamplesPerPixel();
 	
-	TRIANGLE2D tri;
-	tri.s[0] = 0.2f;
-	tri.t[0] = 0.2f;
+	const half* data = tiff->getData();
 	
-	tri.s[1] = 0.3f;
-	tri.t[1] = 0.1f;
+	float* opacity = new float[img_w*img_h];
+	half* rPixels = new half[img_w*img_h];
+	half* gPixels = new half[img_w*img_h];
+	half* bPixels = new half[img_w*img_h];
 	
-	tri.s[2] = 0.25f;
-	tri.t[2] = 0.9f;
+	for(int j=0; j<img_h; j++)
+		for(int i=0; i<img_w; i++)
+		{
+			opacity[j*img_w+i] = (float)data[(j*img_w+i)*spp];
+			rPixels[j*img_w+i] = gPixels[j*img_w+i] = 0.5f;
+			bPixels[j*img_w+i] = 1.f;
+		}
+		
+	XYZ dir;
+	float len;
+	for(int j=1; j<img_h-1; j++)
+		for(int i=1; i<img_w-1; i++)
+		{
+			dir.x = opacity[j*img_w+i-1] - opacity[j*img_w+i+1];
+			dir.y = opacity[(j+1)*img_w+i] - opacity[(j-1)*img_w+i];
+			
+			len = sqrt(dir.x*dir.x + dir.y*dir.y);
+			dir.z = 1.0 - len;
+			if(dir.z < 0) dir.z = 0;
+			dir.normalize();
+			
+			rPixels[j*img_w+i] = dir.x/2 + 0.5;
+			gPixels[j*img_w+i] = dir.y/2 + 0.5;
+			bPixels[j*img_w+i] = dir.z/2 + 0.5;
+		}
 	
-	buffer->rasterize(tri);
-	
-	tri.s[0] = 0.5f;
-	tri.t[0] = 0.32f;
-	
-	tri.s[1] = 0.83f;
-	tri.t[1] = 0.31f;
-	
-	tri.s[2] = 0.75f;
-	tri.t[2] = 0.49f;
-	
-	buffer->rasterize(tri);
-	
-	EXRImage::saveRGB("foo.exr", buffer->getWidth(), buffer->getHeight(), buffer->getR(), buffer->getG(), buffer->getB());
-
-	delete buffer;
+	EXRImage::saveRGB("foo.exr", img_w, img_h, rPixels, gPixels, bPixels);
 
 	return 0;
 
