@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="gb2312"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="particlePositionCmd"
+	ProjectGUID="{D498A1F8-B5FF-41A6-9B55-3039543BBC26}"
+	RootNamespace="particlePositionCmd">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Gm /GX /ZI /I &quot;.&quot; /D &quot;WIN32&quot; /D &quot;_DEBUG&quot; /YX /GZ /c"
+				Optimization="0"
+				AdditionalIncludeDirectories="C:\Program Files\Alias\Maya7.0\include"
+				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,_AFXDLL,_MBCS,NT_PLUGIN,REQUIRE_IOSTREAM"
+				RuntimeLibrary="3"
+				PrecompiledHeaderFile="Debug/particlePosition.pch"
+				WarningLevel="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMayaRender.lib OpenGL32.lib odbc32.lib odbccp32.lib OpenMayaUI.lib OpenMaya.lib OpenMayaFX.lib"
+				OutputFile="..\module\plug-ins\pMap7.0.mll"
+				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
+				ProgramDatabaseFile="Debug/particlePosition.pdb"
+				ImportLibrary="Debug/particlePosition.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GX /I &quot;.&quot; /YX /c"
+				Optimization="2"
+				AdditionalIncludeDirectories="C:\Program Files\Alias\Maya7.0\include"
+				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,_AFXDLL,_MBCS,NT_PLUGIN,REQUIRE_IOSTREAM"
+				RuntimeLibrary="2"
+				PrecompiledHeaderFile="Release/particlePosition.pch"
+				WarningLevel="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/subsystem:windows /incremental:no /machine:I386 /export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaRender.lib OpenGL32.lib "
+				OutputFile="Release\particlePosition.mll"
+				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
+				ProgramDatabaseFile="Release/particlePosition.pdb"
+				ImportLibrary="Release/particlePosition.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp">
+			<File
+				RelativePath=".\OcTree.cpp">
+			</File>
+			<File
+				RelativePath=".\pluginMain.cpp">
+			</File>
+			<File
+				RelativePath=".\pMapCmd.cpp">
+			</File>
+			<File
+				RelativePath=".\pMapLocator.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h">
+			<File
+				RelativePath=".\OcTree.h">
+			</File>
+			<File
+				RelativePath=".\pMapCmd.h">
+			</File>
+			<File
+				RelativePath=".\pMapLocator.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Miscellaneous Files"
+			Filter="txt">
+			<File
+				RelativePath=".\Options.txt">
+			</File>
+			<File
+				RelativePath=".\ReadMe.txt">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
