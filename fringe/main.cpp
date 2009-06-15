@@ -2,8 +2,9 @@
 Syntax:
 */
 #include "../shared/zData.h"
-#include "../render/EXRImage.h"
 #include "../render/TIFFImage.h"
+#include "../render/EXRImage.h"
+
 #include <iostream>
 using namespace std;
 
