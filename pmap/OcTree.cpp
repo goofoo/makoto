@@ -415,7 +415,7 @@ void OcTree::PrintOcTree(TreeNode *t)
 {
 	if(t!=NULL)
 	{  
-		cout<<"begin:"<<t->begin<<" end:"<<t->end<<"  "<<t->center.x<<"  "<<t->center.y<<"  "<<t->center.z<<endl;
+		cout<<"begin:"<<t->begin<<" end:"<<t->end<<endl;
 		PrintOcTree(t->firstChildren);
 		PrintOcTree(t->secondChildren);
 		PrintOcTree(t->thirdChildren);

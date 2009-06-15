@@ -94,7 +94,6 @@ bool pMapLocator::loadParticlePosition() const
 	{   tree.gainarray = new XYZ[sum*24];
 		t = new TreeNode(0, sum-1);
 	    tree.CreateOcTree(t,particle,0,sum - 1,center,0.0,10);
-		tree.PrintOcTree(t);
 	}
 	tree.sizegainarray = 0;
 	tree.GetChildren(t,lv);

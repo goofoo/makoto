@@ -26,6 +26,10 @@
 #include <maya/MArgList.h>
 #include <maya/M3dView.h>
 #include <maya/MFnParticleSystem.h>
+#include <maya/MSyntax.h>
+#include <maya/MArgDatabase.h>
+#include <maya/MAnimControl.h>
+#include <maya/MTime.h>
 #include <iostream>
 #include <fstream>
 #include "E:\git_home\shared\zData.h"
@@ -42,6 +46,8 @@ public:
 	virtual		~pMapCmd();
 
 	MStatus		doIt( const MArgList& );
+	static MSyntax newSyntax();
+	MStatus	writeMesh(const char* filename, MDagPath meshDag, const MObject& meshObj);
 	MStatus		redoIt();
 	MStatus		undoIt();
 	bool		isUndoable() const;
@@ -54,6 +60,8 @@ private:
 	MDagPath fDagPath;
 	MPointArray pointArray;
 	MObject particleNode;
+	MStatus parseArgs ( const MArgList& args );
+	bool worldSpace;
 };
 
 #endif

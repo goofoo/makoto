@@ -163,7 +163,7 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 // output vertices
 	MPointArray pArray;
 	
-	if(worldSpace) meshFn.getPoints ( pArray, MSpace::kWorld );
+	if(worldSpace) meshFn.getPoints ( pArray, MSpace::kWorld);
 	else meshFn.getPoints ( pArray, MSpace::kObject );
 	
 	XYZ *pbuf = new XYZ[pArray.length()];

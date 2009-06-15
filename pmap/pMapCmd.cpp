@@ -15,7 +15,22 @@
 
 using namespace std;
 
-MStatus pMapCmd::doIt( const MArgList& )
+MSyntax pMapCmd::newSyntax() 
+{
+	MSyntax syntax;
+
+	syntax.addFlag("-p", "-path", MSyntax::kString);
+	syntax.addFlag("-n", "-name", MSyntax::kString);
+	syntax.addFlag("-w", "-world", MSyntax::kBoolean);
+	syntax.addFlag("-sg", "-single", MSyntax::kBoolean);
+	
+	syntax.enableQuery(false);
+	syntax.enableEdit(false);
+
+	return syntax;
+}
+
+MStatus pMapCmd::doIt( const MArgList& args )
 //
 //	Description:
 //		implements the MEL pMapCmd command.
@@ -35,7 +50,27 @@ MStatus pMapCmd::doIt( const MArgList& )
 	// redo method is then called to do the actuall work.  This prevents
 	// code duplication.
 	//
-	MStatus status;
+	MStatus status = parseArgs( args );
+	
+	if( status != MS::kSuccess ) return status;
+	
+	MArgDatabase argData(syntax(), args);
+	
+	MAnimControl timeControl;
+	MTime time = timeControl.currentTime();
+	int frame =int(time.value());
+    
+	MString proj;
+	MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj );
+
+    MString cache_path = proj + "/data/";
+	MString cache_name;
+	MString scene_name = "untitled";
+	worldSpace = false;
+	if (argData.isFlagSet("-p")) argData.getFlagArgument("-p", 0, cache_path);
+	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
+	if (argData.isFlagSet("-w")) argData.getFlagArgument("-w", 0, worldSpace);
+
     MSelectionList slist;
 	MGlobal::getActiveSelectionList( slist );
 	MItSelectionList list( slist, MFn::kParticle, &status );
@@ -186,4 +221,10 @@ bool pMapCmd::isUndoable() const
 //
 {
 	return true;
+}
+
+MStatus pMapCmd::parseArgs( const MArgList& args )
+{
+	MStatus stat = MS::kSuccess;
+	return MS::kSuccess;
 }

@@ -29,7 +29,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="Foundation.lib OpenMayaRender.lib OpenGL32.lib odbc32.lib odbccp32.lib OpenMayaUI.lib OpenMaya.lib OpenMayaFX.lib"
+				AdditionalDependencies="Foundation.lib OpenMayaRender.lib OpenGL32.lib odbc32.lib odbccp32.lib OpenMayaUI.lib OpenMaya.lib OpenMayaFX.lib OpenMayaAnim.lib"
 				OutputFile="..\module\plug-ins\pMap7.0.mll"
 				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
 				ProgramDatabaseFile="Debug/particlePosition.pdb"
