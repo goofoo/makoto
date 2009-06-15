@@ -1,4 +1,4 @@
-#include ".\OcTree.h"
+#include "OcTree.h"
 #include <GL/glut.h> 
 
 void OcTree::FreeTreeNode(TreeNode *p)
