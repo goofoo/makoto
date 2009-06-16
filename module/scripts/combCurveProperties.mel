@@ -10,11 +10,36 @@ global proc combCurveProperties ()
 		tabLayout -childResizable true combCurveTabs;
 			columnLayout combCurveTab;
 				frameLayout -cll true -cl false -l "combCurve Options" combCurveFrame;
-					columnLayout combCurveOptions;
+					columnLayout  -adjustableColumn true combCurveOptions;
 						separator -style "none";
 							
-						radioButtonGrp -numberOfRadioButtons 4
-    -label "Brush" -labelArray4 "Free" "Tip" "Scale" "Noise" -cc "combCurveSetOpt(`radioButtonGrp -q -sl combCurveOpt`)" combCurveOpt;   
+						//radioButtonGrp -numberOfRadioButtons 4
+   // -label "Brush" -labelArray4 "Free" "Tip" "Scale" "Noise" -cc "combCurveSetOpt(`radioButtonGrp -q -sl combCurveOpt`)" combCurveOpt;
+
+iconTextButton -style "iconAndTextHorizontal" -image1 "cone.xpm" -label "create" -c "combCurveSetOpt(0)";
+
+intSliderGrp -label "Number of Segment" -field true
+    -minValue 3 -maxValue 10
+    -fieldMinValue 3 -fieldMaxValue 50
+    -value 5
+	-cc "combCurveSetNSeg(`intSliderGrp -q -value combCurveSlider_NSeg`)" combCurveSlider_NSeg;
+	
+floatSliderGrp -label "Segment Length" -field true
+    -minValue 0.1 -maxValue 5.0
+    -fieldMinValue 0.01 -fieldMaxValue 50.0
+    -value 1.0
+	-cc "combCurveSetLSeg(`floatSliderGrp -q -value combCurveSlider_LSeg`)" combCurveSlider_LSeg;
+	
+floatSliderGrp -label "Segment Noise" -field true
+    -minValue 0.1 -maxValue 1.0
+    -fieldMinValue 0.01 -fieldMaxValue 1.0
+    -value 0.1
+	-cc "combCurveSetNoise(`floatSliderGrp -q -value combCurveSlider_noise`)" combCurveSlider_noise;
+	
+iconTextButton -style "iconAndTextHorizontal" -image1 "cone.xpm" -label "free" -c "combCurveSetOpt(1)";
+iconTextButton -style "iconAndTextHorizontal" -image1 "cone.xpm" -label "tip" -c "combCurveSetOpt(2)";
+iconTextButton -style "iconAndTextHorizontal" -image1 "cone.xpm" -label "scale" -c "combCurveSetOpt(3)";
+iconTextButton -style "iconAndTextHorizontal" -image1 "cone.xpm" -label "noise" -c "combCurveSetOpt(4)";
 
 					setParent ..; // combCurveOptions
 				setParent ..; // combCurveFrame
@@ -35,27 +60,17 @@ global proc combCurveSetOpt(int $val)
 	combCurveToolContext -e -opt $val `currentCtx`;
 }
 
-global proc combCurveSetCallbacks(string $parent)
-//
-//	Procedure Name:
-//		combCurveSetCallbacks
-//
-//	Description:
-//		associate control events with callbacks
-//
-//	Input Arguments:
-//		parent name.
-//
-//	Return Value:
-//		None.
-//
+global proc combCurveSetNSeg(int $val)
 {
-	setParent	$parent;
-	string		$whichCtx = `currentCtx`;
-
- 	intSliderGrp -e
- 		-cc ("combCurveToolContext -e -opt #1 `currentCtx`")
- 		combCurveOpt;
+	combCurveToolContext -e -nsg $val `currentCtx`;
 }
 
+global proc combCurveSetLSeg(float $val)
+{
+	combCurveToolContext -e -lsg $val `currentCtx`;
+}
 
+global proc combCurveSetNoise(float $val)
+{
+	combCurveToolContext -e -noi $val `currentCtx`;
+}
