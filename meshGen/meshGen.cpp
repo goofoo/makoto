@@ -31,7 +31,7 @@ public:
 
 private:
 	RtFloat m_i_hdr_shadowed, m_i_hdr_interreflection, m_i_hdr_subsurfacescat, m_i_hdr_backscat;
-	RtFloat m_i_lightsrc_shadowed, m_i_lightsrc_interreflection, m_i_lightsrc_subsurfacescat, m_i_double_sided;
+	RtFloat m_i_lightsrc_shadowed, m_i_lightsrc_interreflection, m_i_lightsrc_subsurfacescat, m_i_double_sided, m_has_tangentSpace;
 };
 
 /*---------------------------------------------------------*/
@@ -57,7 +57,7 @@ m_i_hdr_backscat(0),
 m_i_lightsrc_shadowed(0),
 m_i_lightsrc_interreflection(0),
 m_i_lightsrc_subsurfacescat(0),
-m_i_double_sided(0)
+m_i_double_sided(0),m_has_tangentSpace(0)
 {   
 }
 
@@ -97,6 +97,10 @@ quadrics::SetArgs(RIBContext *c,
 	else if( !strcmp(args[i], "float double_sided") )
 	{
 		RIBContextUtil::GetFloatValue(vals[i], &m_i_double_sided);
+	}
+	else if( !strcmp(args[i], "float tangent_space") )
+	{
+		RIBContextUtil::GetFloatValue(vals[i], &m_has_tangentSpace);
 	}
 	else
 	{
@@ -198,7 +202,7 @@ quadrics::GenRIB( RIBContext *c )
 	if(usingMotionBlur) iblur = 1;
 	if(pass == RIBContext::rpShadow) iblur = 0;
 	char sbuf[4096];
-	sprintf( sbuf, "%s %s %s %d %d %d %d %d %f %f %f %f %d %d", 
+	sprintf( sbuf, "%s %s %s %d %d %d %d %d %f %f %f %f %d %d %d", 
 	sname.c_str(), 
 	meshname.asChar(),
 	sprt.c_str(),
@@ -209,7 +213,7 @@ quadrics::GenRIB( RIBContext *c )
 	(int)m_i_lightsrc_shadowed,
 	shutterOpen, shutterClose,
 	(float)dtime0, (float)dtime1,
-	iblur, (int)m_i_double_sided);
+	iblur, (int)m_i_double_sided, (int)m_has_tangentSpace);
 	
 	RtString args[] = { "plugins/meshCacheProcedural.dll", sbuf};
 	

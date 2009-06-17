@@ -43,7 +43,7 @@ m_triangleConn(0),
 m_cvs(0),
 //m_subd_cvs(0), 
 m_normals(0),
-m_tangents(0),
+m_tangents(0), m_binormals(0),
 m_draw_color(0), m_color(0),
 m_numFace(0), 
 m_numFaceVertex(0), 
@@ -63,7 +63,7 @@ m_triangleConn(0),
 m_cvs(0),
 //m_subd_cvs(0), 
 m_normals(0),
-m_tangents(0),
+m_tangents(0), m_binormals(0),
 m_draw_color(0), m_color(0),
 m_numFace(0), 
 m_numFaceVertex(0), 
@@ -351,6 +351,7 @@ void FXMLMesh::free()
 		//if(m_subd_cvs) delete[] m_subd_cvs;
 		if(m_normals) delete[] m_normals;
 		if(m_tangents) delete[] m_tangents;
+		if(m_binormals) delete[] m_binormals;
 		if(m_draw_color) delete[] m_draw_color;
 		if(m_color) delete[] m_color;
 		if(m_pOpen) delete[] m_pOpen;
@@ -574,6 +575,12 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 				ffin.read((char*)m_tangents, size);
 			}
 		doc.setParent();
+		
+			m_binormals = new XYZ[m_numVertex];
+			for(unsigned iv = 0; iv<m_numVertex; iv++) {
+				m_binormals[iv] = m_tangents[iv]^m_normals[iv];
+				m_binormals[iv].normalize();
+			}
 		
 			m_grd = new float[m_numVertex];
 // set average grid size in case no data is saved
