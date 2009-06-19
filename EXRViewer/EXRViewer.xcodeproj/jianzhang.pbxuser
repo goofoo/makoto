@@ -1,0 +1,277 @@
+// !$*UTF8*$!
+{
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeArchitecture = i386;
+		activeBuildConfigurationName = Release;
+		activeExecutable = 7FAB700F0FE80CDD00A0E472 /* EXRViewer */;
+		activeTarget = 8D1107260486CEB800E47090 /* EXRViewer */;
+		addToTargets = (
+			8D1107260486CEB800E47090 /* EXRViewer */,
+		);
+		breakpoints = (
+			7FC96CCF0FE8260200FEFCD0 /* XCony.m:4 */,
+		);
+		codeSenseManager = 7FAB70290FE80CEE00A0E472 /* Code sense */;
+		executables = (
+			7FAB700F0FE80CDD00A0E472 /* EXRViewer */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXErrorsWarningsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXErrorsWarningsDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					300,
+					133,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXErrorsWarningsDataSource_TypeID,
+					PBXErrorsWarningsDataSource_MessageID,
+					PBXErrorsWarningsDataSource_LocationID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					131,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					243,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXSymbolsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXSymbolsDataSource_SymbolNameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					16,
+					200,
+					50,
+					183,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXSymbolsDataSource_SymbolTypeIconID,
+					PBXSymbolsDataSource_SymbolNameID,
+					PBXSymbolsDataSource_SymbolTypeID,
+					PBXSymbolsDataSource_ReferenceNameID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					203,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 267132282;
+			PBXWorkspaceStateSaveDate = 267132282;
+		};
+		perUserProjectItems = {
+			7F60F1440FEC1D200030E0B5 /* PBXTextBookmark */ = 7F60F1440FEC1D200030E0B5 /* PBXTextBookmark */;
+			7F60F1450FEC1D200030E0B5 /* PBXTextBookmark */ = 7F60F1450FEC1D200030E0B5 /* PBXTextBookmark */;
+			7FCEB0500FEC233100B6D045 /* PBXTextBookmark */ = 7FCEB0500FEC233100B6D045 /* PBXTextBookmark */;
+			7FCEB0510FEC233100B6D045 /* PBXTextBookmark */ = 7FCEB0510FEC233100B6D045 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 7FAB70280FE80CEE00A0E472 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	29B97316FDCFA39411CA2CEA /* main.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {603, 464}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 253}";
+			sepNavWindowFrame = "{{38, 160}, {662, 592}}";
+		};
+	};
+	7F280A700FE96DFE002A2F3E /* myView.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {579, 469}}";
+			sepNavSelRange = "{428, 0}";
+			sepNavVisRange = "{0, 434}";
+			sepNavWindowFrame = "{{56, 125}, {638, 597}}";
+		};
+	};
+	7F280A710FE96DFE002A2F3E /* myView.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {613, 1400}}";
+			sepNavSelRange = "{1880, 0}";
+			sepNavVisRange = "{1465, 421}";
+			sepNavWindowFrame = "{{299, 168}, {672, 590}}";
+		};
+	};
+	7F60EF780FEBF1070030E0B5 /* GUIControl.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {603, 441}}";
+			sepNavSelRange = "{208, 30}";
+			sepNavVisRange = "{0, 280}";
+			sepNavWindowFrame = "{{442, 113}, {662, 592}}";
+		};
+	};
+	7F60EF790FEBF1070030E0B5 /* GUIControl.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {603, 1148}}";
+			sepNavSelRange = "{1765, 0}";
+			sepNavVisRange = "{1017, 750}";
+			sepNavWindowFrame = "{{549, 92}, {662, 592}}";
+		};
+	};
+	7F60F1440FEC1D200030E0B5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F280A710FE96DFE002A2F3E /* myView.m */;
+		name = "myView.m: 98";
+		rLen = 0;
+		rLoc = 1880;
+		rType = 0;
+		vrLen = 396;
+		vrLoc = 1490;
+	};
+	7F60F1450FEC1D200030E0B5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F280A700FE96DFE002A2F3E /* myView.h */;
+		name = "myView.h: 18";
+		rLen = 0;
+		rLoc = 428;
+		rType = 0;
+		vrLen = 434;
+		vrLoc = 0;
+	};
+	7FAB700F0FE80CDD00A0E472 /* EXRViewer */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = EXRViewer;
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	7FAB70280FE80CEE00A0E472 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	7FAB70290FE80CEE00A0E472 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	7FAB70510FE81F5A00A0E472 /* XCony.m */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.objc;
+		name = XCony.m;
+		path = /Users/jianzhang/Documents/plankton/EXRViewer/XCony.m;
+		sourceTree = "<absolute>";
+	};
+	7FC96CCF0FE8260200FEFCD0 /* XCony.m:4 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = 7FAB70510FE81F5A00A0E472 /* XCony.m */;
+		functionName = "-openFile:";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 4;
+		modificationTime = 267133609.259267;
+		state = 0;
+	};
+	7FCEB0500FEC233100B6D045 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F280A710FE96DFE002A2F3E /* myView.m */;
+		name = "myView.m: 98";
+		rLen = 0;
+		rLoc = 1880;
+		rType = 0;
+		vrLen = 421;
+		vrLoc = 1465;
+	};
+	7FCEB0510FEC233100B6D045 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F280A700FE96DFE002A2F3E /* myView.h */;
+		name = "myView.h: 18";
+		rLen = 0;
+		rLoc = 428;
+		rType = 0;
+		vrLen = 434;
+		vrLoc = 0;
+	};
+	7FFB7FAD0FEAA84A00AD20C9 /* image.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {603, 546}}";
+			sepNavSelRange = "{622, 0}";
+			sepNavVisRange = "{29, 631}";
+			sepNavWindowFrame = "{{-1, 64}, {662, 592}}";
+		};
+	};
+	8D1107260486CEB800E47090 /* EXRViewer */ = {
+		activeExec = 0;
+		executables = (
+			7FAB700F0FE80CDD00A0E472 /* EXRViewer */,
+		);
+	};
+}
