@@ -333,7 +333,8 @@ void HairCache::create()
 		//axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
 		//guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
 		//axisobj.x = 0;
-		for(short j = 0; j< guide_data[bind_data[i]].num_seg; j++) 
+		int num_seg = guide_data[bind_data[i]].num_seg;
+		for(short j = 0; j< num_seg; j++) 
 		{
 			vertices[acc] = ppre;
 			acc++;
@@ -363,7 +364,10 @@ void HairCache::create()
 			ppre += dv*noi;
 			*/
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			pcur = pobj*(noi - clumping);
+			float keepx = pobj.x;
+			pcur = pobj*(1 - clumping*(j+1)/num_seg);
+			pcur *= noi;
+			pcur.x = keepx;
 			guide_data[bind_data[i]].space[j].transform(pcur);
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;

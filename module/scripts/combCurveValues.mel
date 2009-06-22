@@ -17,11 +17,16 @@ global proc combCurveValues(string $toolName)
 
 global proc combCurveOptionValues(string $toolName)
 {
-	int $set;
-
- 	// number of CVs
- 	//
- 	$set = eval("combCurveToolContext -q -opt " + $toolName);
- 	radioButtonGrp -e -select $set combCurveOpt;
+	int $val;
+	
+ 	$val = eval("combCurveToolContext -q -nsg " + $toolName);
+ 	intSliderGrp -e -value $val combCurveSlider_NSeg;
+	
+	float $fval;
+	$fval = eval("combCurveToolContext -q -lsg " + $toolName);
+ 	floatSliderGrp -e -value $fval combCurveSlider_LSeg;
+	
+	$fval = eval("combCurveToolContext -q -noi " + $toolName);
+ 	floatSliderGrp -e -value $fval combCurveSlider_noise;
 }
 

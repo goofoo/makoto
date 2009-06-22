@@ -55,7 +55,8 @@ public:
 	MStatus			finalize();
 
 private:
-	unsigned opt;
+	unsigned opt, nseg;
+	float lseg;
 };
 
 const char helpString[] =
@@ -75,6 +76,12 @@ public:
 	
 	void setOperation(unsigned val);
 	unsigned getOperation() const;
+	void setNSegment(unsigned val);
+	unsigned getNSegment() const;
+	void setLSegment(float val);
+	float getLSegment() const;
+	void setCreationNoise(float val);
+	float getCreationNoise() const;
 
 private:
 	short					start_x, start_y;
@@ -86,12 +93,14 @@ private:
 	MDoubleArray curveLen;
 	MATRIX44F mat;
 	double clipNear, clipFar;
-	unsigned mOpt;
+	unsigned mOpt, m_numSeg;
+	float m_seg_len, m_seg_noise;
 	
 	void moveAll();
 	void dragTip();
 	void scaleAll();
 	void deKink();
+	void grow();
 };
 
 class combCurveContextCmd : public MPxContextCommand

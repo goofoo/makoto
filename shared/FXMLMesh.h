@@ -126,6 +126,10 @@ public:
 	void setHDRLighting(const XYZ* coeff);
 	void resetHDRLighting();
 	
+	const XYZ *getNormals() const {return m_normals;}
+	const XYZ *getBiNormals() const {return m_binormals;}
+	const XYZ *getTangents() const {return m_tangents;}
+	
 	void appendColorSet(const char* paramname, const char* filename);
 	int getNumColorSet() const { return m_colorSet.size(); }
 	const char* getColorSetNameById(int idx) const { return m_colorSet[idx]->name.c_str(); }
@@ -154,6 +158,7 @@ private:
 	float* m_grd;
 	XYZ* m_normals;
 	XYZ* m_tangents;
+	XYZ* m_binormals;
 	XYZ* m_draw_color;
 	XYZ* m_color;
 	XYZ m_bbox0, m_bbox1;

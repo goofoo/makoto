@@ -6,6 +6,12 @@
 
 #define kOptFlag "-opt" 
 #define kOptFlagLong "-option"
+#define kNsegFlag "-nsg" 
+#define kNsegFlagLong "-numSegment"
+#define kLsegFlag "-lsg" 
+#define kLsegFlagLong "-lengthSegment"
+#define kNoiseFlag "-noi" 
+#define kNoiseFlagLong "-noise"
 
 combCurveTool::~combCurveTool() {}
 
@@ -24,6 +30,8 @@ MSyntax combCurveTool::newSyntax()
 	MSyntax syntax;
 
 	syntax.addFlag(kOptFlag, kOptFlagLong, MSyntax::kUnsigned);
+	syntax.addFlag(kNsegFlag, kNsegFlagLong, MSyntax::kUnsigned);
+	syntax.addFlag(kLsegFlag, kLsegFlagLong, MSyntax::kDouble );
 	
 	return syntax;
 }
@@ -51,7 +59,25 @@ MStatus combCurveTool::parseArgs(const MArgList &args)
 		unsigned tmp;
 		status = argData.getFlagArgument(kOptFlag, 0, tmp);
 		if (!status) {
-			status.perror("numCVs flag parsing failed");
+			status.perror("opt flag parsing failed");
+			return status;
+		}
+	}
+	
+	if (argData.isFlagSet(kNsegFlag)) {
+		unsigned tmp;
+		status = argData.getFlagArgument(kNsegFlag, 0, tmp);
+		if (!status) {
+			status.perror("numseg flag parsing failed");
+			return status;
+		}
+	}
+	
+	if (argData.isFlagSet(kLsegFlag)) {
+		double tmp;
+		status = argData.getFlagArgument(kLsegFlag, 0, tmp);
+		if (!status) {
+			status.perror("lenseg flag parsing failed");
 			return status;
 		}
 	}
@@ -68,12 +94,16 @@ MStatus combCurveTool::finalize()
 {
 	MArgList command;
 	command.addArg(commandString());
-	command.addArg(MString(kOptFlag));
-	command.addArg((int)opt);
+	//command.addArg(MString(kOptFlag));
+	//command.addArg((int)opt);
+	//command.addArg(MString(kNSegFlag));
+	//command.addArg((int)nseg);
+	//command.addArg(MString(kLSegFlag));
+	//command.addArg((float)lseg);
 	return MPxToolCommand::doFinalize( command );
 }
 
-combCurveContext::combCurveContext():mOpt(1)
+combCurveContext::combCurveContext():mOpt(1),m_numSeg(5),m_seg_len(1.f),m_seg_noise(0.f)
 {
 	setTitleString ( "combCurve Tool" );
 
@@ -183,6 +213,9 @@ MStatus combCurveContext::doDrag( MEvent & event )
 	
 	switch (mOpt)
 	{
+		case 1 :
+			moveAll();
+			break;
 		case 2 :
 			dragTip();
 			break;
@@ -193,7 +226,7 @@ MStatus combCurveContext::doDrag( MEvent & event )
 			deKink();
 			break;
 		default:
-			moveAll();
+			;
 	}
 
 	start_x = last_x;
@@ -209,8 +242,8 @@ MStatus combCurveContext::doRelease( MEvent & event )
 
 	MSelectionList			incomingList, combCurveList;
 
-	// Clear the combCurve when you release the mouse button
-
+	// Create the combCurve when you release the mouse button
+	if(mOpt==0) grow();
 
 
 	// If HW overlays enabled, then clear the overlay plane
@@ -268,6 +301,39 @@ void combCurveContext::setOperation(unsigned val)
 unsigned combCurveContext::getOperation() const
 {
 	return mOpt;
+}
+
+void combCurveContext::setNSegment(unsigned val)
+{
+	m_numSeg = val;
+	MToolsInfo::setDirtyFlag(*this);
+}
+
+unsigned combCurveContext::getNSegment() const
+{
+	return m_numSeg;
+}
+
+void combCurveContext::setLSegment(float val)
+{
+	m_seg_len = val;
+	MToolsInfo::setDirtyFlag(*this);
+}
+
+float combCurveContext::getLSegment() const
+{
+	return m_seg_len;
+}
+
+void combCurveContext::setCreationNoise(float val)
+{
+	m_seg_noise = val;
+	MToolsInfo::setDirtyFlag(*this);
+}
+
+float combCurveContext::getCreationNoise() const
+{
+	return m_seg_noise;
 }
 
 void combCurveContext::moveAll()
@@ -479,6 +545,53 @@ void combCurveContext::deKink()
 	}
 }
 
+void combCurveContext::grow()
+{
+	MPoint fromNear, fromFar;
+	view.viewToWorld ( start_x, start_y, fromNear, fromFar );
+	
+	MVector ray = fromFar - fromNear;
+	
+	MSelectionList slist;
+ 	MGlobal::getActiveSelectionList( slist );
+	MStatus stat;
+	MItSelectionList iter( slist, MFn::kMesh, &stat );
+	
+	MDagPath 	mdagPath;
+	MObject 	mComponent;
+	
+	iter.getDagPath( mdagPath, mComponent );
+	mdagPath.extendToShape ();
+	
+	MFnMesh meshFn(mdagPath, &stat );
+	if(stat)
+	{
+		MPointArray Aphit;
+		MIntArray Aihit;
+		if(meshFn.intersect (fromNear, ray, Aphit, 0, MSpace::kObject, &Aihit, &stat)) 
+		{
+			MVector hitnormal;
+			meshFn.getPolygonNormal ( Aihit[0], hitnormal,  MSpace::kObject  );
+			hitnormal.normalize();
+				
+			MFnNurbsCurve fcurve;
+			MDoubleArray knots;
+			for(unsigned j = 0;j <= m_numSeg;j++) knots.append(j);
+			
+			MPointArray cvs;
+			for(unsigned j = 0;j <= m_numSeg;j++)
+			{
+				MPoint vert;
+				MVector dispnor = hitnormal + MVector(rand( )%31/31.f-0.5, rand( )%71/71.f-0.5, rand( )%131/131.f-0.5)*m_seg_noise;
+				dispnor.normalize();
+				vert =  Aphit[0] + dispnor*m_seg_len*j;
+				cvs.append(vert);
+			}
+			fcurve.create ( cvs, knots, 1, MFnNurbsCurve::kOpen , 0, 0, MObject::kNullObj, &stat );
+		}
+	}
+}
+
 combCurveContextCmd::combCurveContextCmd() {}
 
 MPxContext* combCurveContextCmd::makeObj()
@@ -509,6 +622,39 @@ MStatus combCurveContextCmd::doEditFlags()
 		fContext->setOperation(mode);
 	}
 	
+	if (argData.isFlagSet(kNsegFlag)) 
+	{
+		unsigned nseg;
+		status = argData.getFlagArgument(kNsegFlag, 0, nseg);
+		if (!status) {
+			status.perror("nseg flag parsing failed.");
+			return status;
+		}
+		fContext->setNSegment(nseg);
+	}
+	
+	if (argData.isFlagSet(kLsegFlag)) 
+	{
+		double lseg;
+		status = argData.getFlagArgument(kLsegFlag, 0, lseg);
+		if (!status) {
+			status.perror("lseg flag parsing failed.");
+			return status;
+		}
+		fContext->setLSegment(lseg);
+	}
+	
+	if (argData.isFlagSet(kNoiseFlag)) 
+	{
+		double noi;
+		status = argData.getFlagArgument(kNoiseFlag, 0, noi);
+		if (!status) {
+			status.perror("lseg flag parsing failed.");
+			return status;
+		}
+		fContext->setCreationNoise(noi);
+	}
+
 	return MS::kSuccess;
 }
 
@@ -520,6 +666,18 @@ MStatus combCurveContextCmd::doQueryFlags()
 		setResult((int)fContext->getOperation());
 	}
 	
+	if (argData.isFlagSet(kNsegFlag)) {
+		setResult((int)fContext->getNSegment());
+	}
+	
+	if (argData.isFlagSet(kLsegFlag)) {
+		setResult((float)fContext->getLSegment());
+	}
+	
+	if (argData.isFlagSet(kNoiseFlag)) {
+		setResult((float)fContext->getCreationNoise());
+	}
+	
 	return MS::kSuccess;
 }
 
@@ -527,8 +685,35 @@ MStatus combCurveContextCmd::appendSyntax()
 {
 	MSyntax mySyntax = syntax();
 	
-	if (MS::kSuccess != mySyntax.addFlag(kOptFlag, kOptFlagLong, MSyntax::kUnsigned)) return MS::kFailure;
-
+	MStatus stat;
+	stat = mySyntax.addFlag(kOptFlag, kOptFlagLong, MSyntax::kUnsigned);
+	if(!stat)
+	{
+		MGlobal::displayInfo("failed to add option arg");
+		return MS::kFailure;
+	}
+	
+	stat = mySyntax.addFlag(kNsegFlag, kNsegFlagLong, MSyntax::kUnsigned);
+	if(!stat)
+	{
+		MGlobal::displayInfo("failed to add numseg arg");
+		return MS::kFailure;
+	}
+	
+	stat = mySyntax.addFlag(kLsegFlag, kLsegFlagLong, MSyntax::kDouble);
+	if(!stat)
+	{
+		MGlobal::displayInfo("failed to add lenseg arg");
+		return MS::kFailure;
+	}
+	
+	stat = mySyntax.addFlag(kNoiseFlag, kNoiseFlagLong, MSyntax::kDouble);
+	if(!stat)
+	{
+		MGlobal::displayInfo("failed to add noise arg");
+		return MS::kFailure;
+	}
+	
 	return MS::kSuccess;
 }
 
