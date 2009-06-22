@@ -139,6 +139,9 @@
 				RelativePath="..\shared\FColorSet.cpp">
 			</File>
 			<File
+				RelativePath="..\shared\FFloatSet.cpp">
+			</File>
+			<File
 				RelativePath="..\sh_lighting\FTriangle.cpp">
 			</File>
 			<File

@@ -358,6 +358,7 @@ void FXMLMesh::free()
 		if(m_grd) delete[] m_grd;
 		m_uvSet.clear();
 		m_colorSet.clear();
+		m_floatSet.clear();
 		m_isNull = 1;
 	}
 }
@@ -575,6 +576,9 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 		doc.setParent();
 		
 			m_grd = new float[m_numVertex];
+// set average grid size in case no data is saved
+			float avg_sgrd = sqrt(m_area/m_numTriangle)/2;
+			for(unsigned iv = 0; iv<m_numVertex; iv++) m_grd[iv] = avg_sgrd;
 			
 			if(doc.getChildByName("GridSize") != 0)
 			{
@@ -1002,9 +1006,9 @@ void FXMLMesh::calcSRC()
 		r =g =b = 0;
 		for(int j = 0; j < 16; j++) 
 		{
-			r += vex_coe[i*16+j].x*constantCoeff[j*3];
-			g += vex_coe[i*16+j].y*constantCoeff[j*3+1];
-			b += vex_coe[i*16+j].z*constantCoeff[j*3+2];
+			r += vex_coe[i*16+j].x*constantCoeff[j];
+			g += vex_coe[i*16+j].y*constantCoeff[j];
+			b += vex_coe[i*16+j].z*constantCoeff[j];
 		}
 		m_draw_color[i] = XYZ(r,g,b);
 	}
@@ -1074,6 +1078,73 @@ void FXMLMesh::appendColorSet(const char* paramname, const char* filename)
 			for(int i=0; i<m_numVertex; i++) colset->data[i] = XYZ(fbuf[i*48+j*3], fbuf[i*48+j*3+1], fbuf[i*48+j*3+2]);
 					
 			m_colorSet.push_back(colset);
+		}
+	}
+	delete[] fbuf;
+}
+
+void FXMLMesh::appendFloatSet(const char* paramname, const char* filename)
+{
+	ifstream ffin;
+	ffin.open(filename, ios::in | ios::binary | ios::ate);
+	if(!ffin.is_open()) 
+	{
+		printf("ERROR: Cannot open %s\n", filename);
+		return;
+	}
+	
+	ifstream::pos_type size = ffin.tellg();
+	
+	char is_float = 0;
+	if((int)size == sizeof(float)*16*m_numVertex) is_float = 1;
+	
+	ffin.seekg( 0, ios::beg );
+	
+	float* fbuf;
+
+	if(is_float) 
+	{
+		fbuf = new float[m_numVertex*16];
+		ffin.read( (char*)fbuf, sizeof(float)*16*m_numVertex );
+	}
+	else 
+	{
+		fbuf = new float[m_numVertex*48];
+		ffin.read( (char*)fbuf, sizeof(float)*48*m_numVertex );
+	}
+	
+	ffin.close();
+	
+	char sbuf[64];
+	
+	if(is_float) 
+	{
+		for(int j=0; j<16; j++)
+		{
+			FFloatSet* colset = new FFloatSet();
+			sprintf(sbuf, "%s%i", paramname, j);
+				
+			colset->name = sbuf;
+			colset->data = new float[m_numVertex];
+		
+			for(int i=0; i<m_numVertex; i++) colset->data[i] = fbuf[i*16+j];
+					
+			m_floatSet.push_back(colset);
+		}
+	}
+	else
+	{
+		for(int j=0; j<16; j++)
+		{
+			FFloatSet* colset = new FFloatSet();
+			sprintf(sbuf, "%s%i", paramname, j);
+				
+			colset->name = sbuf;
+			colset->data = new float[m_numVertex];
+		
+			for(int i=0; i<m_numVertex; i++) colset->data[i] = fbuf[i*48+j*3];
+					
+			m_floatSet.push_back(colset);
 		}
 	}
 	delete[] fbuf;

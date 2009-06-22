@@ -1,20 +1,20 @@
-#include "zTiffImage.h"
+#include "TIFFImage.h"
 
-zTiffImage::zTiffImage(void): m_data(0)
+TIFFImage::TIFFImage(void): m_data(0)
 {
 }
 
-zTiffImage::zTiffImage(const char* filename): m_data(0)
+TIFFImage::TIFFImage(const char* filename): m_data(0)
 {
 	load(filename);
 }
 
-zTiffImage::~zTiffImage(void)
+TIFFImage::~TIFFImage(void)
 {
 	if(m_data) delete[] m_data;
 }
 
-char zTiffImage::load(const char* filename)
+char TIFFImage::load(const char* filename)
 {
 	TIFF *tif = TIFFOpen(filename, "r");
 	if(!tif) return 0;
@@ -33,7 +33,7 @@ char zTiffImage::load(const char* filename)
 		printf("%i X %i %i-bit Grayscale image\n", width, height, bits_per_sample);
 	
 	if(m_data) delete[] m_data;
-	m_data = new float[width*height*samples_per_pixel];
+	m_data = new half[width*height*samples_per_pixel];
 
 	switch(bits_per_sample)
 	{

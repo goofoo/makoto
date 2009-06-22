@@ -605,10 +605,10 @@ extensions zhang pxsl {
 			_colorF = colorF*SurfaceOpacity;
 			_colorG = colorG*SurfaceOpacity;
 			_colorH = colorH*SurfaceOpacity;
-	   		_diffuse = cDiffuse*SurfaceOpacity;
+	   		_diffuse = color(comp(cDiffuse, 0), comp(cDiffuse1, 0), comp(cDiffuse2, 0))*SurfaceOpacity;
 			_diffuse_fill = cDiffuse1*SurfaceOpacity;
 			_diffuse_back = cDiffuse2*SurfaceOpacity;
-			_specular = cSpecular*SurfaceOpacity;
+			_specular = color(comp(cSpecular, 0), comp(cSpecular1, 0), comp(cSpecular2, 0))*SurfaceOpacity;
 			_specular_fill = cSpecular1*SurfaceOpacity;
 			_specular_back = cSpecular2*SurfaceOpacity;
 	   		_reflection = cReflection*SurfaceOpacity;
@@ -1591,5 +1591,155 @@ template displacement ylSimple {
 	}
     } 
 ## displacement end
+
+template shadingcomponent ylRimSC {
+	    label ylRim
+	    description {
+		Shading component for illuminating the silhouttes
+		of objects.
+	    }
+		
+		parameter string categoryR {
+		description {Defined the categroy to receive specific lighting only.}
+		detail uniform
+	    }
+		
+		parameter string categoryG {
+		description {Defined the categroy to receive specific lighting only.}
+		detail uniform
+	    }
+		
+		parameter string categoryB {
+		description {Defined the categroy to receive specific lighting only.}
+		detail uniform
+	    }
+		
+	    parameter float Intensity {
+		description "Intensity of rim component"
+		detail varying
+		default 1
+		range {0 4 .001}
+	    }
+
+	    parameter float Edginesss {
+		description {
+		    Degree to which effect is concentrated at edges
+		}
+		detail varying
+		default .35
+		range {0 2}
+	    }
+	    parameter float Sharpness {
+		description {
+		    Sharpness of falloff
+		}
+		detail varying
+		default 0
+		range {0 1}
+	    }
+	    
+	    parameter normal Normal {
+		detail mustvary "pixar,ShadingNormal"
+	    }
+	    parameter vector ViewDirection {
+		detail mustvary "pixar,ViewDirection"
+		display hidden
+	    }
+	    collection shadingcomponent result {
+		access output
+		display hidden
+		parameter color col {
+		    access output
+		}
+		eval [::aovOutputParameterMacro]
+	    }
+	    RSLInclude "pxslAOV.h"
+	    RSLSource StaticFunction {
+		void pxslylRimSC(
+			uniform string cat0, cat1, cat2;
+		    float Krim;
+		    float edginess;
+		    float sharpness;
+		    normal Ns;
+		    vector V;
+		    output color col;
+		    DECLARE_AOV_OUTPUT_PARAMS
+		)
+		{
+		    INIT_AOV_OUTPUT_PARAMS
+
+		    col = 0;
+#if SLIM_SHADERTYPEID != SLIM_TYPEID_light
+		    extern point P;
+
+		    // calculate edginess
+		    float cosine = max( Ns.V, 0 );
+		    float sine = sqrt(1 - cosine*cosine);
+		    float edge = pow(sine, edginess*10);
+		    
+		    // run through smoothstep
+		    float w = .5 * (1-sharpness);
+		    float ss = smoothstep(.5-w, .5+w, edge);
+		    edge *= ss;
+			
+			uniform string category = "-environment";
+			if(cat0 !="") category = cat0;
+
+			color cc = 0;
+			illuminance(category, P, Ns, 1.57,
+			    "lightcache", "reuse")
+			{
+			    float krim = 1;
+			    lightsource("_contribRim", krim);
+			    if (krim > 0)
+			    {
+					cc += Cl * krim * normalize(L).Ns;
+			    }
+			}
+			
+			setcomp(col, 0, comp(cc,0));
+			
+			category = "-environment";
+			if(cat1 !="") category = cat1;
+
+			cc = 0;
+			illuminance(category, P, Ns, 1.57,
+			    "lightcache", "reuse")
+			{
+			    float krim = 1;
+			    lightsource("_contribRim", krim);
+			    if (krim > 0)
+			    {
+					cc += Cl * krim * normalize(L).Ns;
+			    }
+			}
+			
+			setcomp(col, 1, comp(cc,0));
+			
+			category = "-environment";
+			if(cat2 !="") category = cat2;
+
+			cc = 0;
+			illuminance(category, P, Ns, 1.57,
+			    "lightcache", "reuse")
+			{
+			    float krim = 1;
+			    lightsource("_contribRim", krim);
+			    if (krim > 0)
+			    {
+					cc += Cl * krim * normalize(L).Ns;
+			    }
+			}
+			
+			setcomp(col, 2, comp(cc,0));
+
+		    col *= edge * Krim;
+#endif
+		    c_rim = col;
+		}
+	    }
+	}
+
+
 	}
 }

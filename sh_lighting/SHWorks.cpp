@@ -655,6 +655,7 @@ void SHWorks::saveIndirectRT(const FXMLScene* scene)
 	MeshList list = scene->getMesh();
 	//TreeList shadow = scene->getShadowTree();
 	const FQSPLAT* shadow = scene->getRTTree();
+	m_max_buf = shadow->getNumSplat();
 	for(MeshList::iterator it=list.begin(); it != list.end(); ++it)
 	{
 		if((*it)->hasAttrib("skipIndirect")==1) cout<<" skip Interreflection on "<<(*it)->getMeshName()<<endl;
@@ -684,7 +685,7 @@ void SHWorks::saveIndirectRT(const FXMLScene* scene)
 					b_vis->initialize();
 					b_vis->setSpace(Q, ray, tang);
 					shadow->lookupInterreflect(Q,  ray, b_vis);
-					m_max_buf = shadow->getNumSplat();
+					
 					projectInterreflect(ray, shadow, b_vis, tmpCoeff);
 				//}
 				

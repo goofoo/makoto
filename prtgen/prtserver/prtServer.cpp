@@ -19,7 +19,7 @@ FXMLScene* fscene;
 
 int main (int argc, char * const argv[]) {
     // insert code here...
-    std::cout << "PRT Server 1.6.5 052109"<<endl;
+    std::cout << "PRT Server 1.6.7 061109"<<endl;
     
 	// check out
 	if(argc !=11 || strcmp(argv[1], "-path")!=0 || strcmp(argv[3], "-dice")!=0 || strcmp(argv[5], "-operation")!=0)	 
@@ -74,7 +74,7 @@ int main (int argc, char * const argv[]) {
 	
 	if(i_indirect== 1) 
 	{
-		fscene->diceWithRTandColor(n_dice_count);
+		fscene->diceWithRTandColor(4);
 		f_work->saveIndirectRT(fscene);
 		fscene->removeRTTree();
 	}

@@ -32,7 +32,7 @@
 #include <maya/MTime.h>
 #include <iostream>
 #include <fstream>
-#include "E:\git_home\shared\zData.h"
+#include "../shared/zData.h"
 
 
 

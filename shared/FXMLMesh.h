@@ -20,6 +20,8 @@ using namespace std;
 typedef vector<FUVSet*>UVList;
 #include "FColorSet.h"
 typedef vector<FColorSet*>ColorList;
+#include "FFloatSet.h"
+typedef vector<FFloatSet*>FloatList;
 typedef vector<string>AttribList;
 
 class FXMLMesh
@@ -128,6 +130,12 @@ public:
 	int getNumColorSet() const { return m_colorSet.size(); }
 	const char* getColorSetNameById(int idx) const { return m_colorSet[idx]->name.c_str(); }
 	const XYZ* getColorSetById(int idx) const { return m_colorSet[idx]->data; }
+	
+	void appendFloatSet(const char* paramname, const char* filename);
+	int getNumFloatSet() const { return m_floatSet.size(); }
+	const char* getFloatSetNameById(int idx) const { return m_floatSet[idx]->name.c_str(); }
+	const float* getFloatSetById(int idx) const { return m_floatSet[idx]->data; }
+	
 	float getGrid(int idx) const {return m_grd[idx];}
 	
 /*dicing*/
@@ -158,6 +166,7 @@ private:
 	UVList m_uvSet;
 	UVList m_vertexFloatSet;
 	ColorList m_colorSet;
+	FloatList m_floatSet;
 	
 	XYZ* m_pOpen;
 	XYZ* m_pClose;

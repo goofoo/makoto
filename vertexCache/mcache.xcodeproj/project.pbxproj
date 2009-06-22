@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F4BAC430FE3D8DD00352E9C /* FFloatSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F4BAC420FE3D8DD00352E9C /* FFloatSet.cpp */; };
 		7FB4B0210FC50458001E629C /* cacheTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0180FC50458001E629C /* cacheTransform.cpp */; };
 		7FB4B0220FC50458001E629C /* importSceneCmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B0190FC50458001E629C /* importSceneCmd.cpp */; };
 		7FB4B0230FC50458001E629C /* meshCacheCmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FB4B01A0FC50458001E629C /* meshCacheCmd.cpp */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7F4BAC420FE3D8DD00352E9C /* FFloatSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FFloatSet.cpp; path = ../shared/FFloatSet.cpp; sourceTree = SOURCE_ROOT; };
 		7FB4B0180FC50458001E629C /* cacheTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cacheTransform.cpp; sourceTree = "<group>"; };
 		7FB4B0190FC50458001E629C /* importSceneCmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = importSceneCmd.cpp; sourceTree = "<group>"; };
 		7FB4B01A0FC50458001E629C /* meshCacheCmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = meshCacheCmd.cpp; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F4BAC420FE3D8DD00352E9C /* FFloatSet.cpp */,
 				7FB4B05D0FC5087B001E629C /* VisibilityBuffer.cpp */,
 				7FB4B0580FC507B4001E629C /* XMLUtil.cpp */,
 				7FB4B04B0FC506B3001E629C /* zGlobal.cpp */,
@@ -210,6 +213,7 @@
 				7FB4B04C0FC506B3001E629C /* zGlobal.cpp in Sources */,
 				7FB4B0590FC507B4001E629C /* XMLUtil.cpp in Sources */,
 				7FB4B05E0FC5087B001E629C /* VisibilityBuffer.cpp in Sources */,
+				7F4BAC430FE3D8DD00352E9C /* FFloatSet.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

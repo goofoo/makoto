@@ -81,13 +81,13 @@ global proc meshCacheAppendMenuItems()
 	menuItem -l "Save Scene" -c "openSaveXMLSceneWin";
 	menuItem -divider true;
 	menuItem -l "Load Scene" -c "openImportXMLSceneCacheWin";
-	menuItem -l "Scene Information" -c "openSceneInformationWin";
+	menuItem -l "Mesh Information" -c "openSceneInformationWin";
 	menuItem -l "Change Data Path To" -c "fileBrowser \"set_xmlCacheDataPath\" \"Set Path\" \"\" 4";
 	menuItem -divider true;
 	menuItem -l "Check UV" -c "openxmlCheckUVWin";
 	menuItem -divider true;
+	menuItem -l "Show Wireframe" -c "mshc_sho(-1)";
 	menuItem -l "Show" -subMenu true;
-		menuItem -l "Wireframe" -c "mshc_sho(-1)";
 		menuItem -l "Tangent Space" -c "mshc_sho(-2)";
 		menuItem -l "Color" -c "mshc_sho(0)";
 		menuItem -divider true;
@@ -895,8 +895,8 @@ columnLayout -adjustableColumn true;
 	string $ai;
 	for($ai in $info) text -al left -l $ai;
 //row begin
+button -l "Reload" -c "openSceneInformationWin" -p $row;
 button -l "OK" -c "deleteUI sceneInformationWin" -p $row;
-text -l " " -p $row;
 text -l " " -p $row;
 
 formLayout -edit

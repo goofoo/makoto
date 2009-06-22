@@ -361,7 +361,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 {
 	if(hi<lo) return;
 	HierarchyQSPLATNode ap;
-	ap.level = level;
+	//ap.level = level;
 	ap.is_leaf = 0;
 	unsigned int nodeId = count;
 	
@@ -383,7 +383,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
+	if(hi-lo < 8 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -433,7 +433,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 	if(hi<lo) return;
 	HierarchyQSPLATNode ap;
 	XYZ ac;
-	ap.level = level;
+	//ap.level = level;
 	ap.is_leaf = 0;
 	unsigned int nodeId = count;
 	
@@ -457,7 +457,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
+	if(hi-lo < 8 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -507,7 +507,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	if(hi<lo) return;
 	HierarchyQSPLATNode ap;
 	CoeRec acoe;
-	ap.level = level;
+	//ap.level = level;
 	ap.is_leaf = 0;
 	unsigned int nodeId = count;
 
@@ -531,7 +531,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
+	if(hi-lo < 8 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -582,7 +582,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	HierarchyQSPLATNode ap;
 	CoeRec acoe;
 	XYZ ac;
-	ap.level = level;
+	//ap.level = level;
 	ap.is_leaf = 0;
 	unsigned int nodeId = count;
 
@@ -608,7 +608,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(level>11 || (hi-lo < 8 && ap.cone > MIN_CONE))
+	if(hi-lo < 8 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;

@@ -11,7 +11,7 @@ using namespace std;
 struct HierarchyQSPLATNode
 {
 	float cone, r;
-	unsigned short level;
+	//unsigned short level;
 	int child[4];
 	XYZ mean, nor;
 	char is_leaf;
@@ -219,7 +219,7 @@ public:
 	
 	char isFull(const int id) const
 	{
-		return (m_himap[id].level == m_draw_level || m_himap[id].is_leaf);
+		return (m_himap[id].is_leaf);
 	}
 
 	HierarchyQSPLATNode& getNode(const int id) const {return m_himap[id];}

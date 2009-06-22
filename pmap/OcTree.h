@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include<stdlib.h>
-#include "E:\git_home\shared\zData.h"
+#include "../shared/zData.h"
 using namespace std;
 
 

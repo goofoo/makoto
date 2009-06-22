@@ -271,47 +271,43 @@ MStatus XMLSceneCmd::parseArgs( const MArgList& args )
 
 MStatus XMLSceneCmd::getSceneInfo()
 {
-	MStringArray existingnode;
-	MGlobal::executeCommand ("ls -type meshCacheViz", existingnode );
+	//MStringArray existingnode;
+	//MGlobal::executeCommand ("ls -type meshCacheViz", existingnode );
+	MSelectionList selList;
+	MGlobal::getActiveSelectionList ( selList );
+	MItSelectionList iter( selList );
+	for ( ; !iter.isDone(); iter.next() )
+	{
+		MDagPath vizPath;		
+		iter.getDagPath( vizPath );
+		vizPath.extendToShape();
 	
-	MItDag itdag(MItDag::kDepthFirst, MFn::kPluginLocatorNode);
-	
-	for(unsigned i=0; i<existingnode.length(); i++)       
-	{ 
-		itdag.reset();
-		for(; !itdag.isDone(); itdag.next())
+		MFnDagNode pf(vizPath.node());
+		
+		meshCacheVizNode* pNode = (meshCacheVizNode*)pf.userNode();
+		if(pNode)
 		{
-			
-			MObject node = itdag.item();
-			
-			MFnDagNode pf(node);
-
-			if(pf.partialPathName()==existingnode[0])
+			const FXMLMesh* pMesh = pNode->getMeshPointer();
+			if(pMesh)
 			{
-				meshCacheVizNode* pNode = (meshCacheVizNode*)pf.userNode();
-				const FXMLMesh* pMesh = pNode->getMeshPointer();
-				if(pMesh)
+				MString res("  Mesh - ");
+				res += pMesh->getMeshName();
+				res += "\n num vertices: ";
+				res += pMesh->getNumVertex();
+				res += "\n num faces: ";
+				res += pMesh->nfaces();
+				res += "\n num face vertices: ";
+				res += pMesh->getNumFaceVertex();
+				res += "\n uv set: ";
+				for(unsigned j=0; j<pMesh->getNumUVSet(); j++)
 				{
-					MString res("  Mesh - ");
-					res += pMesh->getMeshName();
-					res += "\n num vertices: ";
-					res += pMesh->getNumVertex();
-					res += "\n num faces: ";
-					res += pMesh->nfaces();
-					res += "\n num face vertices: ";
-					res += pMesh->getNumFaceVertex();
-					res += "\n uv set: ";
-					for(unsigned j=0; j<pMesh->getNumUVSet(); j++)
-					{
-						res += pMesh->getUVSetName(j);
-						if(j != pMesh->getNumUVSet()-1) res += " | ";
-					}
-					res += "\n path: ";
-					res += pMesh->getXMLName();
-					appendToResult(res);
+					res += pMesh->getUVSetName(j);
+					if(j != pMesh->getNumUVSet()-1) res += " | ";
 				}
+				res += "\n path: ";
+				res += pMesh->getXMLName();
+				appendToResult(res);
 			}
-			
 		}
 	}
 	
