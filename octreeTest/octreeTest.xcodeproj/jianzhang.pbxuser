@@ -69,16 +69,16 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 267253638;
-			PBXWorkspaceStateSaveDate = 267253638;
+			PBXPerProjectTemplateStateSaveDate = 267431284;
+			PBXWorkspaceStateSaveDate = 267431284;
 		};
 		perUserProjectItems = {
-			7F74D43F0FEDFBDE0084B9DD /* PBXTextBookmark */ = 7F74D43F0FEDFBDE0084B9DD /* PBXTextBookmark */;
-			7F74D6D50FEEC0A20084B9DD /* PBXTextBookmark */ = 7F74D6D50FEEC0A20084B9DD /* PBXTextBookmark */;
-			7F74D7340FEEC8AF0084B9DD /* PBXTextBookmark */ = 7F74D7340FEEC8AF0084B9DD /* PBXTextBookmark */;
-			7F74D8F30FF024240084B9DD /* PBXTextBookmark */ = 7F74D8F30FF024240084B9DD /* PBXTextBookmark */;
-			7F74D8F40FF024240084B9DD /* PBXTextBookmark */ = 7F74D8F40FF024240084B9DD /* PBXTextBookmark */;
-			7F74D8F60FF024240084B9DD /* PBXTextBookmark */ = 7F74D8F60FF024240084B9DD /* PBXTextBookmark */;
+			7F74D43F0FEDFBDE0084B9DD = 7F74D43F0FEDFBDE0084B9DD /* PBXTextBookmark */;
+			7F74D6D50FEEC0A20084B9DD = 7F74D6D50FEEC0A20084B9DD /* PBXTextBookmark */;
+			7F74D7340FEEC8AF0084B9DD = 7F74D7340FEEC8AF0084B9DD /* PBXTextBookmark */;
+			7F74D8F30FF024240084B9DD = 7F74D8F30FF024240084B9DD /* PBXTextBookmark */;
+			7F74D8F40FF024240084B9DD = 7F74D8F40FF024240084B9DD /* PBXTextBookmark */;
+			7F74D8F60FF024240084B9DD = 7F74D8F60FF024240084B9DD /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -98,11 +98,6 @@
 		name = octreeVizNode.h;
 		path = /Users/jianzhang/Documents/plankton/octreeTest/octreeVizNode.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {603, 868}}";
-			sepNavSelRange = "{1410, 0}";
-			sepNavVisRange = "{616, 852}";
-		};
 	};
 	7F74D43F0FEDFBDE0084B9DD /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -117,12 +112,6 @@
 		name = HairMap.cpp;
 		path = /Users/jianzhang/Documents/plankton/zHair/HairMap.cpp;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {603, 10430}}";
-			sepNavSelRange = "{6401, 433}";
-			sepNavVisRange = "{6281, 804}";
-			sepNavWindowFrame = "{{496, 158}, {662, 592}}";
-		};
 	};
 	7F74D4790FEE04B30084B9DD /* OcTree.cpp */ = {
 		uiCtxt = {
@@ -157,7 +146,7 @@
 		rLen = 0;
 		rLoc = 1450;
 		rType = 0;
-		vrLen = 842;
+		vrLen = 779;
 		vrLoc = 689;
 	};
 	7F74D8F30FF024240084B9DD /* PBXTextBookmark */ = {
@@ -182,15 +171,10 @@
 	};
 	7F74D8F50FF024240084B9DD /* octreeVizNode.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = octreeVizNode.h;
 		path = /Users/jianzhang/Documents/plankton/octreeTest/octreeVizNode.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {603, 868}}";
-			sepNavSelRange = "{1410, 0}";
-			sepNavVisRange = "{616, 852}";
-			sepNavWindowFrame = "{{31, 61}, {662, 592}}";
-		};
 	};
 	7F74D8F60FF024240084B9DD /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -204,6 +188,7 @@
 	};
 	7F74D8F70FF024240084B9DD /* HairMap.cpp */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.cpp.cpp;
 		name = HairMap.cpp;
 		path = /Users/jianzhang/Documents/plankton/zHair/HairMap.cpp;
 		sourceTree = "<absolute>";

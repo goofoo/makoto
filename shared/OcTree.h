@@ -46,6 +46,7 @@ public:
 	static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void getBBox(const XYZ *data, const int num_data, XYZ& center, float& size);
+	static char isInBox(const XYZ& data, const XYZ& center, float size);
 	
 private:
 	TreeNode *root;

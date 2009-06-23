@@ -34,11 +34,7 @@ void OcTree::create(TreeNode *node, XYZ* data, int low, int high, const XYZ& cen
 {
 //zDisplayFloat2(low, high);
 	
-	if(high == low) {
-		if(data[low].x < center.x - size || data[low].x > center.x + size) return;
-		if(data[low].y < center.y - size || data[low].y > center.y + size) return;
-		if(data[low].z < center.z - size || data[low].z > center.z + size) return;
-	}
+	if(high == low) if(!isInBox(data[low], center, size)) return;
 	
 	node->center = center;
 	node->size = size;
@@ -60,6 +56,28 @@ void OcTree::create(TreeNode *node, XYZ* data, int low, int high, const XYZ& cen
 		int has110 = 0;
 		int has111 = 0;
 		for(int i=low; i<=high; i++) {
+			if(isInBox(data[i], center, size)) {
+				if(data[i].x <= center.x) {
+					if(data[i].y <= center.y) {
+						if(data[i].z <= center.z) has000 = 1;
+						else has001 = 1;
+					}
+					else {
+						if(data[i].z <= center.z) has010 = 1;
+						else has011 = 1;
+					}
+				}
+				else {
+					if(data[i].y <= center.y) {
+						if(data[i].z <= center.z) has100 = 1;
+						else has101 = 1;
+					}
+					else {
+						if(data[i].z <= center.z) has110 = 1;
+						else has111 = 1;
+					}
+				}
+			}/*
 			if(data[i].x > center.x -size && data[i].x < center.x +size) {
 				if(data[i].x <= center.x) {
 					if(data[i].y > center.y -size && data[i].y < center.y +size) {
@@ -93,7 +111,7 @@ void OcTree::create(TreeNode *node, XYZ* data, int low, int high, const XYZ& cen
 						}
 					}
 				}
-			}
+			}*/
 		}
 		
 		if(has000 == 0 && has001 == 0 && has010 == 0 && has011 == 0 && has100 == 0 && has101 == 0 && has110 == 0 && has111 == 0) {
@@ -447,5 +465,14 @@ void OcTree::quick_sortZ(XYZ array[],int first,int last)
 		quick_sortZ(array,first,high);
 	if(low<last)
 		quick_sortZ(array,low,last);}
+}
+
+char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
+{
+	if(data.x < center.x - size || data.x > center.x + size) return 0;
+	if(data.y < center.y - size || data.y > center.y + size) return 0;
+	if(data.z < center.z - size || data.z > center.z + size) return 0;
+	
+	return 1;
 }
 //:~
