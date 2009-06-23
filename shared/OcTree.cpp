@@ -1,31 +1,390 @@
-#include ".\OcTree.h"
+#include "OcTree.h"
+#include "zWorks.h"
 
-void OcTree::FreeTreeNode(TreeNode *p)
+#ifdef WIN32
+# include <windows.h>
+#endif
+#ifdef __APPLE__
+# include <OpenGL/gl.h>
+# include <OpenGL/glext.h>
+# include <GLUT/glut.h>
+#else
+# include <GL/gl.h>
+# include <GL/glut.h>
+#include "./glext.h"
+#endif
+
+OcTree::OcTree():root(0)
 {
-	delete p;
 }
 
-TreeNode* OcTree::GetTreeNode(int item1, int item2 )
+OcTree::~OcTree()
 {
-	TreeNode *p = new TreeNode(item1,item2);
-	if(p == NULL) 
-	{
-		cerr<<"Memory allocation failure!\n";
-		exit(1);
+	if(root) delete root;
+}
+
+void OcTree::construct(XYZ* data, const int num_data, const XYZ& center, const float size)
+{
+	if(root) delete root; 
+	root = new TreeNode();
+	create(root, data, 0, num_data-1, center, size, 0);
+}
+
+void OcTree::create(TreeNode *node, XYZ* data, int low, int high, const XYZ& center, const float size, const short level)
+{
+//zDisplayFloat2(low, high);
+	
+	if(high == low) if(!isInBox(data[low], center, size)) return;
+	
+	node->center = center;
+	node->size = size;
+	node->isNull = 0;
+	
+	if(level == 6) return;
+	
+	float halfsize = size/2;
+	XYZ acen;
+	short alevel = level + 1;
+	
+	if(high - low < 8) {
+		int has000 = 0;
+		int has001 = 0;
+		int has010 = 0;
+		int has011 = 0;
+		int has100 = 0;
+		int has101 = 0;
+		int has110 = 0;
+		int has111 = 0;
+		for(int i=low; i<=high; i++) {
+			if(isInBox(data[i], center, size)) {
+				if(data[i].x <= center.x) {
+					if(data[i].y <= center.y) {
+						if(data[i].z <= center.z) has000 = 1;
+						else has001 = 1;
+					}
+					else {
+						if(data[i].z <= center.z) has010 = 1;
+						else has011 = 1;
+					}
+				}
+				else {
+					if(data[i].y <= center.y) {
+						if(data[i].z <= center.z) has100 = 1;
+						else has101 = 1;
+					}
+					else {
+						if(data[i].z <= center.z) has110 = 1;
+						else has111 = 1;
+					}
+				}
+			}/*
+			if(data[i].x > center.x -size && data[i].x < center.x +size) {
+				if(data[i].x <= center.x) {
+					if(data[i].y > center.y -size && data[i].y < center.y +size) {
+						if(data[i].y <= center.y) {
+							if(data[i].z > center.z -size && data[i].z < center.z +size) {
+								if(data[i].z <= center.z) has000 = 1;
+								else has001 = 1;
+							}
+						}
+						else {
+							if(data[i].z > center.z -size && data[i].z < center.z +size) {
+								if(data[i].z <= center.z) has010 = 1;
+								else has011 = 1;
+							}
+						}
+					}
+				}
+				else {
+					if(data[i].y > center.y -size && data[i].y < center.y +size) {
+						if(data[i].y <= center.y) {
+							if(data[i].z > center.z -size && data[i].z < center.z +size) {
+								if(data[i].z <= center.z) has100 = 1;
+								else has101 = 1;
+							}
+						}
+						else {
+							if(data[i].z > center.z -size && data[i].z < center.z +size) {
+								if(data[i].z <= center.z) has110 = 1;
+								else has111 = 1;
+							}
+						}
+					}
+				}
+			}*/
+		}
+		
+		if(has000 == 0 && has001 == 0 && has010 == 0 && has011 == 0 && has100 == 0 && has101 == 0 && has110 == 0 && has111 == 0) {
+			node->isNull = 1;
+			return;
+		}
+		
+		
+		if(has000 == 1){
+			acen = center + XYZ(-halfsize, -halfsize, -halfsize);
+			node->child000 = new TreeNode();
+			create(node->child000, data, low, high, acen, halfsize, alevel);
+		}
+		
+		if(has001 == 1){
+			acen = center + XYZ(-halfsize, -halfsize, halfsize);
+			node->child001 = new TreeNode();
+			create(node->child001, data, low, high, acen, halfsize, alevel);
+		}
+		if(has010 == 1){
+			acen = center + XYZ(-halfsize, halfsize, -halfsize);
+			node->child010 = new TreeNode();
+			create(node->child010, data, low, high, acen, halfsize, alevel);
+		}
+		
+		if(has011 == 1){
+			acen = center + XYZ(-halfsize, halfsize, halfsize);
+			node->child011 = new TreeNode();
+			create(node->child011, data, low, high, acen, halfsize, alevel);
+		}
+		if(has100 == 1){
+			acen = center + XYZ(halfsize, -halfsize, -halfsize);
+			node->child100 = new TreeNode();
+			create(node->child100, data, low, high, acen, halfsize, alevel);
+		}
+		
+		if(has101 == 1){
+			acen = center + XYZ(halfsize, -halfsize, halfsize);
+			node->child101 = new TreeNode();
+			create(node->child101, data, low, high, acen, halfsize, alevel);
+		}
+		if(has110 == 1){
+			acen = center + XYZ(halfsize, halfsize, -halfsize);
+			node->child110 = new TreeNode();
+			create(node->child110, data, low, high, acen, halfsize, alevel);
+		}
+		
+		if(has111 == 1){
+			acen = center + XYZ(halfsize, halfsize, halfsize);
+			node->child111 = new TreeNode();
+			create(node->child111, data, low, high, acen, halfsize, alevel);
+		}
+
 	} 
-	return p;
+	
+	else {
+		quick_sortX(data, low, high);
+		
+		int i_x, i_y, i_z;
+		splitX(data, low, high, center.x, i_x);
+		
+		if(low <= i_x) {
+			quick_sortY(data, low, i_x);
+			splitY(data, low, i_x, center.y, i_y);
+			if(low <= i_y) {
+				quick_sortZ(data, low, i_y);
+				splitZ(data, low, i_y, center.z, i_z);
+				if(low <= i_z) {
+					acen = center + XYZ(-halfsize, -halfsize, -halfsize);
+					node->child000 = new TreeNode();
+					create(node->child000, data, low, i_z, acen, halfsize, alevel);
+				}
+				if(i_z <= i_y) {
+					acen = center + XYZ(-halfsize, -halfsize, halfsize);
+					node->child001 = new TreeNode();
+					create(node->child001, data, i_z, i_y, acen, halfsize, alevel);
+				}
+			}
+			if(i_y <= i_x) {
+				quick_sortZ(data, i_y, i_x);
+				splitZ(data, i_y, i_x, center.z, i_z);
+				if(i_y <= i_z) {
+					acen = center + XYZ(-halfsize, halfsize, -halfsize);
+					node->child010 = new TreeNode();
+					create(node->child010, data, i_y, i_z, acen, halfsize, alevel);
+				}
+				if(i_z <= i_x) {
+					acen = center + XYZ(-halfsize, halfsize, halfsize);
+					node->child011 = new TreeNode();
+					create(node->child011, data, i_z, i_x, acen, halfsize, alevel);
+				}
+			}
+		}
+		if(i_x <= high) {
+			quick_sortY(data, i_x, high);
+			splitY(data, i_x, high, center.y, i_y);
+			if(i_x <= i_y) {
+				quick_sortZ(data, i_x, i_y);
+				splitZ(data, i_x, i_y, center.z, i_z);
+				if(i_x <= i_z) {
+					acen = center + XYZ(halfsize, -halfsize, -halfsize);
+					node->child100 = new TreeNode();
+					create(node->child100, data, i_x, i_z, acen, halfsize, alevel);
+				}
+				if(i_z <= i_y) {
+					acen = center + XYZ(halfsize, -halfsize, halfsize);
+					node->child101 = new TreeNode();
+					create(node->child101, data, i_z, i_y, acen, halfsize, alevel);
+				}
+			}
+			if(i_y <= high) {
+				quick_sortZ(data, i_y, high);
+				splitZ(data, i_y, high, center.z, i_z);
+				if(i_y <= i_z) {
+					acen = center + XYZ(halfsize, halfsize, -halfsize);
+					node->child110 = new TreeNode();
+					create(node->child110, data, i_y, i_z, acen, halfsize, alevel);
+				}
+				if(i_z <= high) {
+					acen = center + XYZ(halfsize, halfsize, halfsize);
+					node->child111 = new TreeNode();
+					create(node->child111, data, i_z, high, acen, halfsize, alevel);
+				}
+			}
+		}
+	}
 }
 
-int OcTree::Depth(TreeNode *t)
-{	
-	return 0;
-}
-
-int OcTree::OcTreeDepth()
+void OcTree::draw()
 {
-	return Depth(tree);
+	if(root) draw(root);
 }
 
+void OcTree::draw(const TreeNode *node)
+{
+	if(!node) return;
+	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111) {
+		
+		if(!node->isNull) {
+			XYZ cen = node->center;
+			float size = node->size;
+			
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+		}
+	}
+	else {
+		draw(node->child000);
+		draw(node->child001);
+		draw(node->child010);
+		draw(node->child011);
+		draw(node->child100);
+		draw(node->child101);
+		draw(node->child110);
+		draw(node->child111);
+	}
+}
+
+void OcTree::getBBox(const XYZ *data, const int num_data, XYZ& center, float& size)
+{
+	XYZ bbmin(10000000);
+	XYZ bbmax(-10000000);
+	
+	for(int i=0; i<num_data; i++) {
+		if(data[i].x < bbmin.x) bbmin.x = data[i].x;
+		if(data[i].y < bbmin.y) bbmin.y = data[i].y;
+		if(data[i].z < bbmin.z) bbmin.z = data[i].z;
+		if(data[i].x > bbmax.x) bbmax.x = data[i].x;
+		if(data[i].y > bbmax.y) bbmax.y = data[i].y;
+		if(data[i].z > bbmax.z) bbmax.z = data[i].z;
+	}
+	
+	center = (bbmin + bbmax)/2;
+	
+	size = bbmax.x - center.x;
+	float ts = bbmax.y - center.y;
+	if(ts > size) size = ts;
+	ts = bbmax.z - center.z;
+	if(ts > size) size = ts;
+}
+
+void OcTree::splitX(const XYZ *data, const int low, const int high, const float center, int& cutat)
+{
+	if(data[low].x > center) {
+		cutat = low;
+		return;
+	}
+	
+	if(data[high].x <= center) {
+		cutat = high;
+		return;
+	}
+	
+	cutat = (low + high)/2;
+	if(cutat == low) return;
+	
+	if(data[cutat].x <= center) {
+		if(data[cutat+1].x > center) return;
+	
+		splitX(data, cutat+1, high, center, cutat);
+	}
+	else splitX(data, low, cutat, center, cutat);
+}
+
+void OcTree::splitY(const XYZ *data, const int low, const int high, const float center, int& cutat)
+{
+	if(data[low].y > center) {
+		cutat = low;
+		return;
+	}
+	
+	if(data[high].y <= center) {
+		cutat = high;
+		return;
+	}
+	
+	cutat = (low + high)/2;
+	if(cutat == low) return;
+	
+	if(data[cutat].y <= center) {
+		if(data[cutat+1].y > center) return;
+	
+		splitY(data, cutat+1, high, center, cutat);
+	}
+	else splitY(data, low, cutat, center, cutat);
+}
+
+void OcTree::splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat)
+{
+	if(data[low].z > center) {
+		cutat = low;
+		return;
+	}
+	
+	if(data[high].z <= center) {
+		cutat = high;
+		return;
+	}
+	
+	cutat = (low + high)/2;
+	if(cutat == low) return;
+	
+	if(data[cutat].z <= center) {
+		if(data[cutat+1].z > center) return;
+	
+		splitZ(data, cutat+1, high, center, cutat);
+	}
+	else splitZ(data, low, cutat, center, cutat);
+}
 
 void OcTree::quick_sortX(XYZ array[],int first,int last)
 {
@@ -108,372 +467,12 @@ void OcTree::quick_sortZ(XYZ array[],int first,int last)
 		quick_sortZ(array,low,last);}
 }
 
-
-void OcTree::CreateOcTree( TreeNode *t,XYZ array[],int begin,int end,XYZ center,float side,int level)
-{//cout<<level<<endl;
-	if( sizegainarray == 0 )
-	{   
-		int xindex,yindex1,yindex2,zindex1,zindex2,zindex3,zindex4;
-		tree = t;
-		XYZ center = GetCenter( array,begin,end );
-		float side = GetSideLength( array,begin,end );
-		//cout <<center.x<<"  "<<center.y<<"  "<<center.z<<"  "<<side<<endl;
-		GetChildren(center,side);
-		
-        if( level == 0 )
-			return;
-		
-		else
-		{
-		level--;
-
-		quick_sortX(array,begin,end);
-		for( xindex = begin; (array[xindex].x < center.x)&&(xindex<=end);xindex++ );
-
-		quick_sortY(array,begin,xindex-1);
-		for( yindex1 = begin; (array[yindex1].y < center.y)&&(yindex1<=xindex-1);yindex1++ );
-
-		quick_sortY(array,xindex,end);
-		for( yindex2 = xindex; (array[yindex2].y < center.y)&&(yindex2<=end);yindex2++ );
-       
-		quick_sortZ(array,begin,yindex1-1);
-		for( zindex1 = begin; (array[zindex1].z < center.z)&&(zindex1<=yindex1-1);zindex1++ );
-
-		quick_sortZ(array,yindex1,xindex-1);
-		for( zindex2 = yindex1; (array[zindex2].z < center.z)&&(zindex2<=xindex-1);zindex2++ );
-
-		quick_sortZ(array,xindex,yindex2-1);
-		for( zindex3 = xindex; (array[zindex3].z < center.z)&&(zindex3<=yindex2-1);zindex3++ );
-
-		quick_sortZ(array,yindex2,end);
-		for( zindex4 = yindex2; (array[zindex4].z < center.z)&&(zindex4<=end);zindex4++ );
-
-        XYZ center1,center2,center3,center4,center5,center6,center7,center8;
-		center1.x = center.x - side/2;center1.y = center.y - side/2;center1.z = center.z - side/2;
-		center2.x = center.x - side/2;center2.y = center.y - side/2;center2.z = center.z + side/2;
-		center3.x = center.x - side/2;center3.y = center.y + side/2;center3.z = center.z - side/2;
-		center4.x = center.x - side/2;center4.y = center.y + side/2;center4.z = center.z + side/2;
-		center5.x = center.x + side/2;center5.y = center.y - side/2;center5.z = center.z - side/2;
-		center6.x = center.x + side/2;center6.y = center.y - side/2;center6.z = center.z + side/2;
-		center7.x = center.x + side/2;center7.y = center.y + side/2;center7.z = center.z - side/2;
-		center8.x = center.x + side/2;center8.y = center.y + side/2;center8.z = center.z + side/2;
-        
-		if(begin <= zindex1-1)
-		{
-			if((begin == zindex1-1)||level==0)
-			{
-				GetChildren(center1,side/2);
-				//level = 0;
-			}
-			t->firstChildren = GetTreeNode(begin,zindex1-1);
-			CreateOcTree(t->firstChildren,array,begin,zindex1-1,center1,side/2,level);
-		}
-		else t->firstChildren = NULL;
-
-		if(zindex1 <= yindex1-1)
-		{
-			if((zindex1 == yindex1-1)||level==0)
-			{
-				GetChildren(center2,side/2);
-				//level = 0;
-			}
-			t->secondChildren = GetTreeNode(zindex1,yindex1-1);
-		    CreateOcTree(t->secondChildren,array,zindex1,yindex1-1,center2,side/2,level);
-		}
-		else t->secondChildren = NULL;
-		if(yindex1<=zindex2-1)
-		{
-			if(yindex1==zindex2-1||level==0)
-			{
-				GetChildren(center3,side/2);
-				//level = 0;
-			}
-			t->thirdChildren = GetTreeNode(yindex1,zindex2-1);
-		    CreateOcTree(t->thirdChildren,array,yindex1,zindex2-1,center3,side/2,level);
-		}
-		else t->thirdChildren = NULL;
-		if(zindex2<=xindex-1)
-		{
-			if((zindex2 == xindex-1)||level==0)
-			{
-				GetChildren(center4,side/2);
-				//level = 0;
-			}
-			t->fourthChildren = GetTreeNode(zindex2,xindex-1);
-		    CreateOcTree(t->fourthChildren,array,zindex2,xindex-1,center4,side/2,level);
-		}
-		else t->fourthChildren = NULL;
-		if(xindex<=zindex3-1)
-		{
-			if((xindex==zindex3-1)||level==0)
-			{
-				GetChildren(center5,side/2);
-				//level = 0;
-			}
-			t->fifthChildren = GetTreeNode(xindex,zindex3-1);
-		    CreateOcTree(t->fifthChildren,array,xindex,zindex3-1,center5,side/2,level);
-		}
-		else t->fifthChildren = NULL;
-		if(zindex3<=yindex2-1)
-		{
-			if((zindex3 == yindex2-1)||level==0)
-			{
-				GetChildren(center6,side/2);
-				//level = 0;
-			}
-			t->sixthChildren = GetTreeNode(zindex3,yindex2-1);
-		    CreateOcTree(t->sixthChildren,array,zindex3,yindex2-1,center6,side/2,level);
-		}
-		else t->sixthChildren = NULL;
-		if(yindex2<=zindex4-1)
-		{
-			if((yindex2==zindex4-1)||level==0)
-			{
-				GetChildren(center7,side/2);
-				//level = 0;
-			}
-			t->seventhChildren = GetTreeNode(yindex2,zindex4-1);
-		    CreateOcTree(t->seventhChildren,array,yindex2,zindex4-1,center7,side/2,level);
-		}
-		else t->seventhChildren = NULL;
-		if(zindex4<=end)
-		{
-			if((zindex4==end)||level==0)
-			{
-				GetChildren(center8,side/2);
-				//level = 0;
-			}
-			t->eighthChildren = GetTreeNode(zindex4,end);
-			CreateOcTree(t->eighthChildren,array,zindex4,end,center8,side/2,level);
-		}
-		else t->eighthChildren = NULL;
-		}
-	}
-
-	else if( (end - begin)>0&&level>0 )
-	{   
-		level--;
-		int xindex,yindex1,yindex2,zindex1,zindex2,zindex3,zindex4;	
-
-		quick_sortX(array,begin,end);
-		for( xindex = begin; (array[xindex].x < center.x)&&(xindex<=end);xindex++ );
-
-		quick_sortY(array,begin,xindex-1);
-		for( yindex1 = begin; (array[yindex1].y < center.y)&&(yindex1<=xindex-1);yindex1++ );
-
-		quick_sortY(array,xindex,end);
-		for( yindex2 = xindex; (array[yindex2].y < center.y)&&(yindex2<=end);yindex2++ );
-       
-		quick_sortZ(array,begin,yindex1-1);
-		for( zindex1 = begin; (array[zindex1].z < center.z)&&(zindex1<=yindex1-1);zindex1++ );
-
-		quick_sortZ(array,yindex1,xindex-1);
-		for( zindex2 = yindex1; (array[zindex2].z < center.z)&&(zindex2<=xindex-1);zindex2++ );
-
-		quick_sortZ(array,xindex,yindex2-1);
-		for( zindex3 = xindex; (array[zindex3].z < center.z)&&(zindex3<=yindex2-1);zindex3++ );
-
-		quick_sortZ(array,yindex2,end);
-		for( zindex4 = yindex2; (array[zindex4].z < center.z)&&(zindex4<=end);zindex4++ );
-		
-		XYZ center1,center2,center3,center4,center5,center6,center7,center8;
-		center1.x = center.x - side/2;center1.y = center.y - side/2;center1.z = center.z - side/2;
-		center2.x = center.x - side/2;center2.y = center.y - side/2;center2.z = center.z + side/2;
-		center3.x = center.x - side/2;center3.y = center.y + side/2;center3.z = center.z - side/2;
-		center4.x = center.x - side/2;center4.y = center.y + side/2;center4.z = center.z + side/2;
-		center5.x = center.x + side/2;center5.y = center.y - side/2;center5.z = center.z - side/2;
-		center6.x = center.x + side/2;center6.y = center.y - side/2;center6.z = center.z + side/2;
-		center7.x = center.x + side/2;center7.y = center.y + side/2;center7.z = center.z - side/2;
-		center8.x = center.x + side/2;center8.y = center.y + side/2;center8.z = center.z + side/2;
+char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
+{
+	if(data.x < center.x - size || data.x > center.x + size) return 0;
+	if(data.y < center.y - size || data.y > center.y + size) return 0;
+	if(data.z < center.z - size || data.z > center.z + size) return 0;
 	
-		if(begin <= (zindex1-1))
-		{
-			if((begin == zindex1-1)||level==0)
-			{
-				GetChildren(center1,side/2);
-				//level = 0;
-			}
-			t->firstChildren = GetTreeNode(begin,zindex1-1);
-			CreateOcTree(t->firstChildren,array,begin,zindex1-1,center1,side/2,level);
-		}
-		else t->firstChildren = NULL;
-
-		if(zindex1 <= (yindex1-1))
-		{
-			if((zindex1 == yindex1-1)||level==0)
-			{
-				GetChildren(center2,side/2);
-				//level = 0;
-			}
-			t->secondChildren = GetTreeNode(zindex1,yindex1-1);
-		    CreateOcTree(t->secondChildren,array,zindex1,yindex1-1,center2,side/2,level);
-		}
-		else t->secondChildren = NULL;
-
-		if(yindex1<=(zindex2-1))
-		{
-			if(yindex1==zindex2-1||level==0)
-			{
-				GetChildren(center3,side/2);
-				//level = 0;
-			}
-			t->thirdChildren = GetTreeNode(yindex1,zindex2-1);
-		    CreateOcTree(t->thirdChildren,array,yindex1,zindex2-1,center3,side/2,level);
-		}
-		else t->thirdChildren = NULL;
-
-		if(zindex2<=(xindex-1))
-		{
-			if((zindex2 == xindex-1)||level==0)
-			{
-				GetChildren(center4,side/2);
-				//level = 0;
-			}
-			t->fourthChildren = GetTreeNode(zindex2,xindex-1);
-		    CreateOcTree(t->fourthChildren,array,zindex2,xindex-1,center4,side/2,level);
-		}
-		else t->fourthChildren = NULL;
-
-		if(xindex<=(zindex3-1))
-		{
-			if((xindex==zindex3-1)||level==0)
-			{
-				GetChildren(center5,side/2);
-				//level = 0;
-			}
-			t->fifthChildren = GetTreeNode(xindex,zindex3-1);
-		    CreateOcTree(t->fifthChildren,array,xindex,zindex3-1,center5,side/2,level);
-		}
-		else t->fifthChildren = NULL;
-
-		if(zindex3<=(yindex2-1))
-		{
-			if((zindex3 == yindex2-1)||level==0)
-			{
-				GetChildren(center6,side/2);
-				//level = 0;
-			}
-			t->sixthChildren = GetTreeNode(zindex3,yindex2-1);
-		    CreateOcTree(t->sixthChildren,array,zindex3,yindex2-1,center6,side/2,level);
-		}
-		else t->sixthChildren = NULL;
-
-		if(yindex2<=(zindex4-1))
-		{
-			if((yindex2==zindex4-1)||level==0)
-			{
-				GetChildren(center7,side/2);
-				//level = 0;
-			}
-			t->seventhChildren = GetTreeNode(yindex2,zindex4-1);
-		    CreateOcTree(t->seventhChildren,array,yindex2,zindex4-1,center7,side/2,level);
-		}
-		else t->seventhChildren = NULL;
-
-		if(zindex4<=end)
-		{
-			if((zindex4==end)||level==0)
-			{
-				GetChildren(center8,side/2);
-				//level = 0;
-			}
-			t->eighthChildren = GetTreeNode(zindex4,end);
-			CreateOcTree(t->eighthChildren,array,zindex4,end,center8,side/2,level);
-		}
-		else t->eighthChildren = NULL;
-	}
-
-	else
-	{
-		t->firstChildren = NULL;
-		t->secondChildren = NULL;
-		t->thirdChildren = NULL;
-		t->fourthChildren = NULL;
-		t->fifthChildren = NULL;
-		t->sixthChildren = NULL;
-		t->seventhChildren = NULL;
-		t->eighthChildren = NULL;
-	}
+	return 1;
 }
-
-void OcTree::GetChildren(XYZ center,float side)
-{
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;	
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;		
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;		
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x + side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z - side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y - side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-	gainarray[sizegainarray].x = center.x - side;gainarray[sizegainarray].y = center.y + side;gainarray[sizegainarray].z = center.z + side;sizegainarray++;
-
-}
-
-void OcTree::SearchOcTree( TreeNode *t,XYZ val,int range)
-{
-}
-
-
-XYZ OcTree::GetCenter( XYZ array[],int first,int last )
-{
-	XYZ center;
-	quick_sortX(array,first,last);
-	center.x = abs((array[last].x) + (array[first].x))/2;
-	quick_sortY(array,first,last);
-	center.y = abs((array[last].y) + (array[first].y))/2;
-	quick_sortZ(array,first,last);
-	center.z = abs((array[last].z) + (array[first].z))/2;
-
-	return center;
-
-}
-
-float OcTree::GetSideLength( XYZ array[],int first,int last )
-{
-	quick_sortX(array,first,last);
-	float Xarea = (array[last].x - array[first].x)/2;
-	quick_sortY(array,first,last);
-	float Yarea = (array[last].y - array[first].y)/2;
-	quick_sortZ(array,first,last);
-	float Zarea = (array[last].z - array[first].z)/2;
-	if(Xarea>=Yarea&&Xarea>=Zarea)
-		return Xarea;
-	else if((Yarea>=Xarea&&Yarea>Zarea)||(Yarea>Xarea&&Yarea>=Zarea))
-		return Yarea;
-	else 
-		return Zarea;
-
-}
-void OcTree::PrintOcTree(TreeNode *t)
-{
-	if(t!=NULL)
-	{  
-		cout<<"begin:"<<t->begin<<" end:"<<t->end<<endl;
-		PrintOcTree(t->firstChildren);
-		PrintOcTree(t->secondChildren);
-		PrintOcTree(t->thirdChildren);
-		PrintOcTree(t->fourthChildren);
-		PrintOcTree(t->fifthChildren);
-		PrintOcTree(t->sixthChildren);
-		PrintOcTree(t->seventhChildren);
-		PrintOcTree(t->eighthChildren);
-	}
-}
+//:~
