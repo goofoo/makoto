@@ -27,6 +27,7 @@ struct Dguide
 	XYZ* T;
 	XYZ* dispv;
 	MATRIX44F* space;
+	float u, v;
 };
 
 class hairMap
@@ -49,6 +50,7 @@ public:
 	void initGuide();
 	void updateGuide();
 	void drawGuide();
+	void drawGuideUV();
 
 	int save(const char* filename);
 	int saveStart(const char* filename);

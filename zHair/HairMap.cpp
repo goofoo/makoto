@@ -249,10 +249,13 @@ void hairMap::draw()
 void hairMap::initGuide()
 {
 	if(!has_guide) return;
+	MStatus status;
+	MFnMesh baseFn(obase, &status );
+	if(!status) return;
 
 	num_guideobj = oguide.length();
 	num_guide = 0;
-	MStatus status;
+	
 	for(unsigned iguide=0; iguide<oguide.length(); iguide++)
 	{
 		MFnMesh meshFn(oguide[iguide], &status);
@@ -352,6 +355,16 @@ void hairMap::initGuide()
 			}
 			
 			guide_data[patch_id].dispv[i%nseg] = XYZ(dv.x, dv.y, dv.z);
+			
+			if(i%nseg==0) {
+// set guider texcoord
+				XYZ rr = pcur - guide_data[patch_id].dispv[i%nseg]/2;
+				MPoint rootp(rr.x, rr.y, rr.z);
+				float uv[2];
+				baseFn.getUVAtPoint ( rootp, uv);
+				guide_data[patch_id].u = uv[0];
+				guide_data[patch_id].v = uv[1];
+			}
 			
 			XYZ side = guide_data[patch_id].dispv[i%nseg].cross(guide_data[patch_id].N[i%nseg]);
 			side.normalize();
@@ -512,6 +525,17 @@ void hairMap::drawGuide()
 		}
 	}
 	
+	glEnd();
+}
+
+void hairMap::drawGuideUV()
+{
+	if(!guide_data) return;
+	glPointSize(2.f);
+	glBegin(GL_POINTS);
+	
+	for(int i=0; i<num_guide; i++) glVertex3f(guide_data[i].u, guide_data[i].v, 0);
+
 	glEnd();
 }
 

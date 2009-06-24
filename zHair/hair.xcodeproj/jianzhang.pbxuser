@@ -69,14 +69,16 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 266832231;
-			PBXWorkspaceStateSaveDate = 266832231;
+			PBXPerProjectTemplateStateSaveDate = 267434289;
+			PBXWorkspaceStateSaveDate = 267434289;
 		};
 		perUserProjectItems = {
-			7FAB70030FE7CCB600A0E472 /* PBXTextBookmark */ = 7FAB70030FE7CCB600A0E472 /* PBXTextBookmark */;
-			7FAB70040FE7CCB600A0E472 /* PBXTextBookmark */ = 7FAB70040FE7CCB600A0E472 /* PBXTextBookmark */;
-			7FAB70070FE7CCB600A0E472 /* PBXTextBookmark */ = 7FAB70070FE7CCB600A0E472 /* PBXTextBookmark */;
-			7FAB70090FE7CCB600A0E472 /* PBXTextBookmark */ = 7FAB70090FE7CCB600A0E472 /* PBXTextBookmark */;
+			7F7473E30FF0B93900132DED /* PBXTextBookmark */ = 7F7473E30FF0B93900132DED /* PBXTextBookmark */;
+			7F7473E40FF0B93900132DED /* PBXTextBookmark */ = 7F7473E40FF0B93900132DED /* PBXTextBookmark */;
+			7FAB70030FE7CCB600A0E472 = 7FAB70030FE7CCB600A0E472 /* PBXTextBookmark */;
+			7FAB70040FE7CCB600A0E472 = 7FAB70040FE7CCB600A0E472 /* PBXTextBookmark */;
+			7FAB70070FE7CCB600A0E472 = 7FAB70070FE7CCB600A0E472 /* PBXTextBookmark */;
+			7FAB70090FE7CCB600A0E472 = 7FAB70090FE7CCB600A0E472 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -106,6 +108,26 @@
 			sepNavWindowFrame = "{{270, 98}, {594, 676}}";
 		};
 	};
+	7F7473E30FF0B93900132DED /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E59B0FD7E423006D7D1A /* combCurveProperties.mel */;
+		name = "combCurveProperties.mel: 37";
+		rLen = 0;
+		rLoc = 1353;
+		rType = 0;
+		vrLen = 1163;
+		vrLoc = 1518;
+	};
+	7F7473E40FF0B93900132DED /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FAB70080FE7CCB600A0E472 /* combCurveTool.h */;
+		name = "combCurveTool.h: 83";
+		rLen = 66;
+		rLoc = 1825;
+		rType = 0;
+		vrLen = 863;
+		vrLoc = 1275;
+	};
 	7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {794, 9982}}";
@@ -116,9 +138,9 @@
 	};
 	7F77E59B0FD7E423006D7D1A /* combCurveProperties.mel */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {824, 1078}}";
+			sepNavIntBoundsRect = "{{0, 0}, {824, 1120}}";
 			sepNavSelRange = "{1353, 0}";
-			sepNavVisRange = "{1887, 742}";
+			sepNavVisRange = "{1518, 1163}";
 			sepNavWindowFrame = "{{43, 145}, {638, 597}}";
 		};
 	};
@@ -142,7 +164,7 @@
 		isa = PBXTextBookmark;
 		fRef = 7F77E59B0FD7E423006D7D1A /* combCurveProperties.mel */;
 		rLen = 0;
-		rLoc = 2147484800;
+		rLoc = 2734;
 		rType = 0;
 	};
 	7FAB70040FE7CCB600A0E472 /* PBXTextBookmark */ = {
@@ -172,7 +194,7 @@
 		path = /Users/jianzhang/Documents/plankton/zHair/combCurveTool.h;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {665, 1666}}";
+			sepNavIntBoundsRect = "{{0, 0}, {665, 1638}}";
 			sepNavSelRange = "{1825, 66}";
 			sepNavVisRange = "{1275, 863}";
 			sepNavWindowFrame = "{{128, 86}, {724, 579}}";
@@ -190,6 +212,7 @@
 	};
 	7FAB700A0FE7CCB600A0E472 /* combCurveTool.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = combCurveTool.h;
 		path = /Users/jianzhang/Documents/plankton/zHair/combCurveTool.h;
 		sourceTree = "<absolute>";
