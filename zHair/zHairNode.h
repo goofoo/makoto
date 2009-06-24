@@ -53,6 +53,7 @@ public:
 	static MObject asavemap;
 	static MObject astep;
 	static MObject aalternativepatch;
+	static MObject ainterpolate;
 	static	MTypeId		id;
 
 private :

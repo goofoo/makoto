@@ -17,6 +17,7 @@ MObject HairNode::alengthnoise;
 MObject HairNode::asavemap;
 MObject HairNode::astep;
 MObject HairNode::aalternativepatch;
+MObject HairNode::ainterpolate;
 
 HairNode::HairNode()
 {
@@ -72,6 +73,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		int isave = data.inputValue(asavemap, &status).asInt();
 		
 		m_base->setPatchOrder(data.inputValue(aalternativepatch).asInt());
+		m_base->setInterpolate(data.inputValue(ainterpolate).asInt());
 		
 		if(startFrame == frame)
 		{
@@ -205,6 +207,11 @@ MStatus HairNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
+	ainterpolate = numAttr.create( "interpolate", "ipl", MFnNumericData::kInt, 0);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(ainterpolate);
+	
 	asavemap = numAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
 	numAttr.setStorable(false);
 	numAttr.setKeyable(true);
@@ -228,6 +235,7 @@ MStatus HairNode::initialize()
 	attributeAffects( afuzz, aoutput );
 	attributeAffects( astep, aoutput );
 	attributeAffects( aalternativepatch, aoutput );
+	attributeAffects( ainterpolate, aoutput );
 	
 	return MS::kSuccess;
 }

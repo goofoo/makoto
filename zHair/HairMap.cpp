@@ -21,7 +21,7 @@ using namespace std;
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),order(0)
+draw_step(1),order(0),isInterpolate(0)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
@@ -163,69 +163,64 @@ void hairMap::draw()
 	int g_seed = 13;
 	FNoise fnoi;
 	
-	float noi;
+	float noi, keepx;
 	
-	XYZ ppre, pcur, dv, ddv, cc, pobj;
+	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3];
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step)
 	{
 		noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
 		XYZ croot = root_color + (mutant_color - root_color)*noi;
 		XYZ ctip = tip_color + (mutant_color - tip_color)*noi;
-		XYZ dcolor = (ctip - croot)/(float)guide_data[bind_data[i]].num_seg;
-		//glColor3f(guide_data[bind_data[i]].dsp_col.x, guide_data[bind_data[i]].dsp_col.y, guide_data[bind_data[i]].dsp_col.z);
-		//glColor3f(ddice[i].coords, ddice[i].coordt, 0);
+		XYZ dcolor = (ctip - croot)/(float)guide_data[bind_data[i].idx[0]].num_seg;
+		
 		ppre = pbuf[i];
 		
 		pobj = ppre;
-		guide_spaceinv[bind_data[i]].transform(pobj);
+		pt[0] = pt[1] = pt[2] = ppre;
+		guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
 		
-		//axisworld = axisobj = pbuf[i] -  guide_data[bind_data[i]].P[0];
-		//guide_spaceinv[bind_data[i]].transformAsNormal(axisobj);
-		//axisobj.x = 0;
-		int num_seg = guide_data[bind_data[i]].num_seg;
+		guide_spaceinv[bind_data[i].idx[0]].transform(pt[0]);
+		guide_spaceinv[bind_data[i].idx[1]].transform(pt[1]);
+		guide_spaceinv[bind_data[i].idx[2]].transform(pt[2]);
+		
+		int num_seg = guide_data[bind_data[i].idx[0]].num_seg;
 		for(short j = 0; j< num_seg; j++) 
 		{
-			dv = guide_data[bind_data[i]].dispv[j];
-			/*MATRIX44F mat;
-			
-			XYZ binor = guide_data[bind_data[i]].N[j].cross(guide_data[bind_data[i]].T[j]);
-			mat.setOrientations(guide_data[bind_data[i]].T[j], binor, guide_data[bind_data[i]].N[j]);
-			
-			XYZ rt = axisobj;
-			rt.rotateAroundAxis(XYZ(1,0,0), twist*j*dv.length()/axisobj.length());
-			mat.transformAsNormal(rt);
-
-			axisworld = rt;
-			axisworld.normalize();
+			dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
 			
 			cc = croot + dcolor * j;
 			glColor3f(cc.x, cc.y, cc.z);
 			glVertex3f(ppre.x, ppre.y, ppre.z);
-
-			XYZ rot2p = ppre + dv -  guide_data[bind_data[i]].P[j];
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			dv.rotateAlong(rot2p, -clumping*noi);
-
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			dv.rotateAroundAxis(axisworld, -twist*noi);
-			
-			
-			
-			cc = croot + dcolor * (j+1);
-			glColor3f(cc.x, cc.y, cc.z);
-			glVertex3f(ppre.x, ppre.y, ppre.z);
-			*/
-			cc = croot + dcolor * j;
-			glColor3f(cc.x, cc.y, cc.z);
-			glVertex3f(ppre.x, ppre.y, ppre.z);
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			float keepx = pobj.x;
+			/*float keepx = pobj.x;
 			pcur = pobj*(1 - clumping*(j+1)/num_seg);
 			pcur *= noi;
 			pcur.x = keepx;
-			guide_data[bind_data[i]].space[j].transform(pcur);
+			guide_data[bind_data[i].idx[0]].space[j].transform(pcur);*/
+			
+			keepx = pt[0].x;
+			pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+			pw[0] *= noi;
+			pw[0].x = keepx;
+			guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			keepx = pt[1].x;
+			pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
+			pw[1] *= noi;
+			pw[1].x = keepx;
+			guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			keepx = pt[2].x;
+			pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
+			pw[2] *= noi;
+			pw[2].x = keepx;
+			guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+			
+			pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
 			dv *= noi;
@@ -475,21 +470,40 @@ void hairMap::bind()
 	if(!guide_data || n_samp < 1) return;
 	
 	if(bind_data) delete[] bind_data;
-	bind_data = new unsigned[n_samp];
+	bind_data = new triangle_bind_info[n_samp];
 	
 	for(unsigned i=0; i<n_samp; i++)
 	{
 // finder 3 three nearest guides
+		XY from(ddice[i].coords, ddice[i].coordt);
 		ValueAndId* idx = new ValueAndId[num_guide];
 		for(unsigned j=0; j<num_guide; j++)
 		{
 			idx[j].idx = j;
-			XY from(ddice[i].coords, ddice[i].coordt);
+			
 			XY to(guide_data[j].u, guide_data[j].v);
 			idx[j].val = from.distantTo(to);
 		}
 		QuickSort::sort(idx, 0, num_guide-1);
-		bind_data[i] = idx[0].idx;
+		bind_data[i].idx[0] = idx[0].idx;
+		bind_data[i].idx[1] = idx[1].idx;
+		bind_data[i].idx[2] = idx[2].idx;
+		
+		if(isInterpolate==1) {
+			XY corner[3];
+			corner[0].x = guide_data[idx[0].idx].u;
+			corner[1].x = guide_data[idx[1].idx].u;
+			corner[2].x = guide_data[idx[2].idx].u;
+			corner[0].y = guide_data[idx[0].idx].v;
+			corner[1].y = guide_data[idx[1].idx].v;
+			corner[2].y = guide_data[idx[2].idx].v;
+			
+			BindTriangle::set(corner, from, bind_data[i]);
+		}
+		else {
+			bind_data[i].wei[0] = 1.f;
+			bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
+		}
 		delete[] idx;
 	}
 }
@@ -547,7 +561,9 @@ int hairMap::save(const char* filename)
 		outfile.write((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
-		outfile.write((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));	
+		outfile.write((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
+		outfile.write((char*)&guide_data[i].u, sizeof(float));
+		outfile.write((char*)&guide_data[i].v, sizeof(float));	
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -576,6 +592,8 @@ int hairMap::saveStart(const char* filename)
 		outfile.write((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));	
+		outfile.write((char*)&guide_data[i].u, sizeof(float));
+		outfile.write((char*)&guide_data[i].v, sizeof(float));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -616,6 +634,8 @@ int hairMap::load(const char* filename)
 		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)&guide_data[i].u, sizeof(float));
+		infile.read((char*)&guide_data[i].v, sizeof(float));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
@@ -703,6 +723,8 @@ int hairMap::loadStart(const char* filename)
 		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
+		infile.read((char*)&guide_data[i].u, sizeof(float));
+		infile.read((char*)&guide_data[i].v, sizeof(float));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
