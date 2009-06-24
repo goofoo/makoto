@@ -13,6 +13,7 @@
 #include <maya/MFnMeshData.h>
 #include <maya/MItMeshPolygon.h>
 #include "../shared/FNoise.h"
+#include "../shared/QuickSort.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -473,34 +474,24 @@ void hairMap::bind()
 {
 	if(!guide_data || n_samp < 1) return;
 	
-	XYZ* pbuf = new XYZ[n_samp];
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-	}
-
 	if(bind_data) delete[] bind_data;
 	bind_data = new unsigned[n_samp];
-	XYZ togd;
-	float dist;
+	
 	for(unsigned i=0; i<n_samp; i++)
 	{
-// find the nearest guide
-		float min_dist = 10e6;
+// finder 3 three nearest guides
+		ValueAndId* idx = new ValueAndId[num_guide];
 		for(unsigned j=0; j<num_guide; j++)
 		{
-			togd = pbuf[i] - guide_data[j].P[0];
-			dist = togd.length();
-			
-			if(dist < min_dist)
-			{
-				bind_data[i] = j;
-				min_dist = dist;
-			}
+			idx[j].idx = j;
+			XY from(ddice[i].coords, ddice[i].coordt);
+			XY to(guide_data[j].u, guide_data[j].v);
+			idx[j].val = from.distantTo(to);
 		}
+		QuickSort::sort(idx, 0, num_guide-1);
+		bind_data[i] = idx[0].idx;
+		delete[] idx;
 	}
-	
-	delete[] pbuf;
 }
 
 void hairMap::drawGuide()

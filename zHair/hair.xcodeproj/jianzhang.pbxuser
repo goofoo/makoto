@@ -75,6 +75,8 @@
 		perUserProjectItems = {
 			7F7473E30FF0B93900132DED /* PBXTextBookmark */ = 7F7473E30FF0B93900132DED /* PBXTextBookmark */;
 			7F7473E40FF0B93900132DED /* PBXTextBookmark */ = 7F7473E40FF0B93900132DED /* PBXTextBookmark */;
+			7F7473FD0FF2583400132DED /* PBXTextBookmark */ = 7F7473FD0FF2583400132DED /* PBXTextBookmark */;
+			7F7473FE0FF2583400132DED /* PBXTextBookmark */ = 7F7473FE0FF2583400132DED /* PBXTextBookmark */;
 			7FAB70030FE7CCB600A0E472 = 7FAB70030FE7CCB600A0E472 /* PBXTextBookmark */;
 			7FAB70040FE7CCB600A0E472 = 7FAB70040FE7CCB600A0E472 /* PBXTextBookmark */;
 			7FAB70070FE7CCB600A0E472 = 7FAB70070FE7CCB600A0E472 /* PBXTextBookmark */;
@@ -127,6 +129,31 @@
 		rType = 0;
 		vrLen = 863;
 		vrLoc = 1275;
+	};
+	7F7473F60FF253AF00132DED /* QuickSort.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {439, 294}}";
+			sepNavSelRange = "{177, 0}";
+			sepNavVisRange = "{95, 166}";
+		};
+	};
+	7F7473FD0FF2583400132DED /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: ISO C++ forbids declaration of 'OcTree' with no type";
+		fRef = 7F7473F60FF253AF00132DED /* QuickSort.h */;
+		rLen = 1;
+		rLoc = 16;
+		rType = 1;
+	};
+	7F7473FE0FF2583400132DED /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7473F60FF253AF00132DED /* QuickSort.h */;
+		name = "QuickSort.h: 17";
+		rLen = 0;
+		rLoc = 182;
+		rType = 0;
+		vrLen = 166;
+		vrLoc = 95;
 	};
 	7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */ = {
 		uiCtxt = {
@@ -230,9 +257,9 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {956, 10570}}";
-			sepNavSelRange = "{7993, 16}";
-			sepNavVisRange = "{7393, 1119}";
+			sepNavIntBoundsRect = "{{0, 0}, {956, 11046}}";
+			sepNavSelRange = "{13810, 0}";
+			sepNavVisRange = "{13361, 1012}";
 			sepNavWindowFrame = "{{403, 78}, {653, 693}}";
 		};
 	};
@@ -246,9 +273,9 @@
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {675, 3444}}";
+			sepNavIntBoundsRect = "{{0, 0}, {675, 3542}}";
 			sepNavSelRange = "{3370, 0}";
-			sepNavVisRange = "{2672, 908}";
+			sepNavVisRange = "{2660, 867}";
 			sepNavWindowFrame = "{{24, 67}, {734, 700}}";
 		};
 	};
