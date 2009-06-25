@@ -281,7 +281,7 @@
 				AdditionalOptions="/GR /GS /EHsc"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(MAYA_LOCATION70)\include"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM;USE_MAYA2007"
 				RuntimeLibrary="1"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".Debug/"

@@ -81,6 +81,7 @@ public:
 	float getClumping() const {return clumping;}
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
+	int getInterpolate() const {return isInterpolate;}
 	float getRootColorR() const {return root_color.x;}
 	float getRootColorG() const {return root_color.y;}
 	float getRootColorB() const {return root_color.z;}
