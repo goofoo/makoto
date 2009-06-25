@@ -405,6 +405,9 @@
 			Name="Source Files"
 			Filter="">
 			<File
+				RelativePath=".\BindTriangle.cpp">
+			</File>
+			<File
 				RelativePath=".\combCurveTool.cpp">
 			</File>
 			<File
@@ -436,6 +439,9 @@
 			</File>
 			<File
 				RelativePath=".\pluginMain.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\QuickSort.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\zGlobal.cpp">

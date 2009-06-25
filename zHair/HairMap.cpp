@@ -356,8 +356,10 @@ void hairMap::initGuide()
 // set guider texcoord
 				XYZ rr = pcur - guide_data[patch_id].dispv[i%nseg]/2;
 				MPoint rootp(rr.x, rr.y, rr.z);
-				float uv[2];
+				float uv[2]; uv[0] = uv[1] = 0.f;
+#ifndef USE_MAYA2007
 				baseFn.getUVAtPoint ( rootp, uv);
+#endif
 				guide_data[patch_id].u = uv[0];
 				guide_data[patch_id].v = uv[1];
 			}

@@ -19,6 +19,8 @@
 #include "BindTriangle.h"
 #include <string>
 
+//#define USE_MAYA2007
+
 struct Dguide
 {
 	short num_seg;
