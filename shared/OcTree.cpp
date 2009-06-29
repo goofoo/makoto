@@ -14,6 +14,7 @@
 #include "./glext.h"
 #endif
 
+
 OcTree::OcTree():root(0)
 {
 }
@@ -23,221 +24,352 @@ OcTree::~OcTree()
 	if(root) delete root;
 }
 
-void OcTree::construct(XYZ* data, const int num_data, const XYZ& center, const float size)
+void OcTree::construct(XYZ* data, const int num_data, const XYZ& center, const float size,short level)
 {
 	if(root) delete root; 
 	root = new TreeNode();
-	create(root, data, 0, num_data-1, center, size, 0);
+	create(root, data, 0, num_data-1, center, size, level);
 }
 
-void OcTree::create(TreeNode *node, XYZ* data, int low, int high, const XYZ& center, const float size, const short level)
+void OcTree::create(TreeNode *node, XYZ* data, int low, int high, const XYZ& center, const float size, short level)
 {
 //zDisplayFloat2(low, high);
 	
-	if(high == low) if(!isInBox(data[low], center, size)) return;
+	//if(high == low) if(!isInBox(data[low], center, size)) return;
 	
+	node->begin = low;
+	node->end = high;
 	node->center = center;
 	node->size = size;
 	node->isNull = 0;
-	
-	if(level == 6) return;
-	
+
+	if(level == 0 ) 
+	{
+		node->isNull = 1;
+		return;
+	}
+	level -= 1;
 	float halfsize = size/2;
 	XYZ acen;
-	short alevel = level + 1;
 	
-	if(high - low < 8) {
-		int has000 = 0;
-		int has001 = 0;
-		int has010 = 0;
-		int has011 = 0;
-		int has100 = 0;
-		int has101 = 0;
-		int has110 = 0;
-		int has111 = 0;
-		for(int i=low; i<=high; i++) {
-			if(isInBox(data[i], center, size)) {
-				if(data[i].x <= center.x) {
-					if(data[i].y <= center.y) {
-						if(data[i].z <= center.z) has000 = 1;
-						else has001 = 1;
-					}
-					else {
-						if(data[i].z <= center.z) has010 = 1;
-						else has011 = 1;
-					}
-				}
-				else {
-					if(data[i].y <= center.y) {
-						if(data[i].z <= center.z) has100 = 1;
-						else has101 = 1;
-					}
-					else {
-						if(data[i].z <= center.z) has110 = 1;
-						else has111 = 1;
-					}
-				}
-			}/*
-			if(data[i].x > center.x -size && data[i].x < center.x +size) {
-				if(data[i].x <= center.x) {
-					if(data[i].y > center.y -size && data[i].y < center.y +size) {
-						if(data[i].y <= center.y) {
-							if(data[i].z > center.z -size && data[i].z < center.z +size) {
-								if(data[i].z <= center.z) has000 = 1;
-								else has001 = 1;
-							}
-						}
-						else {
-							if(data[i].z > center.z -size && data[i].z < center.z +size) {
-								if(data[i].z <= center.z) has010 = 1;
-								else has011 = 1;
-							}
-						}
-					}
-				}
-				else {
-					if(data[i].y > center.y -size && data[i].y < center.y +size) {
-						if(data[i].y <= center.y) {
-							if(data[i].z > center.z -size && data[i].z < center.z +size) {
-								if(data[i].z <= center.z) has100 = 1;
-								else has101 = 1;
-							}
-						}
-						else {
-							if(data[i].z > center.z -size && data[i].z < center.z +size) {
-								if(data[i].z <= center.z) has110 = 1;
-								else has111 = 1;
-							}
-						}
-					}
-				}
-			}*/
-		}
-		
-		if(has000 == 0 && has001 == 0 && has010 == 0 && has011 == 0 && has100 == 0 && has101 == 0 && has110 == 0 && has111 == 0) {
-			node->isNull = 1;
-			return;
-		}
-		
-		
-		if(has000 == 1){
-			acen = center + XYZ(-halfsize, -halfsize, -halfsize);
-			node->child000 = new TreeNode();
-			create(node->child000, data, low, high, acen, halfsize, alevel);
-		}
-		
-		if(has001 == 1){
-			acen = center + XYZ(-halfsize, -halfsize, halfsize);
-			node->child001 = new TreeNode();
-			create(node->child001, data, low, high, acen, halfsize, alevel);
-		}
-		if(has010 == 1){
-			acen = center + XYZ(-halfsize, halfsize, -halfsize);
-			node->child010 = new TreeNode();
-			create(node->child010, data, low, high, acen, halfsize, alevel);
-		}
-		
-		if(has011 == 1){
-			acen = center + XYZ(-halfsize, halfsize, halfsize);
-			node->child011 = new TreeNode();
-			create(node->child011, data, low, high, acen, halfsize, alevel);
-		}
-		if(has100 == 1){
-			acen = center + XYZ(halfsize, -halfsize, -halfsize);
-			node->child100 = new TreeNode();
-			create(node->child100, data, low, high, acen, halfsize, alevel);
-		}
-		
-		if(has101 == 1){
-			acen = center + XYZ(halfsize, -halfsize, halfsize);
-			node->child101 = new TreeNode();
-			create(node->child101, data, low, high, acen, halfsize, alevel);
-		}
-		if(has110 == 1){
-			acen = center + XYZ(halfsize, halfsize, -halfsize);
-			node->child110 = new TreeNode();
-			create(node->child110, data, low, high, acen, halfsize, alevel);
-		}
-		
-		if(has111 == 1){
-			acen = center + XYZ(halfsize, halfsize, halfsize);
-			node->child111 = new TreeNode();
-			create(node->child111, data, low, high, acen, halfsize, alevel);
-		}
+	
+	int xindex,yindex1,yindex2,zindex1,zindex2,zindex3,zindex4;	
 
-	} 
+		quick_sortX(data,low,high);
+		for( xindex = low; (data[xindex].x < center.x)&&(xindex<=high);xindex++ );
+
+		quick_sortY(data,low,xindex-1);
+		for( yindex1 = low; (data[yindex1].y < center.y)&&(yindex1<=xindex-1);yindex1++ );
+
+		quick_sortY(data,xindex,high);
+		for( yindex2 = xindex; (data[yindex2].y < center.y)&&(yindex2<=high);yindex2++ );
+       
+		quick_sortZ(data,low,yindex1-1);
+		for( zindex1 = low; (data[zindex1].z < center.z)&&(zindex1<=yindex1-1);zindex1++ );
+
+		quick_sortZ(data,yindex1,xindex-1);
+		for( zindex2 = yindex1; (data[zindex2].z < center.z)&&(zindex2<=xindex-1);zindex2++ );
+
+		quick_sortZ(data,xindex,yindex2-1);
+		for( zindex3 = xindex; (data[zindex3].z < center.z)&&(zindex3<=yindex2-1);zindex3++ );
+
+		quick_sortZ(data,yindex2,high);
+		for( zindex4 = yindex2; (data[zindex4].z < center.z)&&(zindex4<=high);zindex4++ );
 	
-	else {
-		quick_sortX(data, low, high);
-		
-		int i_x, i_y, i_z;
-		splitX(data, low, high, center.x, i_x);
-		
-		if(low <= i_x) {
-			quick_sortY(data, low, i_x);
-			splitY(data, low, i_x, center.y, i_y);
-			if(low <= i_y) {
-				quick_sortZ(data, low, i_y);
-				splitZ(data, low, i_y, center.z, i_z);
-				if(low <= i_z) {
-					acen = center + XYZ(-halfsize, -halfsize, -halfsize);
-					node->child000 = new TreeNode();
-					create(node->child000, data, low, i_z, acen, halfsize, alevel);
-				}
-				if(i_z <= i_y) {
-					acen = center + XYZ(-halfsize, -halfsize, halfsize);
-					node->child001 = new TreeNode();
-					create(node->child001, data, i_z, i_y, acen, halfsize, alevel);
-				}
-			}
-			if(i_y <= i_x) {
-				quick_sortZ(data, i_y, i_x);
-				splitZ(data, i_y, i_x, center.z, i_z);
-				if(i_y <= i_z) {
-					acen = center + XYZ(-halfsize, halfsize, -halfsize);
-					node->child010 = new TreeNode();
-					create(node->child010, data, i_y, i_z, acen, halfsize, alevel);
-				}
-				if(i_z <= i_x) {
-					acen = center + XYZ(-halfsize, halfsize, halfsize);
-					node->child011 = new TreeNode();
-					create(node->child011, data, i_z, i_x, acen, halfsize, alevel);
-				}
+		if(low <= zindex1-1)
+		{
+			node->child000 = new TreeNode();
+			acen = center + XYZ(-halfsize, -halfsize, -halfsize);
+			create(node->child000,data,low,zindex1-1,acen,halfsize,level);
+		}
+		else node->child000 = NULL;
+
+		if(zindex1 <= yindex1-1)
+		{
+			node->child001 = new TreeNode();
+			acen = center + XYZ(-halfsize, -halfsize, halfsize);
+			create(node->child001,data,zindex1,yindex1-1,acen,halfsize,level);
+		}
+		else node->child001 = NULL;
+
+		if(yindex1<=zindex2-1)
+		{
+			node->child010 = new TreeNode();
+			acen = center + XYZ(-halfsize, halfsize, -halfsize);
+			create(node->child010,data,yindex1,zindex2-1,acen,halfsize,level);
+		}
+		else node->child010 = NULL;
+
+		if(zindex2<=xindex-1)
+		{
+			node->child011 = new TreeNode();
+			acen = center + XYZ(-halfsize, halfsize, halfsize);
+			create(node->child011,data,zindex2,xindex-1,acen,halfsize,level);
+		}
+		else node->child011 = NULL;
+
+		if(xindex<=zindex3-1)
+		{
+			node->child100 = new TreeNode();
+			acen = center + XYZ(halfsize, -halfsize, -halfsize);
+			create(node->child100,data,xindex,zindex3-1,acen,halfsize,level);
+		}
+		else node->child100 = NULL;
+
+		if(zindex3<=yindex2-1)
+		{
+			node->child101 = new TreeNode();
+			acen = center + XYZ(halfsize, -halfsize, halfsize);
+			create(node->child101,data,zindex3,yindex2-1,acen,halfsize,level);
+		}
+		else node->child101 = NULL;
+
+		if(yindex2<=zindex4-1)
+		{
+			node->child110 = new TreeNode();
+			acen = center + XYZ(halfsize, halfsize, -halfsize);
+			create(node->child110,data,yindex2,zindex4-1,acen,halfsize,level);
+		}
+		else node->child110 = NULL;
+
+		if(zindex4<=high)
+		{
+			node->child111 = new TreeNode();
+			acen = center + XYZ(halfsize, halfsize, halfsize);
+			create(node->child111,data,zindex4,high,acen,halfsize,level);
+		}
+		else node->child111 = NULL;
+
+}
+
+void OcTree::search( XYZ position,float area,XYZ* data,XYZ* &areadata,int count)
+{
+	if(root) search(root,position,area,data,areadata,count);
+}
+
+void OcTree::search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata,int count)
+{
+	if(!node) return;
+	if( node->isNull )
+		for(int i = node->begin;i<=node->end;i++)
+		{
+			if(acount<count && ((data[i].x - position.x)*(data[i].x - position.x)+(data[i].y - position.y)*(data[i].y - position.y)+(data[i].z - position.z)*(data[i].z - position.z))<=area*area)
+			{		
+				areadata[acount] = data[i];
+				//cout<<acount<<"  "<<node->begin<<"  "<<node->end<<"  "<<i<<"  "<<areadata[acount].x<<"  "<<areadata[acount].y<<"  "<<areadata[acount].z<<endl;
+				acount++;
 			}
 		}
-		if(i_x <= high) {
-			quick_sortY(data, i_x, high);
-			splitY(data, i_x, high, center.y, i_y);
-			if(i_x <= i_y) {
-				quick_sortZ(data, i_x, i_y);
-				splitZ(data, i_x, i_y, center.z, i_z);
-				if(i_x <= i_z) {
-					acen = center + XYZ(halfsize, -halfsize, -halfsize);
-					node->child100 = new TreeNode();
-					create(node->child100, data, i_x, i_z, acen, halfsize, alevel);
-				}
-				if(i_z <= i_y) {
-					acen = center + XYZ(halfsize, -halfsize, halfsize);
-					node->child101 = new TreeNode();
-					create(node->child101, data, i_z, i_y, acen, halfsize, alevel);
-				}
+	//cout<<node->center.x<<"  "<<position.x<<"  "<<area<<"  "<<node->size<<endl;
+	
+	if((position.x + area<=node->center.x)&&(position.x + area>=node->center.x-node->size))
+	{
+		if((position.y + area<=node->center.y)&&(position.y + area>=node->center.y-node->size))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child000,position,area,data,areadata,count);
 			}
-			if(i_y <= high) {
-				quick_sortZ(data, i_y, high);
-				splitZ(data, i_y, high, center.z, i_z);
-				if(i_y <= i_z) {
-					acen = center + XYZ(halfsize, halfsize, -halfsize);
-					node->child110 = new TreeNode();
-					create(node->child110, data, i_y, i_z, acen, halfsize, alevel);
-				}
-				if(i_z <= high) {
-					acen = center + XYZ(halfsize, halfsize, halfsize);
-					node->child111 = new TreeNode();
-					create(node->child111, data, i_z, high, acen, halfsize, alevel);
-				}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child001,position,area,data,areadata,count);
 			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child001,position,area,data,areadata,count);
+			}
+			else return;
 		}
+		else if((position.y - area>node->center.y)&&(position.y - area<=node->center.y+node->size))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child010,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child011,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child010,position,area,data,areadata,count);
+				search(node->child011,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else if((position.y + area>node->center.y)&&(position.y - area<node->center.y))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child010,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child001,position,area,data,areadata,count);
+				search(node->child011,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child001,position,area,data,areadata,count);
+				search(node->child010,position,area,data,areadata,count);
+				search(node->child011,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else return;
 	}
+	else if((position.x - area>node->center.x)&&(position.x - area<=node->center.x+node->size))
+	{
+		if((position.y + area<=node->center.y)&&(position.y + area>=node->center.y-node->size))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child100,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child101,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child100,position,area,data,areadata,count);
+				search(node->child101,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else if((position.y - area>node->center.y)&&(position.y - area<=node->center.y+node->size))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child110,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child111,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child110,position,area,data,areadata,count);
+				search(node->child111,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else if((position.y + area>node->center.y)&&(position.y - area<node->center.y))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child100,position,area,data,areadata,count);
+				search(node->child110,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child101,position,area,data,areadata,count);
+				search(node->child111,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child100,position,area,data,areadata,count);
+				search(node->child101,position,area,data,areadata,count);
+				search(node->child110,position,area,data,areadata,count);
+				search(node->child111,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else return;
+	}
+	else if((position.x + area>node->center.x)&&(position.x - area<node->center.x))
+	{
+		if((position.y + area<=node->center.y)&&(position.y + area>=node->center.y-node->size))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child100,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child001,position,area,data,areadata,count);
+				search(node->child101,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child001,position,area,data,areadata,count);
+				search(node->child100,position,area,data,areadata,count);
+				search(node->child101,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else if((position.y - area>node->center.y)&&(position.y - area<=node->center.y+node->size))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child010,position,area,data,areadata,count);
+				search(node->child110,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child011,position,area,data,areadata,count);
+				search(node->child111,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child010,position,area,data,areadata,count);
+				search(node->child011,position,area,data,areadata,count);
+				search(node->child110,position,area,data,areadata,count);
+				search(node->child111,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else if((position.y + area>node->center.y)&&(position.y - area<node->center.y))
+		{
+			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child100,position,area,data,areadata,count);
+				search(node->child010,position,area,data,areadata,count);
+				search(node->child110,position,area,data,areadata,count);
+			}
+			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child100,position,area,data,areadata,count);
+				search(node->child010,position,area,data,areadata,count);
+				search(node->child110,position,area,data,areadata,count);
+			}
+			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
+			{
+				search(node->child000,position,area,data,areadata,count);
+				search(node->child001,position,area,data,areadata,count);
+				search(node->child010,position,area,data,areadata,count);
+				search(node->child011,position,area,data,areadata,count);
+				search(node->child100,position,area,data,areadata,count);
+				search(node->child101,position,area,data,areadata,count);
+				search(node->child110,position,area,data,areadata,count);
+				search(node->child111,position,area,data,areadata,count);
+			}
+			else return;
+		}
+		else return;
+	}
+	else return;
+
+/*	
+	if((acount<count)&&(node->isNull == 1 || node->end - node->begin < 8))
+	{
+		for(int i = node->begin;i<node->end;i++)
+		{
+			if(((data[i].x - position.x)*(data[i].x - position.x)+(data[i].y - position.y)*(data[i].y - position.y)+(data[i].z - position.z)*(data[i].z - position.z))<=area*area)
+			{		
+				areadata[acount] = data[i];
+				cout<<acount<<"  "<<node->begin<<"  "<<node->end<<"  "<<i<<"  "<<areadata[acount].x<<"  "<<areadata[acount].y<<"  "<<areadata[acount].z<<endl;
+				acount++;
+			}
+		}
+	}*/
 }
 
 void OcTree::draw()
@@ -250,7 +382,7 @@ void OcTree::draw(const TreeNode *node)
 	if(!node) return;
 	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111) {
 		
-		if(!node->isNull) {
+		if(node->isNull) {
 			XYZ cen = node->center;
 			float size = node->size;
 			
@@ -469,9 +601,9 @@ void OcTree::quick_sortZ(XYZ array[],int first,int last)
 
 char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
 {
-	if(data.x < center.x - size || data.x > center.x + size) return 0;
-	if(data.y < center.y - size || data.y > center.y + size) return 0;
-	if(data.z < center.z - size || data.z > center.z + size) return 0;
+	if(data.x < center.x - size - 0.0001 || data.x > center.x + size + 0.0001) return 0;
+	if(data.y < center.y - size - 0.0001 || data.y > center.y + size + 0.0001) return 0;
+	if(data.z < center.z - size - 0.0001 || data.z > center.z + size + 0.0001) return 0;
 	
 	return 1;
 }

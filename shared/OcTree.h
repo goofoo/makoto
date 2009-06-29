@@ -34,9 +34,11 @@ public:
 	OcTree();
 	~OcTree();
 	
-	void construct(XYZ* data, const int num_data, const XYZ& center, const float size);
+	void construct(XYZ* data, const int num_data, const XYZ& center, const float size,short level);
 	void draw();
-	void create(TreeNode *node, XYZ* data, int low, int high, const XYZ& center, const float size, const short level);
+	void create(TreeNode *node, XYZ* data, int low, int high, const XYZ& center, const float size, short level);
+	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
+	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void draw(const TreeNode *node);
 
 	static void quick_sortX(XYZ array[],int first,int last);
@@ -47,7 +49,7 @@ public:
 	static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void getBBox(const XYZ *data, const int num_data, XYZ& center, float& size);
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
-	
+	int acount;
 private:
 	TreeNode *root;
 };
