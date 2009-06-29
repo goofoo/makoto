@@ -1,0 +1,215 @@
+global proc pmapRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the pmap menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "pTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*pTools" -aob true -to true pTools`;
+        }
+       
+        // if pmap menu exists, delete it first.
+        else {
+            if(`menuItem -exists pmapItems` ) deleteUI pmapItems;
+        }
+    }
+}
+
+global proc pmapCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the pmap menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "pTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*pTools" -aob true -to true pTools`;
+        }
+
+        // if pmap menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists pmapItems` ) deleteUI pmapItems;
+        }
+       
+        // append menu items
+        menuItem -p pTools -l "P Map" -subMenu true pmapItems;
+        menuItem -l "Save Cache" -c "openSaveParticleMapWin" ;
+        menuItem -l "Load Cache" -c "openLoadParticleMapWin" ;
+        setParent -menu ..;
+        setParent -menu ..;
+    }
+}
+
+
+global proc openSaveParticleMapWin()
+{
+//If such a window already exists, destory it.
+ if ( (`window -exists savepmapWin`) == true ) deleteUI savepmapWin;
+ 
+//Create the window.
+ window -title "Save Particle Map Options" -wh 400 300  -mb false savepmapWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+	textFieldButtonGrp
+     -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
+	 -bc "fileBrowser \"set_hairCacheDataPath\" \"Set Path\" \"\" 4"
+     savepmapCachePathGrp;
+    
+	text -al left -l "\nDescription: save cache on any hair node from playback start to end.\nWill save to /data of current project if path is not set.";
+
+//row begin
+button -l "Save" -c "doSavepmap;deleteUI savepmapWin"-p $row;
+button -l "Apply" -c "doSavepmap" -p $row;
+button -l "Close" -c "deleteUI savepmapWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm    $row     "bottom" 2
+        -attachForm     $row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm    $scroll "left"   2
+        -attachControl    $scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow savepmapWin;
+}
+
+global proc doSavepmap()
+{
+	string $node[] = `ls -type pmapViz`;
+	string $an;
+	for($an in $node)
+	{
+		setAttr -type "string" ($an + ".cachePath") `textFieldButtonGrp -q -text savepmapCachePathGrp`;
+		setAttr ($an + ".saveMap") 1;
+	}
+
+	int $amount = 0;
+	progressWindow -title "Writing Particle" -progress $amount -status "Completed: 0%" -isInterruptable true;
+
+	int $s = `playbackOptions -q -min`;
+	int $e = `playbackOptions -q -max`;
+	int $step = 1;
+
+	int $i;
+	for( $i = $s; $i <= $e; $i++ ) 
+	{
+		currentTime $i;
+		$amount = ($i+1-$s)/(1.0*($e+1-$s))*100;
+
+		// Check if the dialog has been cancelled
+		if ( `progressWindow -query -isCancelled` ) break; 
+		// Check if end condition has been reached
+		if ( `progressWindow -query -progress` > 100 ) break;
+
+		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
+	}
+	
+	progressWindow -endProgress;
+	
+	for($an in $node)
+	{
+		setAttr ($an + ".saveMap") 0;
+	}
+}
+
+global proc int set_hairCacheDataPath(string $path, string $type)
+{
+	textFieldButtonGrp -e -text $path savepmapCachePathGrp;
+	return true;
+}
+
+global proc int set_hairCacheDataPathLoad()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"*.hair")`;
+	textFieldButtonGrp -e -text $path loadpmapCachePathGrp;
+	return true;
+}
+
+global proc doloadpmap()
+{
+	string $dummy = `createNode -n "dummy" transform`;
+	string $path = `textFieldGrp -q -text loadpmapCachePathGrp`;
+	string $node = `createNode pmapCache`;
+	setAttr -type "string" ($node + ".cachePath") $path;
+	connectAttr -f "time1.outTime" ($node + ".currentTime");
+	connectAttr -f ($node + ".output") ($dummy+".translateX");
+}
+
+global proc openLoadParticleMapWin()
+{
+//If such a window already exists, destory it.
+ if ( (`window -exists loadpmapWin`) == true ) deleteUI loadpmapWin;
+ 
+//Create the window.
+ window -title "Load Particle Map Options" -wh 400 300  -mb false loadpmapWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+	textFieldButtonGrp
+     -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
+	 -bc "set_hairCacheDataPathLoad"
+     loadpmapCachePathGrp;
+    
+//row begin
+button -l "Save" -c "doloadpmap;deleteUI loadpmapWin"-p $row;
+button -l "Apply" -c "doloadpmap" -p $row;
+button -l "Close" -c "deleteUI loadpmapWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm    $row     "bottom" 2
+        -attachForm     $row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm    $scroll "left"   2
+        -attachControl    $scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow loadpmapWin;
+}
+
