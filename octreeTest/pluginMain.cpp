@@ -8,6 +8,7 @@
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
 #include "octreeVizNode.h"
+#include "pmapCmd.h"
 
 // The initializePlugin method is called by Maya when the
 // plugin is loaded. It registers the hwbruiseMapShader node
@@ -24,6 +25,12 @@ MStatus initializePlugin( MObject obj )
 						 MPxNode::kLocatorNode );
 	if (!status) {
 		status.perror("registerNode");
+		return status;
+	}
+
+	status = plugin.registerCommand( "pmapCmd", pmapCmd::creator ,pmapCmd::newSyntax );
+	if (!status) {
+		status.perror("registerCommand");
 		return status;
 	}
 
@@ -47,6 +54,13 @@ MStatus uninitializePlugin( MObject obj )
 		status.perror("deregisterNode");
 		return status;
 	}
+    
+	status = plugin.deregisterCommand( "pmapCmd" );
+	if (!status) {
+		status.perror("deregisterCommand");
+		return status;
+	}
+
 
 	//MGlobal::executeCommand("zhairRemoveMenus;");
 

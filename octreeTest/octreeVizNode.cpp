@@ -4,7 +4,6 @@
 #include <maya/MItMeshVertex.h>
 
 MTypeId octreeVizNode::id( 0x0003508 );
-
 MObject octreeVizNode::afuzz;
 MObject octreeVizNode::astartframe;
 MObject octreeVizNode::acurrenttime;
@@ -18,8 +17,14 @@ MObject octreeVizNode::alengthnoise;
 MObject octreeVizNode::asavemap;
 MObject octreeVizNode::astep;
 MObject octreeVizNode::aalternativepatch;
+MObject octreeVizNode::alevel;
+MObject octreeVizNode::aarea;
+MObject octreeVizNode::acount;
+MObject octreeVizNode::adefinepositionX;
+MObject octreeVizNode::adefinepositionY;
+MObject octreeVizNode::adefinepositionZ;
 
-octreeVizNode::octreeVizNode():raw_data(0),num_raw_data(0),tree(0)
+octreeVizNode::octreeVizNode():raw_data(0),num_raw_data(0),tree(0),num_raw_area_data(0),raw_area_data(0)
 {
 }
 
@@ -33,6 +38,24 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 	MStatus status;
 	if(plug == aoutput)
 	{
+		MObject thisNode = thisMObject();
+	    MFnDagNode dagFn(thisNode);
+	    short lv;
+		XYZ position;
+		float area;
+		MPlug PlugLv = dagFn.findPlug( alevel, &status);
+	    PlugLv.getValue( lv ); 
+		MPlug PlugPoX = dagFn.findPlug( adefinepositionX, &status);
+		PlugPoX.getValue(position.x);
+		MPlug PlugPoY = dagFn.findPlug( adefinepositionY, &status);
+		PlugPoY.getValue(position.y);
+		MPlug PlugPoZ = dagFn.findPlug( adefinepositionZ, &status);
+		PlugPoZ.getValue(position.z);
+		MPlug PlugAar = dagFn.findPlug( aarea, &status);
+		PlugAar.getValue(area);
+		MPlug PlugAco = dagFn.findPlug( acount, &status);
+		PlugAco.getValue(num_raw_area_data);
+			
 		MArrayDataHandle hArray = data.inputArrayValue(aguide);
 		int n_guide = hArray.elementCount();
 		MObjectArray guidelist;
@@ -70,8 +93,11 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		if(tree) delete tree;
 		tree = new OcTree();
-		tree->construct(raw_data, num_raw_data, rootCenter, rootSize);
-	    
+		tree->construct(raw_data, num_raw_data, rootCenter, rootSize,lv);
+		
+		if(raw_area_data||tree) delete[] raw_area_data;
+		raw_area_data = new XYZ[num_raw_area_data];tree->acount = 0;
+		tree->search(position,area,raw_data,raw_area_data,num_raw_area_data);		
 		data.setClean(plug);
 	}
 	return MS::kUnknownParameter;
@@ -98,6 +124,15 @@ void octreeVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 		if(tree) tree->draw();
 		glEnd();
 	}
+
+	glPointSize(5);
+	glBegin(GL_POINTS);
+	
+	glColor3f(1,1,0);
+	if(raw_area_data&&tree->acount>0)
+	for(unsigned i=0; i<tree->acount; i++)
+		glVertex3f(raw_area_data[i].x,raw_area_data[i].y,raw_area_data[i].z);
+	glEnd();
 	
 	glPopAttrib();
 	view.endGL();
@@ -127,7 +162,64 @@ MStatus octreeVizNode::initialize()
 	MStatus			 status;
 	MFnNumericAttribute numAttr;
     MFnTypedAttribute tAttr;
-	
+
+	alevel = numAttr.create("alevel","alr",MFnNumericData::kShort);
+	numAttr.setDefault( 4 ); 
+	numAttr.setMin( 0 );
+	numAttr.setMax( 10 );
+	numAttr.setKeyable( true ); 
+    numAttr.setReadable( true ); 
+    numAttr.setWritable( true ); 
+    numAttr.setStorable( true ); 
+	status = addAttribute(alevel);
+	CHECK_MSTATUS( status );
+
+    aarea = numAttr.create("aarea","aar",MFnNumericData::kFloat);
+	numAttr.setDefault( 10.0 ); 
+	numAttr.setKeyable( true ); 
+    numAttr.setReadable( true ); 
+    numAttr.setWritable( true ); 
+    numAttr.setStorable( true ); 
+	status = addAttribute(aarea);
+	CHECK_MSTATUS( status );
+
+	acount = numAttr.create("acount","aco",MFnNumericData::kInt);
+	numAttr.setDefault( 100 ); 
+	numAttr.setKeyable( true ); 
+    numAttr.setReadable( true ); 
+    numAttr.setWritable( true ); 
+    numAttr.setStorable( true ); 
+	status = addAttribute(acount);
+	CHECK_MSTATUS( status );
+
+	adefinepositionX = numAttr.create("adefinepositionX","poX",MFnNumericData::kFloat);
+	numAttr.setDefault( 0.0 ); 
+	numAttr.setKeyable( true ); 
+    numAttr.setReadable( true ); 
+    numAttr.setWritable( true ); 
+    numAttr.setStorable( true ); 
+	status = addAttribute(adefinepositionX);
+	CHECK_MSTATUS( status );
+
+	adefinepositionY = numAttr.create("adefinepositionY","poY",MFnNumericData::kFloat);
+	numAttr.setDefault( 0.0 ); 
+	numAttr.setKeyable( true ); 
+    numAttr.setReadable( true ); 
+    numAttr.setWritable( true ); 
+    numAttr.setStorable( true ); 
+	status = addAttribute(adefinepositionY);
+	CHECK_MSTATUS( status );
+
+	adefinepositionZ= numAttr.create("adefinepositionZ","poZ",MFnNumericData::kFloat);
+	numAttr.setDefault( 0.0 ); 
+	numAttr.setKeyable( true ); 
+    numAttr.setReadable( true ); 
+    numAttr.setWritable( true ); 
+    numAttr.setStorable( true ); 
+	status = addAttribute(adefinepositionZ);
+	CHECK_MSTATUS( status );
+
+
 	afuzz = numAttr.create( "fuzz", "fuzz", MFnNumericData::kFloat, 0.0 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
@@ -206,6 +298,12 @@ MStatus octreeVizNode::initialize()
 	attributeAffects( afuzz, aoutput );
 	attributeAffects( astep, aoutput );
 	attributeAffects( aalternativepatch, aoutput );
+	attributeAffects( alevel, aoutput );
+	attributeAffects( aarea, aoutput );
+	attributeAffects( acount, aoutput );
+	attributeAffects( adefinepositionX, aoutput );
+	attributeAffects( adefinepositionY, aoutput );
+	attributeAffects( adefinepositionZ, aoutput );
 	
 	return MS::kSuccess;
 }

@@ -18,6 +18,7 @@
 #include <maya/M3dView.h>
 #include <maya/MDistance.h>
 #include <maya/MFnUnitAttribute.h>
+#include <maya/MFndagNode.h>
 #include "../shared/zData.h"
 #include "../shared/Octree.h"
 
@@ -53,10 +54,18 @@ public:
 	static MObject asavemap;
 	static MObject astep;
 	static MObject aalternativepatch;
-	static	MTypeId		id;
+	static MTypeId		id;
+	static MObject     alevel;
+	static MObject     aarea;
+	static MObject     acount;
+	static MObject     adefinepositionX;
+	static MObject     adefinepositionY;
+	static MObject     adefinepositionZ;
 
 private :
 	XYZ* raw_data;
+	XYZ* raw_area_data;
+	int num_raw_area_data;
 	unsigned num_raw_data;
 	OcTree* tree;
 };
