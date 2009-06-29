@@ -8,7 +8,7 @@ m_ndice(24)
 {
 	m_cache_name = new char[256];
 
-	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %f %f %f %f %f %f %f %d", 
+	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %f %f %f %d %f %f %f %f %d", 
 	&m_ndice,
 	&m_width0, &m_width1,
 	&m_root_colorR, &m_root_colorG, &m_root_colorB, 
@@ -19,6 +19,7 @@ m_ndice(24)
 	&m_clumping, 
 	&m_fuzz, 
 	&m_kink,
+	&m_isInterpolate,
 	&m_shutter_open, &m_shutter_close,
 	&m_hair_0, &m_hair_1,
 	&m_is_blur);
@@ -39,6 +40,7 @@ void RHair::generateRIB(RtFloat detail)
 	head += ".hairstart";
 	pHair->loadStart(head.c_str());
 	pHair->dice();
+	pHair->setInterpolate(m_isInterpolate);
 	pHair->bind();
 	pHair->load(m_cache_name);
 	

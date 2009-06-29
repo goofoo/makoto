@@ -24,7 +24,7 @@
 				AdditionalOptions="-DNT"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(MAYA_LOCATION_70)\include&quot;;D:\local\iconv\include;D:\local\libxml\include;D:\Pixar\devkit\examples\ribgen;D:\pixar\devkit\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM;USE_MAYA2007"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -204,6 +204,9 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath=".\BindTriangle.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\DiceTriangle.cpp">
 			</File>
 			<File
@@ -217,6 +220,9 @@
 			</File>
 			<File
 				RelativePath=".\HairMap.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\QuickSort.cpp">
 			</File>
 			<File
 				RelativePath="..\..\Pixar\devkit\examples\ribgen\RIBContextUtil.cpp">

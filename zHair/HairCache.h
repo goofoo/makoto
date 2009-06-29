@@ -10,6 +10,7 @@
 #ifndef _HairCache_H
 #define _HairCache_H
 #include "../shared/DiceTriangle.h"
+#include "BindTriangle.h"
 #include <string>
 
 struct Dguide
@@ -21,6 +22,7 @@ struct Dguide
 	XYZ* T;
 	XYZ* dispv;
 	MATRIX44F* space;
+	float u, v;
 };
 
 class HairCache
@@ -37,6 +39,7 @@ public:
 	
 	void create();
 	
+	void setInterpolate(const int val) {isInterpolate = val;}
 	void setDiceNumber(const float val) {ndice = val;} 
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
@@ -75,7 +78,7 @@ private:
 	Dguide* guide_data;
 	unsigned num_guide, n_vert, n_tri;
 
-	unsigned* bind_data;
+	triangle_bind_info* bind_data;
 	float clumping, fuzz, kink, mutant_scale;
 	MATRIX44F* guide_spaceinv;
 	std::string m_cachename;
@@ -85,5 +88,6 @@ private:
 	float *coord_s, *coord_t;
 	XYZ tip_color, root_color, mutant_color;
 	XYZ *rootColorArray, *tipColorArray, *opacities;
+	int isInterpolate;
 };
 #endif

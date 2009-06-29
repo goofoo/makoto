@@ -48,8 +48,9 @@ MObject HairDguideNode::amutantcolorr;
 MObject HairDguideNode::amutantcolorg;
 MObject HairDguideNode::amutantcolorb;  
 MObject HairDguideNode::amutantcolorscale;
+MObject HairDguideNode::ainterpolate;
 
-HairDguideNode::HairDguideNode() : m_base(0)
+HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0)
 {
 	m_base = new hairMap();
 	curname = "null";
@@ -84,7 +85,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
 		if(m_base) 
 		{
-			if(curname != sname)
+			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() )
 			{
 				curname = sname;
 				string head = sbuf;
@@ -92,6 +93,8 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				head += ".hairstart";
 				m_base->loadStart(head.c_str());
 				MGlobal::displayInfo(MString("nsamp ")+m_base->dice());
+				isInterpolate = data.inputValue(ainterpolate).asInt();
+				m_base->setInterpolate(isInterpolate);
 				m_base->bind();
 			}
 			int iss = m_base->load(sbuf.c_str());
@@ -245,6 +248,11 @@ MStatus HairDguideNode::initialize()
 	zWorks::createDoubleAttr(amutantcolorscale, "mutantColorScale", "mcs", 0.0);
 	addAttribute(amutantcolorscale);
 	
+	ainterpolate = numAttr.create( "interpolate", "ipl", MFnNumericData::kInt, 0);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(ainterpolate);
+	
 	// Set up a dependency between the input and the output.  This will cause
 	// the output to be marked dirty when the input changes.  The output will
 	// then be recomputed the next time the value of the output is requested.
@@ -265,6 +273,7 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( amutantcolorg, output );
 	attributeAffects( amutantcolorb, output );
 	attributeAffects( amutantcolorscale, output );
+	attributeAffects( ainterpolate, output );
 	
 	return MS::kSuccess;
 

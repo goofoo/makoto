@@ -16,7 +16,10 @@
 #include <maya/MVectorArray.h>
 #include <maya/MObjectArray.h>
 #include "../shared/DiceTriangle.h"
+#include "BindTriangle.h"
 #include <string>
+
+//#define USE_MAYA2007
 
 struct Dguide
 {
@@ -27,6 +30,7 @@ struct Dguide
 	XYZ* T;
 	XYZ* dispv;
 	MATRIX44F* space;
+	float u, v;
 };
 
 class hairMap
@@ -49,6 +53,7 @@ public:
 	void initGuide();
 	void updateGuide();
 	void drawGuide();
+	void drawGuideUV();
 
 	int save(const char* filename);
 	int saveStart(const char* filename);
@@ -64,6 +69,7 @@ public:
 	void setTipColor(const float r, const float g, const float b) {tip_color.x = r; tip_color.y = g; tip_color.z = b;}
 	void setMutantColor(const float r, const float g, const float b) {mutant_color.x = r; mutant_color.y = g; mutant_color.z = b;}
 	void setMutantColorScale(const float v) {mutant_scale = v;}
+	void setInterpolate(const int val) {isInterpolate = val;}
 	
 	float getBBox0X() const {return bbox_low.x;}
 	float getBBox0Y() const {return bbox_low.y;}
@@ -75,6 +81,7 @@ public:
 	float getClumping() const {return clumping;}
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
+	int getInterpolate() const {return isInterpolate;}
 	float getRootColorR() const {return root_color.x;}
 	float getRootColorG() const {return root_color.y;}
 	float getRootColorB() const {return root_color.z;}
@@ -101,13 +108,13 @@ private:
 	Dguide* guide_data;
 	unsigned num_guide, num_guideobj, n_vert, n_tri;
 
-	unsigned* bind_data;
+	triangle_bind_info* bind_data;
 	float clumping, fuzz, kink, mutant_scale;
 	unsigned draw_step;
 	MATRIX44F* guide_spaceinv;
 	XYZ bbox_low, bbox_high;
 	std::string m_cachename;
 	XYZ tip_color, root_color, mutant_color;
-	int order;
+	int order, isInterpolate;
 };
 #endif
