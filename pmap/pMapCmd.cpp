@@ -15,6 +15,7 @@
 
 using namespace std;
 
+
 MSyntax pMapCmd::newSyntax() 
 {
 	MSyntax syntax;
@@ -30,7 +31,7 @@ MSyntax pMapCmd::newSyntax()
 	return syntax;
 }
 
-MStatus pMapCmd::doIt( const MArgList& args )
+MStatus pMapCmd::doIt( const MArgList& args)
 //
 //	Description:
 //		implements the MEL pMapCmd command.
@@ -50,6 +51,7 @@ MStatus pMapCmd::doIt( const MArgList& args )
 	// redo method is then called to do the actuall work.  This prevents
 	// code duplication.
 	//
+
 	MStatus status = parseArgs( args );
 	
 	if( status != MS::kSuccess ) return status;
@@ -59,18 +61,17 @@ MStatus pMapCmd::doIt( const MArgList& args )
 	MAnimControl timeControl;
 	MTime time = timeControl.currentTime();
 	int frame =int(time.value());
-    
 	MString proj;
 	MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj );
 
-    MString cache_path = proj + "/data/";
-	MString cache_name;
-	MString scene_name = "untitled";
+    MString cache_path = proj + "/data";
+	MString cache_name = "particleposition";
 	worldSpace = false;
 	if (argData.isFlagSet("-p")) argData.getFlagArgument("-p", 0, cache_path);
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
 	if (argData.isFlagSet("-w")) argData.getFlagArgument("-w", 0, worldSpace);
 
+	//MStatus status;
     MSelectionList slist;
 	MGlobal::getActiveSelectionList( slist );
 	MItSelectionList list( slist, MFn::kParticle, &status );
@@ -78,7 +79,9 @@ MStatus pMapCmd::doIt( const MArgList& args )
 		displayError( "Could not create selection list iterator");
 		return status;
 	}
-
+    char filename[512];
+	if(argData.isFlagSet("-sg")) sprintf( filename, "%s/%s.dat", cache_path.asChar(), cache_name.asChar() );
+		else sprintf( filename, "%s/%s_%d.dat", cache_path.asChar(), cache_name.asChar(), frame );
 	MObject component;
 
 	if (list.isDone()) {
@@ -88,10 +91,10 @@ MStatus pMapCmd::doIt( const MArgList& args )
     
 	unsigned int sum = 0;
     ofstream outfile;
-	outfile.open("C:/Temp/pMapCmd.dat",ios_base::out | ios_base::binary );
+	outfile.open(filename,ios_base::out | ios_base::binary );
 	if(!outfile.is_open())
 	{
-		MGlobal::displayWarning(MString("Cannot open file:  C:/Temp/pMapCmd.dat"));
+		MGlobal::displayWarning(MString("Cannot open file: ")+filename);
 		return MS::kFailure;
 	}
 	for(;!list.isDone();list.next())
@@ -116,14 +119,13 @@ MStatus pMapCmd::doIt( const MArgList& args )
 	    ps.position( positions );
 	    assert( positions.length() == count );
 
-		outfile.open("C:/Temp/pMapCmd.dat",ios_base::out | ios_base::binary |ios_base::app );
+		outfile.open(filename,ios_base::out | ios_base::binary |ios_base::app );
 	    if(!outfile.is_open())
 		{
-			MGlobal::displayWarning(MString("Cannot open file:  C:/Temp/pMapCmd.dat"));
+			MGlobal::displayWarning(MString("Cannot open file: ")+filename);
 		    return MS::kFailure;
 	    }
 		
-		//outfile.write((char*)&count,sizeof(int));
 		for(unsigned i=0; i<positions.length(); i++ )
 		{
 			MVector p = positions[i];

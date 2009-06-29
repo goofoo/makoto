@@ -32,10 +32,10 @@
 #include <maya/MTime.h>
 #include <iostream>
 #include <fstream>
-#include "../shared/zData.h"
+#include "E:\git_home\shared\zData.h"
 
 
-
+//char        *filename;
 class MArgList;
 
 class pMapCmd : public MPxCommand
@@ -51,9 +51,8 @@ public:
 	MStatus		redoIt();
 	MStatus		undoIt();
 	bool		isUndoable() const;
-
 	static		void* creator();
-
+    
 private:
 	// Store the data you will need to undo the command here
 	//
