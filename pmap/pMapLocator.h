@@ -1,5 +1,5 @@
-#ifndef _particlePositionNode
-#define _particlePositionNode
+#ifndef _pMapLocator
+#define _pMapLocator
 //
 // Copyright (C) YiLi
 // 
@@ -16,7 +16,7 @@
 #include <maya/MPointArray.h>
 #include <maya/MPoint.h>
 #include <maya/MFndagNode.h>
-#include ".\OcTree.h"
+#include "../shared/OcTree.h"
 
  
 class pMapLocator : public MPxLocatorNode
@@ -38,9 +38,13 @@ public:
 public:
 
 	static	MTypeId		id;
-	static  MObject     alevel;
+	static  	MObject		input;
+	static  	MObject		frame;
+	static  	MObject 	outMesh;
+	static  	MObject 	aminframe;
+	static  	MObject 	amaxframe;
+	static  	MObject 	aframestep;
 private:
-	bool    loadParticlePosition() const;
 	void    draw();
 };
 

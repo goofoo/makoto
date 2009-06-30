@@ -22,11 +22,6 @@
 
 
 MTypeId     pMapLocator::id( 0x00001 );
-MObject     pMapLocator::alevel;
-OcTree      tree;
-TreeNode    *t;
-XYZ         *particle;
-unsigned int sum;
 
 pMapLocator::pMapLocator() {}
 pMapLocator::~pMapLocator() {}
@@ -42,6 +37,20 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 //		data - object that provides access to the attributes for this node
 //
 {
+	MStatus stat;
+	
+	MString path =  data.inputValue( input ).asString();	
+	double time = data.inputValue( frame ).asTime().value();
+	int minfrm = data.inputValue( aminframe ).asInt();
+	int frmstep = data.inputValue( aframestep ).asInt();
+	
+	if( time < minfrm ) time = minfrm;
+		
+	int frame_lo = minfrm + int(time-minfrm)/frmstep*frmstep;
+	int frame_hi = frame_lo+frmstep;
+
+	char filename[256];
+	sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
 	return MS::kUnknownParameter;
 }
 
@@ -60,43 +69,6 @@ void* pMapLocator::creator()
 
 bool pMapLocator::loadParticlePosition() const
 {
-	MStatus stat;
-	MObject thisNode = thisMObject();
-	MFnDagNode dagFn(thisNode);
-	MPlug tPlug = dagFn.findPlug( alevel, &stat);
-	short lv;
-	tPlug.getValue( lv ); 
-	
-	ifstream infile;
-	infile.open("C:/Temp/pMapCmd.dat", ios_base::in | ios_base::binary ); 
-	if(!infile.is_open())
-	{
-		MGlobal::displayWarning(MString("Cannot open file:  C:/Temp/pMapCmd.dat"));
-		return false;
-	}
-	infile.read((char*)&sum,sizeof(int));
-
-	particle = new XYZ[sum];
-    MVector p;
-    for(unsigned int i = 0;i<sum;i++)
-	{
-		infile.read((char*)&p[0],sizeof(p[0]));
-		particle[i].x = p[0];
-		infile.read((char*)&p[1],sizeof(p[1]));
-		particle[i].y = p[1];
-		infile.read((char*)&p[2],sizeof(p[2]));
-		particle[i].z = p[2];
-	}
-	infile.close();
-	
-	XYZ center;
-	if( tree.sizegainarray == 0)
-	{   tree.gainarray = new XYZ[sum*24];
-		t = new TreeNode(0, sum-1);
-	    tree.CreateOcTree(t,particle,0,sum - 1,center,0.0,10);
-	}
-	tree.sizegainarray = 0;
-	tree.GetChildren(t,lv);
 	return true;	
 }
 
@@ -112,11 +84,6 @@ bool pMapLocator::isBounded() const
 MBoundingBox pMapLocator::boundingBox() const
 {
 	MBoundingBox bbox;
-	loadParticlePosition();
-
-    unsigned int i;
-    for ( i = 0; i < sum; i ++ ) 
-		bbox.expand( MPoint( particle[i].x, particle[i].y, particle[i].z ) ); 
     return bbox; 
 } 
 
@@ -126,10 +93,6 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	glBegin(GL_LINES);
-	for( int i = 0;i<tree.sizegainarray;i++)
-		glVertex3f(tree.gainarray[i].x,tree.gainarray[i].y,tree.gainarray[i].z);
-	glEnd();
 	glPopAttrib();
 	view.endGL();
 }

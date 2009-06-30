@@ -2,9 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="particlePositionCmd"
-	ProjectGUID="{D498A1F8-B5FF-41A6-9B55-3039543BBC26}"
-	RootNamespace="particlePositionCmd">
+	Name="pMap"
+	ProjectGUID="{EF8952FF-D99E-4478-8898-CB69E87694A0}">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -19,27 +18,21 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Gm /GX /ZI /I &quot;.&quot; /D &quot;WIN32&quot; /D &quot;_DEBUG&quot; /YX /GZ /c"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(MAYA_LOCATION70)\include&quot;"
+				AdditionalIncludeDirectories="C:\Program Files\Alias\Maya7.0\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,_AFXDLL,_MBCS,NT_PLUGIN,REQUIRE_IOSTREAM"
 				RuntimeLibrary="3"
-				PrecompiledHeaderFile="Debug/particlePosition.pch"
+				PrecompiledHeaderFile="Debug/pMap.pch"
 				WarningLevel="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
-<<<<<<< HEAD:pmap/pMap.vcproj
-				AdditionalDependencies="Foundation.lib OpenMayaRender.lib OpenGL32.lib odbc32.lib odbccp32.lib OpenMayaUI.lib OpenMaya.lib OpenMayaFX.lib OpenMayaAnim.lib"
-				OutputFile="..\module\plug-ins\pMap7.0.mll"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib "
+				OutputFile="Debug\pMap.mll"
 				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
-=======
-				AdditionalDependencies="Foundation.lib OpenMayaRender.lib OpenGL32.lib odbc32.lib odbccp32.lib OpenMayaUI.lib OpenMaya.lib OpenMayaFX.lib"
-				OutputFile="..\module\plug-ins\pMap70.mll"
-				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION70)\lib&quot;"
->>>>>>> f0d9c70dbc2c059f64888998bf34b2fee82490ea:pmap/pMap.vcproj
-				ProgramDatabaseFile="Debug/particlePosition.pdb"
-				ImportLibrary="Debug/particlePosition.lib"/>
+				ProgramDatabaseFile="Debug/pMap.pdb"
+				ImportLibrary="Debug/pMap.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -73,18 +66,18 @@
 				AdditionalIncludeDirectories="C:\Program Files\Alias\Maya7.0\include"
 				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,_AFXDLL,_MBCS,NT_PLUGIN,REQUIRE_IOSTREAM"
 				RuntimeLibrary="2"
-				PrecompiledHeaderFile="Release/particlePosition.pch"
+				PrecompiledHeaderFile="Release/pMap.pch"
 				WarningLevel="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/subsystem:windows /incremental:no /machine:I386 /export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaRender.lib OpenGL32.lib "
-				OutputFile="Release\particlePosition.mll"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib "
+				OutputFile="Release\pMap.mll"
 				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
-				ProgramDatabaseFile="Release/particlePosition.pdb"
-				ImportLibrary="Release/particlePosition.lib"/>
+				ProgramDatabaseFile="Release/pMap.pdb"
+				ImportLibrary="Release/pMap.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -114,7 +107,7 @@
 			Name="Source Files"
 			Filter="cpp">
 			<File
-				RelativePath=".\OcTree.cpp">
+				RelativePath="..\shared\OcTree.cpp">
 			</File>
 			<File
 				RelativePath=".\pluginMain.cpp">
@@ -130,7 +123,7 @@
 			Name="Header Files"
 			Filter="h">
 			<File
-				RelativePath=".\OcTree.h">
+				RelativePath="..\shared\OcTree.h">
 			</File>
 			<File
 				RelativePath=".\pMapCmd.h">
@@ -142,12 +135,6 @@
 		<Filter
 			Name="Miscellaneous Files"
 			Filter="txt">
-			<File
-				RelativePath=".\Options.txt">
-			</File>
-			<File
-				RelativePath=".\ReadMe.txt">
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
