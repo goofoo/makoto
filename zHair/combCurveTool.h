@@ -31,6 +31,7 @@
 #include <maya/MDagPathArray.h>
 #include <maya/MDoubleArray.h>
 #include <maya/MMatrix.h>
+#include <maya/MFnMesh.h>
 
 #if defined(OSMac_MachO_)
 #include <OpenGL/gl.h>
@@ -90,6 +91,8 @@ private:
 	MGlobal::ListAdjustment	listAdjustment;
 	M3dView					view;
 	MDagPathArray curveList;
+	MFnMesh fcollide;
+	char goCollide;
 	MDoubleArray curveLen;
 	MATRIX44F mat;
 	double clipNear, clipFar;
@@ -101,6 +104,7 @@ private:
 	void scaleAll();
 	void deKink();
 	void grow();
+	void doCollide(const MPoint& vert, MVector &v);
 };
 
 class combCurveContextCmd : public MPxContextCommand

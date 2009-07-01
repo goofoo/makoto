@@ -197,6 +197,12 @@ MStatus combCurveContext::doPress( MEvent & event )
 		MFnNurbsCurve fCurve(mdagPath);
 		curveLen.append(fCurve.length());
 	}
+	
+	goCollide = 0;
+	MItSelectionList meshIter( slist, MFn::kMesh, &stat );
+	meshIter.getDagPath( mdagPath, mComponent );
+	mdagPath.extendToShape();
+	if(fcollide.setObject(mdagPath) == MS::kSuccess) goCollide = 1;
 
 	return MS::kSuccess;		
 }
@@ -336,6 +342,16 @@ float combCurveContext::getCreationNoise() const
 	return m_seg_noise;
 }
 
+void combCurveContext::doCollide(const MPoint& vert, MVector &v)
+{
+	MPoint moveto = vert + v;
+	MPoint closestP;
+	MVector closestN;
+	fcollide.getClosestPointAndNormal (moveto, closestP, closestN, MSpace::kObject);
+	MVector tocloest = closestP - moveto;
+	if(tocloest*closestN > 0.f) v = tocloest;
+}
+
 void combCurveContext::moveAll()
 {
 	MPoint toNear, toFar;
@@ -376,6 +392,9 @@ void combCurveContext::moveAll()
 					{
 						disp = dispNear + (dispFar - dispNear)*(pp.z-clipNear)/(clipFar-clipNear);
 						disp *= sqrt(weight);
+						
+						if(goCollide) doCollide(vert, disp);
+						
 						cvFn.translateBy( disp, MSpace::kWorld );
 					}
 				}
@@ -431,6 +450,9 @@ void combCurveContext::dragTip()
 				
 				disp = dispNear + (dispFar - dispNear)*(pp.z-clipNear)/(clipFar-clipNear);
 				disp *= sqrt(weight);
+				
+				if(goCollide) doCollide(cvs[numCv-1], disp);
+				
 				cvs[numCv-1] += disp;
 				
 				disp = cvs[numCv-1] - cvs[0];
@@ -536,6 +558,9 @@ void combCurveContext::deKink()
 				{
 					disp = (cvs[j-1] + cvs[j+1])/2 - cvs[j];
 					disp *= mag*weight;
+					
+					if(goCollide) doCollide(cvs[j], disp);
+					
 					cvs[j] += disp;
 				}
 			}

@@ -69,12 +69,37 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 267976680;
-			PBXWorkspaceStateSaveDate = 267976680;
+			PBXPerProjectTemplateStateSaveDate = 268130847;
+			PBXWorkspaceStateSaveDate = 268130847;
 		};
 		perUserProjectItems = {
-			7FFC54BD0FF915CB00242C8B /* PBXTextBookmark */ = 7FFC54BD0FF915CB00242C8B /* PBXTextBookmark */;
-			7FFC55240FF9570600242C8B /* PBXTextBookmark */ = 7FFC55240FF9570600242C8B /* PBXTextBookmark */;
+			7FEA3A5C0FFB5C4800B4872F /* PBXTextBookmark */ = 7FEA3A5C0FFB5C4800B4872F /* PBXTextBookmark */;
+			7FEA3A5D0FFB5C4800B4872F /* PBXTextBookmark */ = 7FEA3A5D0FFB5C4800B4872F /* PBXTextBookmark */;
+			7FEA3A600FFB5C6900B4872F /* PBXTextBookmark */ = 7FEA3A600FFB5C6900B4872F /* PBXTextBookmark */;
+			7FEA3A620FFB5C6900B4872F /* PBXTextBookmark */ = 7FEA3A620FFB5C6900B4872F /* PBXTextBookmark */;
+			7FEA3A680FFB5C7000B4872F /* PBXTextBookmark */ = 7FEA3A680FFB5C7000B4872F /* PBXTextBookmark */;
+			7FEA3A690FFB5C7000B4872F /* PBXTextBookmark */ = 7FEA3A690FFB5C7000B4872F /* PBXTextBookmark */;
+			7FEA3A6C0FFB5C7000B4872F /* PBXTextBookmark */ = 7FEA3A6C0FFB5C7000B4872F /* PBXTextBookmark */;
+			7FEA3A6E0FFB5C7000B4872F /* PBXTextBookmark */ = 7FEA3A6E0FFB5C7000B4872F /* PBXTextBookmark */;
+			7FEA3A700FFB5C9500B4872F /* PBXTextBookmark */ = 7FEA3A700FFB5C9500B4872F /* PBXTextBookmark */;
+			7FEA3A710FFB5C9500B4872F /* PBXTextBookmark */ = 7FEA3A710FFB5C9500B4872F /* PBXTextBookmark */;
+			7FEA3A750FFB5CDF00B4872F /* PBXTextBookmark */ = 7FEA3A750FFB5CDF00B4872F /* PBXTextBookmark */;
+			7FEA3A780FFB5CDF00B4872F /* PBXTextBookmark */ = 7FEA3A780FFB5CDF00B4872F /* PBXTextBookmark */;
+			7FEA3A790FFB5CDF00B4872F /* PBXTextBookmark */ = 7FEA3A790FFB5CDF00B4872F /* PBXTextBookmark */;
+			7FEA3A7A0FFB5D1700B4872F /* PBXTextBookmark */ = 7FEA3A7A0FFB5D1700B4872F /* PBXTextBookmark */;
+			7FEA3A7B0FFB5D1700B4872F /* PBXTextBookmark */ = 7FEA3A7B0FFB5D1700B4872F /* PBXTextBookmark */;
+			7FEA3A7D0FFB5D7E00B4872F /* PBXTextBookmark */ = 7FEA3A7D0FFB5D7E00B4872F /* PBXTextBookmark */;
+			7FEA3A7E0FFB5D7E00B4872F /* PBXTextBookmark */ = 7FEA3A7E0FFB5D7E00B4872F /* PBXTextBookmark */;
+			7FEA3A800FFB5DAD00B4872F /* PBXTextBookmark */ = 7FEA3A800FFB5DAD00B4872F /* PBXTextBookmark */;
+			7FEA3A810FFB5DAD00B4872F /* PBXTextBookmark */ = 7FEA3A810FFB5DAD00B4872F /* PBXTextBookmark */;
+			7FEA3A840FFB5F2700B4872F /* PBXTextBookmark */ = 7FEA3A840FFB5F2700B4872F /* PBXTextBookmark */;
+			7FEA3A850FFB5F2700B4872F /* PBXTextBookmark */ = 7FEA3A850FFB5F2700B4872F /* PBXTextBookmark */;
+			7FEA3A880FFB60AE00B4872F /* PBXTextBookmark */ = 7FEA3A880FFB60AE00B4872F /* PBXTextBookmark */;
+			7FEA3A890FFB60AE00B4872F /* PBXTextBookmark */ = 7FEA3A890FFB60AE00B4872F /* PBXTextBookmark */;
+			7FEA3A8C0FFB635900B4872F /* PBXTextBookmark */ = 7FEA3A8C0FFB635900B4872F /* PBXTextBookmark */;
+			7FEA3A8D0FFB635900B4872F /* PBXTextBookmark */ = 7FEA3A8D0FFB635900B4872F /* PBXTextBookmark */;
+			7FFC54BD0FF915CB00242C8B = 7FFC54BD0FF915CB00242C8B /* PBXTextBookmark */;
+			7FFC55240FF9570600242C8B = 7FFC55240FF9570600242C8B /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -138,9 +163,9 @@
 	};
 	7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {794, 9982}}";
-			sepNavSelRange = "{2285, 0}";
-			sepNavVisRange = "{2023, 1305}";
+			sepNavIntBoundsRect = "{{0, 0}, {596, 10598}}";
+			sepNavSelRange = "{12559, 0}";
+			sepNavVisRange = "{10884, 867}";
 			sepNavWindowFrame = "{{400, 59}, {616, 716}}";
 		};
 	};
@@ -197,9 +222,9 @@
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {675, 3430}}";
+			sepNavIntBoundsRect = "{{0, 0}, {675, 3388}}";
 			sepNavSelRange = "{2119, 62}";
-			sepNavVisRange = "{1563, 1315}";
+			sepNavVisRange = "{1791, 1195}";
 			sepNavWindowFrame = "{{24, 67}, {734, 700}}";
 		};
 	};
@@ -243,11 +268,283 @@
 			sepNavWindowFrame = "{{524, 77}, {619, 689}}";
 		};
 	};
+	7FEA3A5C0FFB5C4800B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'mdagPat' was not declared in this scope";
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		rLen = 1;
+		rLoc = 204;
+		rType = 1;
+	};
+	7FEA3A5D0FFB5C4800B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 204";
+		rLen = 65;
+		rLoc = 4858;
+		rType = 0;
+		vrLen = 280;
+		vrLoc = 4672;
+	};
+	7FEA3A600FFB5C6900B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'MFnMesh& MFnMesh::operator=(const MFnMesh&)' is private";
+		fRef = 7FEA3A610FFB5C6900B4872F /* MFnMesh.h */;
+		rLen = 1;
+		rLoc = 107;
+		rType = 1;
+	};
+	7FEA3A610FFB5C6900B4872F /* MFnMesh.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = MFnMesh.h;
+		path = /Applications/Autodesk/maya2008/devkit/include/maya/MFnMesh.h;
+		sourceTree = "<absolute>";
+	};
+	7FEA3A620FFB5C6900B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A630FFB5C6900B4872F /* MFnMesh.h */;
+		name = "MFnMesh.h: 108";
+		rLen = 37;
+		rLoc = 3388;
+		rType = 0;
+		vrLen = 256;
+		vrLoc = 3170;
+	};
+	7FEA3A630FFB5C6900B4872F /* MFnMesh.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = MFnMesh.h;
+		path = /Applications/Autodesk/maya2008/devkit/include/maya/MFnMesh.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {488, 15610}}";
+			sepNavSelRange = "{3388, 37}";
+			sepNavVisRange = "{3170, 256}";
+		};
+	};
+	7FEA3A680FFB5C7000B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		rLen = 0;
+		rLoc = 2147484168;
+		rType = 0;
+	};
+	7FEA3A690FFB5C7000B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 204";
+		rLen = 0;
+		rLoc = 4889;
+		rType = 0;
+		vrLen = 654;
+		vrLoc = 4672;
+	};
+	7FEA3A6C0FFB5C7000B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6D0FFB5C7000B4872F /* combCurveTool.h */;
+		rLen = 0;
+		rLoc = 2668;
+		rType = 0;
+	};
+	7FEA3A6D0FFB5C7000B4872F /* combCurveTool.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = combCurveTool.h;
+		path = /Users/jianzhang/Documents/plankton/zHair/combCurveTool.h;
+		sourceTree = "<absolute>";
+	};
+	7FEA3A6E0FFB5C7000B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		name = "combCurveTool.h: 34";
+		rLen = 0;
+		rLoc = 732;
+		rType = 0;
+		vrLen = 841;
+		vrLoc = 1761;
+	};
+	7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = combCurveTool.h;
+		path = /Users/jianzhang/Documents/plankton/zHair/combCurveTool.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {664, 1708}}";
+			sepNavSelRange = "{2351, 0}";
+			sepNavVisRange = "{1610, 949}";
+			sepNavWindowFrame = "{{15, 72}, {723, 701}}";
+		};
+	};
+	7FEA3A700FFB5C9500B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'MFnMesh& MFnMesh::operator=(const MFnMesh&)' is private";
+		fRef = 7FEA3A630FFB5C6900B4872F /* MFnMesh.h */;
+		rLen = 1;
+		rLoc = 107;
+		rType = 1;
+	};
+	7FEA3A710FFB5C9500B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A630FFB5C6900B4872F /* MFnMesh.h */;
+		name = "MFnMesh.h: 108";
+		rLen = 37;
+		rLoc = 3388;
+		rType = 0;
+		vrLen = 256;
+		vrLoc = 3170;
+	};
+	7FEA3A750FFB5CDF00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 204";
+		rLen = 0;
+		rLoc = 4870;
+		rType = 0;
+		vrLen = 825;
+		vrLoc = 4328;
+	};
+	7FEA3A780FFB5CDF00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		rLen = 0;
+		rLoc = 2147483713;
+		rType = 0;
+	};
+	7FEA3A790FFB5CDF00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		name = "combCurveTool.h: 94";
+		rLen = 8;
+		rLoc = 2080;
+		rType = 0;
+		vrLen = 1000;
+		vrLoc = 1302;
+	};
+	7FEA3A7A0FFB5D1700B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'MFnMesh& MFnMesh::operator=(const MFnMesh&)' is private";
+		fRef = 7FEA3A630FFB5C6900B4872F /* MFnMesh.h */;
+		rLen = 1;
+		rLoc = 107;
+		rType = 1;
+	};
+	7FEA3A7B0FFB5D1700B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A630FFB5C6900B4872F /* MFnMesh.h */;
+		name = "MFnMesh.h: 108";
+		rLen = 37;
+		rLoc = 3388;
+		rType = 0;
+		vrLen = 256;
+		vrLoc = 3170;
+	};
+	7FEA3A7D0FFB5D7E00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 204";
+		rLen = 0;
+		rLoc = 4889;
+		rType = 0;
+		vrLen = 897;
+		vrLoc = 4220;
+	};
+	7FEA3A7E0FFB5D7E00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		name = "combCurveTool.h: 94";
+		rLen = 8;
+		rLoc = 2080;
+		rType = 0;
+		vrLen = 1000;
+		vrLoc = 1302;
+	};
+	7FEA3A800FFB5DAD00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 204";
+		rLen = 0;
+		rLoc = 4880;
+		rType = 0;
+		vrLen = 915;
+		vrLoc = 4220;
+	};
+	7FEA3A810FFB5DAD00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		name = "combCurveTool.h: 94";
+		rLen = 8;
+		rLoc = 2080;
+		rType = 0;
+		vrLen = 1000;
+		vrLoc = 1302;
+	};
+	7FEA3A840FFB5F2700B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 388";
+		rLen = 0;
+		rLoc = 9136;
+		rType = 0;
+		vrLen = 976;
+		vrLoc = 7979;
+	};
+	7FEA3A850FFB5F2700B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		name = "combCurveTool.h: 95";
+		rLen = 0;
+		rLoc = 2106;
+		rType = 0;
+		vrLen = 1016;
+		vrLoc = 1302;
+	};
+	7FEA3A880FFB60AE00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 394";
+		rLen = 0;
+		rLoc = 9136;
+		rType = 0;
+		vrLen = 1168;
+		vrLoc = 7979;
+	};
+	7FEA3A890FFB60AE00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		name = "combCurveTool.h: 95";
+		rLen = 0;
+		rLoc = 2106;
+		rType = 0;
+		vrLen = 1016;
+		vrLoc = 1302;
+	};
+	7FEA3A8C0FFB635900B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 562";
+		rLen = 0;
+		rLoc = 12559;
+		rType = 0;
+		vrLen = 865;
+		vrLoc = 10881;
+	};
+	7FEA3A8D0FFB635900B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FEA3A6F0FFB5C7000B4872F /* combCurveTool.h */;
+		name = "combCurveTool.h: 107";
+		rLen = 0;
+		rLoc = 2351;
+		rType = 0;
+		vrLen = 949;
+		vrLoc = 1610;
+	};
 	7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1196, 8022}}";
+			sepNavIntBoundsRect = "{{0, 0}, {806, 8596}}";
 			sepNavSelRange = "{18614, 0}";
-			sepNavVisRange = "{17064, 1346}";
+			sepNavVisRange = "{17085, 1324}";
 			sepNavWindowFrame = "{{137, 66}, {865, 685}}";
 		};
 	};
@@ -255,7 +552,7 @@
 		isa = PBXTextBookmark;
 		fRef = 7FFB47620FBE326900C8F9AB /* zhairMenus.mel */;
 		rLen = 0;
-		rLoc = 2147488564;
+		rLoc = 18680;
 		rType = 0;
 	};
 	7FFC55240FF9570600242C8B /* PBXTextBookmark */ = {

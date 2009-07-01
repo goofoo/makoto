@@ -124,9 +124,9 @@ int hairMap::dice()
 {
 	if(!pconnection || !parray) return 0;
 		
-	float epsilon = sqrt(sum_area/n_tri/2/3);
+	float epsilon = sqrt(sum_area/n_tri/2/2);
 
-	int estimate_ncell = n_tri*3*2;
+	int estimate_ncell = n_tri*2*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
