@@ -89,7 +89,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 		return MS::kFailure;
 	}
     
-	unsigned int sum = 0;
+	unsigned sum = 0;
     ofstream outfile;
 	outfile.open(filename,ios_base::out | ios_base::binary );
 	if(!outfile.is_open())
@@ -103,7 +103,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MFnParticleSystem ps( fDagPath );
 		sum += ps.count();
 	}
-	outfile.write((char*)&sum,sizeof(int));
+	outfile.write((char*)&sum,sizeof(unsigned));
 	outfile.close();
 	list.reset();
 

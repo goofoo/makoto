@@ -38,6 +38,8 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 
+   MGlobal::executeCommand ( "source particleCacheMenus.mel;particleCacheMakeMenus;" );
+
 	return status;
 }
 
@@ -65,7 +67,7 @@ MStatus uninitializePlugin( MObject obj )
 		status.perror("deregisterNode");
 		return status;
 	}
-
+    MGlobal::executeCommand ( "particleCacheRemoveMenus;" );
 
 	return status;
 }

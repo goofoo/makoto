@@ -28,8 +28,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib "
-				OutputFile="Debug\pMap.mll"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib"
+				OutputFile="../module/plug-ins/pMap70.mll"
 				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
 				ProgramDatabaseFile="Debug/pMap.pdb"
 				ImportLibrary="Debug/pMap.lib"/>
