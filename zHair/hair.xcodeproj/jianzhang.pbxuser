@@ -98,6 +98,10 @@
 			7FEA3A890FFB60AE00B4872F /* PBXTextBookmark */ = 7FEA3A890FFB60AE00B4872F /* PBXTextBookmark */;
 			7FEA3A8C0FFB635900B4872F /* PBXTextBookmark */ = 7FEA3A8C0FFB635900B4872F /* PBXTextBookmark */;
 			7FEA3A8D0FFB635900B4872F /* PBXTextBookmark */ = 7FEA3A8D0FFB635900B4872F /* PBXTextBookmark */;
+			7FEA3A920FFBA3C900B4872F /* PBXBookmark */ = 7FEA3A920FFBA3C900B4872F /* PBXBookmark */;
+			7FEA3A960FFBA99D00B4872F /* PBXTextBookmark */ = 7FEA3A960FFBA99D00B4872F /* PBXTextBookmark */;
+			7FEA3A9A0FFBAAA300B4872F /* PBXTextBookmark */ = 7FEA3A9A0FFBAAA300B4872F /* PBXTextBookmark */;
+			7FEA3A9C0FFBAAF600B4872F /* PBXTextBookmark */ = 7FEA3A9C0FFBAAF600B4872F /* PBXTextBookmark */;
 			7FFC54BD0FF915CB00242C8B = 7FFC54BD0FF915CB00242C8B /* PBXTextBookmark */;
 			7FFC55240FF9570600242C8B = 7FFC55240FF9570600242C8B /* PBXTextBookmark */;
 		};
@@ -163,9 +167,9 @@
 	};
 	7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {596, 10598}}";
-			sepNavSelRange = "{12559, 0}";
-			sepNavVisRange = "{10884, 867}";
+			sepNavIntBoundsRect = "{{0, 0}, {596, 10626}}";
+			sepNavSelRange = "{10810, 0}";
+			sepNavVisRange = "{10064, 909}";
 			sepNavWindowFrame = "{{400, 59}, {616, 716}}";
 		};
 	};
@@ -206,16 +210,16 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {656, 10458}}";
-			sepNavSelRange = "{20018, 40}";
-			sepNavVisRange = "{21116, 1273}";
+			sepNavIntBoundsRect = "{{0, 0}, {656, 10878}}";
+			sepNavSelRange = "{3041, 0}";
+			sepNavVisRange = "{2849, 768}";
 			sepNavWindowFrame = "{{391, 85}, {653, 693}}";
 		};
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {566, 1666}}";
-			sepNavSelRange = "{605, 0}";
+			sepNavSelRange = "{613, 0}";
 			sepNavVisRange = "{46, 1185}";
 			sepNavWindowFrame = "{{384, 78}, {536, 697}}";
 		};
@@ -262,9 +266,9 @@
 	};
 	7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {560, 2688}}";
+			sepNavIntBoundsRect = "{{0, 0}, {662, 2702}}";
 			sepNavSelRange = "{2454, 0}";
-			sepNavVisRange = "{1555, 1062}";
+			sepNavVisRange = "{1550, 1110}";
 			sepNavWindowFrame = "{{524, 77}, {619, 689}}";
 		};
 	};
@@ -327,7 +331,7 @@
 		isa = PBXTextBookmark;
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		rLen = 0;
-		rLoc = 2147484168;
+		rLoc = 16594;
 		rType = 0;
 	};
 	7FEA3A690FFB5C7000B4872F /* PBXTextBookmark */ = {
@@ -525,7 +529,7 @@
 		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
 		name = "combCurveTool.cpp: 562";
 		rLen = 0;
-		rLoc = 12559;
+		rLoc = 12725;
 		rType = 0;
 		vrLen = 865;
 		vrLoc = 10881;
@@ -539,6 +543,40 @@
 		rType = 0;
 		vrLen = 949;
 		vrLoc = 1610;
+	};
+	7FEA3A920FFBA3C900B4872F /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+	};
+	7FEA3A960FFBA99D00B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 479";
+		rLen = 0;
+		rLoc = 10925;
+		rType = 0;
+		vrLen = 930;
+		vrLoc = 10064;
+	};
+	7FEA3A9A0FFBAAA300B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 477";
+		rLen = 0;
+		rLoc = 10872;
+		rType = 0;
+		vrLen = 911;
+		vrLoc = 10064;
+	};
+	7FEA3A9C0FFBAAF600B4872F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 475";
+		rLen = 0;
+		rLoc = 10810;
+		rType = 0;
+		vrLen = 909;
+		vrLoc = 10064;
 	};
 	7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {
 		uiCtxt = {

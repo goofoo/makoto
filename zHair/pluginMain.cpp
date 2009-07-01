@@ -22,7 +22,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.5.1 - 06/24/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.5.4 - 07/01/09", "Any");
 
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,

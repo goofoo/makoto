@@ -472,6 +472,14 @@ void combCurveContext::dragTip()
 					cvs[j] = cvs[j+1] + disp;
 				}
 				
+				for(unsigned j=1; j<numCv; j++) {
+					disp = cvs[j] - cvs[j-1];
+					disp.normalize();
+					disp *= lenbuf[j-1];
+					
+					cvs[j] = cvs[j-1] + disp;
+				}
+				
 				delete[] lenbuf;
 			}
 			fCurve.setCVs (cvs, MSpace::kObject );
