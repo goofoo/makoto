@@ -62,7 +62,6 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    char filename[256];
 	    sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
 	    ifstream infile;
-	    MGlobal::displayInfo(MString("cao ")+filename);
 	    infile.open(filename,ios_base::out | ios_base::binary );
 	    if(!infile.is_open())
 		{
@@ -183,9 +182,6 @@ MStatus pMapLocator::initialize()
 
 	MFnUnitAttribute uAttr;
 	frame = uAttr.create("currentTime", "ct", MFnUnitAttribute::kTime, 1.0);
-	//stat = zWorks::createTimeAttr(frame, "currentTime", "ct", 1.0);
-	//zCheckStatus(stat, "ERROR creating time");
-	//zCheckStatus(addAttribute(frame), "ERROR adding time");
 	uAttr.setKeyable(true);
 	uAttr.setAffectsWorldSpace(true);
 	uAttr.setStorable(true);
