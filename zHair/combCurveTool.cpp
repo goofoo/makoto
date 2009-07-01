@@ -550,22 +550,35 @@ void combCurveContext::deKink()
 		MPointArray cvs;
 		fCurve.getCVs ( cvs, MSpace::kObject );
 		
-		for(unsigned j=1; j<numCv-1; j++) 
-		{
-			pp = XYZ(cvs[j].x, cvs[j].y, cvs[j].z);
-			mat.transform(pp);
-			if(pp.z > clipNear)
-			{
-				view.worldToView (cvs[j], vert_x, vert_y);
+		pp = XYZ(cvs[0].x, cvs[0].y, cvs[0].z);
+		mat.transform(pp);
+		if(pp.z > clipNear) {
+			view.worldToView (cvs[0], vert_x, vert_y);
 						
-				XY pscrn(vert_x, vert_y);
-				float weight = pscrn.distantTo(cursor);
-				weight = 1.f - weight/64.f;
-				
-				if(weight>0)
-				{
-					disp = (cvs[j-1] + cvs[j+1])/2 - cvs[j];
-					disp *= mag*weight;
+			XY pscrn(vert_x, vert_y);
+			float weight = pscrn.distantTo(cursor);
+			weight = 1.f - weight/64.f;
+			if(weight>0) {
+				MVector totip = cvs[numCv-1] - cvs[0];
+				MVector up(0,1,0);
+				if(totip.normal()*up > 0.9) up = MVector(1,0,0);
+				MVector side = totip.normal()^up;
+				up = totip.normal()^side;
+				float dseg = 1.f/(numCv-1);
+				for(unsigned j=1; j<numCv-1; j++) {
+
+					
+					if(mag<0) {
+						disp = cvs[j+1] - cvs[j-1];
+						float dvl = disp.length();
+						disp = up*(random()%71/71.f*2.f - 1.f) + side*(random()%71/71.f*2.f - 1.f);
+						disp.normalize();
+						disp *= mag*weight*dvl;
+					}
+					else {
+						disp = cvs[0] + totip*j*dseg - cvs[j];
+						disp *= mag*weight;
+					}
 					
 					if(goCollide) doCollide(cvs[j], disp);
 					
