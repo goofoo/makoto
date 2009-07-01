@@ -17,12 +17,12 @@ global proc particleCacheRemoveMenus()
 		}
 		// if not found, create it.
 		if ($menuIndex == -1) {
-			$gRenderingMenus[$menuSize] = `menu -l "*Vertex Cache" -aob true -to true particleCacheMenus`;
+			$gRenderingMenus[$menuSize] = `menu -l "*Particle Cache" -aob true -to true particleCacheMenus`;
 		}
 		// if particleCache menu exists, delete it first.
 		else {
 			deleteUI $gRenderingMenus[$menuIndex];
-			$gRenderingMenus[$menuIndex] = `menu -l "*Vertex Cache" -aob true -to true particleCacheMenus`;
+			$gRenderingMenus[$menuIndex] = `menu -l "*Particle Cache" -aob true -to true particleCacheMenus`;
 		}
 		//particleCacheAppendMenuItems;
 	}
@@ -61,13 +61,14 @@ global proc particleCacheMakeMenus()
 global proc particleCacheAppendMenuItems()
 {
 	menuItem -l "Particle Cache Parameters" -subMenu true;
-		menuItem -l (`workspace -q -fn`+"/data/")  mcf_sf_path;
+        	menuItem -l "$OBJNAME" pcf_sf_name;
+		menuItem -l (`workspace -q -fn`+"/data/")  pcf_sf_path;
 		menuItem -l "world space" -cb 1 pcf_sf_ws;
 	setParent -menu ..;
 	menuItem -divider true;
-	menuItem -l "Save MCF Particle Cache" -c "openExportParticleCacheWin";
+	menuItem -l "Save PCF Particle Cache" -c "openExportParticleCacheWin";
 	menuItem -divider true;
-	menuItem -l "Load MCF Particle Cache" -c "openImportParticleCacheWin";
+	menuItem -l "Load PCF Particle Cache" -c "openImportParticleCacheWin";
 	menuItem -divider true;
 	menuItem -l "Save Scene" -c "openSaveXMLSceneWin";
 	menuItem -divider true;
@@ -107,6 +108,26 @@ global proc doExportParticleCache()
 	else {
 		exportParticleCacheSingleFrame;
 	}
+}
+
+global proc exportParticleCacheSingleFrame()
+{
+	string $cmd;
+
+	if ( `checkBox -q -v exportParticleCacheUseName` && `textFieldGrp -q -text exportParticleCacheName` != "" ) {
+		if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
+			$cmd = "pMapCmd -w `checkBox -q -v exportParticleCacheWorld`";
+		else 
+			$cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -w `checkBox -q -v exportParticleCacheWorld`";
+	}
+	else {
+		if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
+			$cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -w `checkBox -q -v exportParticleCacheWorld`";
+		else
+			$cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -w `checkBox -q -v exportParticleCacheWorld`";
+	}
+	
+	eval($cmd);
 }
 
 global proc openExportParticleCacheWin()
@@ -162,6 +183,32 @@ formLayout -edit
 showWindow exportParticleCacheWin;
 
 }
+
+global proc int setParticleCachePath(string $path, string $type)
+{
+	textFieldButtonGrp -e -text $path exportParticleCachePath;
+	pcf_updateCacheName;
+	return true;
+}
+
+global proc pcf_updateCacheName()
+{
+	if(!`checkBox -q -v exportParticleCacheUseName`)
+		menuItem -e -l (`textFieldGrp -q -text exportParticleCacheName`) pcf_sf_name;
+	else
+		menuItem -e -l "$OBJNAME" pcf_sf_name;
+		
+	if(`textFieldButtonGrp -q -text exportParticleCachePath` != "" )
+		menuItem -e -l (`textFieldButtonGrp -q -text exportParticleCachePath`) pcf_sf_path;
+	else
+		menuItem -e -l (`workspace -q -rd`+"data/") pcf_sf_path;
+		
+	if( `checkBox -q -v exportParticleCacheWorld` )
+		menuItem -e -cb 1 pcf_sf_ws;
+	else
+		menuItem -e -cb 0 pcf_sf_ws;
+}
+
 
 global proc openImportParticleCacheWin()
 {
@@ -219,9 +266,9 @@ string $path = `textFieldGrp -q -text importParticleCachePath`;
 string $buffer[];
 $numTokens = `tokenize $path "." $buffer`;
 
-string $node = `createNode particleCacheNode`;
-string $shape = `createNode particle`;
-connectAttr -f ($node + ".outParticle") ($shape + ".inParticle");
+string $node = `createNode pMapLocator`;
+string $shape = `createNode mesh`;
+connectAttr -f ($node + ".aoutval") ($shape + ".inMesh");
 sets -e -forceElement initialShadingGroup $shape;
 setAttr -type "string" ($node + ".cachePath") $buffer[0];
 
@@ -235,6 +282,12 @@ setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importParticleCacheRange`;
 setAttr ( $node + ".frameStep") `intFieldGrp -q -v1 importParticleCacheStep`;
 }
 
+global proc string findImportParticleCachePath()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"*.dat")`;
+	return $path;
+}
 
 global proc openImportXMLSceneCacheWin()
 {
