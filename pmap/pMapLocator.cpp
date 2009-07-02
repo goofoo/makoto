@@ -33,7 +33,7 @@ MObject     pMapLocator::input;
 MObject     pMapLocator::aoutval;
 
 pMapLocator::pMapLocator() :raw_data(0),num_raw_data(0),tree(0){}
-pMapLocator::~pMapLocator() {if(tree) delete tree;}
+pMapLocator::~pMapLocator() {if(tree) tree->DeleteTree();}
 
 MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 //
@@ -70,7 +70,7 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		}
 		
 		infile.read((char*)&num_raw_data,sizeof(unsigned));
-	    if(raw_data) delete raw_data;
+	    if(raw_data) delete[] raw_data;
 	    raw_data = new XYZ[num_raw_data];
 	    for(unsigned int i = 0;i<num_raw_data;i++)
 		{
@@ -86,7 +86,7 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		XYZ rootCenter;
 	    float rootSize;
 	    OcTree::getBBox(raw_data, num_raw_data, rootCenter, rootSize);
-	    if(tree) delete tree;
+	    if(tree) tree->DeleteTree();
 	    tree = new OcTree();
 	    tree->construct(raw_data, num_raw_data, rootCenter, rootSize,3);
 	}
