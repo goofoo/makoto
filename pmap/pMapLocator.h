@@ -1,5 +1,5 @@
-#ifndef _particlePositionNode
-#define _particlePositionNode
+#ifndef _pMapLocator
+#define _pMapLocator
 //
 // Copyright (C) YiLi
 // 
@@ -14,10 +14,11 @@
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MTypeId.h> 
 #include <maya/MPointArray.h>
+#include <maya/MVectorArray.h>
 #include <maya/MPoint.h>
 #include <maya/MFndagNode.h>
-#include ".\OcTree.h"
-
+#include "../shared/OcTree.h"
+#include "../shared/zData.h"
  
 class pMapLocator : public MPxLocatorNode
 {
@@ -37,11 +38,22 @@ public:
 
 public:
 
-	static	MTypeId		id;
-	static  MObject     alevel;
+	static  	MTypeId		id;
+	static  	MObject		alevel;
+	static  	MObject		input;
+	static  	MObject		frame;
+	static  	MObject 	aminframe;
+	static  	MObject 	amaxframe;
+	static  	MObject 	aframestep;
+	static      MObject     aoutval;
+	double      m_time;
 private:
-	bool    loadParticlePosition() const;
-	void    draw();
+	XYZ* raw_data;
+	XYZ* raw_area_data;
+	int num_raw_area_data;
+	unsigned num_raw_data;
+	OcTree* tree;
+	XYZ *particle;
 };
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef _particlePositionCmd
-#define _particlePositionCmd
+#ifndef _pMapCmd
+#define _pMapCmd
 //
 // Copyright (C) YiLi
 // 
@@ -32,7 +32,7 @@
 #include <maya/MTime.h>
 #include <iostream>
 #include <fstream>
-#include "E:\git_home\shared\zData.h"
+//#include "../shared/zData.h"
 
 
 //char        *filename;
@@ -47,7 +47,6 @@ public:
 
 	MStatus		doIt( const MArgList& );
 	static MSyntax newSyntax();
-	MStatus	writeMesh(const char* filename, MDagPath meshDag, const MObject& meshObj);
 	MStatus		redoIt();
 	MStatus		undoIt();
 	bool		isUndoable() const;
@@ -57,7 +56,6 @@ private:
 	// Store the data you will need to undo the command here
 	//
 	MDagPath fDagPath;
-	MPointArray pointArray;
 	MObject particleNode;
 	MStatus parseArgs ( const MArgList& args );
 	bool worldSpace;

@@ -25,7 +25,7 @@ MStatus initializePlugin( MObject obj )
 	MStatus   status;
 	MFnPlugin plugin( obj, "YiLi", "7.0", "Any");
 
-	status = plugin.registerCommand( "pMapCmd", pMapCmd::creator );
+	status = plugin.registerCommand( "pMapCmd", pMapCmd::creator,pMapCmd::newSyntax );
 	if (!status) {
 		status.perror("registerCommand");
 		return status;
@@ -37,7 +37,8 @@ MStatus initializePlugin( MObject obj )
 		status.perror("registerCommand");
 		return status;
 	}
-        return status;
+
+   MGlobal::executeCommand ( "source particleCacheMenus.mel;particleCacheMakeMenus;" );
 
 	return status;
 }
@@ -66,7 +67,7 @@ MStatus uninitializePlugin( MObject obj )
 		status.perror("deregisterNode");
 		return status;
 	}
-
+    MGlobal::executeCommand ( "particleCacheRemoveMenus;" );
 
 	return status;
 }

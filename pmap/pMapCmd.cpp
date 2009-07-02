@@ -81,7 +81,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
     char filename[512];
 	if(argData.isFlagSet("-sg")) sprintf( filename, "%s/%s.dat", cache_path.asChar(), cache_name.asChar() );
-		else sprintf( filename, "%s/%s_%d.dat", cache_path.asChar(), cache_name.asChar(), frame );
+		else sprintf( filename, "%s/%s.%d.dat", cache_path.asChar(), cache_name.asChar(), frame );
 	MObject component;
 
 	if (list.isDone()) {
@@ -89,7 +89,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 		return MS::kFailure;
 	}
     
-	unsigned int sum = 0;
+	unsigned sum = 0;
     ofstream outfile;
 	outfile.open(filename,ios_base::out | ios_base::binary );
 	if(!outfile.is_open())
@@ -103,11 +103,10 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MFnParticleSystem ps( fDagPath );
 		sum += ps.count();
 	}
-	outfile.write((char*)&sum,sizeof(int));
+	outfile.write((char*)&sum,sizeof(unsigned));
 	outfile.close();
 	list.reset();
 
-	pointArray.clear();
 	for(;!list.isDone();list.next()){
 		list.getDagPath (fDagPath, component);
 	    MFnParticleSystem ps( fDagPath );

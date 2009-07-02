@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "particlePositionCmd", "pMap.vcproj", "{D498A1F8-B5FF-41A6-9B55-3039543BBC26}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pMap", "pMap.vcproj", "{EF8952FF-D99E-4478-8898-CB69E87694A0}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -9,10 +9,10 @@ Global
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
-		{D498A1F8-B5FF-41A6-9B55-3039543BBC26}.Debug.ActiveCfg = Debug|Win32
-		{D498A1F8-B5FF-41A6-9B55-3039543BBC26}.Debug.Build.0 = Debug|Win32
-		{D498A1F8-B5FF-41A6-9B55-3039543BBC26}.Release.ActiveCfg = Release|Win32
-		{D498A1F8-B5FF-41A6-9B55-3039543BBC26}.Release.Build.0 = Release|Win32
+		{EF8952FF-D99E-4478-8898-CB69E87694A0}.Debug.ActiveCfg = Debug|Win32
+		{EF8952FF-D99E-4478-8898-CB69E87694A0}.Debug.Build.0 = Debug|Win32
+		{EF8952FF-D99E-4478-8898-CB69E87694A0}.Release.ActiveCfg = Release|Win32
+		{EF8952FF-D99E-4478-8898-CB69E87694A0}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
