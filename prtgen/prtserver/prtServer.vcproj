@@ -206,6 +206,9 @@
 			RelativePath="..\..\shared\FColorSet.cpp">
 		</File>
 		<File
+			RelativePath="..\..\shared\FFloatSet.cpp">
+		</File>
+		<File
 			RelativePath="..\..\sh_lighting\FQSPLAT.cpp">
 		</File>
 		<File

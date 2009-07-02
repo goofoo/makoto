@@ -383,7 +383,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 8 && ap.cone > MIN_CONE)
+	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -457,7 +457,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 8 && ap.cone > MIN_CONE)
+	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -531,7 +531,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 8 && ap.cone > MIN_CONE)
+	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -608,7 +608,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 8 && ap.cone > MIN_CONE)
+	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
