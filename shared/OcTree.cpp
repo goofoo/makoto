@@ -21,7 +21,7 @@ OcTree::OcTree():root(0)
 
 OcTree::~OcTree()
 {
-	if(root) delete root;
+	if(root) DeleteTree();
 }
 
 void OcTree::construct(XYZ* data, const int num_data, const XYZ& center, const float size,short level)
@@ -607,4 +607,32 @@ char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
 	
 	return 1;
 }
+
+void OcTree::DeleteTree()
+{
+	if(root==NULL)	return;
+	DeleteTree(root);
+}
+
+void OcTree::DeleteTree(TreeNode *root)
+{
+	if(root->child000!=NULL)
+		DeleteTree(root->child000);
+	if(root->child001!=NULL)
+		DeleteTree(root->child001);
+	if(root->child010!=NULL)
+		DeleteTree(root->child010);
+	if(root->child011!=NULL)
+		DeleteTree(root->child011);
+	if(root->child100!=NULL)
+		DeleteTree(root->child100);
+	if(root->child101!=NULL)
+		DeleteTree(root->child101);
+	if(root->child110!=NULL)
+		DeleteTree(root->child110);
+	if(root->child111!=NULL)
+		DeleteTree(root->child111);
+	free(root);
+}
+
 //:~
