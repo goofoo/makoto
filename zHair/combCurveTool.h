@@ -103,6 +103,7 @@ private:
 	void dragTip();
 	void scaleAll();
 	void deKink();
+	void dragRoot();
 	void grow();
 	void doCollide(const MPoint& vert, MVector &v);
 };

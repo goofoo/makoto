@@ -41,6 +41,7 @@ floatSliderGrp -label "Segment Noise" -field true
 	
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_free.xpm" -label "free" -c "combCurveSetOpt(1)";
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_tip.xpm" -label "tip" -c "combCurveSetOpt(2)";
+iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_root.xpm" -label "root" -c "combCurveSetOpt(5)";
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_scale.xpm" -label "scale" -c "combCurveSetOpt(3)";
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_kink.xpm" -label "noise" -c "combCurveSetOpt(4)";
 

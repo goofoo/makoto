@@ -231,6 +231,9 @@ MStatus combCurveContext::doDrag( MEvent & event )
 		case 4 :
 			deKink();
 			break;
+		case 5 :
+			dragRoot();
+			break;
 		default:
 			;
 	}
@@ -588,6 +591,73 @@ void combCurveContext::deKink()
 		}
 		fCurve.setCVs (cvs, MSpace::kObject );
 		fCurve.updateCurve();
+	}
+}
+
+void combCurveContext::dragRoot()
+{
+	MPoint toNear, toFar;
+	view.viewToWorld ( last_x, last_y, toNear, toFar );
+	
+	MPoint fromNear, fromFar;
+	view.viewToWorld ( start_x, start_y, fromNear, fromFar );
+	
+	MVector dispNear = toNear - fromNear;
+	MVector dispFar = toFar - fromFar;
+	
+	short vert_x, vert_y;
+	XY cursor(start_x, start_y);
+	
+	MStatus stat;
+	MVector disp;
+	XYZ pp;
+	for(unsigned i=0; i<curveList.length(); i++)
+	{
+		MFnNurbsCurve fCurve(curveList[i]);
+		int numCv = fCurve.numCVs();
+		MPointArray cvs;
+		fCurve.getCVs ( cvs, MSpace::kObject );
+		
+		pp = XYZ(cvs[1].x, cvs[1].y, cvs[1].z);
+		mat.transform(pp);
+		
+		if(pp.z > clipNear)
+		{
+			view.worldToView (cvs[1], vert_x, vert_y);
+					
+			XY pscrn(vert_x, vert_y);
+			float weight = pscrn.distantTo(cursor);
+			weight = 1.f - weight/48.f;
+			
+			if(weight>0)
+			{
+				float* lenbuf = new float[numCv-1];
+				for(unsigned j=0; j<numCv-1; j++) 
+				{
+					disp = cvs[j+1] - cvs[j];
+					lenbuf[j] = disp.length();
+				}
+				
+				disp = dispNear + (dispFar - dispNear)*(pp.z-clipNear)/(clipFar-clipNear);
+				disp *= sqrt(weight);
+				
+				if(goCollide) doCollide(cvs[1], disp);
+				
+				cvs[1] += disp;
+				
+				for(unsigned j=2; j<numCv; j++) {
+					disp = cvs[j] - cvs[j-1];
+					disp.normalize();
+					disp *= lenbuf[j-1];
+					
+					cvs[j] = cvs[j-1] + disp;
+				}
+				
+				delete[] lenbuf;
+			}
+			fCurve.setCVs (cvs, MSpace::kObject );
+			fCurve.updateCurve();
+		}
 	}
 }
 
