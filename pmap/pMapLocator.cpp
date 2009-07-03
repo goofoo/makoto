@@ -53,11 +53,12 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 	    int frmstep = data.inputValue( aframestep ).asInt();
+		int maxlevel =  data.inputValue( alevel ).asInt();
 	
 	    if( time < minfrm ) time = minfrm;
 		
 	    int frame_lo = minfrm + int(time-minfrm)/frmstep*frmstep;
-	    int frame_hi = frame_lo+frmstep;
+	    //int frame_hi = frame_lo+frmstep;
 
 	    char filename[256];
 	    sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
@@ -88,7 +89,7 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    OcTree::getBBox(raw_data, num_raw_data, rootCenter, rootSize);
 	    if(tree) tree->DeleteTree();
 	    tree = new OcTree();
-	    tree->construct(raw_data, num_raw_data, rootCenter, rootSize,3);
+	    tree->construct(raw_data, num_raw_data, rootCenter, rootSize, maxlevel);
 	}
 	
 	return MS::kUnknownParameter;
@@ -118,6 +119,17 @@ MBoundingBox pMapLocator::boundingBox() const
 {
 	MPoint corner1( -1,-1,-1 );
 	MPoint corner2( 1,1,1 );
+	
+	if(tree) {
+		XYZ center; float size;
+		tree->getRootCenterNSize(center, size);
+		corner1.x = center.x -size;
+		corner1.y = center.y -size;
+		corner1.z = center.z -size;
+		corner2.x = center.x +size;
+		corner2.y = center.y +size;
+		corner2.z = center.z +size;
+	}
 
 	return MBoundingBox( corner1, corner2 ); 
 } 
@@ -132,7 +144,7 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	glPointSize(3);
 	if(num_raw_data > 0 && raw_data) {
 		glBegin(GL_POINTS);
-		glColor3f(1,0,0);
+		
 		for(unsigned i=0; i<num_raw_data; i++) {
 			
 			glVertex3f(raw_data[i].x, raw_data[i].y, raw_data[i].z);
@@ -214,6 +226,7 @@ MStatus pMapLocator::initialize()
 	meshAttr.setWritable(false);
 	addAttribute( aoutval );
     
+	attributeAffects( alevel, aoutval );
 	attributeAffects( input, aoutval );
 	attributeAffects( frame, aoutval );
 	attributeAffects( aminframe, aoutval );

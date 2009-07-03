@@ -426,6 +426,14 @@ void OcTree::draw(const TreeNode *node)
 	}
 }
 
+void OcTree::getRootCenterNSize(XYZ& center, float&size) const
+{
+	if(root) {
+		center = root->center;
+		size = root->size;
+	}
+}
+
 void OcTree::getBBox(const XYZ *data, const int num_data, XYZ& center, float& size)
 {
 	XYZ bbmin(10000000);

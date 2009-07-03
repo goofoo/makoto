@@ -40,6 +40,7 @@ public:
 	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void draw(const TreeNode *node);
+	void getRootCenterNSize(XYZ& center, float&size) const;
 
 	static void quick_sortX(XYZ array[],int first,int last);
 	static void quick_sortY(XYZ array[],int first,int last);
