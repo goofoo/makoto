@@ -460,25 +460,27 @@ columnLayout -adjustableColumn true;
 			string $scrollLayout = `scrollLayout
         -horizontalScrollBarThickness 16
         -verticalScrollBarThickness   16 -height 120`;
-                columnLayout;
+				rowColumnLayout -numberOfColumns 2  -columnWidth 1 20 -columnWidth 2 120;
 					string $nucs[] = `ls -type nucleus`;
 					string $an;
-					for($an in $nucs) button -l $an -c ("zhair_parse_nuc " + $an);
+					for($an in $nucs) {
+						checkBox -v `getAttr ($an+".enable")` -cc ("zhair_toggleattr " + $an+".enable");
+						button -l $an -c ("zhair_parse_nuc " + $an);
+					}
                     setParent ..;
                 setParent ..;
 			setParent ..;
 			
             frameLayout -label "Actives" -labelAlign "center" -borderStyle "out";
 			scrollLayout -horizontalScrollBarThickness 16 -verticalScrollBarThickness 16 -height 120;
-                columnLayout zhair_colm_active;
-                    
+                rowColumnLayout -numberOfColumns 2  -columnWidth 1 20 -columnWidth 2 120 zhair_colm_active;    
                     setParent ..;
                 setParent ..;
 			setParent ..;
 			
             frameLayout -label "Passives" -labelAlign "center" -borderStyle "out";
 			scrollLayout -horizontalScrollBarThickness 16 -verticalScrollBarThickness 16 -height 120;
-                columnLayout zhair_colm_passive;
+                rowColumnLayout -numberOfColumns 2  -columnWidth 1 20 -columnWidth 2 120 zhair_colm_passive;
                     
                     setParent ..;
                 setParent ..;
@@ -517,24 +519,26 @@ showWindow zhairmodnclothWin;
 
 global proc zhair_parse_nuc(string $solver)
 {
-	string $node[] =`columnLayout -q -childArray zhair_colm_active`;
+	string $node[] =`rowColumnLayout -q -childArray zhair_colm_active`;
 	string $an;
 	for($an in $node) {
 		deleteUI $an;
 	}
 	
-	$node =`columnLayout -q -childArray zhair_colm_passive`;
+	$node =`rowColumnLayout -q -childArray zhair_colm_passive`;
 	for($an in $node) {
 		deleteUI $an;
 	}
 	
 	$node =`listConnections -d off -s on -sh on ($solver+".inputActive")`;
 	for($an in $node) {
+		checkBox -p zhair_colm_active -v `getAttr ($an+".isDynamic")` -cc ("zhair_toggleattr " + $an+".isDynamic");
 		button -l $an -p zhair_colm_active -c ("zhair_parse_nucactive "+$an);
 	}
 	
 	$node =`listConnections -d off -s on -sh on ($solver+".inputPassive")`;
 	for($an in $node) {
+		checkBox -p zhair_colm_passive -v `getAttr ($an+".collide")` -cc ("zhair_toggleattr " + $an+".collide");
 		button -l $an -p zhair_colm_passive -c ("zhair_parse_nucpassive "+$an);
 	}
 	
@@ -544,8 +548,7 @@ global proc zhair_parse_nuc(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
-	attrControlGrp -attribute ($solver+".enable");
-	attrFieldSliderGrp -columnWidth 1 120 -min 0.0 -max 64.0 -at ($solver+".windSpeed");
+	attrControlGrp -attribute ($solver+".windSpeed");
 	attrFieldSliderGrp -columnWidth 1 120 -min -1.0 -max 1.0 -at ($solver+".windDirectionX");
 	attrFieldSliderGrp -columnWidth 1 120 -min -1.0 -max 1.0 -at ($solver+".windDirectionY");
 	attrFieldSliderGrp -columnWidth 1 120 -min -1.0 -max 1.0 -at ($solver+".windDirectionZ");
@@ -567,10 +570,15 @@ global proc zhair_parse_nucactive(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
-	attrControlGrp -attribute ($solver+".isDynamic");
 	attrControlGrp -attribute ($solver+".collide");
 	attrControlGrp -attribute ($solver+".selfCollide");
+	attrControlGrp -attribute ($solver+".pointMass");
 	attrControlGrp -attribute ($solver+".bendResistance");
+	attrControlGrp -attribute ($solver+".shearResistance");
+	attrControlGrp -attribute ($solver+".damp");
+	attrControlGrp -attribute ($solver+".rigidity");
+	zhair_setup_rgdmap ($solver+".rigidityMap");
+	button -l "Edit Rigid Map" -c ("zhair_ae_rgdmap " + $solver+".rigidityMap");
 	attrControlGrp -attribute ($solver+".maxIterations");
 	
 	setParent ..;
@@ -587,9 +595,80 @@ global proc zhair_parse_nucpassive(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
-	attrControlGrp -attribute ($solver+".collide");
 	
 	setParent ..;
 	
 	frameLayout -e -l $solver zhair_frm_dynattr;
+}
+
+global proc zhair_toggleattr(string $attr)
+{
+	if(`getAttr $attr`) setAttr $attr 0;
+	else setAttr $attr 1;
+}
+
+global proc zhair_setup_rgdmap (string $attr)
+{
+	optionMenuGrp -label "Rigid Map" -columnWidth 2 160 -cc ("zh_mod_rdgmap "+$attr) zh_rdgmapopt;
+	menuItem -label "none";
+	menuItem -label "attach new";
+	string $ramps[] = `ls -type ramp`;
+	if(size($ramps) < 1) {
+		
+	}
+	else {
+		string $an;
+		for($an in $ramps) {
+			menuItem -label $an;
+		}
+	}
+	
+	string $conn[] = `listConnections $attr`;
+	if(size($conn)<1) optionMenuGrp -e -select 1 zh_rdgmapopt;
+	else {
+		int $i;
+		for($i=0; $i<size($ramps); $i++) {
+			if($ramps[$i] == $conn[0]) optionMenuGrp -e -select (3+$i) zh_rdgmapopt;
+		}
+	}
+}
+
+global proc zh_mod_rdgmap(string $attr)
+{
+	int $hdl = `optionMenuGrp -q -select zh_rdgmapopt`;
+	if($hdl == 1) {
+		string $conn[] = `listConnections -p 1 $attr`;
+		if(size($conn)>0) disconnectAttr $conn[0] $attr;
+	}
+	else if($hdl==2) {
+		string $tx = `shadingNode -asTexture ramp`;
+		string $pl = `shadingNode -asUtility place2dTexture`;
+		connectAttr ($pl+".outUV") ($tx+".uv");
+		connectAttr ($pl+".outUvFilterSize") ($tx+".uvFilterSize");
+		removeMultiInstance -break true ($tx+".colorEntryList[2]");
+		setAttr ($tx+".colorEntryList[0].position") 0.05;
+		setAttr ($tx+".colorEntryList[0].color") -type double3 1 1 1 ;
+		setAttr ($tx+".colorEntryList[1].position") 0.95;
+		setAttr ($tx+".colorEntryList[1].color") -type double3 0 0 0 ;
+
+		connectAttr -force ($tx+".outAlpha") $attr;
+		
+		string $buffer[];
+		$numTokens = `tokenize $attr "." $buffer`;
+		zhair_parse_nucactive($buffer[0]);
+	}
+	else {
+		string $ramps[] = `ls -type ramp`;
+		connectAttr -force ($ramps[$hdl-3]+".outAlpha") $attr;
+	}
+}
+
+global proc zhair_ae_rgdmap(string $attr)
+{
+	string $conn[] = `listConnections $attr`;
+	if(size($conn)>0) {
+		select -r $conn[0];
+		print($conn[0]);
+		AttributeEditor;
+	}
 }
