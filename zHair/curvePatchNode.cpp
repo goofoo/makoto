@@ -11,7 +11,7 @@ MObject curvePatchNode::atwist;
 MObject curvePatchNode::aoutput;
 MObject curvePatchNode::agrowth;
 MObject curvePatchNode::aguide;
-MObject curvePatchNode::abinormal;
+MObject curvePatchNode::arotate;
 
 curvePatchNode::curvePatchNode()
 {
@@ -30,7 +30,7 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		float width = data.inputValue(aSize).asFloat();
 		float twist = data.inputValue(atwist).asFloat();
-		int isBinormal = data.inputValue(abinormal).asInt();
+		float rotate = data.inputValue(arotate).asFloat();
 		
 		MFnMesh fbase(ogrow, &status);
 		if(!status)
@@ -90,11 +90,16 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 			//MVector tangent = closestn^dir;
 			tangent.normalize();
 			
-			if(isBinormal == 1) {
+			if(rotate != 0) {
 				MVector nn;
 				fbase.getPolygonNormal (closestPolygonID, nn, MSpace::kObject );
 				nn.normalize();
-				tangent = nn^tangent;
+				XYZ ax(nn.x, nn.y, nn.z);
+				XYZ vt(tangent.x, tangent.y, tangent.z);
+				vt.rotateAroundAxis(ax, rotate);
+				tangent.x = vt.x;
+				tangent.y = vt.y;
+				tangent.z = vt.z;
 			}
 			
 			for(unsigned j = 0;j <= num_seg;j++)
@@ -165,19 +170,19 @@ MStatus curvePatchNode::initialize()
     CHECK_MSTATUS( numAttr.setMin(0.f));
 	addAttribute(aSize);
 	
+	arotate = numAttr.create("rotate", "rot",
+						  MFnNumericData::kFloat, 0, &status);
+    CHECK_MSTATUS( status );
+    CHECK_MSTATUS( numAttr.setStorable(true));
+    CHECK_MSTATUS( numAttr.setKeyable(true));
+	addAttribute(arotate);
+	
 	atwist = numAttr.create("twist", "tw",
 						  MFnNumericData::kFloat, 0.f, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( numAttr.setStorable(true));
     CHECK_MSTATUS( numAttr.setKeyable(true));
 	addAttribute(atwist);
-	
-	abinormal = numAttr.create("useBinormal", "ub",
-						  MFnNumericData::kLong, 0, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
-	addAttribute(abinormal);
 	
 	zCheckStatus(zWorks::createTypedAttr(aoutput, MString("outMesh"), MString("om"), MFnData::kMesh), "ERROR creating out mesh");
 	zCheckStatus(addAttribute(aoutput), "ERROR adding out mesh");
@@ -190,7 +195,7 @@ MStatus curvePatchNode::initialize()
 	
 	attributeAffects( aSize, aoutput );
 	attributeAffects( atwist, aoutput );
-	attributeAffects( abinormal, aoutput );
+	attributeAffects( arotate, aoutput );
 	attributeAffects( agrowth, aoutput );
 	attributeAffects( aguide, aoutput );
 	

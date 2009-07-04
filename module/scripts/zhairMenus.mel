@@ -67,10 +67,10 @@ global proc zhairCreateMenus()
 				menuItem -l "1.0" -c "zhair_open_setcreateguideroptwin" zhair_guideroption_strandDist;
 			setParent -menu ..;
 			menuItem -divider true;
+			menuItem -l "Comb Curve Tool" -c "zhair_comb";
+			menuItem -divider true;
 			menuItem -l "Create Guider Mesh" -c "zhair_do_mesh_guider";
 			menuItem -l "Recover Guider Curve" -c "ZHairGuider -cp 1";
-			menuItem -divider true;
-			menuItem -l "Comb Guider Curve" -c "zhair_comb";
 			menuItem -divider true;
 			menuItem -l "Modify Dynamic" -c "zhair_mod_dyn";
 			menuItem -divider true;
@@ -121,7 +121,7 @@ global proc zhair_do_mesh_guider()
 		connectAttr -f ($curve[0]+".worldSpace[0]") ($map+".guideMesh["+$acc+"]");
 		
 		$acc++;
-		if($acc==14) $acc =0;
+		if($acc==1) $acc =0;
 	}
 }
 

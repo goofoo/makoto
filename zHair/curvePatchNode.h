@@ -34,7 +34,7 @@ public:
 // Attributes
 	static MObject  aSize;
 	static MObject  atwist;
-	static MObject  abinormal;
+	static MObject  arotate;
 	static MObject agrowth;
 	static MObject aguide;
 	static MObject aoutput;
