@@ -29,10 +29,11 @@ void OcTree::construct(PosAndId* data, const int num_data, const XYZ& center, co
 	release();
 	root = new TreeNode();
 	max_level = level;
-	create(root, data, 0, num_data-1, center, size, 0);
+	num_voxel = 0;
+	create(root, data, 0, num_data-1, center, size, 0, num_voxel);
 }
 
-void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level)
+void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count)
 {
 //zDisplayFloat2(low, high);
 	
@@ -43,11 +44,9 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 	node->size = size;
 	getMean(data, low, high, node->mean);
 	//node->isNull = 0;
+	count++;
+	if(level == max_level ) return;
 
-	if(level == max_level ) {
-		//node->isNull = 1;
-		return;
-	}
 	level++;
 	float halfsize = size/2;
 	XYZ acen;
@@ -80,7 +79,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child000 = new TreeNode();
 			acen = center + XYZ(-halfsize, -halfsize, -halfsize);
-			create(node->child000,data,low,zindex1-1,acen,halfsize,level);
+			create(node->child000,data,low,zindex1-1,acen,halfsize,level, count);
 		}
 		else node->child000 = NULL;
 
@@ -88,7 +87,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child001 = new TreeNode();
 			acen = center + XYZ(-halfsize, -halfsize, halfsize);
-			create(node->child001,data,zindex1,yindex1-1,acen,halfsize,level);
+			create(node->child001,data,zindex1,yindex1-1,acen,halfsize,level, count);
 		}
 		else node->child001 = NULL;
 
@@ -96,7 +95,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child010 = new TreeNode();
 			acen = center + XYZ(-halfsize, halfsize, -halfsize);
-			create(node->child010,data,yindex1,zindex2-1,acen,halfsize,level);
+			create(node->child010,data,yindex1,zindex2-1,acen,halfsize,level, count);
 		}
 		else node->child010 = NULL;
 
@@ -104,7 +103,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child011 = new TreeNode();
 			acen = center + XYZ(-halfsize, halfsize, halfsize);
-			create(node->child011,data,zindex2,xindex-1,acen,halfsize,level);
+			create(node->child011,data,zindex2,xindex-1,acen,halfsize,level, count);
 		}
 		else node->child011 = NULL;
 
@@ -112,7 +111,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child100 = new TreeNode();
 			acen = center + XYZ(halfsize, -halfsize, -halfsize);
-			create(node->child100,data,xindex,zindex3-1,acen,halfsize,level);
+			create(node->child100,data,xindex,zindex3-1,acen,halfsize,level, count);
 		}
 		else node->child100 = NULL;
 
@@ -120,7 +119,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child101 = new TreeNode();
 			acen = center + XYZ(halfsize, -halfsize, halfsize);
-			create(node->child101,data,zindex3,yindex2-1,acen,halfsize,level);
+			create(node->child101,data,zindex3,yindex2-1,acen,halfsize,level, count);
 		}
 		else node->child101 = NULL;
 
@@ -128,7 +127,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child110 = new TreeNode();
 			acen = center + XYZ(halfsize, halfsize, -halfsize);
-			create(node->child110,data,yindex2,zindex4-1,acen,halfsize,level);
+			create(node->child110,data,yindex2,zindex4-1,acen,halfsize,level, count);
 		}
 		else node->child110 = NULL;
 
@@ -136,7 +135,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 		{
 			node->child111 = new TreeNode();
 			acen = center + XYZ(halfsize, halfsize, halfsize);
-			create(node->child111,data,zindex4,high,acen,halfsize,level);
+			create(node->child111,data,zindex4,high,acen,halfsize,level, count);
 		}
 		else node->child111 = NULL;
 

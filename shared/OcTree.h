@@ -33,8 +33,9 @@ public:
 	void release();
 	void release(TreeNode *node);
 	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
+	unsigned getNumVoxel() const {return num_voxel;}
 	void draw();
-	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level);
+	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void draw(const TreeNode *node);
@@ -51,4 +52,5 @@ public:
 private:
 	TreeNode *root;
 	short max_level;
+	unsigned num_voxel;
 };

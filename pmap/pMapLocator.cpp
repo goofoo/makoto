@@ -102,6 +102,7 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		}
 	    tree->construct(buf, num_raw_data, rootCenter, rootSize, maxlevel);
 		delete[] buf;
+		MGlobal::displayInfo(MString("num voxel: ")+tree->getNumVoxel());
 	}
 	
 	return MS::kUnknownParameter;
