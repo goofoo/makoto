@@ -2,21 +2,18 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include "zData.h"
+#include "QuickSort.h"
 using namespace std;
 
 struct TreeNode
 {
 
 	TreeNode():child000(0),child001(0),child010(0),child011(0),
-		      child100(0),child101(0),child110(0),child111(0),isNull(1) {}
-	
-	
-	int begin,end;
-	XYZ center;
-	float size;
-	char isNull;
+		      child100(0),child101(0),child110(0),child111(0)/*,isNull(1)*/ {}
 
+	unsigned low, high;
+	XYZ center, mean;
+	float size;
 	
 	TreeNode *child000;
 	TreeNode *child001;
@@ -33,26 +30,25 @@ class OcTree
 public:
 	OcTree();
 	~OcTree();
-	
-	void construct(XYZ* data, const int num_data, const XYZ& center, const float size,short level);
+	void release();
+	void release(TreeNode *node);
+	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
 	void draw();
-	void create(TreeNode *node, XYZ* data, int low, int high, const XYZ& center, const float size, short level);
+	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level);
 	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void draw(const TreeNode *node);
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	static void quick_sortX(XYZ array[],int first,int last);
-	static void quick_sortY(XYZ array[],int first,int last);
-	static void quick_sortZ(XYZ array[],int first,int last);
 	static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void getBBox(const XYZ *data, const int num_data, XYZ& center, float& size);
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
-	void DeleteTree();
-	void DeleteTree(TreeNode *root);
+	static void getMean(const PosAndId *data, const int low, const int high, XYZ& center);
+	
 	int acount;
 private:
 	TreeNode *root;
+	short max_level;
 };

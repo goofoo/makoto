@@ -14,6 +14,7 @@
 		7F901A300FFEA25100965E98 /* pMapCmd.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F901A2C0FFEA25100965E98 /* pMapCmd.h */; };
 		7F901A310FFEA25100965E98 /* pMapLocator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F901A2D0FFEA25100965E98 /* pMapLocator.cpp */; };
 		7F901A320FFEA25100965E98 /* pMapLocator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F901A2E0FFEA25100965E98 /* pMapLocator.h */; };
+		7F901AC210011C5500965E98 /* QuickSort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F901AC110011C5500965E98 /* QuickSort.cpp */; };
 		7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */; };
 		7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA90FB61FAC00187112 /* zWorks.cpp */; };
 /* End PBXBuildFile section */
@@ -27,6 +28,7 @@
 		7F901A2D0FFEA25100965E98 /* pMapLocator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pMapLocator.cpp; sourceTree = "<group>"; };
 		7F901A2E0FFEA25100965E98 /* pMapLocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pMapLocator.h; sourceTree = "<group>"; };
 		7F901A3C0FFEA35A00965E98 /* particleCacheMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = particleCacheMenus.mel; path = ../module/scripts/particleCacheMenus.mel; sourceTree = SOURCE_ROOT; };
+		7F901AC110011C5500965E98 /* QuickSort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickSort.cpp; path = ../shared/QuickSort.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
 		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* ParticleMap.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ParticleMap.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -57,6 +59,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F901AC110011C5500965E98 /* QuickSort.cpp */,
 				7F901A2B0FFEA25100965E98 /* pMapCmd.cpp */,
 				7F901A2C0FFEA25100965E98 /* pMapCmd.h */,
 				7F901A2D0FFEA25100965E98 /* pMapLocator.cpp */,
@@ -154,6 +157,7 @@
 				7F74D47A0FEE04B30084B9DD /* OcTree.cpp in Sources */,
 				7F901A2F0FFEA25100965E98 /* pMapCmd.cpp in Sources */,
 				7F901A310FFEA25100965E98 /* pMapLocator.cpp in Sources */,
+				7F901AC210011C5500965E98 /* QuickSort.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

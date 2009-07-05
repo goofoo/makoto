@@ -21,60 +21,60 @@ OcTree::OcTree():root(0)
 
 OcTree::~OcTree()
 {
-	if(root) DeleteTree();
+	release();
 }
 
-void OcTree::construct(XYZ* data, const int num_data, const XYZ& center, const float size,short level)
+void OcTree::construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level)
 {
-	if(root) delete root; 
+	release();
 	root = new TreeNode();
-	create(root, data, 0, num_data-1, center, size, level);
+	max_level = level;
+	create(root, data, 0, num_data-1, center, size, 0);
 }
 
-void OcTree::create(TreeNode *node, XYZ* data, int low, int high, const XYZ& center, const float size, short level)
+void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level)
 {
 //zDisplayFloat2(low, high);
 	
-	//if(high == low) if(!isInBox(data[low], center, size)) return;
-	
-	node->begin = low;
-	node->end = high;
+	//if(high == low) if(!isInBox(data[low], center, size)) return; 
+	node->low = low;
+	node->high = high;
 	node->center = center;
 	node->size = size;
-	node->isNull = 0;
+	getMean(data, low, high, node->mean);
+	//node->isNull = 0;
 
-	if(level == 0 ) 
-	{
-		node->isNull = 1;
+	if(level == max_level ) {
+		//node->isNull = 1;
 		return;
 	}
-	level -= 1;
+	level++;
 	float halfsize = size/2;
 	XYZ acen;
 	
 	
 	int xindex,yindex1,yindex2,zindex1,zindex2,zindex3,zindex4;	
 
-		quick_sortX(data,low,high);
-		for( xindex = low; (data[xindex].x < center.x)&&(xindex<=high);xindex++ );
+		QuickSort::sortX(data,low,high);
+		for( xindex = low; (data[xindex].pos.x < center.x)&&(xindex<=high);xindex++ );
 
-		quick_sortY(data,low,xindex-1);
-		for( yindex1 = low; (data[yindex1].y < center.y)&&(yindex1<=xindex-1);yindex1++ );
+		QuickSort::sortY(data,low,xindex-1);
+		for( yindex1 = low; (data[yindex1].pos.y < center.y)&&(yindex1<=xindex-1);yindex1++ );
 
-		quick_sortY(data,xindex,high);
-		for( yindex2 = xindex; (data[yindex2].y < center.y)&&(yindex2<=high);yindex2++ );
+		QuickSort::sortY(data,xindex,high);
+		for( yindex2 = xindex; (data[yindex2].pos.y < center.y)&&(yindex2<=high);yindex2++ );
        
-		quick_sortZ(data,low,yindex1-1);
-		for( zindex1 = low; (data[zindex1].z < center.z)&&(zindex1<=yindex1-1);zindex1++ );
+		QuickSort::sortZ(data,low,yindex1-1);
+		for( zindex1 = low; (data[zindex1].pos.z < center.z)&&(zindex1<=yindex1-1);zindex1++ );
 
-		quick_sortZ(data,yindex1,xindex-1);
-		for( zindex2 = yindex1; (data[zindex2].z < center.z)&&(zindex2<=xindex-1);zindex2++ );
+		QuickSort::sortZ(data,yindex1,xindex-1);
+		for( zindex2 = yindex1; (data[zindex2].pos.z < center.z)&&(zindex2<=xindex-1);zindex2++ );
 
-		quick_sortZ(data,xindex,yindex2-1);
-		for( zindex3 = xindex; (data[zindex3].z < center.z)&&(zindex3<=yindex2-1);zindex3++ );
+		QuickSort::sortZ(data,xindex,yindex2-1);
+		for( zindex3 = xindex; (data[zindex3].pos.z < center.z)&&(zindex3<=yindex2-1);zindex3++ );
 
-		quick_sortZ(data,yindex2,high);
-		for( zindex4 = yindex2; (data[zindex4].z < center.z)&&(zindex4<=high);zindex4++ );
+		QuickSort::sortZ(data,yindex2,high);
+		for( zindex4 = yindex2; (data[zindex4].pos.z < center.z)&&(zindex4<=high);zindex4++ );
 	
 		if(low <= zindex1-1)
 		{
@@ -148,7 +148,7 @@ void OcTree::search( XYZ position,float area,XYZ* data,XYZ* &areadata,int count)
 }
 
 void OcTree::search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata,int count)
-{
+{/*
 	if(!node) return;
 	if( node->isNull )
 		for(int i = node->begin;i<=node->end;i++)
@@ -356,7 +356,7 @@ void OcTree::search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &aread
 		else return;
 	}
 	else return;
-
+*/
 /*	
 	if((acount<count)&&(node->isNull == 1 || node->end - node->begin < 8))
 	{
@@ -382,7 +382,7 @@ void OcTree::draw(const TreeNode *node)
 	if(!node) return;
 	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111) {
 		
-		if(node->isNull) {
+		//if(node->isNull) {
 			XYZ cen = node->center;
 			float size = node->size;
 			
@@ -412,7 +412,7 @@ void OcTree::draw(const TreeNode *node)
 			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
 			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-		}
+		//}
 	}
 	else {
 		draw(node->child000);
@@ -526,87 +526,6 @@ void OcTree::splitZ(const XYZ *data, const int low, const int high, const float 
 	else splitZ(data, low, cutat, center, cutat);
 }
 
-void OcTree::quick_sortX(XYZ array[],int first,int last)
-{
-	if(first<last){
-	int low,high;float list_separator;
-	XYZ temp;
-
-	low = first;
-	high = last;
-	list_separator = array[(first+last)/2].x;
-	do
-	{
-		while(array[low].x<list_separator) low++;
-		while(array[high].x>list_separator) high--;
-
-		if(low<=high)
-		{
-			temp = array[low];
-			array[low++] = array[high];
-			array[high--]=temp;
-		}
-	}while(low<=high);
-	if(first<high)
-		quick_sortX(array,first,high);
-	if(low<last)
-		quick_sortX(array,low,last); }
-}
-
-void OcTree::quick_sortY(XYZ array[],int first,int last)
-{
-	if(first<last){
-	int low,high;float list_separator;
-	XYZ temp;
-
-	low = first;
-	high = last;
-	list_separator = array[(first+last)/2].y;
-	do
-	{
-		while(array[low].y<list_separator) low++;
-		while(array[high].y>list_separator) high--;
-
-		if(low<=high)
-		{
-			temp = array[low];
-			array[low++] = array[high];
-			array[high--]=temp;
-		}
-	}while(low<=high);
-	if(first<high)
-		quick_sortY(array,first,high);
-	if(low<last)
-		quick_sortY(array,low,last);}
-}
-
-void OcTree::quick_sortZ(XYZ array[],int first,int last)
-{
-	if(first<last){
-	int low,high;float list_separator;
-	XYZ temp;
-
-	low = first;
-	high = last;
-	list_separator = array[(first+last)/2].z;
-	do
-	{
-		while(array[low].z<list_separator) low++;
-		while(array[high].z>list_separator) high--;
-
-		if(low<=high)
-		{
-			temp = array[low];
-			array[low++] = array[high];
-			array[high--]=temp;
-		}
-	}while(low<=high);
-	if(first<high)
-		quick_sortZ(array,first,high);
-	if(low<last)
-		quick_sortZ(array,low,last);}
-}
-
 char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
 {
 	if(data.x < center.x - size - 0.0001 || data.x > center.x + size + 0.0001) return 0;
@@ -616,31 +535,41 @@ char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
 	return 1;
 }
 
-void OcTree::DeleteTree()
+void OcTree::release()
 {
-	if(root==NULL)	return;
-	DeleteTree(root);
+	if(root) release(root);
 }
 
-void OcTree::DeleteTree(TreeNode *root)
+void OcTree::release(TreeNode *node)
 {
-	if(root->child000!=NULL)
-		DeleteTree(root->child000);
-	if(root->child001!=NULL)
-		DeleteTree(root->child001);
-	if(root->child010!=NULL)
-		DeleteTree(root->child010);
-	if(root->child011!=NULL)
-		DeleteTree(root->child011);
-	if(root->child100!=NULL)
-		DeleteTree(root->child100);
-	if(root->child101!=NULL)
-		DeleteTree(root->child101);
-	if(root->child110!=NULL)
-		DeleteTree(root->child110);
-	if(root->child111!=NULL)
-		DeleteTree(root->child111);
-	free(root);
+	if(!node) return;
+	
+	if(node->child000!=NULL)
+		release(node->child000);
+	if(node->child001!=NULL)
+		release(node->child001);
+	if(node->child010!=NULL)
+		release(node->child010);
+	if(node->child011!=NULL)
+		release(node->child011);
+	if(node->child100!=NULL)
+		release(node->child100);
+	if(node->child101!=NULL)
+		release(node->child101);
+	if(node->child110!=NULL)
+		release(node->child110);
+	if(node->child111!=NULL)
+		release(node->child111);
+
+	delete node;
 }
 
+void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& center)
+{
+	center.x = center.y = center.z = 0.f;
+	
+	for(int i=low; i<=high; i++) center += data[i].pos;
+	
+	center /= float(high - low + 1);
+}
 //:~

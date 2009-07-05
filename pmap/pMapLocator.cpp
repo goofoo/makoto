@@ -32,8 +32,14 @@ MObject     pMapLocator::aminframe;
 MObject     pMapLocator::input;
 MObject     pMapLocator::aoutval;
 
-pMapLocator::pMapLocator() :raw_data(0),num_raw_data(0),tree(0){}
-pMapLocator::~pMapLocator() {if(tree) tree->DeleteTree();}
+pMapLocator::pMapLocator() :raw_data(0),num_raw_data(0),tree(0)
+{
+}
+
+pMapLocator::~pMapLocator() 
+{
+	if(tree) delete tree;
+}
 
 MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 //
@@ -87,9 +93,15 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		XYZ rootCenter;
 	    float rootSize;
 	    OcTree::getBBox(raw_data, num_raw_data, rootCenter, rootSize);
-	    if(tree) tree->DeleteTree();
+	    if(tree) delete tree;
 	    tree = new OcTree();
-	    tree->construct(raw_data, num_raw_data, rootCenter, rootSize, maxlevel);
+		PosAndId *buf = new PosAndId[num_raw_data];
+		for(unsigned i=0; i < num_raw_data; i++) {
+			buf[i].pos = raw_data[i];
+			buf[i].idx = i;
+		}
+	    tree->construct(buf, num_raw_data, rootCenter, rootSize, maxlevel);
+		delete[] buf;
 	}
 	
 	return MS::kUnknownParameter;
@@ -180,7 +192,7 @@ MStatus pMapLocator::initialize()
 	alevel = nAttr.create("alevel","alv",MFnNumericData::kShort );
 	nAttr.setDefault( 4 ); 
 	nAttr.setMin( 0 );
-	nAttr.setMax( 10 );
+	nAttr.setMax( 16 );
     nAttr.setKeyable( true ); 
     nAttr.setReadable( true ); 
     nAttr.setWritable( true ); 
