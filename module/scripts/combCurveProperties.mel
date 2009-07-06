@@ -13,8 +13,6 @@ global proc combCurveProperties ()
 					columnLayout  -adjustableColumn true combCurveOptions;
 						separator -style "none";
 							
-						//radioButtonGrp -numberOfRadioButtons 4
-   // -label "Brush" -labelArray4 "Free" "Tip" "Scale" "Noise" -cc "combCurveSetOpt(`radioButtonGrp -q -sl combCurveOpt`)" combCurveOpt;
 
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_create.xpm" -label "create" -c "combCurveSetOpt(0)";
 
@@ -39,12 +37,16 @@ floatSliderGrp -label "Segment Noise" -field true
 	-cw 1 130
 	-cc "combCurveSetNoise(`floatSliderGrp -q -value combCurveSlider_noise`)" combCurveSlider_noise;
 	
+	 rowColumnLayout -numberOfColumns 3
+        -columnWidth 1 80
+		-columnWidth 2 80
+		-columnWidth 3 80;
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_free.xpm" -label "free" -c "combCurveSetOpt(1)";
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_tip.xpm" -label "tip" -c "combCurveSetOpt(2)";
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_root.xpm" -label "root" -c "combCurveSetOpt(5)";
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_scale.xpm" -label "scale" -c "combCurveSetOpt(3)";
 iconTextButton -style "iconAndTextHorizontal" -image1 "combCurveTool_kink.xpm" -label "noise" -c "combCurveSetOpt(4)";
-
+	setParent ..;
 					setParent ..; // combCurveOptions
 				setParent ..; // combCurveFrame
 			setParent ..; // combCurveTab
