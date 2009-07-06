@@ -185,56 +185,85 @@ void hairMap::draw()
 		guide_spaceinv[bind_data[i].idx[2]].transform(pt[2]);
 		
 		int num_seg = guide_data[bind_data[i].idx[0]].num_seg;
-		for(short j = 0; j< num_seg; j++) 
-		{
-			dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
-			
-			cc = croot + dcolor * j;
-			glColor3f(cc.x, cc.y, cc.z);
-			glVertex3f(ppre.x, ppre.y, ppre.z);
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			/*float keepx = pobj.x;
-			pcur = pobj*(1 - clumping*(j+1)/num_seg);
-			pcur *= noi;
-			pcur.x = keepx;
-			guide_data[bind_data[i].idx[0]].space[j].transform(pcur);*/
-			
-			keepx = pt[0].x;
-			pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
-			pw[0] *= noi;
-			pw[0].x = keepx;
-			guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			keepx = pt[1].x;
-			pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
-			pw[1] *= noi;
-			pw[1].x = keepx;
-			guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			keepx = pt[2].x;
-			pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
-			pw[2] *= noi;
-			pw[2].x = keepx;
-			guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
-			
-			pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
-			dv *= noi;
-			pcur += dv;
-			
-			ddv = pcur - ppre;
-			ddv.normalize();
-			ddv *= dv.length();
+		if(bind_data[i].wei[0] > .99f) {
+			for(short j = 0; j< num_seg; j++) {
+				dv = guide_data[bind_data[i].idx[0]].dispv[j];
+				
+				cc = croot + dcolor * j;
+				glColor3f(cc.x, cc.y, cc.z);
+				glVertex3f(ppre.x, ppre.y, ppre.z);
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				
+				keepx = pt[0].x;
+				pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+				pw[0] *= noi;
+				pw[0].x = keepx;
+				guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+				
+				pcur = pw[0];
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+				dv *= noi;
+				pcur += dv;
+				
+				ddv = pcur - ppre;
+				ddv.normalize();
+				ddv *= dv.length();
 
-			ppre += ddv;
-			
-			cc = croot + dcolor * (j+1);
-			glColor3f(cc.x, cc.y, cc.z);
-			glVertex3f(ppre.x, ppre.y, ppre.z);
+				ppre += ddv;
+				
+				cc = croot + dcolor * (j+1);
+				glColor3f(cc.x, cc.y, cc.z);
+				glVertex3f(ppre.x, ppre.y, ppre.z);
+			}
+		}
+		else {
+			for(short j = 0; j< num_seg; j++) {
+				dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
+				
+				cc = croot + dcolor * j;
+				glColor3f(cc.x, cc.y, cc.z);
+				glVertex3f(ppre.x, ppre.y, ppre.z);
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				
+				keepx = pt[0].x;
+				pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+				pw[0] *= noi;
+				pw[0].x = keepx;
+				guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				keepx = pt[1].x;
+				pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
+				pw[1] *= noi;
+				pw[1].x = keepx;
+				guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				keepx = pt[2].x;
+				pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
+				pw[2] *= noi;
+				pw[2].x = keepx;
+				guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+				
+				pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+				dv *= noi;
+				pcur += dv;
+				
+				ddv = pcur - ppre;
+				ddv.normalize();
+				ddv *= dv.length();
+
+				ppre += ddv;
+				
+				cc = croot + dcolor * (j+1);
+				glColor3f(cc.x, cc.y, cc.z);
+				glVertex3f(ppre.x, ppre.y, ppre.z);
+			}
 		}
 	}
 	glEnd();
