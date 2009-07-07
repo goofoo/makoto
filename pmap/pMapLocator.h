@@ -17,6 +17,9 @@
 #include <maya/MVectorArray.h>
 #include <maya/MPoint.h>
 #include <maya/MFndagNode.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "../shared/OcTree.h"
 #include "../shared/zData.h"
  
@@ -31,7 +34,6 @@ public:
                                 M3dView::DisplayStyle style,M3dView::DisplayStatus status );
     virtual bool          isBounded() const;
     virtual MBoundingBox  boundingBox() const; 
-    
 
 	static  void*		creator();
 	static  MStatus		initialize();
@@ -48,12 +50,9 @@ public:
 	static      MObject     aoutval;
 	double      m_time;
 private:
-	XYZ* raw_data;
-	XYZ* raw_area_data;
-	int num_raw_area_data;
-	unsigned num_raw_data;
+
 	OcTree* tree;
-	XYZ *particle;
+
 };
 
 #endif

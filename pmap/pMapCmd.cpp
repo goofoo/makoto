@@ -71,7 +71,6 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
 	if (argData.isFlagSet("-w")) argData.getFlagArgument("-w", 0, worldSpace);
 
-	//MStatus status;
     MSelectionList slist;
 	MGlobal::getActiveSelectionList( slist );
 	MItSelectionList list( slist, MFn::kParticle, &status );
@@ -88,26 +87,19 @@ MStatus pMapCmd::doIt( const MArgList& args)
 		displayError( "No components selected" );
 		return MS::kFailure;
 	}
-    
-	unsigned sum = 0;
-    ofstream outfile;
-	outfile.open(filename,ios_base::out | ios_base::binary );
-	if(!outfile.is_open())
-	{
-		MGlobal::displayWarning(MString("Cannot open file: ")+filename);
-		return MS::kFailure;
-	}
+
+	unsigned sum = 0,isum = 0;
 	for(;!list.isDone();list.next())
 	{
 		list.getDagPath (fDagPath, component);
 	    MFnParticleSystem ps( fDagPath );
 		sum += ps.count();
 	}
-	outfile.write((char*)&sum,sizeof(unsigned));
-	outfile.close();
+//	if(buf) delete[] buf;
+	PosAndId *buf = new PosAndId[sum];
 	list.reset();
-
-	for(;!list.isDone();list.next()){
+	for(;!list.isDone();list.next())
+	{
 		list.getDagPath (fDagPath, component);
 	    MFnParticleSystem ps( fDagPath );
  
@@ -117,23 +109,30 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MVectorArray positions;
 	    ps.position( positions );
 	    assert( positions.length() == count );
-
-		outfile.open(filename,ios_base::out | ios_base::binary |ios_base::app );
-	    if(!outfile.is_open())
-		{
-			MGlobal::displayWarning(MString("Cannot open file: ")+filename);
-		    return MS::kFailure;
-	    }
-		
-		for(unsigned i=0; i<positions.length(); i++ )
+		for(unsigned i=0; i<positions.length(); i++,isum++ )
 		{
 			MVector p = positions[i];
-			outfile.write((char*)&p[0],sizeof(p[0]));
-			outfile.write((char*)&p[1],sizeof(p[1]));
-			outfile.write((char*)&p[2],sizeof(p[2]));
+			buf[isum].pos.x = p[0];
+			buf[isum].pos.y = p[1];
+			buf[isum].pos.z = p[2];
+			//buf[isum].idx = isum;
 		}
-		outfile.close();
 	}
+
+	XYZ rootCenter;
+	float rootSize;
+    OcTree::getBBox(buf, sum, rootCenter, rootSize);
+	mindist = 0.5;
+	short maxlevel = 0;
+	while(mindist<rootSize)
+	{
+		maxlevel++;
+		mindist*=2;
+	}
+	tree = new OcTree();
+	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
+	tree->saveFile(filename,tree,sum);
+	delete[] buf;
 	return MS::kSuccess;
 }
 
@@ -196,12 +195,13 @@ void* pMapCmd::creator()
 	return new pMapCmd();
 }
 
-pMapCmd::pMapCmd()
+pMapCmd::pMapCmd():tree(0)
 //
 //	Description:
 //		pMapCmd constructor
 //
-{}
+{
+}
 
 pMapCmd::~pMapCmd()
 //
@@ -209,6 +209,7 @@ pMapCmd::~pMapCmd()
 //		pMapCmd destructor
 //
 {
+	if(tree) delete tree;
 }
 
 bool pMapCmd::isUndoable() const
@@ -229,3 +230,4 @@ MStatus pMapCmd::parseArgs( const MArgList& args )
 	MStatus stat = MS::kSuccess;
 	return MS::kSuccess;
 }
+

@@ -433,18 +433,18 @@ void OcTree::getRootCenterNSize(XYZ& center, float&size) const
 	}
 }
 
-void OcTree::getBBox(const XYZ *data, const int num_data, XYZ& center, float& size)
+void OcTree::getBBox(const PosAndId* data, const int num_data, XYZ& center, float& size)
 {
 	XYZ bbmin(10000000);
 	XYZ bbmax(-10000000);
 	
 	for(int i=0; i<num_data; i++) {
-		if(data[i].x < bbmin.x) bbmin.x = data[i].x;
-		if(data[i].y < bbmin.y) bbmin.y = data[i].y;
-		if(data[i].z < bbmin.z) bbmin.z = data[i].z;
-		if(data[i].x > bbmax.x) bbmax.x = data[i].x;
-		if(data[i].y > bbmax.y) bbmax.y = data[i].y;
-		if(data[i].z > bbmax.z) bbmax.z = data[i].z;
+		if(data[i].pos.x < bbmin.x) bbmin.x = data[i].pos.x;
+		if(data[i].pos.y < bbmin.y) bbmin.y = data[i].pos.y;
+		if(data[i].pos.z < bbmin.z) bbmin.z = data[i].pos.z;
+		if(data[i].pos.x > bbmax.x) bbmax.x = data[i].pos.x;
+		if(data[i].pos.y > bbmax.y) bbmax.y = data[i].pos.y;
+		if(data[i].pos.z > bbmax.z) bbmax.z = data[i].pos.z;
 	}
 	
 	center = (bbmin + bbmax)/2;
@@ -570,5 +570,127 @@ void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& c
 	for(int i=low; i<=high; i++) center += data[i].pos;
 	
 	center /= float(high - low + 1);
+}
+
+void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum)
+{
+	outfile.open(filename,ios_base::out | ios_base::binary );
+	if(!outfile.is_open())
+		return ;
+    outfile.write((char*)&sum,sizeof(unsigned));
+	if(sum>0)
+		saveTree(root);
+	outfile.close();
+	release();
+}
+
+void OcTree::saveTree(TreeNode *node)
+{
+	if(!node) return;
+	else
+	{
+		outfile.write((char*)&node->low,sizeof(unsigned));
+		outfile.write((char*)&node->high,sizeof(unsigned));
+		outfile.write((char*)&node->center,sizeof(XYZ));
+		outfile.write((char*)&node->mean,sizeof(XYZ));
+		outfile.write((char*)&node->size,sizeof(float));
+		outfile.write((char*)&node->child000,sizeof(node->child000));
+	    outfile.write((char*)&node->child001,sizeof(node->child001));
+	    outfile.write((char*)&node->child010,sizeof(node->child010));
+	    outfile.write((char*)&node->child011,sizeof(node->child011));
+	    outfile.write((char*)&node->child100,sizeof(node->child100));
+	    outfile.write((char*)&node->child101,sizeof(node->child101));
+	    outfile.write((char*)&node->child110,sizeof(node->child110));
+	    outfile.write((char*)&node->child111,sizeof(node->child111));
+		saveTree(node->child000);
+		saveTree(node->child001);
+		saveTree(node->child010);
+		saveTree(node->child011);
+		saveTree(node->child100);
+		saveTree(node->child101);
+		saveTree(node->child110);
+		saveTree(node->child111);
+	}
+}
+
+void OcTree::loadFile(const char*filename,OcTree* tree)
+{
+	infile.open(filename,ios_base::out | ios_base::binary );
+	if(!infile.is_open())
+		return;
+	unsigned sum;
+	infile.read((char*)&sum,sizeof(unsigned));
+	if(sum>0)
+	{   
+		root = new TreeNode();
+		loadTree(root);
+	}
+	infile.close();
+	cout<<endl;
+}
+void OcTree::loadTree(TreeNode *node)
+{   
+	if(node == NULL) return;
+	infile.read((char*)&node->low,sizeof(unsigned));
+	infile.read((char*)&node->high,sizeof(unsigned));
+	infile.read((char*)&node->center,sizeof(XYZ));
+	infile.read((char*)&node->mean,sizeof(XYZ));
+	infile.read((char*)&node->size,sizeof(float));
+	infile.read((char*)&node->child000,sizeof(node->child000));
+	infile.read((char*)&node->child001,sizeof(node->child001));
+	infile.read((char*)&node->child010,sizeof(node->child010));
+	infile.read((char*)&node->child011,sizeof(node->child011));
+	infile.read((char*)&node->child100,sizeof(node->child100));
+	infile.read((char*)&node->child101,sizeof(node->child101));
+	infile.read((char*)&node->child110,sizeof(node->child110));
+	infile.read((char*)&node->child111,sizeof(node->child111));
+	if(node->child000)
+	{
+		node->child000 = new TreeNode();
+		loadTree(node->child000);
+	}
+	else node->child000 = NULL;
+	if(node->child001)
+	{
+		node->child001 = new TreeNode();
+		loadTree(node->child001);
+	}
+	else node->child001 = NULL;
+	if(node->child010)
+	{
+		node->child010 = new TreeNode();
+		loadTree(node->child010);
+	}
+	else node->child010 = NULL;
+	if(node->child011)
+	{
+		node->child011 = new TreeNode();
+		loadTree(node->child011);
+	}
+	else node->child011 = NULL;
+	if(node->child100)
+	{
+		node->child100 = new TreeNode();
+		loadTree(node->child100);
+	}
+	else node->child100 = NULL;
+	if(node->child101)
+	{
+		node->child101 = new TreeNode();
+		loadTree(node->child101);
+	}
+	else node->child101 = NULL;
+	if(node->child110)
+	{
+		node->child110 = new TreeNode();
+		loadTree(node->child110);
+	}
+	else node->child110 = NULL;
+	if(node->child111)
+	{
+		node->child111 = new TreeNode();
+		loadTree(node->child111);
+	}
+	else node->child111 = NULL;
 }
 //:~
