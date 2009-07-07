@@ -69,12 +69,144 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 266600918;
-			PBXWorkspaceStateSaveDate = 266600918;
+			PBXPerProjectTemplateStateSaveDate = 268644046;
+			PBXWorkspaceStateSaveDate = 268644046;
+		};
+		perUserProjectItems = {
+			7F3032DE10032EDD005BF833 /* PBXBookmark */ = 7F3032DE10032EDD005BF833 /* PBXBookmark */;
+			7F3032E310032EEC005BF833 /* PBXTextBookmark */ = 7F3032E310032EEC005BF833 /* PBXTextBookmark */;
+			7F3032E8100332B8005BF833 /* PBXTextBookmark */ = 7F3032E8100332B8005BF833 /* PBXTextBookmark */;
+			7F3032EB100332B8005BF833 /* PBXTextBookmark */ = 7F3032EB100332B8005BF833 /* PBXTextBookmark */;
+			7F3032ED100332B8005BF833 /* PBXTextBookmark */ = 7F3032ED100332B8005BF833 /* PBXTextBookmark */;
+			7F3032F310033697005BF833 /* PBXTextBookmark */ = 7F3032F310033697005BF833 /* PBXTextBookmark */;
+			7F3032F410033697005BF833 /* PBXTextBookmark */ = 7F3032F410033697005BF833 /* PBXTextBookmark */;
+			7F3032F6100336E3005BF833 /* PBXTextBookmark */ = 7F3032F6100336E3005BF833 /* PBXTextBookmark */;
+			7F3032F7100336E3005BF833 /* PBXTextBookmark */ = 7F3032F7100336E3005BF833 /* PBXTextBookmark */;
+			7F3032F9100337F5005BF833 /* PBXTextBookmark */ = 7F3032F9100337F5005BF833 /* PBXTextBookmark */;
+			7F3032FA100337F5005BF833 /* PBXTextBookmark */ = 7F3032FA100337F5005BF833 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	7F3032DE10032EDD005BF833 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */;
+	};
+	7F3032E310032EEC005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */;
+		name = "vxCacheDeformer.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1065;
+		vrLoc = 2990;
+	};
+	7F3032E8100332B8005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */;
+		name = "vxCacheDeformer.cpp: 163";
+		rLen = 0;
+		rLoc = 4198;
+		rType = 0;
+		vrLen = 1012;
+		vrLoc = 3372;
+	};
+	7F3032EB100332B8005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F3032EC100332B8005BF833 /* yTwistNode.cpp */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F3032EC100332B8005BF833 /* yTwistNode.cpp */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = yTwistNode.cpp;
+		path = "/Applications/Autodesk/maya2008/devkit/plug-ins/yTwistNode.cpp";
+		sourceTree = "<absolute>";
+	};
+	7F3032ED100332B8005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F3032EE100332B8005BF833 /* yTwistNode.cpp */;
+		name = "yTwistNode.cpp: 183";
+		rLen = 151;
+		rLoc = 4496;
+		rType = 0;
+		vrLen = 1071;
+		vrLoc = 3954;
+	};
+	7F3032EE100332B8005BF833 /* yTwistNode.cpp */ = {
+		isa = PBXFileReference;
+		name = yTwistNode.cpp;
+		path = "/Applications/Autodesk/maya2008/devkit/plug-ins/yTwistNode.cpp";
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {649, 3738}}";
+			sepNavSelRange = "{4827, 3}";
+			sepNavVisRange = "{4198, 984}";
+		};
+	};
+	7F3032F310033697005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */;
+		name = "vxCacheDeformer.cpp: 163";
+		rLen = 0;
+		rLoc = 4156;
+		rType = 0;
+		vrLen = 1043;
+		vrLoc = 3325;
+	};
+	7F3032F410033697005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F3032EE100332B8005BF833 /* yTwistNode.cpp */;
+		name = "yTwistNode.cpp: 195";
+		rLen = 3;
+		rLoc = 4827;
+		rType = 0;
+		vrLen = 984;
+		vrLoc = 4198;
+	};
+	7F3032F6100336E3005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */;
+		name = "vxCacheDeformer.cpp: 96";
+		rLen = 0;
+		rLoc = 2439;
+		rType = 0;
+		vrLen = 1169;
+		vrLoc = 2149;
+	};
+	7F3032F7100336E3005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F3032EE100332B8005BF833 /* yTwistNode.cpp */;
+		name = "yTwistNode.cpp: 195";
+		rLen = 3;
+		rLoc = 4827;
+		rType = 0;
+		vrLen = 984;
+		vrLoc = 4198;
+	};
+	7F3032F9100337F5005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */;
+		name = "vxCacheDeformer.cpp: 171";
+		rLen = 0;
+		rLoc = 4400;
+		rType = 0;
+		vrLen = 1037;
+		vrLoc = 3314;
+	};
+	7F3032FA100337F5005BF833 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F3032EE100332B8005BF833 /* yTwistNode.cpp */;
+		name = "yTwistNode.cpp: 195";
+		rLen = 3;
+		rLoc = 4827;
+		rType = 0;
+		vrLen = 984;
+		vrLoc = 4198;
 	};
 	7FB4B0190FC50458001E629C /* importSceneCmd.cpp */ = {
 		uiCtxt = {
@@ -90,6 +222,13 @@
 			sepNavSelRange = "{2195, 0}";
 			sepNavVisRange = "{3097, 1211}";
 			sepNavWindowFrame = "{{447, 106}, {590, 661}}";
+		};
+	};
+	7FB4B01F0FC50458001E629C /* vxCacheDeformer.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {668, 2450}}";
+			sepNavSelRange = "{4400, 0}";
+			sepNavVisRange = "{3314, 1037}";
 		};
 	};
 	7FB4B0200FC50458001E629C /* xmlMeshCacheCmd.cpp */ = {

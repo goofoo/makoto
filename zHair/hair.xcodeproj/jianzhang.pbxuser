@@ -142,9 +142,9 @@
 	};
 	7F77E59B0FD7E423006D7D1A /* combCurveProperties.mel */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {906, 994}}";
-			sepNavSelRange = "{1866, 0}";
-			sepNavVisRange = "{777, 1569}";
+			sepNavIntBoundsRect = "{{0, 0}, {906, 1022}}";
+			sepNavSelRange = "{1435, 0}";
+			sepNavVisRange = "{738, 1605}";
 			sepNavWindowFrame = "{{43, 134}, {965, 608}}";
 		};
 	};
@@ -177,10 +177,10 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {656, 10878}}";
-			sepNavSelRange = "{3041, 0}";
-			sepNavVisRange = "{2849, 768}";
-			sepNavWindowFrame = "{{391, 85}, {653, 693}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1256, 11242}}";
+			sepNavSelRange = "{5150, 0}";
+			sepNavVisRange = "{21917, 1170}";
+			sepNavWindowFrame = "{{391, 56}, {708, 722}}";
 		};
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
@@ -241,10 +241,10 @@
 	};
 	7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {806, 9548}}";
-			sepNavSelRange = "{3983, 0}";
-			sepNavVisRange = "{3241, 836}";
-			sepNavWindowFrame = "{{137, 66}, {865, 685}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1196, 9520}}";
+			sepNavSelRange = "{14392, 105}";
+			sepNavVisRange = "{13788, 1605}";
+			sepNavWindowFrame = "{{302, 69}, {865, 685}}";
 		};
 	};
 	D2AAC0620554660B00DB518D /* ZHair */ = {

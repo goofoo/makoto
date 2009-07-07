@@ -92,6 +92,10 @@ MStatus vxCacheDeformer::deform( MDataBlock& block,
 {
 	MStatus returnStatus;
 	
+	MDataHandle envData = block.inputValue(envelope,&returnStatus);
+	float env = envData.asFloat();	MGlobal::displayInfo(MString("z ")+env);
+	if(env == 0) return returnStatus;
+	
 	double time = block.inputValue( frame ).asTime().value();
 	
 	MDataHandle inPathData = block.inputValue( path );
@@ -129,8 +133,7 @@ MStatus vxCacheDeformer::deform( MDataBlock& block,
 		vertexFArray.clear();
 		
 		XYZ tp;
-		for(unsigned int i = 0; i < mesh.getNumVertex(); i++) 
-		{
+		for(unsigned int i = 0; i < mesh.getNumVertex(); i++) {
 			mesh.getVertex(tp, i);
 			vertexArray.append( MPoint( tp.x, tp.y, tp.z ) );
 		}
@@ -139,10 +142,8 @@ MStatus vxCacheDeformer::deform( MDataBlock& block,
 		{
 			sprintf( filename, "%s.%d.mcf", str_path.asChar(), frame_hi );
 
-			if(mesh.load(filename) != 1)
-			{
-				MGlobal::displayError( MString("Failed to open file: ") + filename );
-			}
+			if(mesh.load(filename) != 1) MGlobal::displayError( MString("Failed to open file: ") + filename );
+
 			else if(mesh.getNumVertex() == lo_n_vertex)
 			{
 				XYZ tp;
@@ -156,7 +157,7 @@ MStatus vxCacheDeformer::deform( MDataBlock& block,
 
 				for(unsigned int i = 0; i < mesh.getNumVertex(); i++) {
 					
-					vertexArray[i] = vertexArray[i] + alpha * ( vertexFArray[i] - vertexArray[i] );
+					vertexArray[i] = vertexArray[i] + ( vertexFArray[i] - vertexArray[i] )*alpha;
 					
 				}
 			}
@@ -167,7 +168,7 @@ MStatus vxCacheDeformer::deform( MDataBlock& block,
 		for ( ; !iter.isDone(); iter.next()) 
 		{
 			MPoint pt = iter.position();
-			pt = vertexArray[iter.index()];
+			pt = pt + (vertexArray[iter.index()] - pt)*env;
 			iter.setPosition(pt);
 		}
 	}
