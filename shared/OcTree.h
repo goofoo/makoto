@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 #include "QuickSort.h"
 using namespace std;
 
@@ -40,17 +43,24 @@ public:
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void draw(const TreeNode *node);
 	void getRootCenterNSize(XYZ& center, float&size) const;
+	void  setRoot(TreeNode *node){root = node;}
+
+	void saveFile(const char*filename,OcTree* tree,unsigned sum);
+	void saveTree(TreeNode *node);
+	void loadFile(const char*filename,OcTree* tree);
+	void loadTree(TreeNode *node);
 
 	static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
-	static void getBBox(const XYZ *data, const int num_data, XYZ& center, float& size);
+	static void getBBox(const PosAndId* data, const int num_data, XYZ& center, float& size);
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
 	static void getMean(const PosAndId *data, const int low, const int high, XYZ& center);
-	
 	int acount;
 private:
+	ifstream infile;
 	TreeNode *root;
 	short max_level;
 	unsigned num_voxel;
+	ofstream outfile;
 };

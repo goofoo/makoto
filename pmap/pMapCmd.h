@@ -32,7 +32,7 @@
 #include <maya/MTime.h>
 #include <iostream>
 #include <fstream>
-//#include "../shared/zData.h"
+#include "../shared/OcTree.h"
 
 
 //char        *filename;
@@ -59,6 +59,9 @@ private:
 	MObject particleNode;
 	MStatus parseArgs ( const MArgList& args );
 	bool worldSpace;
+	OcTree* tree;
+	float mindist;
+	ofstream outfile;
 };
 
 #endif
