@@ -33,4 +33,6 @@ copy .\scripts\mtorSetQuantize.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\fishMenus.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\exrSet2ndDisplay.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\zhairMenus.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\combCurveProperties.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\combCurveValues.mel D:\wamp\www\prt_release\scripts
 copy .\application\prtServer.exe D:\wamp\www\prt_release\application

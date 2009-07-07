@@ -21,7 +21,7 @@
 MStatus initializePlugin( MObject obj ) 
 {
 MStatus status;
-MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.5.2 06/09/09", "Any" );
+MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.5.3 07/07/09", "Any" );
 
 	//if( licenseIsValid ( "C:/flexlm/shot_sculptor.lic" ) ) {
 		status = plugin.registerCommand( "vxCache", vxCache::creator, vxCache::newSyntax);
