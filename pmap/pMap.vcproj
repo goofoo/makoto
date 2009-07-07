@@ -18,7 +18,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Gm /GX /ZI /I &quot;.&quot; /D &quot;WIN32&quot; /D &quot;_DEBUG&quot; /YX /GZ /c"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Program Files\Alias\Maya7.0\include"
+				AdditionalIncludeDirectories="$(MAYA_LOCATION70)\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,_AFXDLL,_MBCS,NT_PLUGIN,REQUIRE_IOSTREAM"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile="Debug/pMap.pch"
@@ -30,7 +30,7 @@
 				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
 				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib"
 				OutputFile="../module/plug-ins/pMap70.mll"
-				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION70)\lib&quot;;D:\local\glut"
 				ProgramDatabaseFile="Debug/pMap.pdb"
 				ImportLibrary="Debug/pMap.lib"/>
 			<Tool
@@ -117,6 +117,9 @@
 			</File>
 			<File
 				RelativePath=".\pMapLocator.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\QuickSort.cpp">
 			</File>
 		</Filter>
 		<Filter
