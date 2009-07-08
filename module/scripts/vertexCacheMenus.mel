@@ -356,11 +356,12 @@ global proc doAddCacheDeformer()
 		//connectAttr -f "time1.outTime" ($node[0] + ".currentTime");
 		setKeyframe -t `intFieldGrp -q -v1 deformerCacheRange` -v `intFieldGrp -q -v1 deformerCacheRange` ($node[0] + ".currentTime");
 		setKeyframe -t `intFieldGrp -q -v2 deformerCacheRange` -v `intFieldGrp -q -v2 deformerCacheRange` ($node[0] + ".currentTime");
-
+		setKeyframe -t `intFieldGrp -q -v1 deformerCacheBind` -v 0 ($node[0] + ".envelope");
+		setKeyframe -t `intFieldGrp -q -v1 deformerCacheRange` -v 1 ($node[0] + ".envelope");
 
 		setAttr ( $node[0] + ".minFrame") `intFieldGrp -q -v1 deformerCacheRange`;
 		setAttr ( $node[0] + ".maxFrame") `intFieldGrp -q -v2 deformerCacheRange`;
-		setAttr ( $node[0] + ".frameStep") `intFieldGrp -q -v1 deformerCacheStep`;
+		setAttr ( $node[0] + ".frameStep") 1;
 	}
 	else {
 		print("Nothing selected!");
@@ -391,7 +392,7 @@ textFieldButtonGrp
      deformerCachePath;
      
 intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` deformerCacheRange;
-intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 deformerCacheStep;
+intFieldGrp -cw 1 110 -label "Bind Frame" -nf 1 -v1 -10 deformerCacheBind;
 
 text -al left -l "\nDescription: pick up a cache file and add the deformer to select object.";
 

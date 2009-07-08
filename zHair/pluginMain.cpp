@@ -13,6 +13,7 @@
 #include "guideCommand.h"
 #include "curvePatchNode.h"
 #include "combCurveTool.h"
+#include "hairDeformer.h"
 
 // The initializePlugin method is called by Maya when the
 // plugin is loaded. It registers the hwbruiseMapShader node
@@ -22,7 +23,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.5.4 - 07/01/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.5.8 - 07/09/09", "Any");
 
 	status = plugin.registerNode( "ZHairViz", HairNode::id, 
 						 &HairNode::creator, &HairNode::initialize,
@@ -66,6 +67,13 @@ MStatus initializePlugin( MObject obj )
 											"combCurveTool",
 											combCurveTool::creator,
 											combCurveTool::newSyntax);
+											
+	status = plugin.registerNode( "hairDeformer", hairDeformer::id, hairDeformer::creator, 
+								  hairDeformer::initialize, MPxNode::kDeformerNode );
+	if (!status) {
+	      status.perror("deregisterCommand");
+	      return status;
+	}
 
 	MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
 
@@ -113,6 +121,12 @@ MStatus uninitializePlugin( MObject obj )
 	
 	status = plugin.deregisterContextCommand( "combCurveToolContext", "combCurveTool");
 
+	status = plugin.deregisterNode( hairDeformer::id );
+	if (!status) {
+		status.perror("deregisterCommand");
+		return status;
+	}
+		
 	MGlobal::executeCommand("zhairRemoveMenus;");
 
 	return status;
