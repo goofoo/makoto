@@ -15,8 +15,9 @@ struct TreeNode
 		      child100(0),child101(0),child110(0),child111(0)/*,isNull(1)*/ {}
 
 	unsigned low, high;
-	XYZ center,mean,colorMean;
+	XYZ center,mean;
 	float size;
+	int index;
 	
 	TreeNode *child000;
 	TreeNode *child001;
@@ -37,15 +38,16 @@ public:
 	void release(TreeNode *node);
 	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
 	unsigned getNumVoxel() const {return num_voxel;}
-	void draw();
+	void draw(const char*filename);
 	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
-	void draw(const TreeNode *node);
+	void draw(const TreeNode *node,const char*filename,unsigned numVoxel);
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	void saveFile(const char*filename,OcTree* tree,unsigned sum);
+	void saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color);
 	void saveTree(TreeNode *node);
+    void saveColor(TreeNode *node,XYZ *color);
 	void loadFile(const char*filename,OcTree* tree);
 	void loadTree(TreeNode *node);
 
@@ -55,8 +57,8 @@ public:
 	static void getBBox(const PosAndId* data, const int num_data, XYZ& center, float& size);
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
 	static void getMean(const PosAndId *data, const int low, const int high, XYZ& center);
-	static void getColorMean(const PosAndId *data, const int low, const int high, XYZ& color);
-	int acount;
+	//static void getColorMean(const PosAndId *data, const int low, const int high, XYZ& color);
+	//int acount;
 private:
 	ifstream infile;
 	TreeNode *root;

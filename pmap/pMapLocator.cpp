@@ -61,7 +61,7 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		
 	    int frame_lo = minfrm + int(time-minfrm)/frmstep*frmstep;
 
-	    char filename[256];
+	    
 	    sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
 		if(tree) delete tree;
 	    tree = new OcTree();
@@ -128,7 +128,7 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	if(tree){
 		glBegin(GL_LINES);
 		//glColor3f(1.0,0.0,0.0);
-		if(tree) tree->draw();
+		if(tree) tree->draw(filename);
 		glEnd();
 	}
 
