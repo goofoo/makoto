@@ -60,7 +60,6 @@ private:
 	MStatus parseArgs ( const MArgList& args );
 	bool worldSpace;
 	float mindist;
-	ofstream outfile;
 };
 
 #endif

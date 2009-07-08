@@ -48,9 +48,8 @@ public:
 	static  	MObject 	amaxframe;
 	static  	MObject 	aframestep;
 	static      MObject     aoutval;
-	double      m_time;
 private:
-
+	char filename[256];
 	OcTree* tree;
 };
 

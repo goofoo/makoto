@@ -96,7 +96,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 		sum += ps.count();
 	}
 	PosAndId *buf = new PosAndId[sum];
-	//XYZ *color = new XYZ[sum];
+	XYZ *pco = new XYZ[sum];
 	list.reset();
 	for(;!list.isDone();list.next())
 	{
@@ -109,26 +109,33 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MVectorArray positions;
 		MVectorArray color;
 	    ps.position( positions );
+		assert( positions.length() == count );
 		if(ps.hasRgb())
+		{
 			ps.rgb(color);
-	    assert( positions.length() == count );
+			for(unsigned i=0; i<positions.length(); i++,isum++ )
+			{
+				MVector p = positions[i];
+			    buf[isum].pos.x = p[0];
+			    buf[isum].pos.y = p[1];
+			    buf[isum].pos.z = p[2];
+				MVector c = color[i];
+				pco[isum].x = c[0];
+				pco[isum].y = c[1];
+				pco[isum].z = c[2];
+			    buf[isum].idx = isum;
+			}
+		}
+		else 
 		for(unsigned i=0; i<positions.length(); i++,isum++ )
 		{
 			MVector p = positions[i];
 			buf[isum].pos.x = p[0];
 			buf[isum].pos.y = p[1];
 			buf[isum].pos.z = p[2];
-			if(ps.hasRgb()){
-				MVector c = color[i];
-				buf[isum].co.x = c[0];
-			    buf[isum].co.y = c[1];
-			    buf[isum].co.z = c[2];
-			}
-			else {
-				buf[isum].co.x = 1.;
-				buf[isum].co.y = 0.;
-				buf[isum].co.z = 0.;
-			}
+			pco[isum].x = 1.;
+			pco[isum].y = 0.;
+			pco[isum].z = 0.;
 			buf[isum].idx = isum;
 		}
 	}
@@ -145,7 +152,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 	OcTree* tree = new OcTree();
 	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
-	tree->saveFile(filename,tree,sum);
+	tree->saveFile(filename,tree,sum,pco);
 	delete[] buf;
 	delete tree;
 	return MS::kSuccess;
