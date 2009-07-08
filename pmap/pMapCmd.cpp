@@ -109,18 +109,26 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MVectorArray positions;
 		MVectorArray color;
 	    ps.position( positions );
-		ps.rgb(color);
+		if(ps.hasRgb())
+			ps.rgb(color);
 	    assert( positions.length() == count );
 		for(unsigned i=0; i<positions.length(); i++,isum++ )
 		{
 			MVector p = positions[i];
-			MVector c = color[i];
 			buf[isum].pos.x = p[0];
 			buf[isum].pos.y = p[1];
 			buf[isum].pos.z = p[2];
-			buf[isum].co.x = c[0];
-			buf[isum].co.y = c[1];
-			buf[isum].co.z = c[2];
+			if(ps.hasRgb()){
+				MVector c = color[i];
+				buf[isum].co.x = c[0];
+			    buf[isum].co.y = c[1];
+			    buf[isum].co.z = c[2];
+			}
+			else {
+				buf[isum].co.x = 1.;
+				buf[isum].co.y = 0.;
+				buf[isum].co.z = 0.;
+			}
 			buf[isum].idx = isum;
 		}
 	}
