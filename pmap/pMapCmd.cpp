@@ -95,8 +95,8 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MFnParticleSystem ps( fDagPath );
 		sum += ps.count();
 	}
-//	if(buf) delete[] buf;
 	PosAndId *buf = new PosAndId[sum];
+	//XYZ *color = new XYZ[sum];
 	list.reset();
 	for(;!list.isDone();list.next())
 	{
@@ -107,7 +107,10 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MIntArray ids;
 	    ps.particleIds( ids );
 	    MVectorArray positions;
+		MVectorArray color;
 	    ps.position( positions );
+		if(ps.hasRgb())
+			ps.rgb(color);
 	    assert( positions.length() == count );
 		for(unsigned i=0; i<positions.length(); i++,isum++ )
 		{
@@ -115,7 +118,18 @@ MStatus pMapCmd::doIt( const MArgList& args)
 			buf[isum].pos.x = p[0];
 			buf[isum].pos.y = p[1];
 			buf[isum].pos.z = p[2];
-			//buf[isum].idx = isum;
+			if(ps.hasRgb()){
+				MVector c = color[i];
+				buf[isum].co.x = c[0];
+			    buf[isum].co.y = c[1];
+			    buf[isum].co.z = c[2];
+			}
+			else {
+				buf[isum].co.x = 1.;
+				buf[isum].co.y = 0.;
+				buf[isum].co.z = 0.;
+			}
+			buf[isum].idx = isum;
 		}
 	}
 
@@ -129,10 +143,11 @@ MStatus pMapCmd::doIt( const MArgList& args)
 		maxlevel++;
 		mindist*=2;
 	}
-	tree = new OcTree();
+	OcTree* tree = new OcTree();
 	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
 	tree->saveFile(filename,tree,sum);
 	delete[] buf;
+	delete tree;
 	return MS::kSuccess;
 }
 
@@ -195,7 +210,7 @@ void* pMapCmd::creator()
 	return new pMapCmd();
 }
 
-pMapCmd::pMapCmd():tree(0)
+pMapCmd::pMapCmd()
 //
 //	Description:
 //		pMapCmd constructor
@@ -209,7 +224,6 @@ pMapCmd::~pMapCmd()
 //		pMapCmd destructor
 //
 {
-	if(tree) delete tree;
 }
 
 bool pMapCmd::isUndoable() const
