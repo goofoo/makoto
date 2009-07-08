@@ -52,7 +52,6 @@ public:
 private:
 
 	OcTree* tree;
-
 };
 
 #endif

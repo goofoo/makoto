@@ -43,6 +43,8 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 	node->center = center;
 	node->size = size;
 	getMean(data, low, high, node->mean);
+	getColorMean(data, low, high, node->colorMean);
+	//cout<<node->colorMean.x<<"  "<<node->colorMean.y<<"  "<<node->colorMean.z<<endl;
 	//node->isNull = 0;
 	count++;
 	if(level == max_level ) return;
@@ -384,7 +386,8 @@ void OcTree::draw(const TreeNode *node)
 		//if(node->isNull) {
 			XYZ cen = node->center;
 			float size = node->size;
-			
+			glColor3f(node->colorMean.x,node->colorMean.y,node->colorMean.z);
+			//cout<<node->colorMean.x<<"  "<<node->colorMean.y<<"  "<<node->colorMean.z<<endl;
 			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
@@ -572,6 +575,16 @@ void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& c
 	center /= float(high - low + 1);
 }
 
+void OcTree::getColorMean(const PosAndId *data, const int low, const int high, XYZ& color)
+{
+	color.x = color.y = color.z = 0.f;
+	
+	for(int i=low; i<=high; i++) color += data[i].co;
+	
+	color /= float(high - low + 1);
+}
+
+
 void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum)
 {
 	outfile.open(filename,ios_base::out | ios_base::binary );
@@ -581,7 +594,6 @@ void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum)
 	if(sum>0)
 		saveTree(root);
 	outfile.close();
-	release();
 }
 
 void OcTree::saveTree(TreeNode *node)
@@ -593,6 +605,7 @@ void OcTree::saveTree(TreeNode *node)
 		outfile.write((char*)&node->high,sizeof(unsigned));
 		outfile.write((char*)&node->center,sizeof(XYZ));
 		outfile.write((char*)&node->mean,sizeof(XYZ));
+		outfile.write((char*)&node->colorMean,sizeof(XYZ));
 		outfile.write((char*)&node->size,sizeof(float));
 		outfile.write((char*)&node->child000,sizeof(node->child000));
 	    outfile.write((char*)&node->child001,sizeof(node->child001));
@@ -635,6 +648,7 @@ void OcTree::loadTree(TreeNode *node)
 	infile.read((char*)&node->high,sizeof(unsigned));
 	infile.read((char*)&node->center,sizeof(XYZ));
 	infile.read((char*)&node->mean,sizeof(XYZ));
+	infile.read((char*)&node->colorMean,sizeof(XYZ));
 	infile.read((char*)&node->size,sizeof(float));
 	infile.read((char*)&node->child000,sizeof(node->child000));
 	infile.read((char*)&node->child001,sizeof(node->child001));

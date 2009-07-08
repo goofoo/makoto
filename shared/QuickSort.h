@@ -14,6 +14,7 @@ struct ValueAndId
 struct PosAndId
 {
 	XYZ pos;
+	XYZ co;
 	unsigned idx;
 };
 

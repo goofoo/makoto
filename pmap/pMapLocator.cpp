@@ -60,14 +60,12 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    if( time < minfrm ) time = minfrm;
 		
 	    int frame_lo = minfrm + int(time-minfrm)/frmstep*frmstep;
-	    //int frame_hi = frame_lo+frmstep;
 
 	    char filename[256];
 	    sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
 		if(tree) delete tree;
 	    tree = new OcTree();
 		tree->loadFile(filename,tree);
-		
 	}
 	
 	return MS::kUnknownParameter;
@@ -129,7 +127,7 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 		*/
 	if(tree){
 		glBegin(GL_LINES);
-		glColor3f(1.0,0.0,0.0);
+		//glColor3f(1.0,0.0,0.0);
 		if(tree) tree->draw();
 		glEnd();
 	}

@@ -59,7 +59,6 @@ private:
 	MObject particleNode;
 	MStatus parseArgs ( const MArgList& args );
 	bool worldSpace;
-	OcTree* tree;
 	float mindist;
 	ofstream outfile;
 };

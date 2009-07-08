@@ -15,7 +15,7 @@ struct TreeNode
 		      child100(0),child101(0),child110(0),child111(0)/*,isNull(1)*/ {}
 
 	unsigned low, high;
-	XYZ center, mean;
+	XYZ center,mean,colorMean;
 	float size;
 	
 	TreeNode *child000;
@@ -43,7 +43,6 @@ public:
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void draw(const TreeNode *node);
 	void getRootCenterNSize(XYZ& center, float&size) const;
-	void  setRoot(TreeNode *node){root = node;}
 
 	void saveFile(const char*filename,OcTree* tree,unsigned sum);
 	void saveTree(TreeNode *node);
@@ -56,6 +55,7 @@ public:
 	static void getBBox(const PosAndId* data, const int num_data, XYZ& center, float& size);
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
 	static void getMean(const PosAndId *data, const int low, const int high, XYZ& center);
+	static void getColorMean(const PosAndId *data, const int low, const int high, XYZ& color);
 	int acount;
 private:
 	ifstream infile;
