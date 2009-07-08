@@ -155,6 +155,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	tree->saveFile(filename,tree,sum,pco);
 	delete[] buf;
 	delete tree;
+	delete[] pco;
 	return MS::kSuccess;
 }
 
