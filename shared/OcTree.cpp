@@ -585,7 +585,7 @@ void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& c
 }
 
 
-void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color)
+void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color,PosAndId *buf)
 {
 	outfile.open(filename,ios_base::out | ios_base::binary );
 	if(!outfile.is_open())
@@ -596,7 +596,7 @@ void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color)
 	if(sum>0)
 	{
 		saveTree(root);
-		saveColor(root,color);
+		saveColor(root,color,buf);
 	}
 	outfile.close();
 }
@@ -631,24 +631,24 @@ void OcTree::saveTree(TreeNode *node)
 	}
 }
 
-void OcTree:: saveColor(TreeNode *node,XYZ *color)
+void OcTree:: saveColor(TreeNode *node,XYZ *color,PosAndId *buf)
 {
 	if(!node) return;
 	else
 	{
 		XYZ colorMean = 0;
 		for(unsigned int i = node->low;i<=node->high;i++)
-			colorMean += color[i];
+			colorMean += color[buf[i].idx];
 		colorMean /= float(node->high - node->low + 1);
 		outfile.write((char*)&colorMean,sizeof(XYZ));
-	    saveColor(node->child000,color);
-		saveColor(node->child001,color);
-		saveColor(node->child010,color);
-		saveColor(node->child011,color);
-		saveColor(node->child100,color);
-		saveColor(node->child101,color);
-		saveColor(node->child110,color);
-		saveColor(node->child111,color);
+	    saveColor(node->child000,color,buf);
+		saveColor(node->child001,color,buf);
+		saveColor(node->child010,color,buf);
+		saveColor(node->child011,color,buf);
+		saveColor(node->child100,color,buf);
+		saveColor(node->child101,color,buf);
+		saveColor(node->child110,color,buf);
+		saveColor(node->child111,color,buf);
 	}
 
 }

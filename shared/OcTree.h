@@ -45,9 +45,9 @@ public:
 	void draw(const TreeNode *node,const char*filename,unsigned numVoxel);
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	void saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color);
+	void saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color,PosAndId *buf);
 	void saveTree(TreeNode *node);
-    void saveColor(TreeNode *node,XYZ *color);
+    void saveColor(TreeNode *node,XYZ *color,PosAndId *buf);
 	void loadFile(const char*filename,OcTree* tree);
 	void loadTree(TreeNode *node);
 

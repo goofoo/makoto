@@ -152,7 +152,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 	OcTree* tree = new OcTree();
 	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
-	tree->saveFile(filename,tree,sum,pco);
+	tree->saveFile(filename,tree,sum,pco,buf);
 	delete[] buf;
 	delete tree;
 	delete[] pco;
