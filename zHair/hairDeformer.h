@@ -32,7 +32,7 @@ public:
 	//static  	MObject		path;
 	static  	MObject		frame;
 	static MObject agrowth;
-	//static  	MObject 	amaxframe;
+	static  	MObject 	anumseg;
 	static  	MObject 	aframestep;
 	static  MTypeId		id;
 	

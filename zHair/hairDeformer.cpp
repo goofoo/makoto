@@ -21,7 +21,7 @@
 #include <maya/MFnMeshData.h>
 
 MTypeId		hairDeformer::id( 0x00006345 );
-//MObject     hairDeformer::path; 
+MObject 	hairDeformer::anumseg;
 MObject     hairDeformer::frame;
 MObject  hairDeformer::agrowth;
 //MObject     hairDeformer::amaxframe;
@@ -58,10 +58,10 @@ MStatus hairDeformer::initialize()
  	//stringAttr.setStorable(true);
 	//addAttribute( path );
 	
-	//aminframe = numAttr.create( "minFrame", "mnf", MFnNumericData::kInt, 1 );
-	//numAttr.setStorable(true);
-	//numAttr.setKeyable(true);
-	//addAttribute( aminframe );
+	anumseg = numAttr.create( "numSegment", "nsg", MFnNumericData::kInt, 5 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute( anumseg );
 	
 	//amaxframe = numAttr.create( "maxFrame", "mxf", MFnNumericData::kInt, 24 );
 	//numAttr.setStorable(true);
@@ -79,7 +79,7 @@ MStatus hairDeformer::initialize()
 	
 	attributeAffects( frame, hairDeformer::outputGeom );
 	attributeAffects( agrowth, hairDeformer::outputGeom );
-	//attributeAffects( aminframe, hairDeformer::outputGeom );
+	attributeAffects( anumseg, hairDeformer::outputGeom );
 	//attributeAffects( amaxframe, hairDeformer::outputGeom );
 	attributeAffects( aframestep, hairDeformer::outputGeom );
 
@@ -98,7 +98,9 @@ MStatus hairDeformer::deform( MDataBlock& block,
 	float env = envData.asFloat();
 	if(env == 0) return status;
 	
-	int num_vert = (5+1)*2;
+	int num_seg = block.inputValue(anumseg).asInt();
+	
+	int num_vert = (num_seg+1)*2;
 	
 	MObject ogrow = block.inputValue(agrowth).asMesh();
 	
@@ -130,7 +132,7 @@ MStatus hairDeformer::deform( MDataBlock& block,
 			MPoint pt = iter.position();
 			XYZ pos(pt.x , pt.y, pt.z);
 			
-			int hair_id = iter.index()/(5+1)/2;
+			int hair_id = iter.index()/num_vert;
 			if(iter.index()%num_vert == 0) {
 // get nearest face space
 				MPoint closestp;
@@ -139,7 +141,7 @@ MStatus hairDeformer::deform( MDataBlock& block,
 				MIntArray vertexList;
 				MVector tangent;
          
-				fbase.getClosestPointAndNormal (pt, closestp, closestn, MSpace::kObject, &closestPolygonID );
+				fbase.getClosestPoint (pt, closestp, MSpace::kObject, &closestPolygonID );
 				fbase.getPolygonVertices(closestPolygonID, vertexList);
 
 // save nearest face id
