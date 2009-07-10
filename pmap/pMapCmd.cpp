@@ -78,6 +78,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 		displayError( "Could not create selection list iterator");
 		return status;
 	}
+
     char filename[512];
 	if(argData.isFlagSet("-sg")) sprintf( filename, "%s/%s.dat", cache_path.asChar(), cache_name.asChar() );
 		else sprintf( filename, "%s/%s.%d.dat", cache_path.asChar(), cache_name.asChar(), frame );
@@ -97,6 +98,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 	PosAndId *buf = new PosAndId[sum];
 	XYZ *pco = new XYZ[sum];
+	XYZ *pve = new XYZ[sum];
 	list.reset();
 	for(;!list.isDone();list.next())
 	{
@@ -108,8 +110,10 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    ps.particleIds( ids );
 	    MVectorArray positions;
 		MVectorArray color;
+		MVectorArray velocity;
 	    ps.position( positions );
-		assert( positions.length() == count );
+		assert( positions.length() == count);
+		ps.velocity(velocity);
 		if(ps.hasRgb())
 		{
 			ps.rgb(color);
@@ -119,6 +123,10 @@ MStatus pMapCmd::doIt( const MArgList& args)
 			    buf[isum].pos.x = p[0];
 			    buf[isum].pos.y = p[1];
 			    buf[isum].pos.z = p[2];
+				MVector v = velocity[i];
+				pve[isum].x = v[0];
+				pve[isum].y = v[1];
+				pve[isum].z = v[2];
 				MVector c = color[i];
 				pco[isum].x = c[0];
 				pco[isum].y = c[1];
@@ -126,17 +134,33 @@ MStatus pMapCmd::doIt( const MArgList& args)
 			    buf[isum].idx = isum;
 			}
 		}
-		else 
-		for(unsigned i=0; i<positions.length(); i++,isum++ )
+		else
 		{
-			MVector p = positions[i];
-			buf[isum].pos.x = p[0];
-			buf[isum].pos.y = p[1];
-			buf[isum].pos.z = p[2];
-			pco[isum].x = 1.;
-			pco[isum].y = 0.;
-			pco[isum].z = 0.;
-			buf[isum].idx = isum;
+			for(unsigned i=0; i<positions.length(); i++,isum++ )
+			{
+				MVector p = positions[i];
+			    buf[isum].pos.x = p[0];
+			    buf[isum].pos.y = p[1];
+			    buf[isum].pos.z = p[2];
+				MVector v = velocity[i];
+				pve[isum].x = v[0];
+				pve[isum].y = v[1];
+				pve[isum].z = v[2];
+				if(pve[isum].x == 0 && pve[isum].y == 0 && pve[isum].z == 0 )
+				{
+					pco[isum].x = 1.;
+					pco[isum].y = 0.;
+					pco[isum].z = 0.;
+				}
+				else
+				{
+					float vo = 2*sqrt(pve[isum].x*pve[isum].x + pve[isum].y*pve[isum].y + pve[isum].z*pve[isum].z);
+					pco[isum].x = 0.5 + pve[isum].x/vo; 
+					pco[isum].y = 0.5 + pve[isum].y/vo;
+					pco[isum].z = 0.5 + pve[isum].z/vo;	 
+				}
+			    buf[isum].idx = isum;
+			}
 		}
 	}
 
@@ -152,9 +176,11 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 	OcTree* tree = new OcTree();
 	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
-	tree->saveFile(filename,tree,sum,pco);
+	tree->saveFile(filename,tree,sum,pco,buf,pve,3);
 	delete[] buf;
 	delete tree;
+	delete[] pco;
+	delete[] pve;
 	return MS::kSuccess;
 }
 

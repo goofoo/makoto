@@ -379,24 +379,27 @@ void OcTree::draw(const char*filename)
 	if(!infile.is_open())
 		return;
 	unsigned sum,numVoxel;
+	short level;
+	infile.read((char*)&level,sizeof(short));
 	infile.read((char*)&sum,sizeof(unsigned));
 	infile.read((char*)&numVoxel,sizeof(unsigned));
-	if(root) draw(root,filename,numVoxel);
+	max_level = level;
+	if(root) draw(root,filename,numVoxel,0);
 	infile.close();
 }
 
-void OcTree::draw(const TreeNode *node,const char*filename,unsigned numVoxel)
+void OcTree::draw(const TreeNode *node,const char*filename,unsigned numVoxel,short level)
 {
 	if(!node) return;
-	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111) {
-		
+	if((!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)||max_level == level) {
 		//if(node->isNull) {
 			XYZ cen = node->center;
 			XYZ color;
 			float size = node->size;
-			infile.seekg(72*numVoxel+8+(node->index -1)*12,ios_base::beg);
+			infile.seekg(72*numVoxel+10+(node->index -1)*12,ios_base::beg);
 			infile.read((char*)&color,sizeof(XYZ));
 			glColor3f(color.x,color.y,color.z);
+			/*
 			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
@@ -423,17 +426,49 @@ void OcTree::draw(const TreeNode *node,const char*filename,unsigned numVoxel)
 			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
 			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-		//}
+			*/
+
+			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
+
+			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
+			
+			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
+
+			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
+			
+			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z + 0.8*size);
+
+			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
+			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
+			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
+		
 	}
 	else {
-		draw(node->child000,filename,numVoxel);
-		draw(node->child001,filename,numVoxel);
-		draw(node->child010,filename,numVoxel);
-		draw(node->child011,filename,numVoxel);
-		draw(node->child100,filename,numVoxel);
-		draw(node->child101,filename,numVoxel);
-		draw(node->child110,filename,numVoxel);
-		draw(node->child111,filename,numVoxel);
+		level++;
+		draw(node->child000,filename,numVoxel,level);
+		draw(node->child001,filename,numVoxel,level);
+		draw(node->child010,filename,numVoxel,level);
+		draw(node->child011,filename,numVoxel,level);
+		draw(node->child100,filename,numVoxel,level);
+		draw(node->child101,filename,numVoxel,level);
+		draw(node->child110,filename,numVoxel,level);
+		draw(node->child111,filename,numVoxel,level);
 	}
 }
 
@@ -585,18 +620,20 @@ void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& c
 }
 
 
-void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color)
+void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color,PosAndId *buf,XYZ *velocity,const short level)
 {
 	outfile.open(filename,ios_base::out | ios_base::binary );
 	if(!outfile.is_open())
 		return ;
+	outfile.write((char*)&level,sizeof(short));
     outfile.write((char*)&sum,sizeof(unsigned));
 	unsigned numVoxel = tree->getNumVoxel();
 	outfile.write((char*)&numVoxel,sizeof(unsigned));
 	if(sum>0)
 	{
 		saveTree(root);
-		saveColor(root,color);
+		saveColor(root,color,buf);
+		saveVelocity(root,velocity,buf);
 	}
 	outfile.close();
 }
@@ -631,26 +668,46 @@ void OcTree::saveTree(TreeNode *node)
 	}
 }
 
-void OcTree:: saveColor(TreeNode *node,XYZ *color)
+void OcTree::saveColor(TreeNode *node,XYZ *color,PosAndId *buf)
 {
 	if(!node) return;
 	else
 	{
 		XYZ colorMean = 0;
 		for(unsigned int i = node->low;i<=node->high;i++)
-			colorMean += color[i];
+			colorMean += color[buf[i].idx];
 		colorMean /= float(node->high - node->low + 1);
 		outfile.write((char*)&colorMean,sizeof(XYZ));
-	    saveColor(node->child000,color);
-		saveColor(node->child001,color);
-		saveColor(node->child010,color);
-		saveColor(node->child011,color);
-		saveColor(node->child100,color);
-		saveColor(node->child101,color);
-		saveColor(node->child110,color);
-		saveColor(node->child111,color);
+	    saveColor(node->child000,color,buf);
+		saveColor(node->child001,color,buf);
+		saveColor(node->child010,color,buf);
+		saveColor(node->child011,color,buf);
+		saveColor(node->child100,color,buf);
+		saveColor(node->child101,color,buf);
+		saveColor(node->child110,color,buf);
+		saveColor(node->child111,color,buf);
 	}
+}
 
+void OcTree::saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf)
+{
+	if(!node) return;
+	else
+	{
+		XYZ velocityMean = 0;
+		for(unsigned int i = node->low;i<=node->high;i++)
+			velocityMean += velocity[buf[i].idx];
+		velocityMean /= float(node->high - node->low + 1);
+		outfile.write((char*)&velocityMean,sizeof(XYZ));
+	    saveColor(node->child000,velocity,buf);
+		saveColor(node->child001,velocity,buf);
+		saveColor(node->child010,velocity,buf);
+		saveColor(node->child011,velocity,buf);
+		saveColor(node->child100,velocity,buf);
+		saveColor(node->child101,velocity,buf);
+		saveColor(node->child110,velocity,buf);
+		saveColor(node->child111,velocity,buf);
+	}
 }
 
 void OcTree::loadFile(const char*filename,OcTree* tree)
@@ -659,6 +716,8 @@ void OcTree::loadFile(const char*filename,OcTree* tree)
 	if(!infile.is_open())
 		return;
 	unsigned sum,numVoxel;
+	short level;
+	infile.read((char*)&level,sizeof(short));
 	infile.read((char*)&sum,sizeof(unsigned));
 	infile.read((char*)&numVoxel,sizeof(unsigned));
 	if(sum>0)
@@ -667,7 +726,6 @@ void OcTree::loadFile(const char*filename,OcTree* tree)
 		loadTree(root);
 	}
 	infile.close();
-	cout<<endl;
 }
 void OcTree::loadTree(TreeNode *node)
 {   

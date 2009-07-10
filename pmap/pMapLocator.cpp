@@ -126,7 +126,7 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 		glEnd();
 		*/
 	if(tree){
-		glBegin(GL_LINES);
+		glBegin(GL_QUADS);
 		//glColor3f(1.0,0.0,0.0);
 		if(tree) tree->draw(filename);
 		glEnd();

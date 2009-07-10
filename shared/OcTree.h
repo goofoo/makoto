@@ -42,12 +42,13 @@ public:
 	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
-	void draw(const TreeNode *node,const char*filename,unsigned numVoxel);
+	void draw(const TreeNode *node,const char*filename,unsigned numVoxel,short level);
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	void saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color);
+	void saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color,PosAndId *buf,XYZ *velocity,const short level);
 	void saveTree(TreeNode *node);
-    void saveColor(TreeNode *node,XYZ *color);
+    void saveColor(TreeNode *node,XYZ *color,PosAndId *buf);
+	void saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf);
 	void loadFile(const char*filename,OcTree* tree);
 	void loadTree(TreeNode *node);
 
