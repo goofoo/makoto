@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7F1F57151004EDDE00B6B51B /* hairDeformer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */; };
 		7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F232D0FBA8F32003D0615 /* FNoise.cpp */; };
 		7F6F241A0FBBFF4C003D0615 /* guideCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */; };
 		7F6F241C0FBBFF5F003D0615 /* HairDguideNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hairDeformer.cpp; sourceTree = "<group>"; };
 		7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
 		7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guideCommand.cpp; sourceTree = "<group>"; };
 		7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HairDguideNode.cpp; sourceTree = "<group>"; };
@@ -75,6 +77,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */,
 				7F7473F50FF253AF00132DED /* QuickSort.cpp */,
 				7F7473F60FF253AF00132DED /* QuickSort.h */,
 				7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */,
@@ -190,6 +193,7 @@
 				7F77E5670FD7D432006D7D1A /* combCurveTool.cpp in Sources */,
 				7F7473F70FF253AF00132DED /* QuickSort.cpp in Sources */,
 				7F74740C0FF26E1800132DED /* BindTriangle.cpp in Sources */,
+				7F1F57151004EDDE00B6B51B /* hairDeformer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,6 +284,7 @@
 					"-Wl,-executable_path,$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
 					"-lOpenMaya",
 					"-lOpenMayaUI",
+					"-lOpenMayaAnim",
 					"-lFoundation",
 					"-framework",
 					AGL,

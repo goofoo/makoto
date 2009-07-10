@@ -69,12 +69,200 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 268585974;
-			PBXWorkspaceStateSaveDate = 268585974;
+			PBXPerProjectTemplateStateSaveDate = 268811870;
+			PBXWorkspaceStateSaveDate = 268811870;
+		};
+		perUserProjectItems = {
+			7F1F576410050E6D00B6B51B = 7F1F576410050E6D00B6B51B /* PBXBookmark */;
+			7F1F57761005136100B6B51B = 7F1F57761005136100B6B51B /* PBXTextBookmark */;
+			7F1F577B1005136100B6B51B = 7F1F577B1005136100B6B51B /* PBXTextBookmark */;
+			7F1F57911005159000B6B51B = 7F1F57911005159000B6B51B /* PBXTextBookmark */;
+			7F1F57A6100518E900B6B51B = 7F1F57A6100518E900B6B51B /* PBXBookmark */;
+			7F1F57B410051AE900B6B51B = 7F1F57B410051AE900B6B51B /* PBXTextBookmark */;
+			7F1F57B910051AE900B6B51B = 7F1F57B910051AE900B6B51B /* PBXTextBookmark */;
+			7F1F57DA100524C000B6B51B = 7F1F57DA100524C000B6B51B /* PBXTextBookmark */;
+			7F1F57DB100524C000B6B51B = 7F1F57DB100524C000B6B51B /* PBXTextBookmark */;
+			7F1F57DD100524C000B6B51B = 7F1F57DD100524C000B6B51B /* PBXTextBookmark */;
+			7F1F57DE100524C000B6B51B = 7F1F57DE100524C000B6B51B /* PBXTextBookmark */;
+			7F1F57E0100524C000B6B51B = 7F1F57E0100524C000B6B51B /* PBXTextBookmark */;
+			7F1F57E1100524C000B6B51B = 7F1F57E1100524C000B6B51B /* PBXTextBookmark */;
+			7F1F57E2100524C000B6B51B = 7F1F57E2100524C000B6B51B /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {662, 3164}}";
+			sepNavSelRange = "{3033, 0}";
+			sepNavVisRange = "{2381, 995}";
+			sepNavWindowFrame = "{{177, 57}, {702, 705}}";
+		};
+	};
+	7F1F57451004F2E600B6B51B /* hairDeformer.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = hairDeformer.h;
+		path = /Users/jianzhang/Documents/plankton/zHair/hairDeformer.h;
+		sourceTree = "<absolute>";
+	};
+	7F1F576410050E6D00B6B51B /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
+	};
+	7F1F57761005136100B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
+		name = "curvePatchNode.cpp: 35";
+		rLen = 147;
+		rLoc = 795;
+		rType = 0;
+		vrLen = 1008;
+		vrLoc = 633;
+	};
+	7F1F577B1005136100B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F577C1005136100B6B51B /* zData.h */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F1F577C1005136100B6B51B /* zData.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = zData.h;
+		path = /Users/jianzhang/Documents/plankton/shared/zData.h;
+		sourceTree = "<absolute>";
+	};
+	7F1F57911005159000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F57451004F2E600B6B51B /* hairDeformer.h */;
+		name = "hairDeformer.h: 41";
+		rLen = 6;
+		rLoc = 896;
+		rType = 0;
+		vrLen = 906;
+		vrLoc = 0;
+	};
+	7F1F57A6100518E900B6B51B /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */;
+	};
+	7F1F57B410051AE900B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */;
+		name = "hairDeformer.cpp: 197";
+		rLen = 0;
+		rLoc = 5155;
+		rType = 0;
+		vrLen = 975;
+		vrLoc = 4739;
+	};
+	7F1F57B910051AE900B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F57BA10051AE900B6B51B /* vertexCacheMenus.mel */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F1F57BA10051AE900B6B51B /* vertexCacheMenus.mel */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text;
+		name = vertexCacheMenus.mel;
+		path = /Users/jianzhang/Documents/plankton/module/scripts/vertexCacheMenus.mel;
+		sourceTree = "<absolute>";
+	};
+	7F1F57DA100524C000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */;
+		name = "hairDeformer.cpp: 118";
+		rLen = 0;
+		rLoc = 3033;
+		rType = 0;
+		vrLen = 995;
+		vrLoc = 2381;
+	};
+	7F1F57DB100524C000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F57DC100524C000B6B51B /* vertexCacheMenus.mel */;
+		name = "vertexCacheMenus.mel: 354";
+		rLen = 30;
+		rLoc = 11773;
+		rType = 0;
+		vrLen = 1365;
+		vrLoc = 11285;
+	};
+	7F1F57DC100524C000B6B51B /* vertexCacheMenus.mel */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = text;
+		name = vertexCacheMenus.mel;
+		path = /Users/jianzhang/Documents/plankton/module/scripts/vertexCacheMenus.mel;
+		sourceTree = "<absolute>";
+	};
+	7F1F57DD100524C000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */;
+		name = "pluginMain.cpp: 26";
+		rLen = 0;
+		rLoc = 631;
+		rType = 0;
+		vrLen = 1259;
+		vrLoc = 238;
+	};
+	7F1F57DE100524C000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F57DF100524C000B6B51B /* hairDeformer.h */;
+		name = "hairDeformer.h: 42";
+		rLen = 0;
+		rLoc = 918;
+		rType = 0;
+		vrLen = 919;
+		vrLoc = 0;
+	};
+	7F1F57DF100524C000B6B51B /* hairDeformer.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = hairDeformer.h;
+		path = /Users/jianzhang/Documents/plankton/zHair/hairDeformer.h;
+		sourceTree = "<absolute>";
+	};
+	7F1F57E0100524C000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
+		name = "HairMap.cpp: 181";
+		rLen = 9;
+		rLoc = 4406;
+		rType = 0;
+		vrLen = 1444;
+		vrLoc = 3685;
+	};
+	7F1F57E1100524C000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
+		name = "curvePatchNode.cpp: 90";
+		rLen = 55;
+		rLoc = 2268;
+		rType = 0;
+		vrLen = 1140;
+		vrLoc = 1924;
+	};
+	7F1F57E2100524C000B6B51B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F1F57E3100524C000B6B51B /* zData.h */;
+		name = "zData.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1144;
+		vrLoc = 10750;
+	};
+	7F1F57E3100524C000B6B51B /* zData.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = zData.h;
+		path = /Users/jianzhang/Documents/plankton/shared/zData.h;
+		sourceTree = "<absolute>";
 	};
 	7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {
 		uiCtxt = {
@@ -177,18 +365,18 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1256, 11242}}";
-			sepNavSelRange = "{5150, 0}";
-			sepNavVisRange = "{21917, 1170}";
+			sepNavIntBoundsRect = "{{0, 0}, {1256, 11354}}";
+			sepNavSelRange = "{4406, 9}";
+			sepNavVisRange = "{3685, 1444}";
 			sepNavWindowFrame = "{{391, 56}, {708, 722}}";
 		};
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {566, 1666}}";
-			sepNavSelRange = "{613, 0}";
-			sepNavVisRange = "{46, 1185}";
-			sepNavWindowFrame = "{{384, 78}, {536, 697}}";
+			sepNavIntBoundsRect = "{{0, 0}, {566, 1750}}";
+			sepNavSelRange = "{631, 0}";
+			sepNavVisRange = "{238, 1259}";
+			sepNavWindowFrame = "{{601, 58}, {536, 697}}";
 		};
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
@@ -209,9 +397,9 @@
 	};
 	7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {980, 8414}}";
-			sepNavSelRange = "{9392, 102}";
-			sepNavVisRange = "{9006, 894}";
+			sepNavIntBoundsRect = "{{0, 0}, {980, 8288}}";
+			sepNavSelRange = "{82, 16}";
+			sepNavVisRange = "{0, 885}";
 			sepNavWindowFrame = "{{346, 79}, {590, 694}}";
 		};
 	};
@@ -233,10 +421,10 @@
 	};
 	7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {782, 2870}}";
-			sepNavSelRange = "{4374, 0}";
-			sepNavVisRange = "{3978, 1489}";
-			sepNavWindowFrame = "{{522, 82}, {619, 689}}";
+			sepNavIntBoundsRect = "{{0, 0}, {662, 2982}}";
+			sepNavSelRange = "{2268, 55}";
+			sepNavVisRange = "{1924, 1140}";
+			sepNavWindowFrame = "{{559, 26}, {619, 689}}";
 		};
 	};
 	7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {

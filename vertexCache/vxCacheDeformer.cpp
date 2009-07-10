@@ -93,7 +93,7 @@ MStatus vxCacheDeformer::deform( MDataBlock& block,
 	MStatus returnStatus;
 	
 	MDataHandle envData = block.inputValue(envelope,&returnStatus);
-	float env = envData.asFloat();	MGlobal::displayInfo(MString("z ")+env);
+	float env = envData.asFloat();
 	if(env == 0) return returnStatus;
 	
 	double time = block.inputValue( frame ).asTime().value();

@@ -70,6 +70,7 @@ global proc zhairCreateMenus()
 			menuItem -l "Comb Curve Tool" -c "zhair_comb";
 			menuItem -divider true;
 			menuItem -l "Create Guider Mesh" -c "zhair_do_mesh_guider";
+			menuItem -l "Attach to Body" -c "zhair_attach_deformer_win";
 			menuItem -l "Recover Guider Curve" -c "ZHairGuider -cp 1";
 			menuItem -divider true;
 			menuItem -l "Modify Dynamic" -c "zhair_mod_dyn";
@@ -452,11 +453,11 @@ string $scroll = `scrollLayout -p $form`;
 
 columnLayout -adjustableColumn true;
  rowColumnLayout -numberOfColumns 3
-        -columnWidth 1 180
-		-columnWidth 2 180
-		-columnWidth 3 180;
+        -columnWidth 1 150
+		-columnWidth 2 150
+		-columnWidth 3 150;
        
-		frameLayout -label "Solvers" -labelAlign "center" -borderStyle "out";
+		frameLayout -label "Solvers" -labelAlign "center" -borderStyle "out" -height 120;
 			string $scrollLayout = `scrollLayout
         -horizontalScrollBarThickness 16
         -verticalScrollBarThickness   16 -height 120`;
@@ -471,14 +472,14 @@ columnLayout -adjustableColumn true;
                 setParent ..;
 			setParent ..;
 			
-            frameLayout -label "Actives" -labelAlign "center" -borderStyle "out";
+            frameLayout -label "Actives" -labelAlign "center" -borderStyle "out" -height 120;
 			scrollLayout -horizontalScrollBarThickness 16 -verticalScrollBarThickness 16 -height 120;
                 rowColumnLayout -numberOfColumns 2  -columnWidth 1 20 -columnWidth 2 120 zhair_colm_active;    
                     setParent ..;
                 setParent ..;
 			setParent ..;
 			
-            frameLayout -label "Passives" -labelAlign "center" -borderStyle "out";
+            frameLayout -label "Passives" -labelAlign "center" -borderStyle "out" -height 120;
 			scrollLayout -horizontalScrollBarThickness 16 -verticalScrollBarThickness 16 -height 120;
                 rowColumnLayout -numberOfColumns 2  -columnWidth 1 20 -columnWidth 2 120 zhair_colm_passive;
                     
@@ -548,6 +549,7 @@ global proc zhair_parse_nuc(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
+	attrControlGrp -attribute ($solver+".startFrame");
 	attrControlGrp -attribute ($solver+".windSpeed");
 	attrFieldSliderGrp -columnWidth 1 120 -min -1.0 -max 1.0 -at ($solver+".windDirectionX");
 	attrFieldSliderGrp -columnWidth 1 120 -min -1.0 -max 1.0 -at ($solver+".windDirectionY");
@@ -574,12 +576,18 @@ global proc zhair_parse_nucactive(string $solver)
 	attrControlGrp -attribute ($solver+".collide");
 	attrControlGrp -attribute ($solver+".selfCollide");
 	attrControlGrp -attribute ($solver+".pointMass");
+	attrControlGrp -attribute ($solver+".lift");
+	attrControlGrp -attribute ($solver+".stretchResistance");
 	attrControlGrp -attribute ($solver+".bendResistance");
 	attrControlGrp -attribute ($solver+".shearResistance");
 	attrControlGrp -attribute ($solver+".damp");
-	attrControlGrp -attribute ($solver+".rigidity");
-	zhair_setup_rgdmap ($solver+".rigidityMap");
-	button -l "Edit Rigid Map" -c ("zhair_ae_rgdmap " + $solver+".rigidityMap");
+	attrControlGrp -attribute ($solver+".inputMeshAttract");
+	attrControlGrp -attribute ($solver+".inputAttractDamp");
+
+	zhair_setup_rgdmap ($solver+".inputAttractMap");
+	button -l "Edit Attract Map" -c ("zhair_ae_rgdmap " + $solver+".inputAttractMap");
+	
+	attrControlGrp -attribute ($solver+".trappedCheck");
 	attrControlGrp -attribute ($solver+".maxIterations");
 	
 	setParent ..;
@@ -610,7 +618,7 @@ global proc zhair_toggleattr(string $attr)
 
 global proc zhair_setup_rgdmap (string $attr)
 {
-	optionMenuGrp -label "Rigid Map" -columnWidth 2 160 -cc ("zh_mod_rdgmap "+$attr) zh_rdgmapopt;
+	optionMenuGrp -label "Attract Map" -columnWidth 2 160 -cc ("zh_mod_rdgmap "+$attr) zh_rdgmapopt;
 	menuItem -label "none";
 	menuItem -label "attach new";
 	string $ramps[] = `ls -type ramp`;
@@ -679,3 +687,62 @@ global proc zhair_tglactivedsy(string $node)
 	if(`getAttr ($node+".solverDisplay")` == 0) setAttr ($node+".solverDisplay") 1;
 	else setAttr ($node+".solverDisplay") 0;
 }
+
+global proc zhair_attach_deformer_win()
+{
+//If such a window already exists, destory it.
+if ( (`window -exists deformzhairWin`) == true ) deleteUI deformzhairWin;
+ 
+//Create the window.
+ window -title "Hair Deformer Options" -wh 400 300  -mb false deformzhairWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+	intFieldGrp -l "Number of Segment" -v1 5 zhair_def_guider_ns_grp;
+	intFieldGrp -l "Start Frame" -v1 1 zhair_def_guider_sf_grp;
+	    
+//row begin
+button -l "Create" -c "dodeformzhair; deleteUI deformzhairWin"-p $row;
+button -l "Apply" -c "dodeformzhair" -p $row;
+button -l "Close" -c "deleteUI deformzhairWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm    $row     "bottom" 2
+        -attachForm     $row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm    $scroll "left"   2
+        -attachControl    $scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow deformzhairWin;
+}
+
+global proc dodeformzhair()
+{
+	string $sel[] = `ls -sl`;
+	if(size($sel) < 2) {
+		print("Select hair patch(s) and body mesh to add deformer.");
+		return;
+	}
+	int $i;
+	int $last = size($sel)-1;
+	for($i=0; $i<$last; $i++) {
+		select -r $sel[$i];
+		string $node[] = `deformer -type hairDeformer`;
+		setAttr ($node[0] + ".numSegment") `intFieldGrp -q -v1 zhair_def_guider_ns_grp`;
+		setAttr ($node[0] + ".startFrame") `intFieldGrp -q -v1 zhair_def_guider_sf_grp`;
+		connectAttr -f time1.outTime ($node[0] + ".currentTime");
+		connectAttr -f ($sel[$last] +".outMesh") ($node[0] + ".growMesh");
+	}
+}
+

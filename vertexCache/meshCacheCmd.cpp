@@ -75,7 +75,7 @@ MStatus vxCache::doIt( const MArgList& args )
 		
 		MObject meshObj = meshPath.node();
 	
-		MString surface = meshPath.fullPathName();
+		MString surface = meshPath.partialPathName();
 	
 		zWorks::validateFilePath(surface);
 
