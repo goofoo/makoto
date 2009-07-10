@@ -231,7 +231,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
-				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib Foundation.lib opengl32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib Foundation.lib opengl32.lib"
 				OutputFile="..\module\plug-ins\ZHair2008.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -295,7 +295,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
-				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib Foundation.lib opengl32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib Foundation.lib opengl32.lib"
 				OutputFile="..\module\plug-ins\ZHair70.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -430,6 +430,9 @@
 			</File>
 			<File
 				RelativePath=".\guideCommand.cpp">
+			</File>
+			<File
+				RelativePath=".\hairDeformer.cpp">
 			</File>
 			<File
 				RelativePath=".\HairDguideNode.cpp">
