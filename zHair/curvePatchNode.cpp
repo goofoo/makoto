@@ -59,10 +59,19 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 		{
 			MFnNurbsCurve fcurve(curvelist[i]);
 		
-			MPointArray cvs;
-			fcurve.getCVs ( cvs, MSpace::kObject );
+			//MPointArray cvs;
+			//fcurve.getCVs ( cvs, MSpace::kObject );
 			
-			unsigned num_seg = cvs.length() - 1;
+			//unsigned num_seg = cvs.length() - 1;
+			
+			unsigned num_seg = fcurve.length()/width/2;
+			if(num_seg < 4) num_seg = 4;
+			else if(num_seg > 16) num_seg = 16;
+			
+			double minparam, maxparam;
+			fcurve.getKnotDomain(minparam, maxparam);
+			double dparam = (maxparam - minparam)/num_seg;
+			
 			num_face += num_seg;
 			for(unsigned j = 0;j < num_seg;j++)
 			{
@@ -82,7 +91,9 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 			MIntArray vertexList;
 			MVector tangent;
          
-			fbase.getClosestPointAndNormal (cvs[0], closestp, closestn, MSpace::kObject, &closestPolygonID );
+			MPoint cent;
+			fcurve.getPointAtParam(minparam, cent, MSpace::kObject );
+			fbase.getClosestPointAndNormal (cent, closestp, closestn, MSpace::kObject, &closestPolygonID );
 			fbase.getPolygonVertices(closestPolygonID,vertexList);
 			fbase.getFaceVertexTangent(closestPolygonID,vertexList[0],tangent,MSpace::kObject,NULL);
 			//MVector dir = cvs[1] - cvs[0];
@@ -102,31 +113,28 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 				tangent.z = vt.z;
 			}
 			
+			XYZ side(tangent.x, tangent.y, tangent.z);
 			for(unsigned j = 0;j <= num_seg;j++)
 			{
+				double param = minparam + dparam*j;
+				
+				fcurve.getPointAtParam( param, cent, MSpace::kObject );
+				
 				MPoint vert;
-				XYZ side(tangent.x, tangent.y, tangent.z);
-				XYZ axis;
-				if(j<num_seg)
-				{
-					axis.x = cvs[j+1].x - cvs[j].x;
-					axis.y = cvs[j+1].y - cvs[j].y;
-					axis.z = cvs[j+1].z - cvs[j].z;
-				}
-				else
-				{
-					axis.x = cvs[j].x - cvs[j-1].x;
-					axis.y = cvs[j].y - cvs[j-1].y;
-					axis.z = cvs[j].z - cvs[j-1].z;
-				}
-				axis.normalize();
+				
+				MVector cdir = fcurve.tangent(param, MSpace::kObject);
+				XYZ axis(cdir.x, cdir.y, cdir.z);
 				
 				side.rotateAroundAxis(axis, twist/num_seg*j);
 				
-				vert = cvs[j] - MVector(side.x, side.y, side.z)*width;
+				tangent.x = side.x*width;
+				tangent.y = side.y*width;
+				tangent.z = side.z*width;
+				 
+				vert = cent - tangent;
 				vertexArray.append(vert);
 				
-				vert = cvs[j] + MVector(side.x, side.y, side.z)*width;
+				vert = cent + tangent;
 				vertexArray.append(vert);
 				
 				uarray.append(0);
