@@ -58,15 +58,10 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 		for(unsigned i=0; i<curvelist.length(); i++)
 		{
 			MFnNurbsCurve fcurve(curvelist[i]);
-		
-			//MPointArray cvs;
-			//fcurve.getCVs ( cvs, MSpace::kObject );
-			
-			//unsigned num_seg = cvs.length() - 1;
 			
 			unsigned num_seg = fcurve.length()/width/2;
-			if(num_seg < 4) num_seg = 4;
-			else if(num_seg > 16) num_seg = 16;
+			if(num_seg < 3) num_seg = 3;
+			else if(num_seg > 25) num_seg = 25;
 			
 			double minparam, maxparam;
 			fcurve.getKnotDomain(minparam, maxparam);
@@ -96,9 +91,6 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 			fbase.getClosestPointAndNormal (cent, closestp, closestn, MSpace::kObject, &closestPolygonID );
 			fbase.getPolygonVertices(closestPolygonID,vertexList);
 			fbase.getFaceVertexTangent(closestPolygonID,vertexList[0],tangent,MSpace::kObject,NULL);
-			//MVector dir = cvs[1] - cvs[0];
-			//dir.normalize();
-			//MVector tangent = closestn^dir;
 			tangent.normalize();
 			
 			if(rotate != 0) {
@@ -175,7 +167,7 @@ MStatus curvePatchNode::initialize()
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( numAttr.setStorable(true));
     CHECK_MSTATUS( numAttr.setKeyable(true));
-    CHECK_MSTATUS( numAttr.setMin(0.f));
+    CHECK_MSTATUS( numAttr.setMin(0.01f));
 	addAttribute(aSize);
 	
 	arotate = numAttr.create("rotate", "rot",

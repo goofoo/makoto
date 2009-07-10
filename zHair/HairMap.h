@@ -31,6 +31,26 @@ struct Dguide
 	XYZ* dispv;
 	MATRIX44F* space;
 	float u, v;
+
+	void getDvAtParam(XYZ& res, float param, int mapmax)
+	{
+		float fparam = param*(num_seg-1);
+		int iparam = (int)fparam;
+		res = dispv[iparam] + (dispv[iparam+1] - dispv[iparam]) * (fparam-iparam);
+		res *= float(num_seg)/mapmax;
+	}
+	
+	void getSpaceAtParam(MATRIX44F& res, float param)
+	{
+		float fparam = param*(num_seg-1);
+		int iparam = (int)fparam;
+		res = space[iparam];
+		XYZ v0, v1;
+		space[iparam].getTranslation(v0);
+		space[iparam+1].getTranslation(v1);
+		v0 = v0 + (v1 - v0) * (fparam-iparam);
+		res.setTranslation(v0);
+	}
 };
 
 class hairMap
@@ -106,6 +126,7 @@ private:
 	XYZ* parray;
 
 	Dguide* guide_data;
+	unsigned* pNSeg;
 	unsigned num_guide, num_guideobj, n_vert, n_tri;
 
 	triangle_bind_info* bind_data;

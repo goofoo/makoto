@@ -98,7 +98,7 @@
 		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
 		name = "curvePatchNode.cpp: 67";
 		rLen = 0;
-		rLoc = 1795;
+		rLoc = 1679;
 		rType = 0;
 		vrLen = 844;
 		vrLoc = 0;
@@ -128,7 +128,7 @@
 		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
 		name = "curvePatchNode.cpp: 68";
 		rLen = 0;
-		rLoc = 1795;
+		rLoc = 1679;
 		rType = 0;
 		vrLen = 1020;
 		vrLoc = 1182;
@@ -138,7 +138,7 @@
 		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
 		name = "curvePatchNode.cpp: 118";
 		rLen = 0;
-		rLoc = 3177;
+		rLoc = 2966;
 		rType = 0;
 		vrLen = 1075;
 		vrLoc = 2568;
@@ -148,7 +148,7 @@
 		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
 		name = "curvePatchNode.cpp: 72";
 		rLen = 0;
-		rLoc = 1724;
+		rLoc = 1608;
 		rType = 0;
 		vrLen = 1174;
 		vrLoc = 1432;
@@ -158,7 +158,7 @@
 		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
 		name = "curvePatchNode.cpp: 95";
 		rLen = 0;
-		rLoc = 2265;
+		rLoc = 2149;
 		rType = 0;
 		vrLen = 1198;
 		vrLoc = 1503;
@@ -168,7 +168,7 @@
 		fRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */;
 		name = "curvePatchNode.cpp: 137";
 		rLen = 0;
-		rLoc = 3540;
+		rLoc = 3329;
 		rType = 0;
 		vrLen = 998;
 		vrLoc = 2820;
@@ -296,9 +296,9 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {956, 11424}}";
-			sepNavSelRange = "{4406, 9}";
-			sepNavVisRange = "{3685, 1444}";
+			sepNavIntBoundsRect = "{{0, 0}, {1256, 11844}}";
+			sepNavSelRange = "{5440, 0}";
+			sepNavVisRange = "{3890, 1344}";
 			sepNavWindowFrame = "{{391, 56}, {708, 722}}";
 		};
 	};
@@ -352,9 +352,9 @@
 	};
 	7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {686, 3178}}";
-			sepNavSelRange = "{3540, 0}";
-			sepNavVisRange = "{2820, 998}";
+			sepNavIntBoundsRect = "{{0, 0}, {782, 2856}}";
+			sepNavSelRange = "{1510, 0}";
+			sepNavVisRange = "{1178, 937}";
 			sepNavWindowFrame = "{{559, 65}, {619, 689}}";
 		};
 	};

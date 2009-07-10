@@ -491,6 +491,13 @@ struct MATRIX44F
 		v[3][2] = z;
 	}
 	
+	void getTranslation(XYZ& trans) const
+	{
+		trans.x = v[3][0];
+		trans.y = v[3][1];
+		trans.z = v[3][2];
+	}
+	
 	void setRotation(const MATRIX33F& r)
 	{
 		v[0][0] = r(0,0);

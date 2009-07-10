@@ -18,7 +18,7 @@
 #include <fstream>
 using namespace std;
 
-hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),
+hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
 draw_step(1),order(0),isInterpolate(0)
@@ -37,6 +37,7 @@ hairMap::~hairMap()
 	if(pconnection) delete[] pconnection;
 	if(uarray) delete[] uarray;
 	if(varray) delete[] varray;
+	if(pNSeg) delete[] pNSeg;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -155,7 +156,7 @@ int hairMap::dice()
 
 void hairMap::draw()
 {
-	if(n_samp < 1 || !bind_data || !guide_data || !parray) return;
+	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
 	
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
@@ -164,7 +165,7 @@ void hairMap::draw()
 	FNoise fnoi;
 	
 	float noi, keepx;
-	
+	MATRIX44F tspace;
 	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3];
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step)
@@ -184,10 +185,17 @@ void hairMap::draw()
 		guide_spaceinv[bind_data[i].idx[1]].transform(pt[1]);
 		guide_spaceinv[bind_data[i].idx[2]].transform(pt[2]);
 		
-		int num_seg = guide_data[bind_data[i].idx[0]].num_seg;
+		//int num_seg = guide_data[bind_data[i].idx[0]].num_seg;
+		unsigned num_seg = pNSeg[i];
+		float dparam = 1.f/num_seg;
+		float param;
 		if(bind_data[i].wei[0] > .99f) {
 			for(short j = 0; j< num_seg; j++) {
-				dv = guide_data[bind_data[i].idx[0]].dispv[j];
+				param = dparam*j;
+				
+				//dv = guide_data[bind_data[i].idx[0]].dispv[j];
+				guide_data[bind_data[i].idx[0]].getDvAtParam(dv, param, num_seg);
+				guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
 				
 				cc = croot + dcolor * j;
 				glColor3f(cc.x, cc.y, cc.z);
@@ -199,7 +207,8 @@ void hairMap::draw()
 				pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
 				pw[0] *= noi;
 				pw[0].x = keepx;
-				guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+				//guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+				tspace.transform(pw[0]);
 				
 				pcur = pw[0];
 				
@@ -503,6 +512,9 @@ void hairMap::bind()
 	if(bind_data) delete[] bind_data;
 	bind_data = new triangle_bind_info[n_samp];
 	
+	if(pNSeg) delete[] pNSeg;
+	pNSeg = new unsigned[n_samp];
+	
 	for(unsigned i=0; i<n_samp; i++)
 	{
 // finder 3 three nearest guides
@@ -535,6 +547,9 @@ void hairMap::bind()
 			bind_data[i].wei[0] = 1.f;
 			bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
 		}
+		
+		pNSeg[i] = guide_data[idx[0].idx].num_seg * bind_data[i].wei[0] + guide_data[idx[1].idx].num_seg * bind_data[i].wei[1] + guide_data[idx[2].idx].num_seg * bind_data[i].wei[2];
+		
 		delete[] idx;
 	}
 }
