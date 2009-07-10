@@ -69,7 +69,6 @@ MStatus hairDeformer::initialize()
 	//addAttribute( amaxframe );
 	
 	aframestep = numAttr.create( "startFrame", "fst", MFnNumericData::kInt, 1 );
-	numAttr.setMin(1);
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
 	addAttribute( aframestep );
