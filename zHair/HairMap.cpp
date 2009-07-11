@@ -165,15 +165,14 @@ void hairMap::draw()
 	FNoise fnoi;
 	
 	float noi, keepx;
-	MATRIX44F tspace;
-	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3];
+	MATRIX44F tspace, tspace1, tspace2;
+	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3], dv0, dv1, dv2;
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step)
 	{
 		noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
 		XYZ croot = root_color + (mutant_color - root_color)*noi;
 		XYZ ctip = tip_color + (mutant_color - tip_color)*noi;
-		XYZ dcolor = (ctip - croot)/(float)guide_data[bind_data[i].idx[0]].num_seg;
 		
 		ppre = pbuf[i];
 		
@@ -188,6 +187,7 @@ void hairMap::draw()
 		//int num_seg = guide_data[bind_data[i].idx[0]].num_seg;
 		unsigned num_seg = pNSeg[i];
 		float dparam = 1.f/num_seg;
+		XYZ dcolor = (ctip - croot)/(float)num_seg;
 		float param;
 		if(bind_data[i].wei[0] > .99f) {
 			for(short j = 0; j< num_seg; j++) {
@@ -229,7 +229,18 @@ void hairMap::draw()
 		}
 		else {
 			for(short j = 0; j< num_seg; j++) {
-				dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
+				param = dparam*j;
+				
+				guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
+				guide_data[bind_data[i].idx[1]].getDvAtParam(dv1, param, num_seg);
+				guide_data[bind_data[i].idx[2]].getDvAtParam(dv2, param, num_seg);
+				
+				guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
+				guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace1, param);
+				guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace2, param);
+				
+				//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
+				dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
 				
 				cc = croot + dcolor * j;
 				glColor3f(cc.x, cc.y, cc.z);
@@ -241,21 +252,24 @@ void hairMap::draw()
 				pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
 				pw[0] *= noi;
 				pw[0].x = keepx;
-				guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+				//guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+				tspace.transform(pw[0]);
 				
 				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 				keepx = pt[1].x;
 				pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
 				pw[1] *= noi;
 				pw[1].x = keepx;
-				guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+				//guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+				tspace1.transform(pw[1]);
 				
 				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 				keepx = pt[2].x;
 				pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
 				pw[2] *= noi;
 				pw[2].x = keepx;
-				guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+				//guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+				tspace2.transform(pw[2]);
 				
 				pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
 				

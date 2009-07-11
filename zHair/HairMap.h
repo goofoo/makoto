@@ -34,20 +34,24 @@ struct Dguide
 
 	void getDvAtParam(XYZ& res, float param, int mapmax)
 	{
-		float fparam = param*(num_seg-1);
+		float fparam = param*num_seg;
 		int iparam = (int)fparam;
-		res = dispv[iparam] + (dispv[iparam+1] - dispv[iparam]) * (fparam-iparam);
+		int iparam1 = iparam+1;
+		if(iparam1 > num_seg - 1) iparam1 = num_seg - 1;
+		res = dispv[iparam] + (dispv[iparam1] - dispv[iparam]) * (fparam-iparam);
 		res *= float(num_seg)/mapmax;
 	}
 	
 	void getSpaceAtParam(MATRIX44F& res, float param)
 	{
-		float fparam = param*(num_seg-1);
+		float fparam = param*num_seg;
 		int iparam = (int)fparam;
+		int iparam1 = iparam+1;
+		if(iparam1 > num_seg - 1) iparam1 = num_seg - 1;
 		res = space[iparam];
 		XYZ v0, v1;
 		space[iparam].getTranslation(v0);
-		space[iparam+1].getTranslation(v1);
+		space[iparam1].getTranslation(v1);
 		v0 = v0 + (v1 - v0) * (fparam-iparam);
 		res.setTranslation(v0);
 	}
