@@ -24,12 +24,12 @@ MTypeId		hairDeformer::id( 0x00006345 );
 MObject 	hairDeformer::anumseg;
 MObject     hairDeformer::frame;
 MObject  hairDeformer::agrowth;
-//MObject     hairDeformer::amaxframe;
+MObject     hairDeformer::abase;
 MObject     hairDeformer::aframestep;
 
 
 
-hairDeformer::hairDeformer():faceId(0),pobj(0)
+hairDeformer::hairDeformer():faceId(0),pobj(0),nsegbuf(0)
 {
 
 }
@@ -37,6 +37,7 @@ hairDeformer::~hairDeformer()
 {
 	if(pobj) delete[] pobj;
 	if(faceId) delete[] faceId;
+	if(nsegbuf) delete[] nsegbuf;
 }
 
 void* hairDeformer::creator()
@@ -76,10 +77,13 @@ MStatus hairDeformer::initialize()
 	zWorks::createTypedAttr(agrowth, MString("growMesh"), MString("gm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(agrowth), "ERROR adding grow mesh");
 	
+	zWorks::createTypedAttr(abase, MString("baseMesh"), MString("bm"), MFnData::kMesh);
+	zCheckStatus(addAttribute(abase), "ERROR adding grow mesh");
+	
 	attributeAffects( frame, hairDeformer::outputGeom );
 	attributeAffects( agrowth, hairDeformer::outputGeom );
 	attributeAffects( anumseg, hairDeformer::outputGeom );
-	//attributeAffects( amaxframe, hairDeformer::outputGeom );
+	attributeAffects( abase, hairDeformer::outputGeom );
 	attributeAffects( aframestep, hairDeformer::outputGeom );
 
 	return MStatus::kSuccess;
@@ -97,14 +101,18 @@ MStatus hairDeformer::deform( MDataBlock& block,
 	float env = envData.asFloat();
 	if(env == 0) return status;
 	
-	int num_seg = block.inputValue(anumseg).asInt();
+	//int num_seg = block.inputValue(anumseg).asInt();
 	
-	int num_vert = (num_seg+1)*2;
+	//int num_vert = (num_seg+1)*2;
 	
 	MObject ogrow = block.inputValue(agrowth).asMesh();
+	MObject obase = block.inputValue(abase).asMesh();
 	
 	MFnMesh fbase(ogrow, &status);
 	MItMeshPolygon itbase(ogrow, &status);
+	
+	MFnMesh fori(obase, &status);
+	MItMeshPolygon itori(obase, &status);
 	if(!status)
 	{
 		MGlobal::displayWarning("no mesh connected, do nothing");
@@ -115,9 +123,41 @@ MStatus hairDeformer::deform( MDataBlock& block,
 	
 	int startfrm = block.inputValue( aframestep ).asInt();
 	if(startfrm == (int)time) {
-// init
 		MGlobal::displayInfo("hair deformer init");
-		num_hair = iter.count()/num_vert;
+// init get number of hair
+
+		num_hair = 0;
+		int nconn;
+		for(; !itori.isDone(); itori.next()) {
+			itori.numConnectedFaces (nconn);
+			if(nconn==1) num_hair++;
+		}
+		num_hair /= 2;
+		
+		if(nsegbuf) delete[] nsegbuf;
+		nsegbuf = new int[num_hair];
+		
+		itori.reset();
+		char isstart = 0;
+		int nseg = 0, ihair = 0;
+		for(; !itori.isDone(); itori.next()) {
+			nseg++;
+			itori.numConnectedFaces (nconn);
+			if(nconn==1) {
+				if(!isstart) isstart = 1;
+				else {
+					nsegbuf[ihair] = nseg;
+					nseg = 0;
+					ihair++;
+					isstart = 0;
+				}
+			}
+		}
+		
+		//int nseg = meshFn.numPolygons()/nend;
+		//num_guide += faceIter.count()/nseg;
+		
+		//num_hair = iter.count()/num_vert;
 		
 		if(pobj) delete[] pobj;
 		pobj = new XYZ[iter.count()];
@@ -126,13 +166,17 @@ MStatus hairDeformer::deform( MDataBlock& block,
 		faceId = new int[num_hair];
 		
 		MATRIX44F spaceinv;
+		int hair_id = 0, vert_acc = 0;
 		for ( ; !iter.isDone(); iter.next()) {
 		
 			MPoint pt = iter.position();
 			XYZ pos(pt.x , pt.y, pt.z);
 			
-			int hair_id = iter.index()/num_vert;
-			if(iter.index()%num_vert == 0) {
+			//int hair_id = iter.index()/num_vert;
+			if(iter.index() == vert_acc) {
+				vert_acc += (nsegbuf[hair_id]+1)*2;
+				hair_id++;
+				
 // get nearest face space
 				MPoint closestp;
 				MVector closestn;
@@ -174,7 +218,7 @@ MStatus hairDeformer::deform( MDataBlock& block,
 		}
 	}
 	else {
-		if(faceId && pobj) {
+		if(faceId && pobj && nsegbuf) {
 		
 			MATRIX44F* space = new MATRIX44F[num_hair];
 			
@@ -208,9 +252,14 @@ MStatus hairDeformer::deform( MDataBlock& block,
 			
 			}
 			
+			int hair_id = 0, vert_acc = 0;
 			for ( ; !iter.isDone(); iter.next()) {
 				
-				int hair_id = iter.index()/num_vert;
+				//int hair_id = iter.index()/num_vert;
+				if(iter.index() == vert_acc) {
+					vert_acc += (nsegbuf[hair_id]+1)*2;
+					hair_id++;
+				}
 				
 				XYZ pp = pobj[iter.index()];
 				space[hair_id].transform(pp);

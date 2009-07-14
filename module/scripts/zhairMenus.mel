@@ -550,6 +550,8 @@ global proc zhair_parse_nuc(string $solver)
 	
 	columnLayout -p zhair_frm_dynattr;
 	attrControlGrp -attribute ($solver+".startFrame");
+	attrControlGrp -attribute ($solver+".gravity");
+	attrControlGrp -attribute ($solver+".airDensity");
 	attrControlGrp -attribute ($solver+".windSpeed");
 	attrFieldSliderGrp -columnWidth 1 120 -min -1.0 -max 1.0 -at ($solver+".windDirectionX");
 	attrFieldSliderGrp -columnWidth 1 120 -min -1.0 -max 1.0 -at ($solver+".windDirectionY");
@@ -557,7 +559,7 @@ global proc zhair_parse_nuc(string $solver)
 	attrFieldSliderGrp -columnWidth 1 120 -min 0.0 -max 1.0 -at ($solver+".windNoise");
 	attrControlGrp -attribute ($solver+".subSteps");
 	attrControlGrp -attribute ($solver+".maxCollisionIterations");
-	
+	button -l "Set Typical" -c ("zhair_set_solver "+$solver);
 	setParent ..;
 	
 	frameLayout -e -l $solver zhair_frm_dynattr;
@@ -590,6 +592,7 @@ global proc zhair_parse_nucactive(string $solver)
 	attrControlGrp -attribute ($solver+".trappedCheck");
 	attrControlGrp -attribute ($solver+".maxIterations");
 	
+	button -l "Set Typical" -c ("zhair_set_active "+$solver);
 	setParent ..;
 	
 	frameLayout -e -l $solver zhair_frm_dynattr;
@@ -604,6 +607,9 @@ global proc zhair_parse_nucpassive(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
+	attrControlGrp -attribute ($solver+".bounce") 0;
+	attrControlGrp -attribute ($solver+".friction") 1;
+	attrControlGrp -attribute ($solver+".trappedCheck");
 	
 	setParent ..;
 	
@@ -655,9 +661,9 @@ global proc zh_mod_rdgmap(string $attr)
 		connectAttr ($pl+".outUV") ($tx+".uv");
 		connectAttr ($pl+".outUvFilterSize") ($tx+".uvFilterSize");
 		removeMultiInstance -break true ($tx+".colorEntryList[2]");
-		setAttr ($tx+".colorEntryList[0].position") 0.05;
+		setAttr ($tx+".colorEntryList[0].position") 0.15;
 		setAttr ($tx+".colorEntryList[0].color") -type double3 1 1 1 ;
-		setAttr ($tx+".colorEntryList[1].position") 0.95;
+		setAttr ($tx+".colorEntryList[1].position") 0.5;
 		setAttr ($tx+".colorEntryList[1].color") -type double3 0 0 0 ;
 
 		connectAttr -force ($tx+".outAlpha") $attr;
@@ -746,3 +752,23 @@ global proc dodeformzhair()
 	}
 }
 
+global proc zhair_set_solver(string $solver)
+{
+	setAttr ($solver+".gravity") 639;
+	setAttr ($solver+".airDensity") 0.01;
+}
+
+global proc zhair_set_active(string $solver)
+{
+	setAttr ($solver+".collide") 1;
+	setAttr ($solver+".selfCollide") 0;
+	setAttr ($solver+".pointMass") 0.2;
+	setAttr ($solver+".lift") 0.01;
+	setAttr ($solver+".stretchResistance") 200;
+	setAttr ($solver+".bendResistance") 1.5;
+	setAttr ($solver+".shearResistance") 1.5;
+	setAttr ($solver+".damp") 0.07;
+	setAttr ($solver+".inputMeshAttract") 1.0;
+	setAttr ($solver+".inputAttractDamp") 0.5;
+	setAttr ($solver+".trappedCheck") 1;
+}
