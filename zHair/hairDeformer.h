@@ -29,7 +29,7 @@ public:
 	virtual MStatus      		deform(MDataBlock& block, MItGeometry& iter, const MMatrix& mat, unsigned int multiIndex);
 
 	// local node attributes
-	//static  	MObject		path;
+	static  	MObject		abase;
 	static  	MObject		frame;
 	static MObject agrowth;
 	static  	MObject 	anumseg;
@@ -40,4 +40,5 @@ private:
 	XYZ* pobj;
 	int* faceId;
 	int num_hair;
+	int* nsegbuf;
 };
