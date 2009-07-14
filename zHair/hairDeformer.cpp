@@ -21,7 +21,6 @@
 #include <maya/MFnMeshData.h>
 
 MTypeId		hairDeformer::id( 0x00006345 );
-MObject 	hairDeformer::anumseg;
 MObject     hairDeformer::frame;
 MObject  hairDeformer::agrowth;
 MObject     hairDeformer::abase;
@@ -55,20 +54,6 @@ MStatus hairDeformer::initialize()
 	zCheckStatus(status, "ERROR creating time");
 	zCheckStatus(addAttribute(frame), "ERROR adding time");
 	
-	//path = stringAttr.create( "cachePath", "cp", MFnData::kString );
- 	//stringAttr.setStorable(true);
-	//addAttribute( path );
-	
-	anumseg = numAttr.create( "numSegment", "nsg", MFnNumericData::kInt, 5 );
-	numAttr.setStorable(true);
-	numAttr.setKeyable(true);
-	addAttribute( anumseg );
-	
-	//amaxframe = numAttr.create( "maxFrame", "mxf", MFnNumericData::kInt, 24 );
-	//numAttr.setStorable(true);
-	//numAttr.setKeyable(true);
-	//addAttribute( amaxframe );
-	
 	aframestep = numAttr.create( "startFrame", "fst", MFnNumericData::kInt, 1 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
@@ -78,11 +63,10 @@ MStatus hairDeformer::initialize()
 	zCheckStatus(addAttribute(agrowth), "ERROR adding grow mesh");
 	
 	zWorks::createTypedAttr(abase, MString("baseMesh"), MString("bm"), MFnData::kMesh);
-	zCheckStatus(addAttribute(abase), "ERROR adding grow mesh");
+	zCheckStatus(addAttribute(abase), "ERROR adding base mesh");
 	
 	attributeAffects( frame, hairDeformer::outputGeom );
 	attributeAffects( agrowth, hairDeformer::outputGeom );
-	attributeAffects( anumseg, hairDeformer::outputGeom );
 	attributeAffects( abase, hairDeformer::outputGeom );
 	attributeAffects( aframestep, hairDeformer::outputGeom );
 
@@ -101,21 +85,22 @@ MStatus hairDeformer::deform( MDataBlock& block,
 	float env = envData.asFloat();
 	if(env == 0) return status;
 	
-	//int num_seg = block.inputValue(anumseg).asInt();
-	
-	//int num_vert = (num_seg+1)*2;
-	
 	MObject ogrow = block.inputValue(agrowth).asMesh();
 	MObject obase = block.inputValue(abase).asMesh();
 	
 	MFnMesh fbase(ogrow, &status);
 	MItMeshPolygon itbase(ogrow, &status);
+	if(!status)
+	{
+		MGlobal::displayWarning("no grow mesh connected, do nothing");
+		return MS::kUnknownParameter;
+	}
 	
 	MFnMesh fori(obase, &status);
 	MItMeshPolygon itori(obase, &status);
 	if(!status)
 	{
-		MGlobal::displayWarning("no mesh connected, do nothing");
+		MGlobal::displayWarning("no base mesh connected, do nothing");
 		return MS::kUnknownParameter;
 	}
 
@@ -133,7 +118,8 @@ MStatus hairDeformer::deform( MDataBlock& block,
 			if(nconn==1) num_hair++;
 		}
 		num_hair /= 2;
-		
+
+// store per-hair segment		
 		if(nsegbuf) delete[] nsegbuf;
 		nsegbuf = new int[num_hair];
 		
@@ -154,11 +140,6 @@ MStatus hairDeformer::deform( MDataBlock& block,
 			}
 		}
 		
-		//int nseg = meshFn.numPolygons()/nend;
-		//num_guide += faceIter.count()/nseg;
-		
-		//num_hair = iter.count()/num_vert;
-		
 		if(pobj) delete[] pobj;
 		pobj = new XYZ[iter.count()];
 		
@@ -166,16 +147,15 @@ MStatus hairDeformer::deform( MDataBlock& block,
 		faceId = new int[num_hair];
 		
 		MATRIX44F spaceinv;
-		int hair_id = 0, vert_acc = 0;
+		int hair_id = -1, vert_acc = 0;
 		for ( ; !iter.isDone(); iter.next()) {
 		
 			MPoint pt = iter.position();
 			XYZ pos(pt.x , pt.y, pt.z);
 			
-			//int hair_id = iter.index()/num_vert;
 			if(iter.index() == vert_acc) {
-				vert_acc += (nsegbuf[hair_id]+1)*2;
 				hair_id++;
+				vert_acc += (nsegbuf[hair_id]+1)*2;
 				
 // get nearest face space
 				MPoint closestp;
@@ -219,7 +199,7 @@ MStatus hairDeformer::deform( MDataBlock& block,
 	}
 	else {
 		if(faceId && pobj && nsegbuf) {
-		
+			
 			MATRIX44F* space = new MATRIX44F[num_hair];
 			
 			for(unsigned i=0; i<num_hair; i++) {
@@ -252,13 +232,11 @@ MStatus hairDeformer::deform( MDataBlock& block,
 			
 			}
 			
-			int hair_id = 0, vert_acc = 0;
+			int hair_id = -1, vert_acc = 0;
 			for ( ; !iter.isDone(); iter.next()) {
-				
-				//int hair_id = iter.index()/num_vert;
 				if(iter.index() == vert_acc) {
-					vert_acc += (nsegbuf[hair_id]+1)*2;
 					hair_id++;
+					vert_acc += (nsegbuf[hair_id]+1)*2;
 				}
 				
 				XYZ pp = pobj[iter.index()];

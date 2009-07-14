@@ -141,5 +141,6 @@ private:
 	std::string m_cachename;
 	XYZ tip_color, root_color, mutant_color;
 	int order, isInterpolate;
+	int* nsegbuf;
 };
 #endif

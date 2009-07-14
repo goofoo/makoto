@@ -32,7 +32,6 @@ public:
 	static  	MObject		abase;
 	static  	MObject		frame;
 	static MObject agrowth;
-	static  	MObject 	anumseg;
 	static  	MObject 	aframestep;
 	static  MTypeId		id;
 	

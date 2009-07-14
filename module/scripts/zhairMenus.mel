@@ -607,8 +607,8 @@ global proc zhair_parse_nucpassive(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
-	attrControlGrp -attribute ($solver+".bounce") 0;
-	attrControlGrp -attribute ($solver+".friction") 1;
+	attrControlGrp -attribute ($solver+".bounce");
+	attrControlGrp -attribute ($solver+".friction");
 	attrControlGrp -attribute ($solver+".trappedCheck");
 	
 	setParent ..;
@@ -710,7 +710,6 @@ string $scroll = `scrollLayout -p $form`;
 columnLayout -adjustableColumn true;
 
 //column begin
-	intFieldGrp -l "Number of Segment" -v1 5 zhair_def_guider_ns_grp;
 	intFieldGrp -l "Start Frame" -v1 1 zhair_def_guider_sf_grp;
 	    
 //row begin
@@ -740,15 +739,23 @@ global proc dodeformzhair()
 		print("Select hair patch(s) and body mesh to add deformer.");
 		return;
 	}
-	int $i;
+	
 	int $last = size($sel)-1;
+	select -r $sel[$last];
+	string $mbase[] = `pickWalk -d down`;
+	
+	int $i;
 	for($i=0; $i<$last; $i++) {
 		select -r $sel[$i];
 		string $node[] = `deformer -type hairDeformer`;
-		setAttr ($node[0] + ".numSegment") `intFieldGrp -q -v1 zhair_def_guider_ns_grp`;
 		setAttr ($node[0] + ".startFrame") `intFieldGrp -q -v1 zhair_def_guider_sf_grp`;
 		connectAttr -f time1.outTime ($node[0] + ".currentTime");
-		connectAttr -f ($sel[$last] +".outMesh") ($node[0] + ".growMesh");
+		connectAttr -f ($mbase[0] +".outMesh") ($node[0] + ".growMesh");
+		
+		string $dd[] = `duplicate -rr -name ($sel[$i]+"Base") $sel[$i]`;
+		select -r $dd[0];
+		string $md[] = `pickWalk -d down`;
+		connectAttr -f ($md[0] +".outMesh") ($node[0] + ".baseMesh");
 	}
 }
 
