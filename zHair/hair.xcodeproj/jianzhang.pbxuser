@@ -144,8 +144,8 @@
 	};
 	7F74740A0FF26E1800132DED /* BindTriangle.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {686, 573}}";
-			sepNavSelRange = "{132, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {686, 560}}";
+			sepNavSelRange = "{635, 0}";
 			sepNavVisRange = "{0, 1270}";
 			sepNavWindowFrame = "{{470, 77}, {723, 701}}";
 		};
@@ -219,7 +219,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 388";
 		rLen = 0;
-		rLoc = 10293;
+		rLoc = 11126;
 		rType = 0;
 		vrLen = 1312;
 		vrLoc = 9589;
@@ -257,10 +257,10 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {710, 12124}}";
-			sepNavSelRange = "{10293, 0}";
-			sepNavVisRange = "{9589, 1312}";
-			sepNavWindowFrame = "{{411, 52}, {708, 722}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1268, 12278}}";
+			sepNavSelRange = "{16012, 10}";
+			sepNavVisRange = "{15478, 1231}";
+			sepNavWindowFrame = "{{411, 56}, {708, 722}}";
 		};
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
@@ -273,17 +273,17 @@
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {675, 3542}}";
-			sepNavSelRange = "{3477, 0}";
-			sepNavVisRange = "{2761, 911}";
+			sepNavIntBoundsRect = "{{0, 0}, {675, 3640}}";
+			sepNavSelRange = "{3501, 0}";
+			sepNavVisRange = "{2769, 901}";
 			sepNavWindowFrame = "{{24, 67}, {734, 700}}";
 		};
 	};
 	7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {722, 4354}}";
-			sepNavSelRange = "{3301, 248}";
-			sepNavVisRange = "{2465, 1113}";
+			sepNavIntBoundsRect = "{{0, 0}, {722, 4284}}";
+			sepNavSelRange = "{3225, 0}";
+			sepNavVisRange = "{2247, 816}";
 			sepNavWindowFrame = "{{9, 66}, {590, 694}}";
 		};
 	};

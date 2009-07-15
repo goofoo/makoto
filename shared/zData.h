@@ -326,6 +326,14 @@ struct XYZ
 		z *= leng;
 	}
 	
+	void setLength(const float val)
+	{
+		normalize();
+		x *= val;
+		y *= val;
+		z *= val;
+	}
+	
 	float x,y,z;
 };
 
