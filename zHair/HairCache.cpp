@@ -17,7 +17,7 @@ HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_space
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
 nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
-rootColorArray(0), tipColorArray(0), opacities(0)
+rootColorArray(0), tipColorArray(0), opacities(0),pNSeg(0)
 {
 }
 HairCache::~HairCache() 
@@ -38,6 +38,7 @@ HairCache::~HairCache()
 	if(rootColorArray) delete[] rootColorArray;
 	if(tipColorArray) delete[] tipColorArray;
 	if(opacities) delete[] opacities;
+	if(pNSeg) delete[] pNSeg;
 }
 
 int HairCache::dice()
@@ -80,21 +81,12 @@ void HairCache::bind()
 	if(bind_data) delete[] bind_data;
 	bind_data = new triangle_bind_info[n_samp];
 	
+	if(pNSeg) delete[] pNSeg;
+	pNSeg = new unsigned[n_samp];
+	
 	for(unsigned i=0; i<n_samp; i++)
 	{
 // find the nearest guide
-		/*float min_dist = 10e6;
-		for(unsigned j=0; j<num_guide; j++)
-		{
-			togd = pbuf[i] - guide_data[j].P[0];
-			dist = togd.length();
-			
-			if(dist < min_dist)
-			{
-				bind_data[i] = j;
-				min_dist = dist;
-			}
-		}*/
 		XY from(ddice[i].coords, ddice[i].coordt);
 		ValueAndId* idx = new ValueAndId[num_guide];
 		for(unsigned j=0; j<num_guide; j++)
@@ -104,26 +96,38 @@ void HairCache::bind()
 			XY to(guide_data[j].u, guide_data[j].v);
 			idx[j].val = from.distantTo(to);
 		}
-		QuickSort::sort(idx, 0, num_guide-1);
-		bind_data[i].idx[0] = idx[0].idx;
-		bind_data[i].idx[1] = idx[1].idx;
-		bind_data[i].idx[2] = idx[2].idx;
 		
-		if(isInterpolate==1) {
+		QuickSort::sort(idx, 0, num_guide-1);
+				
+		if(isInterpolate==1 && num_guide>6) {
 			XY corner[3];
-			corner[0].x = guide_data[idx[0].idx].u;
-			corner[1].x = guide_data[idx[1].idx].u;
-			corner[2].x = guide_data[idx[2].idx].u;
-			corner[0].y = guide_data[idx[0].idx].v;
-			corner[1].y = guide_data[idx[1].idx].v;
-			corner[2].y = guide_data[idx[2].idx].v;
 			
-			BindTriangle::set(corner, from, bind_data[i]);
+			for(unsigned hdl=0; hdl<3; hdl++) {
+			
+				bind_data[i].idx[0] = idx[0].idx;
+				bind_data[i].idx[1+hdl] = idx[1+hdl].idx;
+				bind_data[i].idx[2+hdl] = idx[2+hdl].idx;
+		
+				corner[0].x = guide_data[idx[0].idx].u;
+				corner[1].x = guide_data[idx[1+hdl].idx].u;
+				corner[2].x = guide_data[idx[2+hdl].idx].u;
+				corner[0].y = guide_data[idx[0].idx].v;
+				corner[1].y = guide_data[idx[1+hdl].idx].v;
+				corner[2].y = guide_data[idx[2+hdl].idx].v;
+				
+				if( BindTriangle::set(corner, from, bind_data[i]) ) hdl = 4;
+			}
 		}
 		else {
+			bind_data[i].idx[0] = idx[0].idx;
+			bind_data[i].idx[1] = idx[1].idx;
+			bind_data[i].idx[2] = idx[2].idx;
 			bind_data[i].wei[0] = 1.f;
 			bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
 		}
+		
+		pNSeg[i] = guide_data[idx[0].idx].num_seg * bind_data[i].wei[0] + guide_data[idx[1].idx].num_seg * bind_data[i].wei[1] + guide_data[idx[2].idx].num_seg * bind_data[i].wei[2];
+		
 		delete[] idx;
 	}
 }
@@ -263,18 +267,18 @@ int HairCache::loadStart(const char* filename)
 
 void HairCache::create()
 {
-	if(n_samp < 1 || !bind_data || !guide_data || !parray) return;
-	
+	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
+// set nvertices
 	int npoints = 0, nwidths = 0;
 	if(nvertices) delete[] nvertices;
 	nvertices = new int[n_samp];
 	for(unsigned i=0; i<n_samp; i++) 
 	{
-		nvertices[i] = guide_data[bind_data[i].idx[0]].num_seg + 5;
+		nvertices[i] = pNSeg[i] + 5;
 		npoints += nvertices[i];
 		nwidths += nvertices[i]-2;
 	}
-	
+// set widths
 	if(widths) delete[] widths;
 	widths = new float[nwidths];
 	unsigned acc=0;
@@ -282,8 +286,8 @@ void HairCache::create()
 	{
 		widths[acc] = rootwidth;
 		acc++;
-		float dwidth = (tipwidth - rootwidth)/guide_data[bind_data[i].idx[0]].num_seg;
-		for(short j = 0; j<= guide_data[bind_data[i].idx[0]].num_seg; j++) 
+		float dwidth = (tipwidth - rootwidth)/pNSeg[i] ;
+		for(short j = 0; j<= pNSeg[i]; j++) 
 		{
 			widths[acc] = rootwidth + dwidth*j;
 			acc++;
@@ -291,7 +295,7 @@ void HairCache::create()
 		widths[acc] = tipwidth;
 		acc++;
 	}
-	
+// set opacities
 	if(opacities) delete[] opacities;
 	opacities = new XYZ[nwidths];
 	acc=0;
@@ -299,8 +303,8 @@ void HairCache::create()
 	{
 		opacities[acc] = XYZ(1.f);
 		acc++;
-		float dos = 1.f/guide_data[bind_data[i].idx[0]].num_seg;
-		for(short j = 0; j<= guide_data[bind_data[i].idx[0]].num_seg; j++) 
+		float dos = 1.f/pNSeg[i];
+		for(short j = 0; j<= pNSeg[i]; j++) 
 		{
 			opacities[acc] = XYZ(1.f - dos*j);
 			acc++;
@@ -308,7 +312,7 @@ void HairCache::create()
 		opacities[acc] = XYZ(0.f);
 		acc++;
 	}
-	
+// set texcoord
 	if(coord_s) delete[] coord_s;
 	if(coord_t) delete[] coord_t;
 	coord_s = new float[n_samp];
@@ -318,7 +322,7 @@ void HairCache::create()
 		coord_s[i] = ddice[i].coords;
 		coord_t[i] = ddice[i].coordt;
 	}
-	
+// set colors
 	if(rootColorArray) delete[] rootColorArray;
 	if(tipColorArray) delete[] tipColorArray;
 	rootColorArray = new XYZ[n_samp];
@@ -335,14 +339,15 @@ void HairCache::create()
 		rootColorArray[i] = root_color + (mutant_color - root_color)*noi;
 		tipColorArray[i] = tip_color + (mutant_color - tip_color)*noi;
 	}
-	
+// set vertices
 	if(vertices) delete[] vertices;
 	vertices = new XYZ[npoints];
 	
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
 	
-	XYZ ppre, pcur, dv, ddv, pobj, pt[3], pw[3];
+	MATRIX44F tspace, tspace1, tspace2;
+	XYZ ppre, pcur, dv, ddv, pobj, pt[3], pw[3], dv0, dv1, dv2;
 	acc=0;
 	for(unsigned i=0; i<n_samp; i++)
 	{
@@ -362,39 +367,50 @@ void HairCache::create()
 		vertices[acc] = ppre;
 		acc++;
 
-		int num_seg = guide_data[bind_data[i].idx[0]].num_seg;
-		for(short j = 0; j< num_seg; j++) 
-		{
+		int num_seg = pNSeg[i];
+		float dparam = 1.f/num_seg;
+		float param;
+		for(short j = 0; j< num_seg; j++) {
+			param = dparam*j;
+			
+			guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
+			guide_data[bind_data[i].idx[1]].getDvAtParam(dv1, param, num_seg);
+			guide_data[bind_data[i].idx[2]].getDvAtParam(dv2, param, num_seg);
+				
+			guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
+			guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace1, param);
+			guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace2, param);
+			
 			vertices[acc] = ppre;
 			acc++;
 			
-			dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
+			//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
+			dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			/*float keepx = pobj.x;
-			pcur = pobj*(1 - clumping*(j+1)/num_seg);
-			pcur *= noi;
-			pcur.x = keepx;
-			guide_data[bind_data[i]].space[j].transform(pcur);*/
+
 			keepx = pt[0].x;
 			pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
 			pw[0] *= noi;
 			pw[0].x = keepx;
-			guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+			//guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+			tspace.transform(pw[0]);
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 			keepx = pt[1].x;
 			pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
 			pw[1] *= noi;
 			pw[1].x = keepx;
-			guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+			//guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+			tspace1.transform(pw[1]);
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 			keepx = pt[2].x;
 			pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
 			pw[2] *= noi;
 			pw[2].x = keepx;
-			guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+			//guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+			tspace2.transform(pw[2]);
 			
 			pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
 			
