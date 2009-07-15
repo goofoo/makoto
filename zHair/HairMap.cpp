@@ -567,7 +567,7 @@ void hairMap::bind()
 		
 		QuickSort::sort(idx, 0, num_guide-1);
 		
-		if(isInterpolate==1) {
+		if(isInterpolate==1 && num_guide>6) {
 			XY corner[3];
 			
 			for(unsigned hdl=0; hdl<3; hdl++) {
