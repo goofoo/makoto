@@ -69,18 +69,18 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 269255639;
-			PBXWorkspaceStateSaveDate = 269255639;
+			PBXPerProjectTemplateStateSaveDate = 269275902;
+			PBXWorkspaceStateSaveDate = 269275902;
 		};
 		perUserProjectItems = {
-			7FA6D352100C8C3C00D63B4B /* PBXTextBookmark */ = 7FA6D352100C8C3C00D63B4B /* PBXTextBookmark */;
-			7FA6D37D100C94ED00D63B4B /* PBXBookmark */ = 7FA6D37D100C94ED00D63B4B /* PBXBookmark */;
-			7FA6D3A7100CA33A00D63B4B /* PBXBookmark */ = 7FA6D3A7100CA33A00D63B4B /* PBXBookmark */;
-			7FA6D3E9100CAA4700D63B4B /* PBXBookmark */ = 7FA6D3E9100CAA4700D63B4B /* PBXBookmark */;
-			7FA6D3ED100CAA7E00D63B4B /* PBXTextBookmark */ = 7FA6D3ED100CAA7E00D63B4B /* PBXTextBookmark */;
-			7FA6D3EE100CAA7E00D63B4B /* PBXTextBookmark */ = 7FA6D3EE100CAA7E00D63B4B /* PBXTextBookmark */;
-			7FA6D3EF100CAA7E00D63B4B /* PBXTextBookmark */ = 7FA6D3EF100CAA7E00D63B4B /* PBXTextBookmark */;
-			7FA6D3F0100CAA7E00D63B4B /* PBXTextBookmark */ = 7FA6D3F0100CAA7E00D63B4B /* PBXTextBookmark */;
+			7FA6D352100C8C3C00D63B4B = 7FA6D352100C8C3C00D63B4B /* PBXTextBookmark */;
+			7FA6D37D100C94ED00D63B4B = 7FA6D37D100C94ED00D63B4B /* PBXBookmark */;
+			7FA6D3A7100CA33A00D63B4B = 7FA6D3A7100CA33A00D63B4B /* PBXBookmark */;
+			7FA6D3E9100CAA4700D63B4B = 7FA6D3E9100CAA4700D63B4B /* PBXBookmark */;
+			7FA6D3ED100CAA7E00D63B4B = 7FA6D3ED100CAA7E00D63B4B /* PBXTextBookmark */;
+			7FA6D3EE100CAA7E00D63B4B = 7FA6D3EE100CAA7E00D63B4B /* PBXTextBookmark */;
+			7FA6D3EF100CAA7E00D63B4B = 7FA6D3EF100CAA7E00D63B4B /* PBXTextBookmark */;
+			7FA6D3F0100CAA7E00D63B4B = 7FA6D3F0100CAA7E00D63B4B /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -88,7 +88,7 @@
 	};
 	7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {650, 3556}}";
+			sepNavIntBoundsRect = "{{0, 0}, {643, 3640}}";
 			sepNavSelRange = "{2898, 5}";
 			sepNavVisRange = "{2905, 865}";
 			sepNavWindowFrame = "{{5, 63}, {702, 705}}";
@@ -257,7 +257,7 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1268, 12222}}";
+			sepNavIntBoundsRect = "{{0, 0}, {710, 12124}}";
 			sepNavSelRange = "{10293, 0}";
 			sepNavVisRange = "{9589, 1312}";
 			sepNavWindowFrame = "{{411, 52}, {708, 722}}";
@@ -274,8 +274,8 @@
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {675, 3542}}";
-			sepNavSelRange = "{2776, 0}";
-			sepNavVisRange = "{1787, 1199}";
+			sepNavSelRange = "{3477, 0}";
+			sepNavVisRange = "{2761, 911}";
 			sepNavWindowFrame = "{{24, 67}, {734, 700}}";
 		};
 	};

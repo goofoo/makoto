@@ -74,6 +74,7 @@ public:
 	void bind();
 	
 	void draw();
+	void drawUV();
 	void initGuide();
 	void updateGuide();
 	void drawGuide();

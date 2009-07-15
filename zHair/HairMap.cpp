@@ -190,7 +190,7 @@ void hairMap::draw()
 		float dparam = 1.f/num_seg;
 		XYZ dcolor = (ctip - croot)/(float)num_seg;
 		float param;
-		if(bind_data[i].wei[0] > .99f) {
+		if(bind_data[i].wei[0] > .8f) {
 			for(short j = 0; j< num_seg; j++) {
 				param = dparam*j;
 				
@@ -293,6 +293,23 @@ void hairMap::draw()
 	glEnd();
 	
 	delete[] pbuf;
+}
+
+void hairMap::drawUV()
+{
+	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
+	glPointSize(3);
+	glBegin(GL_POINTS);
+	for(unsigned i=0; i<n_samp; i += draw_step) {
+		XYZ cc = guide_data[bind_data[i].idx[0]].dsp_col * ddice[i].alpha + guide_data[bind_data[i].idx[1]].dsp_col * ddice[i].beta + guide_data[bind_data[i].idx[2]].dsp_col * ddice[i].gamma;
+		glColor3f(cc.x, cc.y, cc.z);
+		
+		float u = guide_data[bind_data[i].idx[0]].u * ddice[i].alpha + guide_data[bind_data[i].idx[1]].u * ddice[i].beta + guide_data[bind_data[i].idx[2]].u * ddice[i].gamma;
+		float v = guide_data[bind_data[i].idx[0]].v * ddice[i].alpha + guide_data[bind_data[i].idx[1]].v * ddice[i].beta + guide_data[bind_data[i].idx[2]].v * ddice[i].gamma;
+		glVertex3f(u, v, 0);
+		//glVertex3f(ddice[i].coords, ddice[i].coordt, 0);
+	}
+	glEnd();
 }
 
 void hairMap::initGuide()
@@ -546,26 +563,36 @@ void hairMap::bind()
 			XY to(guide_data[j].u, guide_data[j].v);
 			idx[j].val = from.distantTo(to);
 		}
+		
 		QuickSort::sort(idx, 0, num_guide-1);
-		bind_data[i].idx[0] = idx[0].idx;
-		bind_data[i].idx[1] = idx[1].idx;
-		bind_data[i].idx[2] = idx[2].idx;
 		
 		if(isInterpolate==1) {
 			XY corner[3];
-			corner[0].x = guide_data[idx[0].idx].u;
-			corner[1].x = guide_data[idx[1].idx].u;
-			corner[2].x = guide_data[idx[2].idx].u;
-			corner[0].y = guide_data[idx[0].idx].v;
-			corner[1].y = guide_data[idx[1].idx].v;
-			corner[2].y = guide_data[idx[2].idx].v;
 			
-			BindTriangle::set(corner, from, bind_data[i]);
+			for(unsigned hdl=0; hdl<3; hdl++) {
+			
+				bind_data[i].idx[0] = idx[0].idx;
+				bind_data[i].idx[1+hdl] = idx[1+hdl].idx;
+				bind_data[i].idx[2+hdl] = idx[2+hdl].idx;
+		
+				corner[0].x = guide_data[idx[0].idx].u;
+				corner[1].x = guide_data[idx[1+hdl].idx].u;
+				corner[2].x = guide_data[idx[2+hdl].idx].u;
+				corner[0].y = guide_data[idx[0].idx].v;
+				corner[1].y = guide_data[idx[1+hdl].idx].v;
+				corner[2].y = guide_data[idx[2+hdl].idx].v;
+				
+				if( BindTriangle::set(corner, from, bind_data[i]) ) hdl = 4;
+			}
 		}
 		else {
+			bind_data[i].idx[0] = idx[0].idx;
+			bind_data[i].idx[1] = idx[1].idx;
+			bind_data[i].idx[2] = idx[2].idx;
 			bind_data[i].wei[0] = 1.f;
 			bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
 		}
+		//zDisplayFloat3(bind_data[i].wei[0], bind_data[i].wei[1], bind_data[i].wei[2]);
 		
 		pNSeg[i] = guide_data[idx[0].idx].num_seg * bind_data[i].wei[0] + guide_data[idx[1].idx].num_seg * bind_data[i].wei[1] + guide_data[idx[2].idx].num_seg * bind_data[i].wei[2];
 		
@@ -602,9 +629,24 @@ void hairMap::drawGuideUV()
 {
 	if(!guide_data) return;
 	glPointSize(2.f);
-	glBegin(GL_POINTS);
+	glBegin(GL_LINES);
 	
-	for(int i=0; i<num_guide; i++) glVertex3f(guide_data[i].u, guide_data[i].v, 0);
+	for(int i=0; i<num_guide; i++) {
+		XYZ cc = guide_data[i].dsp_col;
+		glColor3f(cc.x, cc.y, cc.z);
+		
+		glVertex3f(guide_data[i].u-0.015, guide_data[i].v-0.015, 0);
+		glVertex3f(guide_data[i].u+0.015, guide_data[i].v-0.015, 0);
+		
+		glVertex3f(guide_data[i].u+0.015, guide_data[i].v-0.015, 0);
+		glVertex3f(guide_data[i].u+0.015, guide_data[i].v+0.015, 0);
+		
+		glVertex3f(guide_data[i].u+0.015, guide_data[i].v+0.015, 0);
+		glVertex3f(guide_data[i].u-0.015, guide_data[i].v+0.015, 0);
+		
+		glVertex3f(guide_data[i].u-0.015, guide_data[i].v+0.015, 0);
+		glVertex3f(guide_data[i].u-0.015, guide_data[i].v-0.015, 0);
+	}
 
 	glEnd();
 }
