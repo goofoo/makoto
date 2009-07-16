@@ -121,6 +121,9 @@
 			<File
 				RelativePath="..\shared\QuickSort.cpp">
 			</File>
+			<File
+				RelativePath=".\View.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -133,6 +136,9 @@
 			</File>
 			<File
 				RelativePath=".\pMapLocator.h">
+			</File>
+			<File
+				RelativePath=".\View.h">
 			</File>
 		</Filter>
 		<Filter
