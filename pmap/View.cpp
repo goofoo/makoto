@@ -8,7 +8,7 @@ View::~View(void)
 {
 }
 
-bool View::viewSize(const float boxSize,XYZ boxCenter,cameraParameter cameraPa)
+bool View::needSplit(const float boxSize,XYZ boxCenter,cameraParameter cameraPa) const
 {
 	/*
 	float dis = (boxCenter.x - cameraPa.eyePoint.x)*cameraPa.viewDirection.x +
@@ -16,14 +16,14 @@ bool View::viewSize(const float boxSize,XYZ boxCenter,cameraParameter cameraPa)
 		        (boxCenter.z - cameraPa.eyePoint.z)*cameraPa.viewDirection.z ;*/
 
 	cameraPa.mat.transform(boxCenter);
-	if( boxCenter.z<cameraPa.clipNear || boxCenter.z>cameraPa.clipFar )
+	if( boxCenter.z+size<cameraPa.clipNear || boxCenter.z-size>cameraPa.clipFar )
 		return false;
 	double h_length =  boxCenter.z*cameraPa.horizontalFieldOfView;
 	double v_length =  boxCenter.z*cameraPa.verticalFieldOfView;
 //	double h_dis = dis*cameraPa.horizontalFieldOfView;
 //	double v_dis = dis*cameraPa.verticalFieldOfView;
 
-	if(boxSize > 0.5*h_length  || boxSize > 0.5*v_length  )
+	if(boxSize > sigma*h_length  || boxSize > sigma*v_length  )
 		return false;
 	return true;
 }

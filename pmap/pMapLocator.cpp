@@ -168,6 +168,10 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
+	
+	new view 
+	
+	view->set();
 	/*
 	glPointSize(3);
 	if(num_raw_data > 0 && raw_data) {
@@ -179,19 +183,11 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 		}
 		glEnd();
 	 	*/
-	    XYZ cen;
-		float size; 
-	    ifstream infile;
-		infile.open(filename,ios_base::in | ios_base::binary );
-		infile.seekg(72*(index - 1)+22,ios_base::beg);
-		infile.read((char*)&cen,sizeof(XYZ));
-		infile.seekg(72*(index - 1)+46,ios_base::beg);
-		infile.read((char*)&size,sizeof(float));
-		infile.close();
+
 	if(tree){
 		glBegin(GL_QUADS);
 		//glColor3f(1.0,0.0,0.0);
-		if(tree) tree->draw(cameraPa);
+		if(tree) tree->draw(view);
 		glEnd();
 		/*
 		glColor3f(1.0,0.0,0.0);

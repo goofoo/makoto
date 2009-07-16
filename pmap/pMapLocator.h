@@ -23,7 +23,7 @@
 #include <maya/MFnCamera.h>
 #include <maya/MDagPath.h>
 #include "../shared/OcTree.h"
-#include ".\view.h"
+#include "view.h"
  
 class pMapLocator : public MPxLocatorNode
 {

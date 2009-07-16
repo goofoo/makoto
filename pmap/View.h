@@ -19,8 +19,20 @@ class View
 public:
 	View(void);
 	~View(void);
+	
+	void set();
 
-	static bool viewSize(const float boxSize,XYZ boxCenter,cameraParameter cameraPa); 
+	bool needSplit(const float boxSize,XYZ boxCenter,cameraParameter cameraPa) const; 
 private:
-	cameraParameter cameraPa;
+	
+	double focalLength;
+	double horizontalFieldOfView;
+	double verticalFieldOfView;
+	double clipNear;
+	double clipFar;
+	XYZ viewDirection;
+	XYZ eyePoint; 
+	MATRIX44F mat;
+	
+	double sigma;
 };
