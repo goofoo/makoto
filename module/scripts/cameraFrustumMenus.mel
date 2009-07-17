@@ -1,9 +1,67 @@
-// createCameraFrustum.mel
-// zhang_mdev@163.com
-// 07/14/05
-// version 1.0
-// Select a camera and source the script.
+global proc cameraFrustumRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
 
+        // iterate through the Rendering menu to find the cameraFrustum menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if cameraFrustum menu exists, delete it first.
+        else {
+            if(`menuItem -exists cameraFrustumItems` ) deleteUI cameraFrustumItems;
+        }
+    }
+}
+
+global proc cameraFrustumCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the cameraFrustum menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if cameraFrustum menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists cameraFrustumItems` ) deleteUI cameraFrustumItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "Attach Camera Frustum" -c zjCreateCameraFrustum  cameraFrustumItems;
+	
+            setParent -menu ..;
+    }
+}
 
 global proc zjCreateCameraFrustum() {
 
@@ -16,16 +74,16 @@ if( size($sel) < 1 )
 	string $shapes[] = `pickWalk -d down`;
 	string $cameraShape = $shapes[0];
 
-string $node = `createNode cameraFrustumNode`;
+	string $node = `createNode cameraFrustumNode`;
 
-connectAttr -f ($cameraShape+".nearClipPlane") ($node+".nearClip");
-connectAttr -f ($cameraShape+".farClipPlane") ($node+".farClip");
-connectAttr -f ($cameraShape+".horizontalFilmAperture") ($node+".horizontalFilmAperture");
-connectAttr -f ($cameraShape+".verticalFilmAperture") ($node+".verticalFilmAperture");
-connectAttr -f ($cameraShape+".focalLength") ($node+".focalLength");
-connectAttr -f ($cameraShape+".worldMatrix") ($node+".cameraMatrix");
+	connectAttr -f ($node+".nearClip") ($cameraShape+".nearClipPlane");
+	connectAttr -f ($node+".farClip") ($cameraShape+".farClipPlane");
+	connectAttr -f ($cameraShape+".horizontalFilmAperture") ($node+".horizontalFilmAperture");
+	connectAttr -f ($cameraShape+".verticalFilmAperture") ($node+".verticalFilmAperture");
+	connectAttr -f ($cameraShape+".focalLength") ($node+".focalLength");
+	connectAttr -f ($cameraShape+".worldMatrix") ($node+".cameraMatrix");
+	connectAttr -f ($cameraShape+".orthographicWidth") ($node+".orthographicWidth");
 
+	setAttr ($node+".orthographic") `getAttr ($cameraShape+".orthographic")`;
 }
-
-zjCreateCameraFrustum;
 

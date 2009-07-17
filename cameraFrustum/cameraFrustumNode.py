@@ -219,13 +219,15 @@ def nodeInitializer():
 	spCameraFrustumNode.addAttribute( spCameraFrustumNode.amatrix )
 	
 	numAttr = OpenMaya.MFnNumericAttribute()
-	spCameraFrustumNode.anear = numAttr.create("nearClip", "nc", OpenMaya.MFnNumericData.kDouble)
+	spCameraFrustumNode.anear = numAttr.create("nearClip", "nc", OpenMaya.MFnNumericData.kDouble, 1.0)
 	numAttr.setConnectable(True)
+	numAttr.setStorable(True);
 	numAttr.setKeyable(True)
 	spCameraFrustumNode.addAttribute( spCameraFrustumNode.anear )
 	
-	spCameraFrustumNode.afar = numAttr.create("farClip", "fc", OpenMaya.MFnNumericData.kDouble)
+	spCameraFrustumNode.afar = numAttr.create("farClip", "fc", OpenMaya.MFnNumericData.kDouble, 1000.0)
 	numAttr.setConnectable(True)
+	numAttr.setStorable(True);
 	numAttr.setKeyable(True)
 	spCameraFrustumNode.addAttribute( spCameraFrustumNode.afar )
 	
@@ -246,7 +248,7 @@ def nodeInitializer():
 	spCameraFrustumNode.addAttribute( spCameraFrustumNode.aorthographic )
 
 	spCameraFrustumNode.aorthographicwidth = numAttr.create("orthographicWidth", "ow", OpenMaya.MFnNumericData.kDouble)
-	numAttr.setConnectable(True)
+	numAttr.setStorable(True);
 	spCameraFrustumNode.addAttribute( spCameraFrustumNode.aorthographicwidth )
 	
 # initialize the script plug-in
@@ -258,6 +260,8 @@ def initializePlugin(mobject):
 		sys.stderr.write( "Failed to register node: %s" % kPluginNodeTypeName )
 		raise
 
+	OpenMaya.MGlobal.executeCommand ( "source cameraFrustumMenus.mel;cameraFrustumCreateMenus" );
+
 # uninitialize the script plug-in
 def uninitializePlugin(mobject):
 	mplugin = OpenMayaMPx.MFnPlugin(mobject)
@@ -267,3 +271,4 @@ def uninitializePlugin(mobject):
 		sys.stderr.write( "Failed to deregister node: %s" % kPluginNodeTypeName )
 		raise
 	
+        OpenMaya.MGlobal.executeCommand ( "cameraFrustumRemoveMenus" );
