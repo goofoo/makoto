@@ -1,0 +1,31 @@
+// createCameraFrustum.mel
+// zhang_mdev@163.com
+// 07/14/05
+// version 1.0
+// Select a camera and source the script.
+
+
+global proc zjCreateCameraFrustum() {
+
+string $sel[] = `ls -sl`;
+
+if( size($sel) < 1 )
+	print "Select a camera to create the cameraFrustum!";
+	
+	select -r $sel[0];
+	string $shapes[] = `pickWalk -d down`;
+	string $cameraShape = $shapes[0];
+
+string $node = `createNode cameraFrustumNode`;
+
+connectAttr -f ($cameraShape+".nearClipPlane") ($node+".nearClip");
+connectAttr -f ($cameraShape+".farClipPlane") ($node+".farClip");
+connectAttr -f ($cameraShape+".horizontalFilmAperture") ($node+".horizontalFilmAperture");
+connectAttr -f ($cameraShape+".verticalFilmAperture") ($node+".verticalFilmAperture");
+connectAttr -f ($cameraShape+".focalLength") ($node+".focalLength");
+connectAttr -f ($cameraShape+".worldMatrix") ($node+".cameraMatrix");
+
+}
+
+zjCreateCameraFrustum;
+
