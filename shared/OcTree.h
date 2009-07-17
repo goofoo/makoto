@@ -39,20 +39,26 @@ public:
 	void release(TreeNode *node);
 	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
 	unsigned getNumVoxel() const {return num_voxel;}
-	void draw(particleView* pview);
+	void draw(particleView* pview,XYZ* pcolor);
 	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
-	void draw(const TreeNode *node,particleView* pview);
+	void draw(const TreeNode *node,particleView* pview,XYZ* pcolor);
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	void saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color,PosAndId *buf,XYZ *velocity,const short level);
+	void saveTree(const char*filename,OcTree* tree,unsigned sum);
 	void saveTree(TreeNode *node);
+	
+	void saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum);
     void saveColor(TreeNode *node,XYZ *color,PosAndId *buf);
+	
+	void saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum);
 	void saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf);
-	void loadFile(const char*filename,OcTree* tree);
+	
+	void loadTree(const char*filename,OcTree* tree);
 	void loadTree(TreeNode *node);
-	void loadColor(const unsigned numVoxel);
+	void loadColor(const char*filename,XYZ* &voxelcolor);
+	void loadVelocity(const char*filename,XYZ* &voxelvelocity);
 	void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
 	void searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex);
 
@@ -68,5 +74,4 @@ private:
 	short max_level;
 	unsigned num_voxel;
 	ofstream outfile;
-	XYZ* colorbuf;
 };

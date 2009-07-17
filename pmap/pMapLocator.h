@@ -54,7 +54,7 @@ public:
 private:
 	char filename[256];
 	OcTree* tree;
-	int index;
+	XYZ* pcolor;
 };
 
 #endif

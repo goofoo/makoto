@@ -167,7 +167,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	XYZ rootCenter;
 	float rootSize;
     OcTree::getBBox(buf, sum, rootCenter, rootSize);
-	mindist = 0.5;
+	mindist = 0.1;
 	short maxlevel = 0;
 	while(mindist<rootSize)
 	{
@@ -176,7 +176,10 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 	OcTree* tree = new OcTree();
 	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
-	tree->saveFile(filename,tree,sum,pco,buf,pve,3);
+
+	tree->saveTree(filename,tree,sum);
+	tree->saveColor(filename,pco,buf,sum);
+
 	delete[] buf;
 	delete tree;
 	delete[] pco;

@@ -35,9 +35,6 @@ void OcTree::construct(PosAndId* data, const int num_data, const XYZ& center, co
 
 void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count)
 {
-//zDisplayFloat2(low, high);
-	
-	//if(high == low) if(!isInBox(data[low], center, size)) return; 
 	node->low = low;
 	node->high = high;
 	node->center = center;
@@ -373,12 +370,12 @@ void OcTree::search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &aread
 	}*/
 }
 
-void OcTree::draw(particleView* pview)
+void OcTree::draw(particleView* pview,XYZ* pcolor)
 {
-	if(root) draw(root,pview);
+	if(root) draw(root,pview,pcolor);
 }
 
-void OcTree::draw(const TreeNode *node,particleView* pview)
+void OcTree::draw(const TreeNode *node,particleView* pview,XYZ* pcolor)
 {
 	if(!node) return;
 	if(pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) {
@@ -386,7 +383,8 @@ void OcTree::draw(const TreeNode *node,particleView* pview)
 			float size = node->size;
 			//infile.seekg(72*numVoxel+10+(node->index -1)*12,ios_base::beg);
 			//infile.read((char*)&color,sizeof(XYZ));
-			glColor3f(colorbuf[node->index -1].x,colorbuf[node->index -1].y,colorbuf[node->index -1].z);
+			glColor3f(pcolor[node->index -1].x,pcolor[node->index -1].y,pcolor[node->index -1].z);
+			
 			/*
 			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
@@ -448,14 +446,14 @@ void OcTree::draw(const TreeNode *node,particleView* pview)
 		
 	}
 	else {
-		draw(node->child000,pview);
-		draw(node->child001,pview);
-		draw(node->child010,pview);
-		draw(node->child011,pview);
-		draw(node->child100,pview);
-		draw(node->child101,pview);
-		draw(node->child110,pview);
-		draw(node->child111,pview);
+		draw(node->child000,pview,pcolor);
+		draw(node->child001,pview,pcolor);
+		draw(node->child010,pview,pcolor);
+		draw(node->child011,pview,pcolor);
+		draw(node->child100,pview,pcolor);
+		draw(node->child101,pview,pcolor);
+		draw(node->child110,pview,pcolor);
+		draw(node->child111,pview,pcolor);
 	}
 }
 
@@ -607,21 +605,17 @@ void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& c
 }
 
 
-void OcTree::saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color,PosAndId *buf,XYZ *velocity,const short level)
+void OcTree::saveTree(const char*filename,OcTree* tree,unsigned sum)
 {
 	outfile.open(filename,ios_base::out | ios_base::binary );
 	if(!outfile.is_open())
 		return ;
-	outfile.write((char*)&level,sizeof(short));
-    outfile.write((char*)&sum,sizeof(unsigned));
+	outfile.write((char*)&sum,sizeof(sum));
 	unsigned numVoxel = tree->getNumVoxel();
 	outfile.write((char*)&numVoxel,sizeof(unsigned));
 	if(sum>0)
-	{
 		saveTree(root);
-		saveColor(root,color,buf);
-		saveVelocity(root,velocity,buf);
-	}
+
 	outfile.close();
 }
 
@@ -655,6 +649,17 @@ void OcTree::saveTree(TreeNode *node)
 	}
 }
 
+void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)
+{
+	outfile.open(filename,ios_base::out | ios_base::binary | ios_base::app);
+	if(!outfile.is_open())
+		return;
+	if(sum>0)
+		saveColor(root,color,buf);
+
+	outfile.close();
+}
+
 void OcTree::saveColor(TreeNode *node,XYZ *color,PosAndId *buf)
 {
 	if(!node) return;
@@ -674,6 +679,16 @@ void OcTree::saveColor(TreeNode *node,XYZ *color,PosAndId *buf)
 		saveColor(node->child110,color,buf);
 		saveColor(node->child111,color,buf);
 	}
+}
+void OcTree::saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum)
+{
+	outfile.open(filename,ios_base::out | ios_base::binary | ios_base::app);
+	if(!outfile.is_open())
+		return;
+	if(sum>0)
+		saveVelocity(root,velocity,buf);
+
+	outfile.close();
 }
 
 void OcTree::saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf)
@@ -697,22 +712,18 @@ void OcTree::saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf)
 	}
 }
 
-void OcTree::loadFile(const char*filename,OcTree* tree)
+void OcTree::loadTree(const char*filename,OcTree* tree)
 {
 	infile.open(filename,ios_base::in | ios_base::binary );
 	if(!infile.is_open())
 		return;
 	unsigned sum,numVoxel;
-	short level;
-	infile.read((char*)&level,sizeof(short));
 	infile.read((char*)&sum,sizeof(unsigned));
 	infile.read((char*)&numVoxel,sizeof(unsigned));
-	colorbuf = new XYZ[numVoxel];
 	if(sum>0)
 	{   
 		root = new TreeNode();
 		loadTree(root);
-		loadColor(numVoxel);
 	}
 	infile.close();
 }
@@ -784,11 +795,34 @@ void OcTree::loadTree(TreeNode *node)
 	else node->child111 = NULL;
 }
 
-void OcTree::loadColor(const unsigned numVoxel)
+void OcTree::loadColor(const char*filename,XYZ* &voxelcolor)
 {   
-	for(unsigned int i = 0;i<numVoxel;i++)
-		infile.read((char*)&colorbuf[i],sizeof(XYZ));
+	if(num_voxel == 0)
+		return;
+	voxelcolor = new XYZ[num_voxel];
+	infile.open(filename,ios_base::in | ios_base::binary );
+	if(!infile.is_open())
+		return;
+	infile.seekg(72*num_voxel+8,ios_base::beg);
+	for(unsigned int i = 0;i < num_voxel;i++)
+		infile.read((char*)&voxelcolor[i],sizeof(XYZ));
+	infile.close();
 }
+
+void OcTree::loadVelocity(const char*filename,XYZ* &voxelvelocity)
+{
+	if(num_voxel == 0)
+		return;
+	voxelvelocity = new XYZ[num_voxel];
+	infile.open(filename,ios_base::in | ios_base::binary );
+	if(!infile.is_open())
+		return;
+	infile.seekg(84*num_voxel+8,ios_base::beg);
+	for(unsigned int i = 0;i < num_voxel;i++)
+		infile.read((char*)&voxelvelocity[i],sizeof(XYZ));
+	infile.close();
+}
+
 
 void OcTree::searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex)
 {

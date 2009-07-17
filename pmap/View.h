@@ -8,7 +8,7 @@ public:
 	particleView(void);
 	~particleView(void);
 	
-	void set(double horizontalFieldOfView,double verticalFieldOfView,double nearClippingPlane,double farClippingPlane,MATRIX44F matrix);
+	void set(double horizontalFieldOfView,double verticalFieldOfView,double nearClippingPlane,double farClippingPlane,MATRIX44F matrix,double signal);
 	bool needSplit(const float boxSize,XYZ boxCenter) const; 
 private:
 	double hov;

@@ -66,8 +66,8 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
 		if(tree) delete tree;
 	    tree = new OcTree();
-		tree->loadFile(filename,tree);
-		index = 0; 
+		tree->loadTree(filename,tree);
+		tree->loadColor(filename,pcolor);
 		//tree->searchNearVoxel(tree,pos,index);
 	}
 	
@@ -120,9 +120,6 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
 	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
-	XYZ viewDirection,eyePoint;
-	viewDirection.x = viewDir[0];viewDirection.y = viewDir[1];viewDirection.z = viewDir[2];
-	eyePoint.x = eyePos.x;eyePoint.y = eyePos.y;eyePoint.z = eyePos.z;
 	
 	double clipNear, clipFar;
 	clipNear = fnCamera.nearClippingPlane();
@@ -159,7 +156,8 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	glShadeModel(GL_SMOOTH);
 	
 	particleView *pview = new particleView(); 
-	pview->set(h_fov,v_fov,clipNear,clipFar,mat);
+	double signal = 0.01;
+	pview->set(h_fov,v_fov,clipNear,clipFar,mat,signal);
 	
 	//view->set();
 	/*
@@ -176,12 +174,9 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	if(tree){
 		glBegin(GL_QUADS);
-		if(tree) tree->draw(pview);
+		if(tree) tree->draw(pview,pcolor);
 		glEnd();
 	}
-	    
-
-
 	glPopAttrib();
 	view.endGL();
 }
