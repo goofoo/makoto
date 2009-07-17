@@ -8,7 +8,7 @@ import sys
 
 kPluginNodeTypeName = "cameraFrustumNode"
 
-spCameraFrustumNodeId = OpenMaya.MTypeId(0x000291910)
+spCameraFrustumNodeId = OpenMaya.MTypeId(0x0002919)
 glRenderer = OpenMayaRender.MHardwareRenderer.theRenderer()
 glFT = glRenderer.glFunctionTable()
 
@@ -243,7 +243,7 @@ def nodeInitializer():
 	numAttr.setConnectable(True)
 	spCameraFrustumNode.addAttribute( spCameraFrustumNode.afocallength )
 
-	spCameraFrustumNode.aorthographic = numAttr.create("orthographic", "oth", OpenMaya.MFnNumericData.kBoolean)
+	spCameraFrustumNode.aorthographic = numAttr.create("orthographic", "orh", OpenMaya.MFnNumericData.kBoolean)
 	numAttr.setConnectable(True)
 	spCameraFrustumNode.addAttribute( spCameraFrustumNode.aorthographic )
 

@@ -27,7 +27,7 @@
 #include <maya/MDagPath.h>
 #include <maya/MSelectionList.h>
 #include <maya/MFnCamera.h>
-
+#include <maya/MGlobal.h>
  
 
 class cameraFrustumNode : public MPxLocatorNode
@@ -60,7 +60,7 @@ public:
 	static	MTypeId		id;
 };
 
-MTypeId cameraFrustumNode::id( 0x00029191 );
+MTypeId cameraFrustumNode::id( 0x0002919 );
 
 MObject cameraFrustumNode::amatrix;
 MObject cameraFrustumNode::anear;
@@ -321,7 +321,7 @@ MStatus cameraFrustumNode::initialize()
 	numAttr.setConnectable(true);
 	addAttribute( aorthographicwidth );
 	
-	aorthographic = numAttr.create( "orthographic", "oth", MFnNumericData::kBoolean );
+	aorthographic = numAttr.create( "orthographic", "orh", MFnNumericData::kBoolean );
 	numAttr.setStorable(true);
 	addAttribute( aorthographic );
 	
@@ -340,6 +340,9 @@ MStatus initializePlugin( MObject obj )
 		stat.perror("registerNode");
 		return stat;
 	}
+
+	MGlobal::executeCommand ( "source cameraFrustumMenus.mel;cameraFrustumCreateMenus" );
+
 	return stat;
 }
 
@@ -353,6 +356,8 @@ MStatus uninitializePlugin( MObject obj)
 		stat.perror("deregisterNode");
 		return stat;
 	}
+
+	MGlobal::executeCommand ( "cameraFrustumRemoveMenus" );
 
 	return stat;
 }
