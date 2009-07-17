@@ -1,0 +1,89 @@
+global proc cameraFrustumRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the cameraFrustum menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if cameraFrustum menu exists, delete it first.
+        else {
+            if(`menuItem -exists cameraFrustumItems` ) deleteUI cameraFrustumItems;
+        }
+    }
+}
+
+global proc cameraFrustumCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the cameraFrustum menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if cameraFrustum menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists cameraFrustumItems` ) deleteUI cameraFrustumItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "Attach Camera Frustum" -c zjCreateCameraFrustum  cameraFrustumItems;
+	
+            setParent -menu ..;
+    }
+}
+
+global proc zjCreateCameraFrustum() {
+
+string $sel[] = `ls -sl`;
+
+if( size($sel) < 1 )
+	print "Select a camera to create the cameraFrustum!";
+	
+	select -r $sel[0];
+	string $shapes[] = `pickWalk -d down`;
+	string $cameraShape = $shapes[0];
+
+	string $node = `createNode cameraFrustumNode`;
+
+	connectAttr -f ($node+".nearClip") ($cameraShape+".nearClipPlane");
+	connectAttr -f ($node+".farClip") ($cameraShape+".farClipPlane");
+	connectAttr -f ($cameraShape+".horizontalFilmAperture") ($node+".horizontalFilmAperture");
+	connectAttr -f ($cameraShape+".verticalFilmAperture") ($node+".verticalFilmAperture");
+	connectAttr -f ($cameraShape+".focalLength") ($node+".focalLength");
+	connectAttr -f ($cameraShape+".worldMatrix") ($node+".cameraMatrix");
+	connectAttr -f ($cameraShape+".orthographicWidth") ($node+".orthographicWidth");
+
+	setAttr ($node+".orthographic") `getAttr ($cameraShape+".orthographic")`;
+}
+

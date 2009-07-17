@@ -53,6 +53,8 @@ public:
 	static	MObject		ahapeture;
 	static	MObject		avapeture;
 	static	MObject		afocallength;
+	static	MObject		aorthographic;
+	static	MObject		aorthographicwidth;
 
 public: 
 	static	MTypeId		id;
@@ -66,6 +68,8 @@ MObject cameraFrustumNode::afar;
 MObject cameraFrustumNode::ahapeture;
 MObject cameraFrustumNode::avapeture;
 MObject cameraFrustumNode::afocallength;
+MObject cameraFrustumNode::aorthographic;
+MObject cameraFrustumNode::aorthographicwidth;
 
 cameraFrustumNode::cameraFrustumNode() {}
 cameraFrustumNode::~cameraFrustumNode() {}
@@ -113,6 +117,14 @@ void cameraFrustumNode::draw( M3dView & view, const MDagPath & /*path*/,
 	double fl;
 	MPlug flPlug = nodeFn.findPlug( "focalLength" );
 	flPlug.getValue( fl );
+	
+	double orthwidth;
+	MPlug owPlug = nodeFn.findPlug( "orthographicWidth" );
+	owPlug.getValue( orthwidth );
+	
+	bool orth;
+	MPlug orthPlug = nodeFn.findPlug( "orthographic" );
+	orthPlug.getValue( orth );
 
 	double h_fov = h_apeture * 0.5 / ( fl * 0.03937 );
 	double v_fov = v_apeture * 0.5 / ( fl * 0.03937 );
@@ -122,6 +134,8 @@ void cameraFrustumNode::draw( M3dView & view, const MDagPath & /*path*/,
 	
 	float nright = near_clip * h_fov;
 	float ntop = near_clip * v_fov;
+	
+	if(orth) fright = ftop = nright = ntop = orthwidth/2.0;
 	
 	
 	MPoint corner_a(fright,ftop,-far_clip);
@@ -155,16 +169,16 @@ void cameraFrustumNode::draw( M3dView & view, const MDagPath & /*path*/,
 	glBegin( GL_LINES );
 
 		glVertex3f( corner_a.x , corner_a.y, corner_a.z );
-		glVertex3f( eye.x, eye.y, eye.z );
+		glVertex3f( corner_e.x , corner_e.y, corner_e.z );
 		
 		glVertex3f( corner_b.x , corner_b.y, corner_b.z );
-		glVertex3f( eye.x, eye.y, eye.z );
+		glVertex3f( corner_f.x , corner_f.y, corner_f.z );
 		
 		glVertex3f( corner_c.x , corner_c.y, corner_c.z );
-		glVertex3f( eye.x, eye.y, eye.z );
+		glVertex3f( corner_g.x , corner_g.y, corner_g.z );
 		
 		glVertex3f( corner_d.x , corner_d.y, corner_d.z );
-		glVertex3f( eye.x, eye.y, eye.z );
+		glVertex3f( corner_h.x , corner_h.y, corner_h.z );
 		
 		glVertex3f( corner_a.x , corner_a.y, corner_a.z );
 		glVertex3f( corner_b.x , corner_b.y, corner_b.z );
@@ -275,14 +289,16 @@ MStatus cameraFrustumNode::initialize()
 	matAttr.setConnectable(true);
 	addAttribute( amatrix );
 	
-	anear = numAttr.create( "nearClip", "nc", MFnNumericData::kFloat, 0.1 );
-	numAttr.setStorable(false);
+	anear = numAttr.create( "nearClip", "nc", MFnNumericData::kDouble, 0.1 );
+	numAttr.setStorable(true);
 	numAttr.setConnectable(true);
+	numAttr.setKeyable(true);
 	addAttribute( anear );
 	
-	afar = numAttr.create( "farClip", "fc", MFnNumericData::kFloat, 1000.0 );
-	numAttr.setStorable(false);
+	afar = numAttr.create( "farClip", "fc", MFnNumericData::kDouble, 1000.0 );
+	numAttr.setStorable(true);
 	numAttr.setConnectable(true);
+	numAttr.setKeyable(true);
 	addAttribute( afar );
 	
 	ahapeture = numAttr.create( "horizontalFilmAperture", "hfa", MFnNumericData::kDouble );
@@ -300,13 +316,22 @@ MStatus cameraFrustumNode::initialize()
 	numAttr.setConnectable(true);
 	addAttribute( afocallength );
 	
+	aorthographicwidth = numAttr.create( "orthographicWidth", "ow", MFnNumericData::kDouble );
+	numAttr.setStorable(false);
+	numAttr.setConnectable(true);
+	addAttribute( aorthographicwidth );
+	
+	aorthographic = numAttr.create( "orthographic", "oth", MFnNumericData::kBoolean );
+	numAttr.setStorable(true);
+	addAttribute( aorthographic );
+	
 	return MS::kSuccess;
 }
 
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   stat;
-	MFnPlugin plugin( obj, "ZHANG JIAN - Free Downlaod", "2.5", "Any");
+	MFnPlugin plugin( obj, "ZHANG JIAN - Free Downlaod", "3.0", "Any");
 
 	stat = plugin.registerNode( "cameraFrustumNode", cameraFrustumNode::id, 
 						 &cameraFrustumNode::creator, &cameraFrustumNode::initialize,
