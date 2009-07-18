@@ -9,22 +9,22 @@ global proc particleCacheRemoveMenus()
 
 		// iterate through the animation menu to find the particleCache menu.
 		for ($i = 0; $i < $menuSize; $i++) {
-			string $m = `match "particleCacheMenus" $gRenderingMenus[$i]`;
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
 			if ( $m != "" ) {
 				$menuIndex = $i;
 				break;
 			}
 		}
+		
 		// if not found, create it.
-		if ($menuIndex == -1) {
-			$gRenderingMenus[$menuSize] = `menu -l "*Particle Cache" -aob true -to true particleCacheMenus`;
-		}
-		// if particleCache menu exists, delete it first.
-		else {
-			deleteUI $gRenderingMenus[$menuIndex];
-			$gRenderingMenus[$menuIndex] = `menu -l "*Particle Cache" -aob true -to true particleCacheMenus`;
-		}
-		//particleCacheAppendMenuItems;
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if particle map menu exists, delete it first.
+        else {
+            if(`menuItem -exists particleMapItems` ) deleteUI particleMapItems;
+        }
 	}
 }
 
@@ -39,42 +39,34 @@ global proc particleCacheMakeMenus()
 
 		// iterate through the animation menu to find the particleCache menu.
 		for ($i = 0; $i < $menuSize; $i++) {
-			string $m = `match "particleCacheMenus" $gRenderingMenus[$i]`;
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
 			if ( $m != "" ) {
 				$menuIndex = $i;
 				break;
 			}
 		}
+		
 		// if not found, create it.
-		if ($menuIndex == -1) {
-			$gRenderingMenus[$menuSize] = `menu -l "*Particle Cache" -aob true -to true particleCacheMenus`;
-		}
-		// if particleCache menu exists, delete it first.
-		else {
-			deleteUI $gRenderingMenus[$menuIndex];
-			$gRenderingMenus[$menuIndex] = `menu -l "*Particle Cache" -aob true -to true particleCacheMenus`;
-		}
-		particleCacheAppendMenuItems;
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if cameraFrustum menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists particleMapItems` ) deleteUI particleMapItems;
+        }
+       
+        // append menu items
+		particleMapAppendMenuItems;
 	}
 }
  
-global proc particleCacheAppendMenuItems()
+global proc particleMapAppendMenuItems()
 {
-	menuItem -l "Particle Cache Parameters" -subMenu true;
-        	menuItem -l "$OBJNAME" pcf_sf_name;
-		menuItem -l (`workspace -q -fn`+"/data/")  pcf_sf_path;
-		menuItem -l "world space" -cb 1 pcf_sf_ws;
+	menuItem -p zTools -l "Particle Map" -subMenu true particleMapItems;
+	menuItem -l "Save" -c "openExportParticleCacheWin";
+	menuItem -l "Load" -c "openImportParticleCacheWin";
 	setParent -menu ..;
-	menuItem -divider true;
-	menuItem -l "Save PCF Particle Cache" -c "openExportParticleCacheWin";
-	menuItem -divider true;
-	menuItem -l "Load PCF Particle Cache" -c "openImportParticleCacheWin";
-	menuItem -divider true;
-	menuItem -l "Save Scene" -c "openSaveXMLSceneWin";
-	menuItem -divider true;
-	menuItem -l "Load Scene" -c "openImportXMLSceneCacheWin";
-	menuItem -l "About" -c "pcf_about";
-	//menuItem -l "Register" -c "pcf_getLicense";
 }
 
 global proc doExportParticleCache()
@@ -114,18 +106,8 @@ global proc exportParticleCacheSingleFrame()
 {
 	string $cmd;
 
-	if ( `checkBox -q -v exportParticleCacheUseName` && `textFieldGrp -q -text exportParticleCacheName` != "" ) {
-		if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-			$cmd = "pMapCmd -w `checkBox -q -v exportParticleCacheWorld`";
-		else 
-			$cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -w `checkBox -q -v exportParticleCacheWorld`";
-	}
-	else {
-		if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-			$cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -w `checkBox -q -v exportParticleCacheWorld`";
-		else
-			$cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -w `checkBox -q -v exportParticleCacheWorld`";
-	}
+	if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" ) $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName`";
+	else $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`";
 	
 	eval($cmd);
 }
@@ -147,21 +129,16 @@ string $scroll = `scrollLayout -p $form`;
 columnLayout -adjustableColumn true;
 
 //column begin
-text -al left -l "\nSelect polygonal particle(es) and press DOWN key to export to particle cache files.";
+text -al left -l "\nSelect particle(es) and press DOWN key to export to particle cache files.";
 
-checkBox -al "left" -l "Use Object Name" -v 1 -cc "textFieldGrp -e -en (!`textFieldGrp -q -en exportParticleCacheName`) exportParticleCacheName; pcf_updateCacheName" exportParticleCacheUseName;
-textFieldGrp -en 0 -cw 1 110 -label "Cache Name" -text "untitled" -cc "pcf_updateCacheName" exportParticleCacheName;
+textFieldGrp -cw 1 110 -label "Cache Name" -text "untitled" exportParticleCacheName;
 textFieldButtonGrp
      -cw 1 110 -label "Cache Path" -buttonLabel "Browse.."
      -bc "fileBrowser \"setParticleCachePath\" \"Set Path\" \"\" 4"
-     -cc "pcf_updateCacheName"
      exportParticleCachePath;
 
 checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en exportParticleCacheRange`) exportParticleCacheRange" exportParticleCacheMuilt;
 intFieldGrp -en 0 -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
-intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 exportParticleCacheStep;
-
-checkBox -al "left" -l "World Space" -v 1 -cc "pcf_updateCacheName" exportParticleCacheWorld;
 
 //row begin
 button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" -p $row;
@@ -187,28 +164,8 @@ showWindow exportParticleCacheWin;
 global proc int setParticleCachePath(string $path, string $type)
 {
 	textFieldButtonGrp -e -text $path exportParticleCachePath;
-	pcf_updateCacheName;
 	return true;
 }
-
-global proc pcf_updateCacheName()
-{
-	if(!`checkBox -q -v exportParticleCacheUseName`)
-		menuItem -e -l (`textFieldGrp -q -text exportParticleCacheName`) pcf_sf_name;
-	else
-		menuItem -e -l "$OBJNAME" pcf_sf_name;
-		
-	if(`textFieldButtonGrp -q -text exportParticleCachePath` != "" )
-		menuItem -e -l (`textFieldButtonGrp -q -text exportParticleCachePath`) pcf_sf_path;
-	else
-		menuItem -e -l (`workspace -q -rd`+"data/") pcf_sf_path;
-		
-	if( `checkBox -q -v exportParticleCacheWorld` )
-		menuItem -e -cb 1 pcf_sf_ws;
-	else
-		menuItem -e -cb 0 pcf_sf_ws;
-}
-
 
 global proc openImportParticleCacheWin()
 {
@@ -257,9 +214,6 @@ formLayout -edit
 showWindow importParticleCacheWin;
 }
 
-
-
-
 global proc doImportParticleCache()
 {
 string $path = `textFieldGrp -q -text importParticleCachePath`;
@@ -287,142 +241,4 @@ global proc string findImportParticleCachePath()
 	string $proj = `workspace -q -rd`;
 	string $path = `fileDialog -dm ($proj+"*.dat")`;
 	return $path;
-}
-
-global proc openImportXMLSceneCacheWin()
-{
-
-//If such a window already exists, destory it.
- if ( (`window -exists importSceneCacheWin`) == true ) deleteUI importSceneCacheWin;
- 
-//Create the window.
- window -title "particleCache 5.0 - Load Scene Options" -wh 400 300  -mb false importSceneCacheWin;
-
-//Layout
-string $form = `formLayout -numberOfDivisions 100`;
-string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
-string $scroll = `scrollLayout -p $form`;
-
-columnLayout -adjustableColumn true;
-
-//column begin
-textFieldButtonGrp
-     -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
-     -bc "textFieldButtonGrp -e -text (`findImportSceneCachePath`) importSceneCachePath"
-     importSceneCachePath;
-     
-intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` importXMLSceneCacheRange;
-
-text -al left -l "\nDescription: pick up an SCENE file to import.";
-
-//row begin
-button -l "Load" -c "doImportSceneCache;deleteUI importSceneCacheWin"-p $row;
-button -l "Apply" -c "doImportSceneCache" -p $row;
-button -l "Close" -c "deleteUI importSceneCacheWin" -p $row;
-
-formLayout -edit
-        -attachNone  $row     "top"
-        -attachForm     $row     "left"   2
-        -attachForm	$row     "bottom" 2
-        -attachForm 	$row     "right"  2
-
-        -attachForm     $scroll "top"    2
-        -attachForm	$scroll "left"   2
-        -attachControl	$scroll "bottom" 2 $row
-        -attachForm     $scroll "right"  2
-    $form;
-
-showWindow importSceneCacheWin;
-}
-
-global proc openSaveXMLSceneWin()
-{
-
-//If such a window already exists, destory it.
- if ( (`window -exists saveXMLSceneWin`) == true ) deleteUI saveXMLSceneWin;
-
-//Create the window.
- window -title "particleCache 4.1 - Save Scene Options" -wh 400 300  -mb false saveXMLSceneWin;
-
-//Layout
-string $form = `formLayout -numberOfDivisions 100`;
-string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
-string $scroll = `scrollLayout -p $form`;
-
-columnLayout -adjustableColumn true;
-
-//column begin
-text -al left -l "\nSelect particle(es) and NURBS surface(s) to export .scene files. No need to press DOWN key.";
-
-textFieldGrp
-     -cw 1 110 -label "Scene Title" -text "untitled"
-     saveXMLSceneTitle;
-	 
-textFieldButtonGrp
-     -cw 1 110 -label "Scene Path" -buttonLabel "Browse.."
-     -bc "fileBrowser \"setXMLScenePath\" \"Set Path\" \"\" 4"
-     saveXMLScenePath;
-
-//checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en saveXMLSceneRange`) saveXMLSceneRange" saveXMLSceneMuilt;
-intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` saveXMLSceneRange;
-intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 saveXMLSceneStep;
-optionMenuGrp -label "Back-Scatter Camera" -cw 1 120 -columnWidth 2 80 saveXMLSceneOptBS;
-
-	string $cams[] = `ls -ca`;
-	string $ac;
-	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
-
-
-
-	optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 80 saveXMLSceneOptEye;
-		for($ac in $cams) menuItem -label `listRelatives -p $ac`;
-	setParent..;
-
-//row begin
-button -l "Export" -c "dosaveXMLScene;deleteUI saveXMLSceneWin" -p $row;
-button -l "Apply" -c "dosaveXMLScene" -p $row;
-button -l "Close" -c "deleteUI saveXMLSceneWin" -p $row;
-
-formLayout -edit
-        -attachNone     $row     "top"
-        -attachForm     $row     "left"   2
-        -attachForm	$row     "bottom" 2
-        -attachForm 	$row     "right"  2
-
-        -attachForm     $scroll "top"    2
-        -attachForm	$scroll "left"   2
-        -attachControl	$scroll "bottom" 2 $row
-        -attachForm     $scroll "right"  2
-    $form;
-
-showWindow saveXMLSceneWin;
-
-}
-
-
-///////////////////////////////////////////
-//
-// About Information
-//
-///////////////////////////////////////////
-
-global proc pcf_about()
-{
-	//If such a window already exists, destory it.
- 	if ( (`window -exists pcf_about_note`) == true ) deleteUI pcf_about_note;
- 
-//Create the window.
-	window -title "About Vortex Cache" -wh 320 200 pcf_about_note;
-	
-	columnLayout -adjustableColumn true;
-	text -align "left" -l "particleCache, Version 1.0 06/30/09";
-	text -align "left" -l "Copyright (C) 2005 Imagine Cube.";
-	text -align "left" -l "All rights reserved.";
-	scrollField -h 100
-			-wordWrap false
-    			-text "R&D, Technical Director\nZhang Jian\n\nArt Director\nJulian Johnson Mortimer\n"
-			-editable false;
-	button -l "Close" -c "deleteUI pcf_about_note";
-	
-	showWindow pcf_about_note;
 }

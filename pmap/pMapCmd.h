@@ -47,8 +47,6 @@ public:
 
 	MStatus		doIt( const MArgList& );
 	static MSyntax newSyntax();
-	MStatus		redoIt();
-	MStatus		undoIt();
 	bool		isUndoable() const;
 	static		void* creator();
     

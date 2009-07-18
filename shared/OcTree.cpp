@@ -24,6 +24,39 @@ OcTree::~OcTree()
 	release();
 }
 
+void OcTree::release()
+{
+	if(root) release(root);
+	for(unsigned i=0; i<dSingle.size(); i++) delete[] dSingle[i]->data;
+	for(unsigned i=0; i<dThree.size(); i++) delete[] dThree[i]->data;
+	dSingle.clear();
+	dThree.clear();
+}
+
+void OcTree::release(TreeNode *node)
+{
+	if(!node) return;
+	
+	if(node->child000!=NULL)
+		release(node->child000);
+	if(node->child001!=NULL)
+		release(node->child001);
+	if(node->child010!=NULL)
+		release(node->child010);
+	if(node->child011!=NULL)
+		release(node->child011);
+	if(node->child100!=NULL)
+		release(node->child100);
+	if(node->child101!=NULL)
+		release(node->child101);
+	if(node->child110!=NULL)
+		release(node->child110);
+	if(node->child111!=NULL)
+		release(node->child111);
+
+	delete node;
+}
+
 void OcTree::construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level)
 {
 	release();
@@ -40,8 +73,6 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 	node->center = center;
 	node->size = size;
 	getMean(data, low, high, node->mean);
-	//getColorMean(data, low, high, node->colorMean);
-	//node->isNull = 0;
 	count++;
 	node->index = count;
 	if(level == max_level ) return;
@@ -140,234 +171,131 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 }
 
-void OcTree::search( XYZ position,float area,XYZ* data,XYZ* &areadata,int count)
+void OcTree::addSingle(const float *rawdata, const char* name, const PosAndId *index)
 {
-	if(root) search(root,position,area,data,areadata,count);
+	NamedSingle* attr = new NamedSingle();
+	attr->name = name;
+	attr->data = new float[num_voxel];
+	
+	setSingle(attr->data, root, rawdata, index);
+	
+	dSingle.push_back(attr);
 }
 
-void OcTree::search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata,int count)
-{/*
+void OcTree::setSingle(float *res, TreeNode *node, const float *rawdata, const PosAndId *index)
+{
 	if(!node) return;
-	if( node->isNull )
-		for(int i = node->begin;i<=node->end;i++)
-		{
-			if(acount<count && ((data[i].x - position.x)*(data[i].x - position.x)+(data[i].y - position.y)*(data[i].y - position.y)+(data[i].z - position.z)*(data[i].z - position.z))<=area*area)
-			{		
-				areadata[acount] = data[i];
-				//cout<<acount<<"  "<<node->begin<<"  "<<node->end<<"  "<<i<<"  "<<areadata[acount].x<<"  "<<areadata[acount].y<<"  "<<areadata[acount].z<<endl;
-				acount++;
-			}
-		}
-	//cout<<node->center.x<<"  "<<position.x<<"  "<<area<<"  "<<node->size<<endl;
+	else {
+		float mean = 0.f;
+		
+		for(unsigned i = node->low; i<=node->high; i++) mean += rawdata[index[i].idx];
+		
+		mean /= float(node->high - node->low + 1);
+		
+		res[node->index] = mean;
+		
+	    setSingle(res, node->child000, rawdata, index);
+		setSingle(res, node->child001, rawdata, index);
+		setSingle(res, node->child010, rawdata, index);
+		setSingle(res, node->child011, rawdata, index);
+		setSingle(res, node->child100, rawdata, index);
+		setSingle(res, node->child101, rawdata, index);
+		setSingle(res, node->child110, rawdata, index);
+		setSingle(res, node->child111, rawdata, index);
+	}
+}
+
+void OcTree::addThree(const XYZ *rawdata, const char* name, const PosAndId *index)
+{
+	NamedThree* attr = new NamedThree();
+	attr->name = name;
+	attr->data = new XYZ[num_voxel];
 	
-	if((position.x + area<=node->center.x)&&(position.x + area>=node->center.x-node->size))
-	{
-		if((position.y + area<=node->center.y)&&(position.y + area>=node->center.y-node->size))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child000,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child001,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child001,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else if((position.y - area>node->center.y)&&(position.y - area<=node->center.y+node->size))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child010,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child011,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child010,position,area,data,areadata,count);
-				search(node->child011,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else if((position.y + area>node->center.y)&&(position.y - area<node->center.y))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child010,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child001,position,area,data,areadata,count);
-				search(node->child011,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child001,position,area,data,areadata,count);
-				search(node->child010,position,area,data,areadata,count);
-				search(node->child011,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else return;
+	setThree(attr->data, root, rawdata, index);
+	
+	dThree.push_back(attr);
+}
+
+void OcTree::setThree(XYZ *res, TreeNode *node, const XYZ *rawdata, const PosAndId *index)
+{
+	if(!node) return;
+	else {
+		XYZ mean(0.f);
+		
+		for(unsigned i = node->low; i<=node->high; i++) mean += rawdata[index[i].idx];
+		
+		mean /= float(node->high - node->low + 1);
+		
+		res[node->index] = mean;
+		
+	    setThree(res, node->child000, rawdata, index);
+		setThree(res, node->child001, rawdata, index);
+		setThree(res, node->child010, rawdata, index);
+		setThree(res, node->child011, rawdata, index);
+		setThree(res, node->child100, rawdata, index);
+		setThree(res, node->child101, rawdata, index);
+		setThree(res, node->child110, rawdata, index);
+		setThree(res, node->child111, rawdata, index);
 	}
-	else if((position.x - area>node->center.x)&&(position.x - area<=node->center.x+node->size))
-	{
-		if((position.y + area<=node->center.y)&&(position.y + area>=node->center.y-node->size))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child100,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child101,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child100,position,area,data,areadata,count);
-				search(node->child101,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else if((position.y - area>node->center.y)&&(position.y - area<=node->center.y+node->size))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child110,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child111,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child110,position,area,data,areadata,count);
-				search(node->child111,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else if((position.y + area>node->center.y)&&(position.y - area<node->center.y))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child100,position,area,data,areadata,count);
-				search(node->child110,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child101,position,area,data,areadata,count);
-				search(node->child111,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child100,position,area,data,areadata,count);
-				search(node->child101,position,area,data,areadata,count);
-				search(node->child110,position,area,data,areadata,count);
-				search(node->child111,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else return;
+}
+
+void OcTree::save(const char *filename) const
+{
+	ofstream outfile;
+	
+	outfile.open(filename, ios_base::out | ios_base::binary );
+	if(!outfile.is_open()) return;
+	
+	//outfile.write((char*)&sum,sizeof(sum));
+	outfile.write((char*)&num_voxel,sizeof(unsigned));
+	
+	save(outfile, root);
+	
+	int datatype = 4;
+	for(unsigned i=0; i<dSingle.size(); i++) {
+		outfile.write((char*)&datatype, 4);
+		outfile.write((char*)dSingle[i]->name.c_str(), dSingle[i]->name.size());
+		outfile.write((char*)dSingle[i]->data, sizeof(float)*num_voxel);
 	}
-	else if((position.x + area>node->center.x)&&(position.x - area<node->center.x))
-	{
-		if((position.y + area<=node->center.y)&&(position.y + area>=node->center.y-node->size))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child100,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child001,position,area,data,areadata,count);
-				search(node->child101,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child001,position,area,data,areadata,count);
-				search(node->child100,position,area,data,areadata,count);
-				search(node->child101,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else if((position.y - area>node->center.y)&&(position.y - area<=node->center.y+node->size))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child010,position,area,data,areadata,count);
-				search(node->child110,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child011,position,area,data,areadata,count);
-				search(node->child111,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child010,position,area,data,areadata,count);
-				search(node->child011,position,area,data,areadata,count);
-				search(node->child110,position,area,data,areadata,count);
-				search(node->child111,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else if((position.y + area>node->center.y)&&(position.y - area<node->center.y))
-		{
-			if((position.z + area<=node->center.z)&&(position.z + area>=node->center.z-node->size))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child100,position,area,data,areadata,count);
-				search(node->child010,position,area,data,areadata,count);
-				search(node->child110,position,area,data,areadata,count);
-			}
-			else if((position.z - area>node->center.z)&&(position.z - area<=node->center.z+node->size))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child100,position,area,data,areadata,count);
-				search(node->child010,position,area,data,areadata,count);
-				search(node->child110,position,area,data,areadata,count);
-			}
-			else if((position.z + area>node->center.z)&&(position.z - area<node->center.z))
-			{
-				search(node->child000,position,area,data,areadata,count);
-				search(node->child001,position,area,data,areadata,count);
-				search(node->child010,position,area,data,areadata,count);
-				search(node->child011,position,area,data,areadata,count);
-				search(node->child100,position,area,data,areadata,count);
-				search(node->child101,position,area,data,areadata,count);
-				search(node->child110,position,area,data,areadata,count);
-				search(node->child111,position,area,data,areadata,count);
-			}
-			else return;
-		}
-		else return;
+	datatype = 12;
+	for(unsigned i=0; i<dThree.size(); i++) {
+		outfile.write((char*)&datatype, 4);
+		outfile.write((char*)dThree[i]->name.c_str(), dThree[i]->name.size());
+		outfile.write((char*)dThree[i]->data, sizeof(XYZ)*num_voxel);
 	}
-	else return;
-*/
-/*	
-	if((acount<count)&&(node->isNull == 1 || node->end - node->begin < 8))
+
+	outfile.close();
+}
+
+void OcTree::save(ofstream& file, TreeNode *node) const
+{
+	if(!node) return;
+	else
 	{
-		for(int i = node->begin;i<node->end;i++)
-		{
-			if(((data[i].x - position.x)*(data[i].x - position.x)+(data[i].y - position.y)*(data[i].y - position.y)+(data[i].z - position.z)*(data[i].z - position.z))<=area*area)
-			{		
-				areadata[acount] = data[i];
-				cout<<acount<<"  "<<node->begin<<"  "<<node->end<<"  "<<i<<"  "<<areadata[acount].x<<"  "<<areadata[acount].y<<"  "<<areadata[acount].z<<endl;
-				acount++;
-			}
-		}
-	}*/
+		file.write((char*)&node->index,sizeof(int));
+		file.write((char*)&node->low,sizeof(unsigned));
+		file.write((char*)&node->high,sizeof(unsigned));
+		file.write((char*)&node->center,sizeof(XYZ));
+		file.write((char*)&node->mean,sizeof(XYZ));
+		file.write((char*)&node->size,sizeof(float));
+		file.write((char*)&node->child000,sizeof(node->child000));
+	    file.write((char*)&node->child001,sizeof(node->child001));
+	    file.write((char*)&node->child010,sizeof(node->child010));
+	    file.write((char*)&node->child011,sizeof(node->child011));
+	    file.write((char*)&node->child100,sizeof(node->child100));
+	    file.write((char*)&node->child101,sizeof(node->child101));
+	    file.write((char*)&node->child110,sizeof(node->child110));
+	    file.write((char*)&node->child111,sizeof(node->child111));
+		
+		save(file, node->child000);
+		save(file, node->child001);
+		save(file, node->child010);
+		save(file, node->child011);
+		save(file, node->child100);
+		save(file, node->child101);
+		save(file, node->child110);
+		save(file, node->child111);
+	}
 }
 
 void OcTree::draw(particleView* pview,XYZ* pcolor)
@@ -381,39 +309,9 @@ void OcTree::draw(const TreeNode *node,particleView* pview,XYZ* pcolor)
 	if(pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) {
 			XYZ cen = node->center;
 			float size = node->size;
-			//infile.seekg(72*numVoxel+10+(node->index -1)*12,ios_base::beg);
-			//infile.read((char*)&color,sizeof(XYZ));
+			
 			glColor3f(pcolor[node->index -1].x,pcolor[node->index -1].y,pcolor[node->index -1].z);
 			
-			/*
-			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-			
-			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-			
-			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-			*/
-
 			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
@@ -566,35 +464,6 @@ char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
 	return 1;
 }
 
-void OcTree::release()
-{
-	if(root) release(root);
-}
-
-void OcTree::release(TreeNode *node)
-{
-	if(!node) return;
-	
-	if(node->child000!=NULL)
-		release(node->child000);
-	if(node->child001!=NULL)
-		release(node->child001);
-	if(node->child010!=NULL)
-		release(node->child010);
-	if(node->child011!=NULL)
-		release(node->child011);
-	if(node->child100!=NULL)
-		release(node->child100);
-	if(node->child101!=NULL)
-		release(node->child101);
-	if(node->child110!=NULL)
-		release(node->child110);
-	if(node->child111!=NULL)
-		release(node->child111);
-
-	delete node;
-}
-
 void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& center)
 {
 	center.x = center.y = center.z = 0.f;
@@ -603,52 +472,7 @@ void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& c
 	
 	center /= float(high - low + 1);
 }
-
-
-void OcTree::saveTree(const char*filename,OcTree* tree,unsigned sum)
-{
-	outfile.open(filename,ios_base::out | ios_base::binary );
-	if(!outfile.is_open())
-		return ;
-	outfile.write((char*)&sum,sizeof(sum));
-	unsigned numVoxel = tree->getNumVoxel();
-	outfile.write((char*)&numVoxel,sizeof(unsigned));
-	if(sum>0)
-		saveTree(root);
-
-	outfile.close();
-}
-
-void OcTree::saveTree(TreeNode *node)
-{
-	if(!node) return;
-	else
-	{
-		outfile.write((char*)&node->index,sizeof(int));
-		outfile.write((char*)&node->low,sizeof(unsigned));
-		outfile.write((char*)&node->high,sizeof(unsigned));
-		outfile.write((char*)&node->center,sizeof(XYZ));
-		outfile.write((char*)&node->mean,sizeof(XYZ));
-		outfile.write((char*)&node->size,sizeof(float));
-		outfile.write((char*)&node->child000,sizeof(node->child000));
-	    outfile.write((char*)&node->child001,sizeof(node->child001));
-	    outfile.write((char*)&node->child010,sizeof(node->child010));
-	    outfile.write((char*)&node->child011,sizeof(node->child011));
-	    outfile.write((char*)&node->child100,sizeof(node->child100));
-	    outfile.write((char*)&node->child101,sizeof(node->child101));
-	    outfile.write((char*)&node->child110,sizeof(node->child110));
-	    outfile.write((char*)&node->child111,sizeof(node->child111));
-		saveTree(node->child000);
-		saveTree(node->child001);
-		saveTree(node->child010);
-		saveTree(node->child011);
-		saveTree(node->child100);
-		saveTree(node->child101);
-		saveTree(node->child110);
-		saveTree(node->child111);
-	}
-}
-
+/*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)
 {
 	outfile.open(filename,ios_base::out | ios_base::binary | ios_base::app);
@@ -680,6 +504,7 @@ void OcTree::saveColor(TreeNode *node,XYZ *color,PosAndId *buf)
 		saveColor(node->child111,color,buf);
 	}
 }
+
 void OcTree::saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum)
 {
 	outfile.open(filename,ios_base::out | ios_base::binary | ios_base::app);
@@ -711,7 +536,7 @@ void OcTree::saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf)
 		saveColor(node->child111,velocity,buf);
 	}
 }
-
+*/
 void OcTree::loadTree(const char*filename,OcTree* tree)
 {
 	infile.open(filename,ios_base::in | ios_base::binary );

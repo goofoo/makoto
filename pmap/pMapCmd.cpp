@@ -114,8 +114,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    ps.position( positions );
 		assert( positions.length() == count);
 		ps.velocity(velocity);
-		if(ps.hasRgb())
-		{
+		if(ps.hasRgb()) {
 			ps.rgb(color);
 			for(unsigned i=0; i<positions.length(); i++,isum++ )
 			{
@@ -134,8 +133,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 			    buf[isum].idx = isum;
 			}
 		}
-		else
-		{
+		else {
 			for(unsigned i=0; i<positions.length(); i++,isum++ )
 			{
 				MVector p = positions[i];
@@ -177,59 +175,12 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	OcTree* tree = new OcTree();
 	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
 
-	tree->saveTree(filename,tree,sum);
-	tree->saveColor(filename,pco,buf,sum);
-
+	tree->save(filename);
+	
 	delete[] buf;
 	delete tree;
 	delete[] pco;
 	delete[] pve;
-	return MS::kSuccess;
-}
-
-MStatus pMapCmd::redoIt()
-//
-//	Description:
-//		implements redo for the MEL pMapCmd command. 
-//
-//		This method is called when the user has undone a command of this type
-//		and then redoes it.  No arguments are passed in as all of the necessary
-//		information is cached by the doIt method.
-//
-//	Return Value:
-//		MS::kSuccess - command succeeded
-//		MS::kFailure - redoIt failed.  this is a serious problem that will
-//                     likely cause the undo queue to be purged
-//
-{
-	// Since this class is derived off of MPxCommand, you can use the 
-	// inherited methods to return values and set error messages
-	//
-	setResult( "pMapCmd command executed!\n" );
-
-	return MS::kSuccess;
-}
-
-MStatus pMapCmd::undoIt()
-//
-//	Description:
-//		implements undo for the MEL pMapCmd command.  
-//
-//		This method is called to undo a previous command of this type.  The 
-//		system should be returned to the exact state that it was it previous 
-//		to this command being executed.  That includes the selection state.
-//
-//	Return Value:
-//		MS::kSuccess - command succeeded
-//		MS::kFailure - redoIt failed.  this is a serious problem that will
-//                     likely cause the undo queue to be purged
-//
-{
-
-	// You can also display information to the command window via MGlobal
-	//
-    MGlobal::displayInfo( "pMapCmd command undone!\n" );
-
 	return MS::kSuccess;
 }
 
@@ -272,7 +223,7 @@ bool pMapCmd::isUndoable() const
 //		true if this command is undoable.
 //
 {
-	return true;
+	return false;
 }
 
 MStatus pMapCmd::parseArgs( const MArgList& args )

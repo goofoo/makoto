@@ -5,9 +5,25 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "QuickSort.h"
 #include "view.h"
 using namespace std;
+
+struct NamedSingle
+{
+	string name;
+	float* data;
+};
+
+struct NamedThree
+{
+	string name;
+	XYZ* data;
+};
+
+typedef vector<NamedSingle*>VoxSingleList;
+typedef vector<NamedThree*>VoxThreeList;
 
 struct TreeNode
 {
@@ -18,7 +34,7 @@ struct TreeNode
 	unsigned low, high;
 	XYZ center,mean;
 	float size;
-	int index;
+	unsigned index;
 	
 	TreeNode *child000;
 	TreeNode *child001;
@@ -35,25 +51,33 @@ class OcTree
 public:
 	OcTree();
 	~OcTree();
+	
 	void release();
 	void release(TreeNode *node);
+	
 	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
+	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
+	void addSingle(const float *rawdata, const char* name, const PosAndId *index);
+	void setSingle(float *res, TreeNode *node, const float *rawdata, const PosAndId *index);
+	void addThree(const XYZ *rawdata, const char* name, const PosAndId *index);
+	void setThree(XYZ *res, TreeNode *node, const XYZ *rawdata, const PosAndId *index);
+	
+	void save(const char *filename) const;
+	void save(ofstream& file, TreeNode *node) const;
+	
 	unsigned getNumVoxel() const {return num_voxel;}
 	void draw(particleView* pview,XYZ* pcolor);
-	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
-	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
-	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void draw(const TreeNode *node,particleView* pview,XYZ* pcolor);
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	void saveTree(const char*filename,OcTree* tree,unsigned sum);
-	void saveTree(TreeNode *node);
 	
-	void saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum);
-    void saveColor(TreeNode *node,XYZ *color,PosAndId *buf);
 	
-	void saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum);
-	void saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf);
+	
+	//void saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum);
+    //void saveColor(TreeNode *node,XYZ *color,PosAndId *buf);
+	
+	//void saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum);
+	//void saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf);
 	
 	void loadTree(const char*filename,OcTree* tree);
 	void loadTree(TreeNode *node);
@@ -73,5 +97,8 @@ private:
 	TreeNode *root;
 	short max_level;
 	unsigned num_voxel;
-	ofstream outfile;
+	
+	
+	VoxSingleList dSingle;
+	VoxThreeList dThree;
 };
