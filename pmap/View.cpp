@@ -26,14 +26,12 @@ bool particleView::needSplit(const float boxSize,XYZ boxCenter) const
 		        (boxCenter.z - cameraPa.eyePoint.z)*cameraPa.viewDirection.z ;*/
 
     mat.transform(boxCenter);
-	if( boxCenter.z+boxSize<clipNear || boxCenter.z-boxSize>clipFar )
-		return false;
-	double h_length =  boxCenter.z*hov;
-	double v_length =  boxCenter.z*vov;
+	if( boxCenter.z+boxSize<clipNear || boxCenter.z-boxSize>clipFar ) return false;
+	double h_length =  (boxCenter.z-boxSize)*hov;
+	//double v_length =  boxCenter.z-boxSize*vov;
 //	double h_dis = dis*cameraPa.horizontalFieldOfView;
 //	double v_dis = dis*cameraPa.verticalFieldOfView;
     
-	if(boxSize > sigma*h_length  || boxSize > sigma*v_length  )
-		return false;
-	return true;
+	if(boxSize > sigma*h_length) return true;
+	return false;
 }

@@ -1,20 +1,8 @@
-//
-// Copyright (C) YiLi
-// 
-// File: pMapCmd.cpp
-//
-// MEL Command: pMapCmd
-//
-// Author: Maya Plug-in Wizard 2.0
-//
-
 #include "pMapCmd.h"
 #include <assert.h>
 #include <maya/MGlobal.h>
 #include <string>
-
-using namespace std;
-
+#include "../shared/OcTree.h"
 
 MSyntax pMapCmd::newSyntax() 
 {
@@ -22,8 +10,6 @@ MSyntax pMapCmd::newSyntax()
 
 	syntax.addFlag("-p", "-path", MSyntax::kString);
 	syntax.addFlag("-n", "-name", MSyntax::kString);
-	syntax.addFlag("-w", "-world", MSyntax::kBoolean);
-	syntax.addFlag("-sg", "-single", MSyntax::kBoolean);
 	
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -32,26 +18,7 @@ MSyntax pMapCmd::newSyntax()
 }
 
 MStatus pMapCmd::doIt( const MArgList& args)
-//
-//	Description:
-//		implements the MEL pMapCmd command.
-//
-//	Arguments:
-//		args - the argument list that was passes to the command from MEL
-//
-//	Return Value:
-//		MS::kSuccess - command succeeded
-//		MS::kFailure - command failed (returning this value will cause the 
-//                     MEL script that is being run to terminate unless the
-//                     error is caught using a "catch" statement.
-//
 {
-	// Typically, the doIt() method only collects the infomation required
-	// to do/undo the action and then stores it in class members.  The 
-	// redo method is then called to do the actuall work.  This prevents
-	// code duplication.
-	//
-
 	MStatus status = parseArgs( args );
 	
 	if( status != MS::kSuccess ) return status;
@@ -65,11 +32,10 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj );
 
     MString cache_path = proj + "/data";
-	MString cache_name = "particleposition";
-	worldSpace = false;
+	MString cache_name = "foo";
+
 	if (argData.isFlagSet("-p")) argData.getFlagArgument("-p", 0, cache_path);
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
-	if (argData.isFlagSet("-w")) argData.getFlagArgument("-w", 0, worldSpace);
 
     MSelectionList slist;
 	MGlobal::getActiveSelectionList( slist );
@@ -80,28 +46,30 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 
     char filename[512];
-	if(argData.isFlagSet("-sg")) sprintf( filename, "%s/%s.dat", cache_path.asChar(), cache_name.asChar() );
-		else sprintf( filename, "%s/%s.%d.dat", cache_path.asChar(), cache_name.asChar(), frame );
+	sprintf( filename, "%s/%s.%d.pmap", cache_path.asChar(), cache_name.asChar(), frame );
+	MGlobal::displayInfo(MString("PMap saving ") + filename);
 	MObject component;
 
 	if (list.isDone()) {
-		displayError( "No components selected" );
+		displayError( "No particles selected" );
 		return MS::kFailure;
 	}
 
-	unsigned sum = 0,isum = 0;
-	for(;!list.isDone();list.next())
-	{
+	MDagPath fDagPath;
+	
+	unsigned npt = 0,acc = 0;
+	for(;!list.isDone();list.next()) {
 		list.getDagPath (fDagPath, component);
 	    MFnParticleSystem ps( fDagPath );
-		sum += ps.count();
+		npt += ps.count();
 	}
-	PosAndId *buf = new PosAndId[sum];
-	XYZ *pco = new XYZ[sum];
-	XYZ *pve = new XYZ[sum];
+	
+	PosAndId *buf = new PosAndId[npt];
+	XYZ *pco = new XYZ[npt];
+	XYZ *pve = new XYZ[npt];
+	
 	list.reset();
-	for(;!list.isDone();list.next())
-	{
+	for(;!list.isDone();list.next()) {
 		list.getDagPath (fDagPath, component);
 	    MFnParticleSystem ps( fDagPath );
  
@@ -114,114 +82,94 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    ps.position( positions );
 		assert( positions.length() == count);
 		ps.velocity(velocity);
-		if(ps.hasRgb()) {
-			ps.rgb(color);
-			for(unsigned i=0; i<positions.length(); i++,isum++ )
-			{
+		//if(ps.hasRgb()) {
+			//ps.rgb(color);
+			for(unsigned i=0; i<positions.length(); i++,acc++ ) {
+			
 				MVector p = positions[i];
-			    buf[isum].pos.x = p[0];
-			    buf[isum].pos.y = p[1];
-			    buf[isum].pos.z = p[2];
+			    buf[acc].pos.x = p[0];
+			    buf[acc].pos.y = p[1];
+			    buf[acc].pos.z = p[2];
+				buf[acc].idx = acc;
+				
 				MVector v = velocity[i];
-				pve[isum].x = v[0];
-				pve[isum].y = v[1];
-				pve[isum].z = v[2];
-				MVector c = color[i];
-				pco[isum].x = c[0];
-				pco[isum].y = c[1];
-				pco[isum].z = c[2];
-			    buf[isum].idx = isum;
+				pve[acc].x = v[0];
+				pve[acc].y = v[1];
+				pve[acc].z = v[2];
+				
+				//MVector c = color[i];
+				//pco[acc].x = c[0];
+				//pco[acc].y = c[1];
+				//pco[acc].z = c[2];
+			    
 			}
-		}
+		/*}
 		else {
-			for(unsigned i=0; i<positions.length(); i++,isum++ )
+			for(unsigned i=0; i<positions.length(); i++,acc++ )
 			{
 				MVector p = positions[i];
-			    buf[isum].pos.x = p[0];
-			    buf[isum].pos.y = p[1];
-			    buf[isum].pos.z = p[2];
+			    buf[acc].pos.x = p[0];
+			    buf[acc].pos.y = p[1];
+			    buf[acc].pos.z = p[2];
 				MVector v = velocity[i];
-				pve[isum].x = v[0];
-				pve[isum].y = v[1];
-				pve[isum].z = v[2];
-				if(pve[isum].x == 0 && pve[isum].y == 0 && pve[isum].z == 0 )
-				{
-					pco[isum].x = 1.;
-					pco[isum].y = 0.;
-					pco[isum].z = 0.;
+				pve[acc].x = v[0];
+				pve[acc].y = v[1];
+				pve[acc].z = v[2];
+				if(pve[acc].x == 0 && pve[acc].y == 0 && pve[acc].z == 0 ) {
+					pco[acc].x = 1.;
+					pco[acc].y = 0.;
+					pco[acc].z = 0.;
 				}
-				else
-				{
-					float vo = 2*sqrt(pve[isum].x*pve[isum].x + pve[isum].y*pve[isum].y + pve[isum].z*pve[isum].z);
-					pco[isum].x = 0.5 + pve[isum].x/vo; 
-					pco[isum].y = 0.5 + pve[isum].y/vo;
-					pco[isum].z = 0.5 + pve[isum].z/vo;	 
+				else {
+					float vo = 2*sqrt(pve[acc].x*pve[acc].x + pve[acc].y*pve[acc].y + pve[acc].z*pve[acc].z);
+					pco[acc].x = 0.5 + pve[acc].x/vo; 
+					pco[acc].y = 0.5 + pve[acc].y/vo;
+					pco[acc].z = 0.5 + pve[acc].z/vo;	 
 				}
-			    buf[isum].idx = isum;
+			    buf[acc].idx = acc;
 			}
-		}
+		}*/
 	}
 
 	XYZ rootCenter;
 	float rootSize;
-    OcTree::getBBox(buf, sum, rootCenter, rootSize);
-	mindist = 0.1;
+    OcTree::getBBox(buf, npt, rootCenter, rootSize);
+	float mindist = 0.1;
 	short maxlevel = 0;
-	while(mindist<rootSize)
-	{
+	while(mindist<rootSize) {
 		maxlevel++;
 		mindist*=2;
 	}
+	MGlobal::displayInfo(MString("  max leval: ")+ maxlevel);
+	
 	OcTree* tree = new OcTree();
-	tree->construct(buf, sum, rootCenter, rootSize, maxlevel);
-
+	tree->construct(buf, npt, rootCenter, rootSize, maxlevel);
+	tree->addThree(pve, "velocity", buf);
 	tree->save(filename);
 	
+	//if(tree->hasColor()) MGlobal::displayInfo("check color");
+	
 	delete[] buf;
-	delete tree;
 	delete[] pco;
 	delete[] pve;
+	delete tree;
 	return MS::kSuccess;
 }
 
 void* pMapCmd::creator()
-//
-//	Description:
-//		this method exists to give Maya a way to create new objects
-//      of this type. 
-//
-//	Return Value:
-//		a new object of this type
-//
 {
 	return new pMapCmd();
 }
 
 pMapCmd::pMapCmd()
-//
-//	Description:
-//		pMapCmd constructor
-//
 {
 }
 
 pMapCmd::~pMapCmd()
-//
-//	Description:
-//		pMapCmd destructor
-//
 {
 }
 
 bool pMapCmd::isUndoable() const
-//
-//	Description:
-//		this method tells Maya this command is undoable.  It is added to the 
-//		undo queue if it is.
-//
-//	Return Value:
-//		true if this command is undoable.
-//
 {
 	return false;
 }

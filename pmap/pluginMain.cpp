@@ -23,14 +23,14 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "YiLi", "7.0", "Any");
+	MFnPlugin plugin( obj, "YiLi", "0.1.2 7.20.09", "Any");
 
 	status = plugin.registerCommand( "pMapCmd", pMapCmd::creator,pMapCmd::newSyntax );
 	if (!status) {
 		status.perror("registerCommand");
 		return status;
 	}
-	status = plugin.registerNode( "pMapLocator", pMapLocator::id, 
+	status = plugin.registerNode( "pMapViz", pMapLocator::id, 
                                    &pMapLocator::creator, &pMapLocator::initialize,
                                                  MPxNode::kLocatorNode );
    if (!status) {

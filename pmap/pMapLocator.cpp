@@ -21,11 +21,9 @@
 
 #include <maya/MGlobal.h>
 
-
-MTypeId     pMapLocator::id( 0x00001 );
-MObject     pMapLocator::alevel;
+MTypeId     pMapLocator::id( 0x0004001 );
 MObject     pMapLocator::frame;
-MObject     pMapLocator::aframestep;
+MObject     pMapLocator::aresolution;
 MObject     pMapLocator::amaxframe;
 MObject     pMapLocator::aminframe;
 MObject     pMapLocator::aposition;
@@ -58,16 +56,19 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		MString path =  data.inputValue( input ).asString();
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
-	    int frmstep = data.inputValue( aframestep ).asInt();
+	    f_rez = 2.f/data.inputValue( aresolution ).asFloat();
+		
 		XYZ pos = data.inputValue(aposition).asFloat3();
-		//int maxlevel =  data.inputValue( alevel ).asInt();
+		
 	    if( time < minfrm ) time = minfrm;
-	    int frame_lo = minfrm + int(time-minfrm)/frmstep*frmstep;
-	    sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
+	    int frame_lo = time;
+	    char filename[512];
+		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
+		
 		if(tree) delete tree;
 	    tree = new OcTree();
-		tree->loadTree(filename,tree);
-		tree->loadColor(filename,pcolor);
+		tree->load(filename);
+		//if(tree->hasColor()) MGlobal::displayInfo("check color");
 		//tree->searchNearVoxel(tree,pos,index);
 	}
 	
@@ -156,10 +157,9 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	glShadeModel(GL_SMOOTH);
 	
 	particleView *pview = new particleView(); 
-	double signal = 0.01;
-	pview->set(h_fov,v_fov,clipNear,clipFar,mat,signal);
+	//double signal = 0.01;
+	pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez);
 	
-	//view->set();
 	/*
 	glPointSize(3);
 	if(num_raw_data > 0 && raw_data) {
@@ -174,7 +174,7 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	if(tree){
 		glBegin(GL_QUADS);
-		if(tree) tree->draw(pview,pcolor);
+		tree->draw(pview);
 		glEnd();
 	}
 	glPopAttrib();
@@ -198,20 +198,6 @@ MStatus pMapLocator::initialize()
 	//
     MStatus stat;
 	MFnNumericAttribute nAttr;
-	alevel = nAttr.create("alevel","alv",MFnNumericData::kShort );
-	nAttr.setDefault( 4 ); 
-	nAttr.setMin( 0 );
-	nAttr.setMax( 16 );
-    nAttr.setKeyable( true ); 
-    nAttr.setReadable( true ); 
-    nAttr.setWritable( true ); 
-    nAttr.setStorable( true ); 
-	stat = addAttribute(alevel);
-	if(!stat)
-	{
-		stat.perror("Unable to add \"alevel\" attribute");
-		return stat;
-	}
 
 	aposition = nAttr.create("aposition","apo",MFnNumericData::k3Float);
 	nAttr.setDefault( 0 );
@@ -238,29 +224,28 @@ MStatus pMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute( amaxframe );
 	
-	aframestep = nAttr.create( "frameStep", "fst", MFnNumericData::kInt, 1 );
-	nAttr.setMin(1);
+	aresolution = nAttr.create( "resolution", "rez", MFnNumericData::kFloat, 512);
+	nAttr.setMin(32);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
-	addAttribute( aframestep );
+	addAttribute( aresolution );
 	
 	MFnTypedAttribute   stringAttr;
 	input = stringAttr.create( "cachePath", "cp", MFnData::kString );
  	stringAttr.setStorable(true);
 	addAttribute( input );
 	
-	MFnTypedAttribute   meshAttr;
-	aoutval = meshAttr.create( "aoutval", "o", MFnData::kMesh ); 
-	meshAttr.setStorable(false);
-	meshAttr.setWritable(false);
+	//MFnTypedAttribute   meshAttr;
+	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
+	nAttr.setStorable(false);
+	nAttr.setWritable(false);
 	addAttribute( aoutval );
     
-	attributeAffects( alevel, aoutval );
 	attributeAffects( input, aoutval );
 	attributeAffects( frame, aoutval );
 	attributeAffects( aminframe, aoutval );
 	attributeAffects( amaxframe, aoutval );
-	attributeAffects( aframestep, aoutval );
+	attributeAffects( aresolution, aoutval );
 	attributeAffects( aposition, aoutval );
 	return MS::kSuccess;
 

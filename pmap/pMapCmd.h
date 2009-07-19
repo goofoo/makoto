@@ -1,5 +1,5 @@
-#ifndef _pMapCmd
-#define _pMapCmd
+#ifndef _pMapCmd_H
+#define _pMapCmd_H
 //
 // Copyright (C) YiLi
 // 
@@ -32,11 +32,6 @@
 #include <maya/MTime.h>
 #include <iostream>
 #include <fstream>
-#include "../shared/OcTree.h"
-
-
-//char        *filename;
-class MArgList;
 
 class pMapCmd : public MPxCommand
 {
@@ -51,13 +46,7 @@ public:
 	static		void* creator();
     
 private:
-	// Store the data you will need to undo the command here
-	//
-	MDagPath fDagPath;
-	MObject particleNode;
 	MStatus parseArgs ( const MArgList& args );
-	bool worldSpace;
-	float mindist;
 };
 
 #endif

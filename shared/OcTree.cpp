@@ -252,14 +252,19 @@ void OcTree::save(const char *filename) const
 	save(outfile, root);
 	
 	int datatype = 4;
+	int datalen;
 	for(unsigned i=0; i<dSingle.size(); i++) {
 		outfile.write((char*)&datatype, 4);
+		datalen = dSingle[i]->name.size();
+		outfile.write((char*)&datalen, 4);
 		outfile.write((char*)dSingle[i]->name.c_str(), dSingle[i]->name.size());
 		outfile.write((char*)dSingle[i]->data, sizeof(float)*num_voxel);
 	}
 	datatype = 12;
 	for(unsigned i=0; i<dThree.size(); i++) {
 		outfile.write((char*)&datatype, 4);
+		datalen = dThree[i]->name.size();
+		outfile.write((char*)&datalen, 4);
 		outfile.write((char*)dThree[i]->name.c_str(), dThree[i]->name.size());
 		outfile.write((char*)dThree[i]->data, sizeof(XYZ)*num_voxel);
 	}
@@ -298,19 +303,122 @@ void OcTree::save(ofstream& file, TreeNode *node) const
 	}
 }
 
-void OcTree::draw(particleView* pview,XYZ* pcolor)
+int OcTree::load(const char*filename)
 {
-	if(root) draw(root,pview,pcolor);
+	ifstream infile;
+	infile.open(filename,ios_base::in | ios_base::binary );
+	if(!infile.is_open()) return 0;
+	
+	infile.read((char*)&num_voxel, sizeof(unsigned));
+	if(num_voxel>0) {   
+		root = new TreeNode();
+		load(infile, root);
+		
+		int datatype = 4;
+		int datalen;
+		
+		infile.read((char*)&datatype, 4);
+		while(infile) {
+			if(datatype == 12) {
+				infile.read((char*)&datalen, 4);
+				char *cn = new char[datalen];
+				infile.read((char*)cn, datalen);
+				
+				NamedThree* attr = new NamedThree();
+				attr->name = cn;
+				attr->data = new XYZ[num_voxel];
+				infile.read((char*)attr->data, 12*num_voxel);
+				dThree.push_back(attr);
+			}
+			infile.read((char*)&datatype, 4);
+		}
+	}
+	
+	infile.close();
+	return 1;
 }
 
-void OcTree::draw(const TreeNode *node,particleView* pview,XYZ* pcolor)
+void OcTree::load(ifstream& file, TreeNode *node)
+{   
+	if(node == NULL) return;
+	
+	file.read((char*)&node->index,sizeof(int));
+	file.read((char*)&node->low,sizeof(unsigned));
+	file.read((char*)&node->high,sizeof(unsigned));
+	file.read((char*)&node->center,sizeof(XYZ));
+	file.read((char*)&node->mean,sizeof(XYZ));
+	file.read((char*)&node->size,sizeof(float));
+	file.read((char*)&node->child000,sizeof(node->child000));
+	file.read((char*)&node->child001,sizeof(node->child001));
+	file.read((char*)&node->child010,sizeof(node->child010));
+	file.read((char*)&node->child011,sizeof(node->child011));
+	file.read((char*)&node->child100,sizeof(node->child100));
+	file.read((char*)&node->child101,sizeof(node->child101));
+	file.read((char*)&node->child110,sizeof(node->child110));
+	file.read((char*)&node->child111,sizeof(node->child111));
+	
+	if(node->child000) {
+		node->child000 = new TreeNode();
+		load(file, node->child000);
+	}
+	else node->child000 = NULL;
+	
+	if(node->child001) {
+		node->child001 = new TreeNode();
+		load(file, node->child001);
+	}
+	else node->child001 = NULL;
+	
+	if(node->child010) {
+		node->child010 = new TreeNode();
+		load(file, node->child010);
+	}
+	else node->child010 = NULL;
+	
+	if(node->child011) {
+		node->child011 = new TreeNode();
+		load(file, node->child011);
+	}
+	else node->child011 = NULL;
+	
+	if(node->child100) {
+		node->child100 = new TreeNode();
+		load(file, node->child100);
+	}
+	else node->child100 = NULL;
+	
+	if(node->child101) {
+		node->child101 = new TreeNode();
+		load(file, node->child101);
+	}
+	else node->child101 = NULL;
+	
+	if(node->child110) {
+		node->child110 = new TreeNode();
+		load(file, node->child110);
+	}
+	else node->child110 = NULL;
+	
+	if(node->child111) {
+		node->child111 = new TreeNode();
+		load(file, node->child111);
+	}
+	else node->child111 = NULL;
+}
+
+void OcTree::draw(const particleView *pview)
+{
+	if(root) draw(root, pview);
+}
+
+void OcTree::draw(const TreeNode *node, const particleView *pview)
 {
 	if(!node) return;
-	if(pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) {
+	if(!pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) {
 			XYZ cen = node->center;
 			float size = node->size;
 			
-			glColor3f(pcolor[node->index -1].x,pcolor[node->index -1].y,pcolor[node->index -1].z);
+			if(hasColor()) glColor3f(dThree[0]->data[node->index -1].x, dThree[0]->data[node->index -1].y, dThree[0]->data[node->index -1].z);
 			
 			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
@@ -344,15 +452,21 @@ void OcTree::draw(const TreeNode *node,particleView* pview,XYZ* pcolor)
 		
 	}
 	else {
-		draw(node->child000,pview,pcolor);
-		draw(node->child001,pview,pcolor);
-		draw(node->child010,pview,pcolor);
-		draw(node->child011,pview,pcolor);
-		draw(node->child100,pview,pcolor);
-		draw(node->child101,pview,pcolor);
-		draw(node->child110,pview,pcolor);
-		draw(node->child111,pview,pcolor);
+		draw(node->child000,pview);
+		draw(node->child001,pview);
+		draw(node->child010,pview);
+		draw(node->child011,pview);
+		draw(node->child100,pview);
+		draw(node->child101,pview);
+		draw(node->child110,pview);
+		draw(node->child111,pview);
 	}
+}
+
+char OcTree::hasColor() const
+{
+	if(dThree.size()>0) return 1;
+	else return 0;
 }
 
 void OcTree::getRootCenterNSize(XYZ& center, float&size) const
@@ -536,89 +650,7 @@ void OcTree::saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf)
 		saveColor(node->child111,velocity,buf);
 	}
 }
-*/
-void OcTree::loadTree(const char*filename,OcTree* tree)
-{
-	infile.open(filename,ios_base::in | ios_base::binary );
-	if(!infile.is_open())
-		return;
-	unsigned sum,numVoxel;
-	infile.read((char*)&sum,sizeof(unsigned));
-	infile.read((char*)&numVoxel,sizeof(unsigned));
-	if(sum>0)
-	{   
-		root = new TreeNode();
-		loadTree(root);
-	}
-	infile.close();
-}
-void OcTree::loadTree(TreeNode *node)
-{   
-	if(node == NULL) return;
-	num_voxel++;
-	infile.read((char*)&node->index,sizeof(int));
-	infile.read((char*)&node->low,sizeof(unsigned));
-	infile.read((char*)&node->high,sizeof(unsigned));
-	infile.read((char*)&node->center,sizeof(XYZ));
-	infile.read((char*)&node->mean,sizeof(XYZ));
-	infile.read((char*)&node->size,sizeof(float));
-	infile.read((char*)&node->child000,sizeof(node->child000));
-	infile.read((char*)&node->child001,sizeof(node->child001));
-	infile.read((char*)&node->child010,sizeof(node->child010));
-	infile.read((char*)&node->child011,sizeof(node->child011));
-	infile.read((char*)&node->child100,sizeof(node->child100));
-	infile.read((char*)&node->child101,sizeof(node->child101));
-	infile.read((char*)&node->child110,sizeof(node->child110));
-	infile.read((char*)&node->child111,sizeof(node->child111));
-	if(node->child000)
-	{
-		node->child000 = new TreeNode();
-		loadTree(node->child000);
-	}
-	else node->child000 = NULL;
-	if(node->child001)
-	{
-		node->child001 = new TreeNode();
-		loadTree(node->child001);
-	}
-	else node->child001 = NULL;
-	if(node->child010)
-	{
-		node->child010 = new TreeNode();
-		loadTree(node->child010);
-	}
-	else node->child010 = NULL;
-	if(node->child011)
-	{
-		node->child011 = new TreeNode();
-		loadTree(node->child011);
-	}
-	else node->child011 = NULL;
-	if(node->child100)
-	{
-		node->child100 = new TreeNode();
-		loadTree(node->child100);
-	}
-	else node->child100 = NULL;
-	if(node->child101)
-	{
-		node->child101 = new TreeNode();
-		loadTree(node->child101);
-	}
-	else node->child101 = NULL;
-	if(node->child110)
-	{
-		node->child110 = new TreeNode();
-		loadTree(node->child110);
-	}
-	else node->child110 = NULL;
-	if(node->child111)
-	{
-		node->child111 = new TreeNode();
-		loadTree(node->child111);
-	}
-	else node->child111 = NULL;
-}
+
 
 void OcTree::loadColor(const char*filename,XYZ* &voxelcolor)
 {   
@@ -647,7 +679,7 @@ void OcTree::loadVelocity(const char*filename,XYZ* &voxelvelocity)
 		infile.read((char*)&voxelvelocity[i],sizeof(XYZ));
 	infile.close();
 }
-
+*/
 
 void OcTree::searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex)
 {

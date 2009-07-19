@@ -65,9 +65,15 @@ public:
 	void save(const char *filename) const;
 	void save(ofstream& file, TreeNode *node) const;
 	
+	int load(const char *filename);
+	void load(ifstream& file, TreeNode *node);
+	
 	unsigned getNumVoxel() const {return num_voxel;}
-	void draw(particleView* pview,XYZ* pcolor);
-	void draw(const TreeNode *node,particleView* pview,XYZ* pcolor);
+	char hasColor() const;
+	
+	void draw(const particleView *pview);
+	void draw(const TreeNode *node, const particleView *pview);
+	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
 	
@@ -79,10 +85,10 @@ public:
 	//void saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum);
 	//void saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf);
 	
-	void loadTree(const char*filename,OcTree* tree);
-	void loadTree(TreeNode *node);
-	void loadColor(const char*filename,XYZ* &voxelcolor);
-	void loadVelocity(const char*filename,XYZ* &voxelvelocity);
+	
+	
+	//void loadColor(const char*filename,XYZ* &voxelcolor);
+	//void loadVelocity(const char*filename,XYZ* &voxelvelocity);
 	void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
 	void searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex);
 
@@ -93,7 +99,7 @@ public:
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
 	static void getMean(const PosAndId *data, const int low, const int high, XYZ& center);
 private:
-	ifstream infile;
+	
 	TreeNode *root;
 	short max_level;
 	unsigned num_voxel;

@@ -43,18 +43,16 @@ public:
 public:
 
 	static  	MTypeId		id;
-	static  	MObject		alevel;
 	static  	MObject		input;
 	static  	MObject		frame;
 	static  	MObject 	aminframe;
 	static  	MObject 	amaxframe;
-	static  	MObject 	aframestep;
+	static  	MObject 	aresolution;
 	static      MObject     aoutval;
 	static      MObject     aposition;
 private:
-	char filename[256];
+	float f_rez;
 	OcTree* tree;
-	XYZ* pcolor;
 };
 
 #endif

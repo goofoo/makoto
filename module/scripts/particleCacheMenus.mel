@@ -77,7 +77,6 @@ global proc doExportParticleCache()
  
 		int $s = `intFieldGrp -q -v1 exportParticleCacheRange`;
 		int $e = `intFieldGrp -q -v2 exportParticleCacheRange`;
-		int $step = `intFieldGrp -q -v1 exportParticleCacheStep`;
 
 		int $i;
 		for( $i = $s; $i <= $e; $i++ ) {
@@ -91,8 +90,7 @@ global proc doExportParticleCache()
  
 			progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
  			
- 			if( ($i-$s)%$step == 0 || $i==$e )
-				exportParticleCacheSingleFrame;
+			exportParticleCacheSingleFrame;
 		}
 		
 		progressWindow -endProgress;
@@ -190,7 +188,6 @@ textFieldButtonGrp
      importParticleCachePath;
      
 intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` importParticleCacheRange;
-intFieldGrp -cw 1 110 -label "By Frame" -nf 1 -v1 1 importParticleCacheStep;
 
 text -al left -l "\nDescription: pick up a cache file and import as particle.";
 
@@ -220,20 +217,17 @@ string $path = `textFieldGrp -q -text importParticleCachePath`;
 string $buffer[];
 $numTokens = `tokenize $path "." $buffer`;
 
-string $node = `createNode pMapLocator`;
-string $shape = `createNode mesh`;
-connectAttr -f ($node + ".aoutval") ($shape + ".inMesh");
-sets -e -forceElement initialShadingGroup $shape;
+string $node = `createNode pMapViz`;
+string $shape = `group -empty -n dummy`;
+connectAttr -f ($node + ".outval") ($shape + ".translateY");
 setAttr -type "string" ($node + ".cachePath") $buffer[0];
 
 //connectAttr -f "time1.outTime" ($node + ".currentTime");
 setKeyframe -t `intFieldGrp -q -v1 importParticleCacheRange` -v `intFieldGrp -q -v1 importParticleCacheRange` ($node + ".currentTime");
 setKeyframe -t `intFieldGrp -q -v2 importParticleCacheRange` -v `intFieldGrp -q -v2 importParticleCacheRange` ($node + ".currentTime");
 
-
 setAttr ( $node + ".minFrame") `intFieldGrp -q -v1 importParticleCacheRange`;
 setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importParticleCacheRange`;
-setAttr ( $node + ".frameStep") `intFieldGrp -q -v1 importParticleCacheStep`;
 }
 
 global proc string findImportParticleCachePath()
