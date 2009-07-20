@@ -2,37 +2,19 @@
 
 #include "../shared/zData.h"
 
-struct cameraParameter 
-{
-	double focalLength;
-	double horizontalFieldOfView;
-	double verticalFieldOfView;
-	double clipNear;
-	double clipFar;
-	XYZ viewDirection;
-	XYZ eyePoint; 
-	MATRIX44F mat;
-};
-
-class View
+class particleView
 {
 public:
-	View(void);
-	~View(void);
+	particleView(void);
+	~particleView(void);
 	
-	void set();
-
-	bool needSplit(const float boxSize,XYZ boxCenter,cameraParameter cameraPa) const; 
+	void set(double horizontalFieldOfView,double verticalFieldOfView,double nearClippingPlane,double farClippingPlane,MATRIX44F matrix);
+	bool needSplit(const float boxSize,XYZ boxCenter) const; 
 private:
-	
-	double focalLength;
-	double horizontalFieldOfView;
-	double verticalFieldOfView;
+	double hov;
+	double vov;
 	double clipNear;
 	double clipFar;
-	XYZ viewDirection;
-	XYZ eyePoint; 
 	MATRIX44F mat;
-	
 	double sigma;
 };

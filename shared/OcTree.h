@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 #include "QuickSort.h"
-#include ".\view.h"
+#include "view.h"
 using namespace std;
 
 struct TreeNode
@@ -39,11 +39,11 @@ public:
 	void release(TreeNode *node);
 	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
 	unsigned getNumVoxel() const {return num_voxel;}
-	void draw(cameraParameter cameraPa);
+	void draw(particleView* pview);
 	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	void search(XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
 	void search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &areadata, int count);
-	void draw(const TreeNode *node,cameraParameter cameraPa);
+	void draw(const TreeNode *node,particleView* pview);
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
 	void saveFile(const char*filename,OcTree* tree,unsigned sum,XYZ *color,PosAndId *buf,XYZ *velocity,const short level);

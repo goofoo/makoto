@@ -154,24 +154,14 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	mat.v[3][2] = eyePos.z;
 	mat.inverse();
 
-	cameraParameter cameraPa;
-	cameraPa.clipFar = clipFar;
-	cameraPa.clipNear = clipNear;
-	cameraPa.eyePoint = eyePoint;
-	cameraPa.focalLength = fl;
-	cameraPa.horizontalFieldOfView= h_fov;
-	cameraPa.verticalFieldOfView = v_fov;
-	cameraPa.viewDirection = viewDirection;
-	cameraPa.mat = mat;
-
-
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
 	
-	new view 
+	particleView *pview = new particleView(); 
+	pview->set(h_fov,v_fov,clipNear,clipFar,mat);
 	
-	view->set();
+	//view->set();
 	/*
 	glPointSize(3);
 	if(num_raw_data > 0 && raw_data) {
@@ -186,39 +176,8 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	if(tree){
 		glBegin(GL_QUADS);
-		//glColor3f(1.0,0.0,0.0);
-		if(tree) tree->draw(view);
+		if(tree) tree->draw(pview);
 		glEnd();
-		/*
-		glColor3f(1.0,0.0,0.0);
-		glBegin(GL_LINES);
-		    glVertex3f(cen.x - size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-			
-			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-			
-			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
-			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
-			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
-		glEnd();*/
 	}
 	    
 

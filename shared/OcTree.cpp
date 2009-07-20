@@ -373,18 +373,16 @@ void OcTree::search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &aread
 	}*/
 }
 
-void OcTree::draw(cameraParameter cameraPa)
+void OcTree::draw(particleView* pview)
 {
-	if(root) draw(root,cameraPa);
+	if(root) draw(root,pview);
 }
 
-void OcTree::draw(const TreeNode *node,cameraParameter cameraPa)
+void OcTree::draw(const TreeNode *node,particleView* pview)
 {
 	if(!node) return;
-	if(View::viewSize(node->size,node->center,cameraPa)) {
-		//if(node->isNull) {
+	if(pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) {
 			XYZ cen = node->center;
-			//XYZ color;
 			float size = node->size;
 			//infile.seekg(72*numVoxel+10+(node->index -1)*12,ios_base::beg);
 			//infile.read((char*)&color,sizeof(XYZ));
@@ -450,14 +448,14 @@ void OcTree::draw(const TreeNode *node,cameraParameter cameraPa)
 		
 	}
 	else {
-		draw(node->child000,cameraPa);
-		draw(node->child001,cameraPa);
-		draw(node->child010,cameraPa);
-		draw(node->child011,cameraPa);
-		draw(node->child100,cameraPa);
-		draw(node->child101,cameraPa);
-		draw(node->child110,cameraPa);
-		draw(node->child111,cameraPa);
+		draw(node->child000,pview);
+		draw(node->child001,pview);
+		draw(node->child010,pview);
+		draw(node->child011,pview);
+		draw(node->child100,pview);
+		draw(node->child101,pview);
+		draw(node->child110,pview);
+		draw(node->child111,pview);
 	}
 }
 
@@ -709,7 +707,6 @@ void OcTree::loadFile(const char*filename,OcTree* tree)
 	infile.read((char*)&level,sizeof(short));
 	infile.read((char*)&sum,sizeof(unsigned));
 	infile.read((char*)&numVoxel,sizeof(unsigned));
-	//if (colorbuf) delete [] colorbuf;
 	colorbuf = new XYZ[numVoxel];
 	if(sum>0)
 	{   
