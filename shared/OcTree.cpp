@@ -15,7 +15,7 @@
 #endif
 
 
-OcTree::OcTree():root(0)
+OcTree::OcTree():root(0),num_voxel(0)
 {
 }
 
@@ -373,32 +373,22 @@ void OcTree::search(TreeNode *node,XYZ position,float area,XYZ* data,XYZ* &aread
 	}*/
 }
 
-void OcTree::draw(const char*filename)
+void OcTree::draw(cameraParameter cameraPa)
 {
-	infile.open(filename,ios_base::out | ios_base::binary );
-	if(!infile.is_open())
-		return;
-	unsigned sum,numVoxel;
-	short level;
-	infile.read((char*)&level,sizeof(short));
-	infile.read((char*)&sum,sizeof(unsigned));
-	infile.read((char*)&numVoxel,sizeof(unsigned));
-	max_level = level;
-	if(root) draw(root,filename,numVoxel,0);
-	infile.close();
+	if(root) draw(root,cameraPa);
 }
 
-void OcTree::draw(const TreeNode *node,const char*filename,unsigned numVoxel,short level)
+void OcTree::draw(const TreeNode *node,cameraParameter cameraPa)
 {
 	if(!node) return;
-	if((!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)||max_level == level) {
+	if(View::viewSize(node->size,node->center,cameraPa)) {
 		//if(node->isNull) {
 			XYZ cen = node->center;
-			XYZ color;
+			//XYZ color;
 			float size = node->size;
-			infile.seekg(72*numVoxel+10+(node->index -1)*12,ios_base::beg);
-			infile.read((char*)&color,sizeof(XYZ));
-			glColor3f(color.x,color.y,color.z);
+			//infile.seekg(72*numVoxel+10+(node->index -1)*12,ios_base::beg);
+			//infile.read((char*)&color,sizeof(XYZ));
+			glColor3f(colorbuf[node->index -1].x,colorbuf[node->index -1].y,colorbuf[node->index -1].z);
 			/*
 			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
@@ -460,15 +450,14 @@ void OcTree::draw(const TreeNode *node,const char*filename,unsigned numVoxel,sho
 		
 	}
 	else {
-		level++;
-		draw(node->child000,filename,numVoxel,level);
-		draw(node->child001,filename,numVoxel,level);
-		draw(node->child010,filename,numVoxel,level);
-		draw(node->child011,filename,numVoxel,level);
-		draw(node->child100,filename,numVoxel,level);
-		draw(node->child101,filename,numVoxel,level);
-		draw(node->child110,filename,numVoxel,level);
-		draw(node->child111,filename,numVoxel,level);
+		draw(node->child000,cameraPa);
+		draw(node->child001,cameraPa);
+		draw(node->child010,cameraPa);
+		draw(node->child011,cameraPa);
+		draw(node->child100,cameraPa);
+		draw(node->child101,cameraPa);
+		draw(node->child110,cameraPa);
+		draw(node->child111,cameraPa);
 	}
 }
 
@@ -712,7 +701,7 @@ void OcTree::saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf)
 
 void OcTree::loadFile(const char*filename,OcTree* tree)
 {
-	infile.open(filename,ios_base::out | ios_base::binary );
+	infile.open(filename,ios_base::in | ios_base::binary );
 	if(!infile.is_open())
 		return;
 	unsigned sum,numVoxel;
@@ -720,16 +709,20 @@ void OcTree::loadFile(const char*filename,OcTree* tree)
 	infile.read((char*)&level,sizeof(short));
 	infile.read((char*)&sum,sizeof(unsigned));
 	infile.read((char*)&numVoxel,sizeof(unsigned));
+	//if (colorbuf) delete [] colorbuf;
+	colorbuf = new XYZ[numVoxel];
 	if(sum>0)
 	{   
 		root = new TreeNode();
 		loadTree(root);
+		loadColor(numVoxel);
 	}
 	infile.close();
 }
 void OcTree::loadTree(TreeNode *node)
 {   
 	if(node == NULL) return;
+	num_voxel++;
 	infile.read((char*)&node->index,sizeof(int));
 	infile.read((char*)&node->low,sizeof(unsigned));
 	infile.read((char*)&node->high,sizeof(unsigned));
@@ -792,5 +785,49 @@ void OcTree::loadTree(TreeNode *node)
 		loadTree(node->child111);
 	}
 	else node->child111 = NULL;
+}
+
+void OcTree::loadColor(const unsigned numVoxel)
+{   
+	for(unsigned int i = 0;i<numVoxel;i++)
+		infile.read((char*)&colorbuf[i],sizeof(XYZ));
+}
+
+void OcTree::searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex)
+{
+	if(root == NULL) return;
+	searchNearVoxel(root,position,treeindex);
+}
+
+void OcTree::searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex)
+{
+	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)
+	{
+		treeindex = node->index ;
+		return;}
+	if(position.x <= node->center.x){
+		if(position.y <= node->center.y)
+			if(position.z <= node->center.z)
+				searchNearVoxel(node->child000,position,treeindex);
+			else 
+				searchNearVoxel(node->child001,position,treeindex);
+		else if(position.y > node->center.y)
+			if(position.z <= node->center.z)
+				searchNearVoxel(node->child010,position,treeindex);
+			else
+				searchNearVoxel(node->child011,position,treeindex);
+	}
+	else{
+		if(position.y <= node->center.y)
+			if(position.z <= node->center.z)
+				searchNearVoxel(node->child100,position,treeindex);
+			else 
+				searchNearVoxel(node->child101,position,treeindex);
+		else if(position.y > node->center.y)
+			if(position.z <= node->center.z)
+				searchNearVoxel(node->child110,position,treeindex);
+			else
+				searchNearVoxel(node->child111,position,treeindex);
+	}
 }
 //:~

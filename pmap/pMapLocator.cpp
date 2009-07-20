@@ -16,6 +16,8 @@
 #include <maya/MFnUnitAttribute.h>
 #include <maya/MTime.h>
 #include <maya/MVector.h>
+#include <maya/MMatrix.h>
+#include <maya/MFnMatrixData.h>
 
 #include <maya/MGlobal.h>
 
@@ -26,6 +28,7 @@ MObject     pMapLocator::frame;
 MObject     pMapLocator::aframestep;
 MObject     pMapLocator::amaxframe;
 MObject     pMapLocator::aminframe;
+MObject     pMapLocator::aposition;
 MObject     pMapLocator::input;
 MObject     pMapLocator::aoutval;
 
@@ -56,16 +59,16 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 	    int frmstep = data.inputValue( aframestep ).asInt();
+		XYZ pos = data.inputValue(aposition).asFloat3();
 		//int maxlevel =  data.inputValue( alevel ).asInt();
 	    if( time < minfrm ) time = minfrm;
-		
 	    int frame_lo = minfrm + int(time-minfrm)/frmstep*frmstep;
-
-	    
 	    sprintf( filename, "%s.%d.dat", path.asChar(), frame_lo );
 		if(tree) delete tree;
 	    tree = new OcTree();
 		tree->loadFile(filename,tree);
+		index = 0; 
+		//tree->searchNearVoxel(tree,pos,index);
 	}
 	
 	return MS::kUnknownParameter;
@@ -104,13 +107,64 @@ MBoundingBox pMapLocator::boundingBox() const
 		corner2.y = center.y +size;
 		corner2.z = center.z +size;
 	}
-
 	return MBoundingBox( corner1, corner2 ); 
 } 
 
 void pMapLocator::draw( M3dView & view, const MDagPath & path, 
                                  M3dView::DisplayStyle style,M3dView::DisplayStatus status )
 { 	
+	MDagPath camera;
+	view = M3dView::active3dView();
+	view.getCamera(camera);
+	MFnCamera fnCamera( camera );
+
+	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
+	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
+	XYZ viewDirection,eyePoint;
+	viewDirection.x = viewDir[0];viewDirection.y = viewDir[1];viewDirection.z = viewDir[2];
+	eyePoint.x = eyePos.x;eyePoint.y = eyePos.y;eyePoint.z = eyePos.z;
+	
+	double clipNear, clipFar;
+	clipNear = fnCamera.nearClippingPlane();
+	clipFar = fnCamera.farClippingPlane();
+
+	double h_apeture, v_apeture;
+	h_apeture = fnCamera.horizontalFilmAperture();
+	v_apeture = fnCamera.verticalFilmAperture();
+	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
+	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
+	double fl;
+	fl = fnCamera.focalLength();
+	double h_fov = h_apeture * 0.5*25.4 /fl;
+	double v_fov = v_apeture * 0.5*25.4 /fl;
+
+	MATRIX44F mat;
+	mat.setIdentity ();
+	mat.v[0][0] = -rightDir.x;
+	mat.v[0][1] = -rightDir.y;
+	mat.v[0][2] = -rightDir.z;
+	mat.v[1][0] = upDir.x;
+	mat.v[1][1] = upDir.y;
+	mat.v[1][2] = upDir.z;
+	mat.v[2][0] = viewDir.x;
+	mat.v[2][1] = viewDir.y;
+	mat.v[2][2] = viewDir.z;
+	mat.v[3][0] = eyePos.x;
+	mat.v[3][1] = eyePos.y;
+	mat.v[3][2] = eyePos.z;
+	mat.inverse();
+
+	cameraParameter cameraPa;
+	cameraPa.clipFar = clipFar;
+	cameraPa.clipNear = clipNear;
+	cameraPa.eyePoint = eyePoint;
+	cameraPa.focalLength = fl;
+	cameraPa.horizontalFieldOfView= h_fov;
+	cameraPa.verticalFieldOfView = v_fov;
+	cameraPa.viewDirection = viewDirection;
+	cameraPa.mat = mat;
+
+
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
@@ -124,13 +178,54 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 			glVertex3f(raw_data[i].x, raw_data[i].y, raw_data[i].z);
 		}
 		glEnd();
-		*/
+	 	*/
+	    XYZ cen;
+		float size; 
+	    ifstream infile;
+		infile.open(filename,ios_base::in | ios_base::binary );
+		infile.seekg(72*(index - 1)+22,ios_base::beg);
+		infile.read((char*)&cen,sizeof(XYZ));
+		infile.seekg(72*(index - 1)+46,ios_base::beg);
+		infile.read((char*)&size,sizeof(float));
+		infile.close();
 	if(tree){
 		glBegin(GL_QUADS);
 		//glColor3f(1.0,0.0,0.0);
-		if(tree) tree->draw(filename);
+		if(tree) tree->draw(cameraPa);
 		glEnd();
+		/*
+		glColor3f(1.0,0.0,0.0);
+		glBegin(GL_LINES);
+		    glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+		glEnd();*/
 	}
+	    
+
 
 	glPopAttrib();
 	view.endGL();
@@ -167,6 +262,14 @@ MStatus pMapLocator::initialize()
 		stat.perror("Unable to add \"alevel\" attribute");
 		return stat;
 	}
+
+	aposition = nAttr.create("aposition","apo",MFnNumericData::k3Float);
+	nAttr.setDefault( 0 );
+	nAttr.setKeyable( true ); 
+    nAttr.setReadable( true ); 
+    nAttr.setWritable( true ); 
+    nAttr.setStorable( true ); 
+	stat = addAttribute(aposition);
 
 	MFnUnitAttribute uAttr;
 	frame = uAttr.create("currentTime", "ct", MFnUnitAttribute::kTime, 1.0);
@@ -208,6 +311,7 @@ MStatus pMapLocator::initialize()
 	attributeAffects( aminframe, aoutval );
 	attributeAffects( amaxframe, aoutval );
 	attributeAffects( aframestep, aoutval );
+	attributeAffects( aposition, aoutval );
 	return MS::kSuccess;
 
 }

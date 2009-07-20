@@ -20,8 +20,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <maya/MFnCamera.h>
+#include <maya/MDagPath.h>
 #include "../shared/OcTree.h"
-#include "../shared/zData.h"
+#include ".\view.h"
  
 class pMapLocator : public MPxLocatorNode
 {
@@ -48,9 +50,11 @@ public:
 	static  	MObject 	amaxframe;
 	static  	MObject 	aframestep;
 	static      MObject     aoutval;
+	static      MObject     aposition;
 private:
 	char filename[256];
 	OcTree* tree;
+	int index;
 };
 
 #endif
