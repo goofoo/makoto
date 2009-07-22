@@ -54,9 +54,11 @@ public:
 	static MObject astep;
 	static MObject aalternativepatch;
 	static MObject ainterpolate;
+	static MObject adraw;
 	static	MTypeId		id;
 
 private :
 	hairMap* m_base;
 	bool	mAttributesChanged;
+	int idraw;
 };

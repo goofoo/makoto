@@ -122,13 +122,13 @@ void hairMap::updateBase()
 	}
 }
 
-int hairMap::dice()
+int hairMap::dice(int eta)
 {
 	if(!pconnection || !parray) return 0;
 		
-	float epsilon = sqrt(sum_area/n_tri/2/2);
+	float epsilon = sqrt(sum_area/n_tri/(2 + eta)/2);
 
-	int estimate_ncell = n_tri*2*2;
+	int estimate_ncell = n_tri*(2 + eta)*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -630,13 +630,21 @@ void hairMap::drawGuide()
 		for(short j = 0; j< guide_data[i].num_seg; j++) 
 		{
 			XYZ pp = guide_data[i].P[j];
+			float ss = guide_data[i].dispv[j].length()/2;
 			glVertex3f(pp.x, pp.y, pp.z);
-			pp += guide_data[i].N[j];
+			pp += guide_data[i].N[j]*ss;
 			glVertex3f(pp.x, pp.y, pp.z);
 			pp = guide_data[i].P[j];
 			glVertex3f(pp.x, pp.y, pp.z);
-			pp += guide_data[i].T[j];
+			pp += guide_data[i].T[j]*ss;
 			glVertex3f(pp.x, pp.y, pp.z);
+			
+			if(j>0) {
+				pp = guide_data[i].P[j-1];
+				glVertex3f(pp.x, pp.y, pp.z);
+				pp = guide_data[i].P[j];
+				glVertex3f(pp.x, pp.y, pp.z);
+			}
 		}
 	}
 	
