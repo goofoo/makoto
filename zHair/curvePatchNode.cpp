@@ -60,7 +60,7 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 			MFnNurbsCurve fcurve(curvelist[i]);
 			
 			unsigned num_seg = fcurve.length()/width/2;
-			if(num_seg < 3) num_seg = 3;
+			if(num_seg < 4) num_seg = 4;
 			else if(num_seg > 25) num_seg = 25;
 			
 			double minparam, maxparam;

@@ -122,13 +122,13 @@ void hairMap::updateBase()
 	}
 }
 
-int hairMap::dice()
+int hairMap::dice(int eta)
 {
 	if(!pconnection || !parray) return 0;
 		
-	float epsilon = sqrt(sum_area/n_tri/2/2);
+	float epsilon = sqrt(sum_area/n_tri/(2 + eta)/2);
 
-	int estimate_ncell = n_tri*2*2;
+	int estimate_ncell = n_tri*(2 + eta)*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -369,11 +369,11 @@ void hairMap::initGuide()
 	guide_spaceinv = new MATRIX44F[num_guide];
 
 	MPoint cen;
-	MVector nor, tang;
+	MVector nor;
 	MIntArray vertlist;
 	float r,g,b;
 	int patch_id=-1;
-	XYZ pcur, ppre, pcen;
+	XYZ pcur, pcen;
 	for(unsigned iguide=0; iguide<oguide.length(); iguide++) {
 		MFnMesh meshFn(oguide[iguide], &status);
 		MItMeshPolygon faceIter(oguide[iguide], &status);
@@ -410,13 +410,19 @@ void hairMap::initGuide()
 			guide_data[patch_id].N[iseg] = XYZ(nor.x, nor.y, nor.z);
 			
 			faceIter.getVertices (vertlist);
-			
+			/*
 			meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
 			tang = nor^tang;
 			tang.normalize();
 			guide_data[patch_id].T[iseg] = XYZ(tang.x, tang.y, tang.z);
-			
-			MPoint corner0, corner1, dv;
+			*/
+			MPoint corner0, corner1;
+			/*meshFn.getPoint (vertlist[0], corner0, MSpace::kObject );
+			meshFn.getPoint (vertlist[1], corner1, MSpace::kObject );
+			meshFn.getPoint (vertlist[2], corner2, MSpace::kObject );
+			meshFn.getPoint (vertlist[3], corner3, MSpace::kObject );*/
+			MVector dv;// = (corner2 + corner3)/2 - (corner0 + corner1)/2;
+				
 			if(order == 0)
 			{
 				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
@@ -433,6 +439,8 @@ void hairMap::initGuide()
 			}
 			
 			guide_data[patch_id].dispv[iseg] = XYZ(dv.x, dv.y, dv.z);
+			//dv.normalize();
+			//guide_data[patch_id].T[iseg] = XYZ(dv.x, dv.y, dv.z);
 			
 			if(iseg==0) {
 // set guider texcoord
@@ -470,10 +478,10 @@ void hairMap::updateGuide()
 	if(!has_guide || !guide_data || oguide.length() != num_guideobj || !nsegbuf) return;
 	MStatus status;
 	MPoint cen;
-	MVector nor, tang;
+	MVector nor;
 	MIntArray vertlist;
 	int patch_id = -1;
-	XYZ pcur, ppre, pcen;
+	XYZ pcur, pcen;
 	for(unsigned iguide=0; iguide<oguide.length(); iguide++)
 	{
 		MFnMesh meshFn(oguide[iguide], &status);
@@ -499,13 +507,20 @@ void hairMap::updateGuide()
 			guide_data[patch_id].N[iseg] = XYZ(nor.x, nor.y, nor.z);
 			
 			faceIter.getVertices (vertlist);
-			
+			/*
 			meshFn.getFaceVertexTangent (i, vertlist[0], tang,  MSpace::kObject);
 			tang = nor^tang;
 			tang.normalize();
 			guide_data[patch_id].T[iseg] = XYZ(tang.x, tang.y, tang.z);
+			*/
 			
-			MPoint corner0, corner1, dv;
+			MPoint corner0, corner1;
+			/*meshFn.getPoint (vertlist[0], corner0, MSpace::kObject );
+			meshFn.getPoint (vertlist[1], corner1, MSpace::kObject );
+			meshFn.getPoint (vertlist[2], corner2, MSpace::kObject );
+			meshFn.getPoint (vertlist[3], corner3, MSpace::kObject );*/
+			MVector dv;// = (corner2 + corner3)/2 - (corner0 + corner1)/2;
+			
 			if(order == 0)
 			{
 				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
@@ -522,6 +537,8 @@ void hairMap::updateGuide()
 			}
 			
 			guide_data[patch_id].dispv[iseg] = XYZ(dv.x, dv.y, dv.z);
+			//dv.normalize();
+			//guide_data[patch_id].T[iseg] = XYZ(dv.x, dv.y, dv.z);
 			
 			XYZ side = guide_data[patch_id].dispv[iseg].cross(guide_data[patch_id].N[iseg]);
 			side.normalize();
@@ -613,13 +630,21 @@ void hairMap::drawGuide()
 		for(short j = 0; j< guide_data[i].num_seg; j++) 
 		{
 			XYZ pp = guide_data[i].P[j];
+			float ss = guide_data[i].dispv[j].length()/2;
 			glVertex3f(pp.x, pp.y, pp.z);
-			pp += guide_data[i].N[j];
+			pp += guide_data[i].N[j]*ss;
 			glVertex3f(pp.x, pp.y, pp.z);
 			pp = guide_data[i].P[j];
 			glVertex3f(pp.x, pp.y, pp.z);
-			pp += guide_data[i].T[j];
+			pp += guide_data[i].T[j]*ss;
 			glVertex3f(pp.x, pp.y, pp.z);
+			
+			if(j>0) {
+				pp = guide_data[i].P[j-1];
+				glVertex3f(pp.x, pp.y, pp.z);
+				pp = guide_data[i].P[j];
+				glVertex3f(pp.x, pp.y, pp.z);
+			}
 		}
 	}
 	

@@ -48,9 +48,11 @@ MObject HairDguideNode::amutantcolorr;
 MObject HairDguideNode::amutantcolorg;
 MObject HairDguideNode::amutantcolorb;  
 MObject HairDguideNode::amutantcolorscale;
+MObject HairDguideNode::adice;
+MObject HairDguideNode::adraw;
 MObject HairDguideNode::ainterpolate;
 
-HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0)
+HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0),idice(0),idraw(0)
 {
 	m_base = new hairMap();
 	curname = "null";
@@ -83,16 +85,19 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		MString sname = data.inputValue( acachename).asString();
 		string sbuf(sname.asChar());
 		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
+		int eta = data.inputValue(adice).asInt();
+		idraw = data.inputValue(adraw).asInt();
 		if(m_base) 
 		{
-			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() )
+			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice)
 			{
 				curname = sname;
 				string head = sbuf;
 				zGlobal::cutByFirstDot(head);
 				head += ".hairstart";
 				m_base->loadStart(head.c_str());
-				MGlobal::displayInfo(MString("nsamp ")+m_base->dice());
+				idice = eta;
+				MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
 				isInterpolate = data.inputValue(ainterpolate).asInt();
 				m_base->setInterpolate(isInterpolate);
 				m_base->bind();
@@ -125,7 +130,10 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 {
 	view.beginGL(); 
 	//glPushAttrib(GL_ALL_ATTRIB_BITS);
-	if(m_base) m_base->draw();
+	if(m_base) {
+		if(idraw ==0) m_base->draw();
+		else m_base->drawGuide();
+	}
 	//glPopAttrib();
 	view.endGL();
 }
@@ -248,6 +256,17 @@ MStatus HairDguideNode::initialize()
 	zWorks::createDoubleAttr(amutantcolorscale, "mutantColorScale", "mcs", 0.0);
 	addAttribute(amutantcolorscale);
 	
+	adraw = numAttr.create( "drawType", "drt", MFnNumericData::kInt, 0);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(adraw);
+	
+	adice = numAttr.create( "dice", "dc", MFnNumericData::kInt, 0);
+	numAttr.setStorable(true);
+	numAttr.setMin(0);
+	numAttr.setKeyable(true);
+	addAttribute(adice);
+	
 	ainterpolate = numAttr.create( "interpolate", "ipl", MFnNumericData::kInt, 0);
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
@@ -274,6 +293,8 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( amutantcolorb, output );
 	attributeAffects( amutantcolorscale, output );
 	attributeAffects( ainterpolate, output );
+	attributeAffects( adice, output );
+	attributeAffects( adraw, output );
 	
 	return MS::kSuccess;
 

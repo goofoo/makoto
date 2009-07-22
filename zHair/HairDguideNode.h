@@ -63,6 +63,8 @@ public:
 	static MObject amutantcolorg;
 	static MObject amutantcolorb;
 	static MObject amutantcolorscale;
+	static MObject adice;
+	static MObject adraw;
 	static MObject ainterpolate;
 	// The typeid is a unique 32bit indentifier that describes this node.
 	// It is used to save and retrieve nodes of this type from the binary
@@ -74,7 +76,7 @@ public:
 private:
 	hairMap* m_base;
 	MString curname;
-	int isInterpolate;
+	int isInterpolate, idice, idraw;
 };
 
 #endif

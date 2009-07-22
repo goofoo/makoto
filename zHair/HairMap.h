@@ -70,7 +70,7 @@ public:
 	
 	void updateBase();
 	
-	int dice();
+	int dice(int eta);
 	void bind();
 	
 	void draw();

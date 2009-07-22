@@ -18,8 +18,9 @@ MObject HairNode::asavemap;
 MObject HairNode::astep;
 MObject HairNode::aalternativepatch;
 MObject HairNode::ainterpolate;
+MObject HairNode::adraw;
 
-HairNode::HairNode()
+HairNode::HairNode(): idraw(0)
 {
 	m_base = new hairMap();
 }
@@ -77,7 +78,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		if(startFrame == frame)
 		{
-			int npt = m_base->dice();
+			int npt = m_base->dice(0);
 			MGlobal::displayInfo(MString("ZHair diced ") + npt + " samples");
 			m_base->initGuide();
 			//npt = m_base->saveDguide( );
@@ -108,6 +109,8 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		m_base->setFuzz(data.inputValue(afuzz).asFloat());
 		m_base->setKink(data.inputValue(alengthnoise).asFloat());
 		m_base->setDrawAccuracy(data.inputValue(astep).asInt());
+		
+		idraw = data.inputValue(adraw).asInt();
 	    
 		data.setClean(plug);
 	}
@@ -121,7 +124,8 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
-	m_base->draw();
+	if(idraw ==0) m_base->draw();
+	else m_base->drawGuide();
 	//m_base->drawUV();
 	//m_base->drawGuideUV();
 	glPopAttrib();
@@ -223,6 +227,11 @@ MStatus HairNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(aalternativepatch);
 	
+	adraw = numAttr.create( "drawType", "drt", MFnNumericData::kInt, 0);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(adraw);
+	
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
 	attributeAffects( alengthnoise, aoutput );
@@ -237,6 +246,7 @@ MStatus HairNode::initialize()
 	attributeAffects( astep, aoutput );
 	attributeAffects( aalternativepatch, aoutput );
 	attributeAffects( ainterpolate, aoutput );
+	attributeAffects( adraw, aoutput );
 	
 	return MS::kSuccess;
 }
