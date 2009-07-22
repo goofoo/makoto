@@ -30,7 +30,7 @@ struct Dguide
 	XYZ* T;
 	XYZ* dispv;
 	MATRIX44F* space;
-	float u, v;
+	float u, v, radius;
 
 	void getDvAtParam(XYZ& res, float param, int mapmax)
 	{
