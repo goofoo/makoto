@@ -1,0 +1,220 @@
+global proc transferUVSetsMakeMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gModelingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gModelingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the animation menu to find the particleCache menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "transferUVSets" $gModelingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gModelingMenus[$menuSize] = `menu -l "*Transfer" -aob true -to true transferUVSetsMenus`;
+		}
+		// if particleCache menu exists, delete it first.
+		else {
+			deleteUI $gModelingMenus[$menuIndex];
+			$gModelingMenus[$menuIndex] = `menu -l "*Transfer" -aob true -to true transferUVSetsMenus`;
+		}
+		transferUVSetsAppendMenuItems;
+	}
+}
+
+global proc transferUVSetsAppendMenuItems()
+{
+	menuItem -l "Transfer UV Sets" -c "openTransferUVSetsWin";
+	menuItem -divider true;
+	menuItem -l "About" -c "transfer_about";
+}
+
+global proc openTransferUVSetsWin()
+{
+  global string $right;
+  global string $left;
+ // global string $left[];
+  //global string $right[];
+  if ( (`window -exists transferUVSetsWin`) == true ) deleteUI transferUVSetsWin;
+  
+    window -title "Transfer Options" -wh 400 520  -mb false transferUVSetsWin;
+    //string $aColumn = `columnLayout -adjustableColumn true`;
+    string $aForm = `formLayout -nd 100`;
+
+    string $leftActiveBtn = `button -l "Reload Left" -p $aForm -c "fillFromSelectionList 0"  fillLeft`;
+    string $rightActiveBtn = `button -l "Reload Right" -p $aForm -c "fillFromSelectionList 1" fillRight`;
+    
+    string $aPane = `paneLayout -configuration "vertical2" -separatorThickness 4 -height 200
+                    -paneSize 1 48 100 -paneSize 1 48 100 pane`;
+    scrollLayout -horizontalScrollBarThickness 16 -verticalScrollBarThickness   16;
+    $left = `columnLayout -adjustableColumn true  left`;
+    setParent..;
+    setParent..;
+   // $rightWin = `columnLayout`;
+    scrollLayout -horizontalScrollBarThickness 16 -verticalScrollBarThickness   16;
+    $right = `columnLayout -adjustableColumn true  right`;
+    //string $active[];
+    //$active = eval($rightWin);
+    setParent..;
+    setParent..;
+    setParent..;
+    button -l "Transfer" -c "doTransferUVSets;deleteUI transferUVSetsWin" -p $aForm transBtn;
+    button -l "Apply" -c "doTransferUVSets" -p $aForm applyBtn;
+    button -l "Clear All" -p $aForm -c "WindowClearCmd" clear;
+    button -l "Close" -c "deleteUI transferUVSetsWin" -p $aForm closeBtn;
+    formLayout -e
+    	-af fillLeft "top" 1
+        -ap fillLeft "right" 0 49
+  	-af fillLeft "left" 1
+
+  	-af fillRight "top" 1
+  	-ap fillRight "left" 0 49
+  	-af fillRight "right" 1
+  	
+  	-ac pane "top" 1 fillLeft
+ 	-af pane "left" 1
+ 	-af pane "right" 1
+ 	-ac pane "bottom" 1 transBtn
+  	
+  	-an transBtn "top"
+        -af transBtn "left" 5
+        -ap transBtn "right" 3 25
+        -af transBtn "bottom" 5
+
+        -an applyBtn "top"
+        -ap applyBtn "left" 2 25
+        -ap applyBtn "right" 3 50
+        -af applyBtn "bottom" 5
+        
+        -an clear "top"
+        -ap clear "left" 3 50
+        -ap clear "right" 2 75
+        -af clear "bottom" 5
+
+  	-an closeBtn "top"
+        -ap closeBtn "left" 2 75
+        -af closeBtn "right" 5
+        -af closeBtn "bottom" 5
+  	$aForm;
+   showWindow transferUVSetsWin;
+  
+
+}
+
+global proc fillFromSelectionList(int $side )
+{
+  global string $left;
+  global string $right;
+  //global string $left[];
+  //global string $right[];
+
+	if(`window -exists "transferUVSetsWin"`) {
+
+         string $secltionName[];
+	 $secltionName = `ls -sl`;
+         int $size = size($secltionName);
+         if($size == 0) return;
+		if( $side == 0 ) {
+                  if(`columnLayout -q -nch $left`)
+                  {
+                     string $arrayLeft[] = `columnLayout -q -ca $left`;
+                     for($i = 0;$i<size($arrayLeft);$i++)
+                       deleteUI  $arrayLeft[$i];
+                  }
+		        for($i = 0;$i<$size;$i++) {
+                         string $name = $secltionName[$i]+"left";
+                         string $temp = "modifSingle "+$name;
+                        // if(`objectType -isType "transform" $name`==1)
+		        textFieldButtonGrp -cat 1 "left" 1 -cw 1 8 -cw 2 130 -label " " -text $secltionName[$i] -buttonLabel "+" -bc $temp  -p $left $name;
+   	      }
+                         } else {
+                    if(`columnLayout -q -nch $right`)
+                     {
+                     string $arrayRight[] = `columnLayout -q -ca $right`;
+                     for($i = 0;$i<size($arrayRight);$i++)
+                     deleteUI  $arrayRight[$i];
+
+                      }
+
+			for($i = 0;$i<$size;$i++)
+			//if(`objectType $secltionName[$i]`=="transform")
+			{  string $name = $secltionName[$i]+"right";
+                         string $temp = "modifSingle "+$name;
+		        textFieldButtonGrp -label " " -text $secltionName[$i] -buttonLabel "+" -bc $temp -p $right $name;
+		 }
+		}
+  }
+}
+
+global proc modifSingle (string $name)
+{
+        string $secltionName[];
+	 $secltionName = `ls -sl`;
+         int $size = size($secltionName);
+         if($size == 0) return;
+         textFieldButtonGrp -e -text $secltionName $name;
+}
+
+global proc doTransferUVSets()
+{
+  global string $left;
+  global string $right;
+  if(`columnLayout -q -nch $left`!=`columnLayout -q -nch $right`)
+  {  print("number of left's object must equal right's");
+     return; }
+  string $arrayLeft[] = `columnLayout -q -ca $left`;
+  string $arrayRight[] = `columnLayout -q -ca $right`;
+  string $nameLeft,$nameRight;
+  if(size($arrayLeft) == 0)
+  return;
+  for($i = 0;$i<size($arrayLeft);$i++){
+   $nameLeft = `textFieldButtonGrp -q -text $arrayLeft[$i]`;
+   $nameRight = `textFieldButtonGrp -q -text $arrayRight[$i]`;
+   string $cmd = "polyTransfer -vc 0 -uv 1 -v 0 -ao  \""+$nameLeft+"\" \""+$nameRight+"\"";
+   evalEcho $cmd;
+  }
+}
+
+global proc WindowClearCmd()
+{ global string $left;
+  global string $right;
+  if(`columnLayout -q -nch $left`)
+                  {
+                     string $arrayLeft[] = `columnLayout -q -ca $left`;
+                     for($i = 0;$i<size($arrayLeft);$i++)
+                       deleteUI  $arrayLeft[$i];
+                  }
+  if(`columnLayout -q -nch $right`)
+                     {
+                     string $arrayRight[] = `columnLayout -q -ca $right`;
+                     for($i = 0;$i<size($arrayRight);$i++)
+                     deleteUI  $arrayRight[$i];
+                      }
+}
+
+global proc transfer_about()
+{
+	//If such a window already exists, destory it.
+ 	if ( (`window -exists pcf_about_note`) == true ) deleteUI pcf_about_note;
+ 
+//Create the window.
+	window -title "About transfer UVSets" -wh 320 200 transfer_about_note;
+	
+	columnLayout -adjustableColumn true;
+	text -align "left" -l "transferUVSets, Version 1.0 07/27/09";
+	text -align "left" -l "Copyright (C) 2005 Imagine Cube.";
+	text -align "left" -l "All rights reserved.";
+	scrollField -h 100
+			-wordWrap false
+    			-text "R&D, Technical Director\nZhao Xiaofei\n\nArt Director\nJulian Johnson Mortimer\n"
+			-editable false;
+	button -l "Close" -c "deleteUI transfer_about_note";
+
+	showWindow transfer_about_note;
+}
