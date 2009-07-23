@@ -386,7 +386,7 @@ void HairCache::create()
 			
 			//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
 			dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
-			dv.setLength(dv0.length());
+			//dv.setLength(dv0.length());
 			
 			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 

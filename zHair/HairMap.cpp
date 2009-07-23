@@ -242,7 +242,7 @@ void hairMap::draw()
 				
 				//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
 				dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
-				dv.setLength(dv0.length());
+				//dv.setLength(dv0.length());
 				
 				cc = croot + dcolor * j;
 				glColor3f(cc.x, cc.y, cc.z);

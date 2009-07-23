@@ -20,11 +20,11 @@ char BindTriangle::set(const XY* corner, const XY& at, triangle_bind_info& res)
 	float alpha, beta, gamma;
 	
 	alpha = barycentric_coord(corner[1].x,corner[1].y, corner[2].x, corner[2].y, at.x, at.y)/f120;
-	if(alpha<0 || alpha>1) return 0;
+	if(alpha<0.f || alpha>1.f) return 0;
 	beta = barycentric_coord(corner[2].x, corner[2].y, corner[0].x, corner[0].y, at.x, at.y)/f201;
-	if(beta<0 || beta>1) return 0;
+	if(beta<0.f || beta>1.f) return 0;
 	gamma = barycentric_coord(corner[0].x, corner[0].y, corner[1].x, corner[1].y, at.x, at.y)/f012;
-	if(gamma<0 || gamma>1) return 0;
+	if(gamma<0.f || gamma>1.f) return 0;
 			
 	res.wei[0] = alpha;
 	res.wei[1] = beta;
