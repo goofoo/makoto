@@ -652,7 +652,7 @@ void hairMap::bind()
 		}
 		//zDisplayFloat3(bind_data[i].wei[0], bind_data[i].wei[1], bind_data[i].wei[2]);
 		
-		pNSeg[i] = guide_data[idx[0].idx].num_seg * bind_data[i].wei[0] + guide_data[idx[1].idx].num_seg * bind_data[i].wei[1] + guide_data[idx[2].idx].num_seg * bind_data[i].wei[2];
+		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
 		
 		delete[] idx;
 	}
@@ -736,7 +736,9 @@ int hairMap::save(const char* filename)
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
-		outfile.write((char*)&guide_data[i].v, sizeof(float));	
+		outfile.write((char*)&guide_data[i].v, sizeof(float));
+		outfile.write((char*)&guide_data[i].radius, sizeof(float));
+		outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -768,6 +770,7 @@ int hairMap::saveStart(const char* filename)
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
 		outfile.write((char*)&guide_data[i].v, sizeof(float));
 		outfile.write((char*)&guide_data[i].radius, sizeof(float));
+		outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -810,6 +813,8 @@ int hairMap::load(const char* filename)
 		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
+		infile.read((char*)&guide_data[i].radius, sizeof(float));
+		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
@@ -900,6 +905,7 @@ int hairMap::loadStart(const char* filename)
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
+		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));

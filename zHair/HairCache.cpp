@@ -45,9 +45,9 @@ int HairCache::dice()
 {
 	if(!pconnection || !parray) return 0;
 		
-	float epsilon = sqrt(sum_area/n_tri/2/ndice);
+	float epsilon = sqrt(sum_area/n_tri/2/(ndice+2));
 
-	int estimate_ncell = n_tri*ndice*2;
+	int estimate_ncell = n_tri*(ndice+2)*2;
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -98,35 +98,55 @@ void HairCache::bind()
 		}
 		
 		QuickSort::sort(idx, 0, num_guide-1);
-				
-		if(isInterpolate==1 && num_guide>6) {
-			XY corner[3];
+// find closest guider valid in 3D
+		unsigned validid = 0;
+		XYZ pto = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+		XYZ dto = pto - guide_data[idx[validid].idx].root;
+		float dist2valid = dto.length();
+		
+		while(dist2valid > guide_data[idx[validid].idx].radius*2 && validid<num_guide-1) {
+			validid++;
+			dto = pto - guide_data[idx[validid].idx].root;
+			dist2valid = dto.length();
+		}
+		
+		bind_data[i].wei[0] = 1.f;
+		bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
+
+		if(isInterpolate==1 && validid < num_guide-6) {
+			XY corner[3];XYZ pw[3]; float dist[3];
 			
 			for(unsigned hdl=0; hdl<3; hdl++) {
 			
-				bind_data[i].idx[0] = idx[0].idx;
-				bind_data[i].idx[1+hdl] = idx[1+hdl].idx;
-				bind_data[i].idx[2+hdl] = idx[2+hdl].idx;
+				bind_data[i].idx[0] = idx[validid].idx;
+				bind_data[i].idx[1] = idx[validid+1+hdl].idx;
+				bind_data[i].idx[2] = idx[validid+2+hdl].idx;
 		
-				corner[0].x = guide_data[idx[0].idx].u;
-				corner[1].x = guide_data[idx[1+hdl].idx].u;
-				corner[2].x = guide_data[idx[2+hdl].idx].u;
-				corner[0].y = guide_data[idx[0].idx].v;
-				corner[1].y = guide_data[idx[1+hdl].idx].v;
-				corner[2].y = guide_data[idx[2+hdl].idx].v;
+				corner[0].x = guide_data[idx[validid].idx].u;
+				corner[1].x = guide_data[idx[validid+1+hdl].idx].u;
+				corner[2].x = guide_data[idx[validid+2+hdl].idx].u;
+				corner[0].y = guide_data[idx[validid].idx].v;
+				corner[1].y = guide_data[idx[validid+1+hdl].idx].v;
+				corner[2].y = guide_data[idx[validid+2+hdl].idx].v;
 				
-				if( BindTriangle::set(corner, from, bind_data[i]) ) hdl = 4;
+				pw[0] = guide_data[idx[validid].idx].root;
+				pw[1] = guide_data[idx[validid+1+hdl].idx].root;
+				pw[2] = guide_data[idx[validid+2+hdl].idx].root;
+				
+				dist[0] = guide_data[idx[validid].idx].radius;
+				dist[1] = guide_data[idx[validid+1+hdl].idx].radius;
+				dist[2] = guide_data[idx[validid+2+hdl].idx].radius;
+				
+				if( BindTriangle::set(corner, from, pw, pto, dist, bind_data[i]) ) hdl = 4;
 			}
 		}
 		else {
-			bind_data[i].idx[0] = idx[0].idx;
-			bind_data[i].idx[1] = idx[1].idx;
-			bind_data[i].idx[2] = idx[2].idx;
-			bind_data[i].wei[0] = 1.f;
-			bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
+			bind_data[i].idx[0] = idx[validid].idx;
+			bind_data[i].idx[1] = idx[validid].idx;
+			bind_data[i].idx[2] = idx[validid].idx;
 		}
 		
-		pNSeg[i] = guide_data[idx[0].idx].num_seg * bind_data[i].wei[0] + guide_data[idx[1].idx].num_seg * bind_data[i].wei[1] + guide_data[idx[2].idx].num_seg * bind_data[i].wei[2];
+		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
 		
 		delete[] idx;
 	}
@@ -162,6 +182,8 @@ int HairCache::load(const char* filename)
 		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
+		infile.read((char*)&guide_data[i].radius, sizeof(float));
+		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
@@ -223,6 +245,8 @@ int HairCache::loadStart(const char* filename)
 		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
+		infile.read((char*)&guide_data[i].radius, sizeof(float));
+		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
@@ -269,7 +293,8 @@ void HairCache::create()
 {
 	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
 // set nvertices
-	int npoints = 0, nwidths = 0;
+	npoints = 0;
+	int nwidths = 0;
 	if(nvertices) delete[] nvertices;
 	nvertices = new int[n_samp];
 	for(unsigned i=0; i<n_samp; i++) 
@@ -368,9 +393,9 @@ void HairCache::create()
 		acc++;
 
 		int num_seg = pNSeg[i];
-		float dparam = 1.f/num_seg;
+		float dparam = 1.f/(float)num_seg;
 		float param;
-		for(short j = 0; j< num_seg; j++) {
+		for(int j = 0; j< num_seg; j++) {
 			param = dparam*j;
 			
 			guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
