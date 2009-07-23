@@ -125,9 +125,11 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
 	if(idraw ==0) m_base->draw();
-	else m_base->drawGuide();
-	//m_base->drawUV();
-	//m_base->drawGuideUV();
+	else if(idraw ==1) m_base->drawGuide();
+	else {
+		m_base->drawUV();
+		m_base->drawGuideUV();
+	}
 	glPopAttrib();
 	view.endGL();
 }

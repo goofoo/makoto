@@ -380,8 +380,7 @@ void hairMap::initGuide()
 
 		int patchend = 0, patchstart = 0;
 		for(int i=0; !faceIter.isDone(); faceIter.next(), i++) {
-			if(i == patchend)
-			{
+			if(i == patchend) {
 				patch_id++;
 				patchstart = patchend;
 				patchend += nsegbuf[patch_id];
@@ -452,6 +451,12 @@ void hairMap::initGuide()
 #endif
 				guide_data[patch_id].u = uv[0];
 				guide_data[patch_id].v = uv[1];
+				
+				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+				meshFn.getPoint (vertlist[0], corner1, MSpace::kObject );
+				
+				MVector dwidth = corner1 - corner0;
+				guide_data[patch_id].radius = dwidth.length();
 			}
 			
 			XYZ side = guide_data[patch_id].dispv[iseg].cross(guide_data[patch_id].N[iseg]);
@@ -470,6 +475,21 @@ void hairMap::initGuide()
 				guide_spaceinv[patch_id].inverse();
 			}
 		}
+	}
+// at least radius should be distance to closest guider in 3D
+	for(unsigned i=0; i<num_guide; i++) {
+		XYZ pto = guide_data[i].P[0];
+		float mindist = 10e6;
+		for(unsigned j=0; j<num_guide; j++) {
+			if(j != i) {
+				XYZ d2p = guide_data[j].P[0] - pto;
+				float adist = d2p.length();
+				if(adist < mindist) mindist = adist;
+			}
+		}
+		
+		if(guide_data[i].radius < mindist) guide_data[i].radius = mindist;
+		guide_data[i].root = guide_data[i].P[0] - guide_data[i].dispv[0]/2;
 	}
 }
 
@@ -583,32 +603,52 @@ void hairMap::bind()
 		}
 		
 		QuickSort::sort(idx, 0, num_guide-1);
+// find closest guider valid in 3D
+		unsigned validid = 0;
+		XYZ pto = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+		XYZ dto = pto - guide_data[idx[validid].idx].root;
+		float dist2valid = dto.length();
 		
-		if(isInterpolate==1 && num_guide>6) {
-			XY corner[3];
-			
+		while(dist2valid > guide_data[idx[validid].idx].radius*2 && validid<num_guide-1) {
+			validid++;
+			dto = pto - guide_data[idx[validid].idx].root;
+			dist2valid = dto.length();
+		}
+		
+		bind_data[i].wei[0] = 1.f;
+		bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
+		
+		if(isInterpolate==1 && validid < num_guide-6) {
+			XY corner[3]; XYZ pw[3]; float dist[3];
+
 			for(unsigned hdl=0; hdl<3; hdl++) {
 			
-				bind_data[i].idx[0] = idx[0].idx;
-				bind_data[i].idx[1+hdl] = idx[1+hdl].idx;
-				bind_data[i].idx[2+hdl] = idx[2+hdl].idx;
+				bind_data[i].idx[0] = idx[validid].idx;
+				bind_data[i].idx[1] = idx[validid+1+hdl].idx;
+				bind_data[i].idx[2] = idx[validid+2+hdl].idx;
 		
-				corner[0].x = guide_data[idx[0].idx].u;
-				corner[1].x = guide_data[idx[1+hdl].idx].u;
-				corner[2].x = guide_data[idx[2+hdl].idx].u;
-				corner[0].y = guide_data[idx[0].idx].v;
-				corner[1].y = guide_data[idx[1+hdl].idx].v;
-				corner[2].y = guide_data[idx[2+hdl].idx].v;
+				corner[0].x = guide_data[idx[validid].idx].u;
+				corner[1].x = guide_data[idx[validid+1+hdl].idx].u;
+				corner[2].x = guide_data[idx[validid+2+hdl].idx].u;
+				corner[0].y = guide_data[idx[validid].idx].v;
+				corner[1].y = guide_data[idx[validid+1+hdl].idx].v;
+				corner[2].y = guide_data[idx[validid+2+hdl].idx].v;
 				
-				if( BindTriangle::set(corner, from, bind_data[i]) ) hdl = 4;
+				pw[0] = guide_data[idx[validid].idx].root;
+				pw[1] = guide_data[idx[validid+1+hdl].idx].root;
+				pw[2] = guide_data[idx[validid+2+hdl].idx].root;
+				
+				dist[0] = guide_data[idx[validid].idx].radius;
+				dist[1] = guide_data[idx[validid+1+hdl].idx].radius;
+				dist[2] = guide_data[idx[validid+2+hdl].idx].radius;
+				
+				if( BindTriangle::set(corner, from, pw, pto, dist, bind_data[i]) ) hdl = 4;
 			}
 		}
 		else {
-			bind_data[i].idx[0] = idx[0].idx;
-			bind_data[i].idx[1] = idx[1].idx;
-			bind_data[i].idx[2] = idx[2].idx;
-			bind_data[i].wei[0] = 1.f;
-			bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
+			bind_data[i].idx[0] = idx[validid].idx;
+			bind_data[i].idx[1] = idx[validid].idx;
+			bind_data[i].idx[2] = idx[validid].idx;
 		}
 		//zDisplayFloat3(bind_data[i].wei[0], bind_data[i].wei[1], bind_data[i].wei[2]);
 		
@@ -630,7 +670,7 @@ void hairMap::drawGuide()
 		for(short j = 0; j< guide_data[i].num_seg; j++) 
 		{
 			XYZ pp = guide_data[i].P[j];
-			float ss = guide_data[i].dispv[j].length()/2;
+			float ss = guide_data[i].radius;
 			glVertex3f(pp.x, pp.y, pp.z);
 			pp += guide_data[i].N[j]*ss;
 			glVertex3f(pp.x, pp.y, pp.z);
@@ -727,6 +767,7 @@ int hairMap::saveStart(const char* filename)
 		outfile.write((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));	
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
 		outfile.write((char*)&guide_data[i].v, sizeof(float));
+		outfile.write((char*)&guide_data[i].radius, sizeof(float));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -858,6 +899,7 @@ int hairMap::loadStart(const char* filename)
 		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
+		infile.read((char*)&guide_data[i].radius, sizeof(float));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));

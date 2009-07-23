@@ -24,13 +24,13 @@
 struct Dguide
 {
 	short num_seg;
-	XYZ dsp_col;
+	XYZ dsp_col, root;
 	XYZ* P;
 	XYZ* N;
 	XYZ* T;
 	XYZ* dispv;
 	MATRIX44F* space;
-	float u, v;
+	float u, v, radius;
 
 	void getDvAtParam(XYZ& res, float param, int mapmax)
 	{

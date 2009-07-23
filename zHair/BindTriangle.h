@@ -24,6 +24,7 @@ public:
 	~BindTriangle() {}
 	
 	static char set(const XY* corner, const XY& at, triangle_bind_info& res);
+	static char set(const XY* corner, const XY& at, const XYZ* positions, const XYZ& topos, const float* distance, triangle_bind_info& res);
 	static float barycentric_coord(float ax, float ay, float bx, float by, float x, float y);
 	
 };
