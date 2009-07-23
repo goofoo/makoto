@@ -79,6 +79,7 @@ public:
 	void updateGuide();
 	void drawGuide();
 	void drawGuideUV();
+	void drawBind();
 
 	int save(const char* filename);
 	int saveStart(const char* filename);

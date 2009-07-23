@@ -190,7 +190,7 @@ void hairMap::draw()
 		float dparam = 1.f/num_seg;
 		XYZ dcolor = (ctip - croot)/(float)num_seg;
 		float param;
-		if(bind_data[i].wei[0] > .8f) {
+		if(bind_data[i].wei[0] > .9f) {
 			for(short j = 0; j< num_seg; j++) {
 				param = dparam*j;
 				
@@ -478,11 +478,11 @@ void hairMap::initGuide()
 	}
 // at least radius should be distance to closest guider in 3D
 	for(unsigned i=0; i<num_guide; i++) {
-		XYZ pto = guide_data[i].P[0];
+		XYZ pto = guide_data[i].root;
 		float mindist = 10e6;
 		for(unsigned j=0; j<num_guide; j++) {
 			if(j != i) {
-				XYZ d2p = guide_data[j].P[0] - pto;
+				XYZ d2p = guide_data[j].root - pto;
 				float adist = d2p.length();
 				if(adist < mindist) mindist = adist;
 			}
@@ -618,6 +618,10 @@ void hairMap::bind()
 		bind_data[i].wei[0] = 1.f;
 		bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
 		
+		bind_data[i].idx[0] = idx[validid].idx;
+		bind_data[i].idx[1] = idx[validid].idx;
+		bind_data[i].idx[2] = idx[validid].idx;
+		
 		if(isInterpolate==1 && validid < num_guide-6) {
 			XY corner[3]; XYZ pw[3]; float dist[3];
 
@@ -645,14 +649,9 @@ void hairMap::bind()
 				if( BindTriangle::set(corner, from, pw, pto, dist, bind_data[i]) ) hdl = 4;
 			}
 		}
-		else {
-			bind_data[i].idx[0] = idx[validid].idx;
-			bind_data[i].idx[1] = idx[validid].idx;
-			bind_data[i].idx[2] = idx[validid].idx;
-		}
 		//zDisplayFloat3(bind_data[i].wei[0], bind_data[i].wei[1], bind_data[i].wei[2]);
 		
-		pNSeg[i] = guide_data[idx[0].idx].num_seg * bind_data[i].wei[0] + guide_data[idx[1].idx].num_seg * bind_data[i].wei[1] + guide_data[idx[2].idx].num_seg * bind_data[i].wei[2];
+		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
 		
 		delete[] idx;
 	}
@@ -940,5 +939,46 @@ int hairMap::loadStart(const char* filename)
 		guide_spaceinv[i].inverse();
 	}
 	return 1;
+}
+
+void hairMap::drawBind()
+{
+	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
+	XYZ p0, p1;
+	float eta;
+	glBegin(GL_LINES);
+	for(unsigned i=0; i<n_samp; i += draw_step) {
+		p0 = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+		
+		
+		p1 = guide_data[bind_data[i].idx[0]].root;
+		eta = ddice[i].alpha;
+		glColor3f(eta,eta,eta);
+		glVertex3f(p0.x, p0.y, p0.z);
+		glColor3f(eta, 0, 0);
+		glVertex3f(p1.x, p1.y, p1.z);
+		
+		eta = ddice[i].beta;
+		if(eta>0) {
+			p1 = guide_data[bind_data[i].idx[1]].root;
+			
+			glColor3f(eta,eta,eta);
+			glVertex3f(p0.x, p0.y, p0.z);
+			glColor3f(eta, 0, 0);
+			glVertex3f(p1.x, p1.y, p1.z);
+		}
+		
+		eta = ddice[i].gamma;
+		if(eta > 0) {
+			p1 = guide_data[bind_data[i].idx[2]].root;
+			
+			glColor3f(eta,eta,eta);
+			glVertex3f(p0.x, p0.y, p0.z);
+			glColor3f(eta, 0, 0);
+			glVertex3f(p1.x, p1.y, p1.z);
+		}
+		
+	}
+	glEnd();
 }
 //~:
