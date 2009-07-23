@@ -489,6 +489,7 @@ void hairMap::initGuide()
 		}
 		
 		if(guide_data[i].radius < mindist) guide_data[i].radius = mindist;
+		guide_data[i].root = guide_data[i].P[0] - guide_data[i].dispv[0]/2;
 	}
 }
 
@@ -605,12 +606,12 @@ void hairMap::bind()
 // find closest guider valid in 3D
 		unsigned validid = 0;
 		XYZ pto = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-		XYZ dto = pto - guide_data[idx[validid].idx].P[0];
+		XYZ dto = pto - guide_data[idx[validid].idx].root;
 		float dist2valid = dto.length();
 		
 		while(dist2valid > guide_data[idx[validid].idx].radius*2 && validid<num_guide-1) {
 			validid++;
-			dto = pto - guide_data[idx[validid].idx].P[0];
+			dto = pto - guide_data[idx[validid].idx].root;
 			dist2valid = dto.length();
 		}
 		
@@ -633,9 +634,9 @@ void hairMap::bind()
 				corner[1].y = guide_data[idx[validid+1+hdl].idx].v;
 				corner[2].y = guide_data[idx[validid+2+hdl].idx].v;
 				
-				pw[0] = guide_data[idx[validid].idx].P[0];
-				pw[1] = guide_data[idx[validid+1+hdl].idx].P[0];
-				pw[2] = guide_data[idx[validid+2+hdl].idx].P[0];
+				pw[0] = guide_data[idx[validid].idx].root;
+				pw[1] = guide_data[idx[validid+1+hdl].idx].root;
+				pw[2] = guide_data[idx[validid+2+hdl].idx].root;
 				
 				dist[0] = guide_data[idx[validid].idx].radius;
 				dist[1] = guide_data[idx[validid+1+hdl].idx].radius;
