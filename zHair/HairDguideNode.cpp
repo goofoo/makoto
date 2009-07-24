@@ -132,7 +132,8 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 	//glPushAttrib(GL_ALL_ATTRIB_BITS);
 	if(m_base) {
 		if(idraw ==0) m_base->draw();
-		else m_base->drawGuide();
+		else if(idraw ==1) m_base->drawGuide();
+		else m_base->drawBind();
 	}
 	//glPopAttrib();
 	view.endGL();

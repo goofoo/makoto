@@ -138,6 +138,7 @@ void HairCache::bind()
 				dist[2] = guide_data[idx[validid+2+hdl].idx].radius;
 				
 				if( BindTriangle::set(corner, from, pw, pto, dist, bind_data[i]) ) hdl = 4;
+				else bind_data[i].idx[0] = bind_data[i].idx[1] = bind_data[i].idx[2] = idx[validid].idx;
 			}
 		}
 		else {

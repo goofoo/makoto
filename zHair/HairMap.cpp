@@ -476,6 +476,8 @@ void hairMap::initGuide()
 			}
 		}
 	}
+	
+	for(unsigned i=0; i<num_guide; i++) guide_data[i].root = guide_data[i].P[0] - guide_data[i].dispv[0]/2;
 // at least radius should be distance to closest guider in 3D
 	for(unsigned i=0; i<num_guide; i++) {
 		XYZ pto = guide_data[i].root;
@@ -487,9 +489,7 @@ void hairMap::initGuide()
 				if(adist < mindist) mindist = adist;
 			}
 		}
-		
 		if(guide_data[i].radius < mindist) guide_data[i].radius = mindist;
-		guide_data[i].root = guide_data[i].P[0] - guide_data[i].dispv[0]/2;
 	}
 }
 
@@ -618,9 +618,7 @@ void hairMap::bind()
 		bind_data[i].wei[0] = 1.f;
 		bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
 		
-		bind_data[i].idx[0] = idx[validid].idx;
-		bind_data[i].idx[1] = idx[validid].idx;
-		bind_data[i].idx[2] = idx[validid].idx;
+		bind_data[i].idx[0] = bind_data[i].idx[1] = bind_data[i].idx[2] = idx[validid].idx;
 		
 		if(isInterpolate==1 && validid < num_guide-6) {
 			XY corner[3]; XYZ pw[3]; float dist[3];
@@ -647,6 +645,7 @@ void hairMap::bind()
 				dist[2] = guide_data[idx[validid+2+hdl].idx].radius;
 				
 				if( BindTriangle::set(corner, from, pw, pto, dist, bind_data[i]) ) hdl = 4;
+				else bind_data[i].idx[0] = bind_data[i].idx[1] = bind_data[i].idx[2] = idx[validid].idx;
 			}
 		}
 		//zDisplayFloat3(bind_data[i].wei[0], bind_data[i].wei[1], bind_data[i].wei[2]);
@@ -671,11 +670,17 @@ void hairMap::drawGuide()
 			XYZ pp = guide_data[i].P[j];
 			float ss = guide_data[i].radius;
 			glVertex3f(pp.x, pp.y, pp.z);
-			pp += guide_data[i].N[j]*ss;
+			
+			if(j==0) pp += guide_data[i].N[j]*ss;
+			else pp += guide_data[i].N[j]*ss*0.25f;
+			
 			glVertex3f(pp.x, pp.y, pp.z);
 			pp = guide_data[i].P[j];
 			glVertex3f(pp.x, pp.y, pp.z);
-			pp += guide_data[i].T[j]*ss;
+			
+			if(j==0) pp += guide_data[i].N[j]*ss;
+			else pp += guide_data[i].N[j]*ss*0.25f;
+			
 			glVertex3f(pp.x, pp.y, pp.z);
 			
 			if(j>0) {
