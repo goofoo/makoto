@@ -761,7 +761,7 @@ global proc dodeformzhair()
 
 global proc zhair_set_solver(string $solver)
 {
-	setAttr ($solver+".gravity") 639;
+	setAttr ($solver+".gravity") 200;
 	setAttr ($solver+".airDensity") 0.01;
 }
 

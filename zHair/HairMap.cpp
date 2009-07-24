@@ -415,27 +415,31 @@ void hairMap::initGuide()
 			tang.normalize();
 			guide_data[patch_id].T[iseg] = XYZ(tang.x, tang.y, tang.z);
 			*/
-			MPoint corner0, corner1;
+			MPoint corner0, corner1, corner2, corner3;
 			/*meshFn.getPoint (vertlist[0], corner0, MSpace::kObject );
 			meshFn.getPoint (vertlist[1], corner1, MSpace::kObject );
 			meshFn.getPoint (vertlist[2], corner2, MSpace::kObject );
 			meshFn.getPoint (vertlist[3], corner3, MSpace::kObject );*/
 			MVector dv;// = (corner2 + corner3)/2 - (corner0 + corner1)/2;
 				
-			if(order == 0)
-			{
-				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
-				meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+			//if(order == 0)
+			//{
+			meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+			meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+			meshFn.getPoint (vertlist[0], corner2, MSpace::kObject );
+			meshFn.getPoint (vertlist[3], corner3, MSpace::kObject );
 				
-				dv = corner0 - cen + corner1 - cen;
-			}
-			else
-			{
-				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
-				meshFn.getPoint (vertlist[0], corner1, MSpace::kObject );
+			dv = corner0 - cen + corner1 - cen;
+			dv += cen - corner2 + cen - corner3;
+			dv /= 2.0;
+			//}
+			//else
+			//{
+			//	meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+			//	meshFn.getPoint (vertlist[0], corner1, MSpace::kObject );
 				
-				dv = cen - corner1 + cen - corner0;
-			}
+			//	dv = cen - corner1 + cen - corner0;
+			//}
 			
 			guide_data[patch_id].dispv[iseg] = XYZ(dv.x, dv.y, dv.z);
 			//dv.normalize();
@@ -534,27 +538,31 @@ void hairMap::updateGuide()
 			guide_data[patch_id].T[iseg] = XYZ(tang.x, tang.y, tang.z);
 			*/
 			
-			MPoint corner0, corner1;
+			MPoint corner0, corner1, corner2, corner3;
 			/*meshFn.getPoint (vertlist[0], corner0, MSpace::kObject );
 			meshFn.getPoint (vertlist[1], corner1, MSpace::kObject );
 			meshFn.getPoint (vertlist[2], corner2, MSpace::kObject );
 			meshFn.getPoint (vertlist[3], corner3, MSpace::kObject );*/
 			MVector dv;// = (corner2 + corner3)/2 - (corner0 + corner1)/2;
 			
-			if(order == 0)
-			{
+			//if(order == 0)
+			//{
 				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
 				meshFn.getPoint (vertlist[2], corner1, MSpace::kObject );
+				meshFn.getPoint (vertlist[0], corner2, MSpace::kObject );
+				meshFn.getPoint (vertlist[3], corner3, MSpace::kObject );
 				
 				dv = corner0 - cen + corner1 - cen;
-			}
-			else
-			{
-				meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
-				meshFn.getPoint (vertlist[0], corner1, MSpace::kObject );
+				dv += cen - corner2 + cen - corner3;
+				dv /= 2.0;
+			//}
+			//else
+			//{
+			//	meshFn.getPoint (vertlist[1], corner0, MSpace::kObject );
+			//	meshFn.getPoint (vertlist[0], corner1, MSpace::kObject );
 				
-				dv = cen - corner1 + cen -corner0;
-			}
+			//	dv = cen - corner1 + cen -corner0;
+			//}
 			
 			guide_data[patch_id].dispv[iseg] = XYZ(dv.x, dv.y, dv.z);
 			//dv.normalize();
@@ -650,7 +658,7 @@ void hairMap::bind()
 		}
 		//zDisplayFloat3(bind_data[i].wei[0], bind_data[i].wei[1], bind_data[i].wei[2]);
 		
-		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
+		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg;// * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
 		
 		delete[] idx;
 	}
@@ -678,8 +686,8 @@ void hairMap::drawGuide()
 			pp = guide_data[i].P[j];
 			glVertex3f(pp.x, pp.y, pp.z);
 			
-			if(j==0) pp += guide_data[i].N[j]*ss;
-			else pp += guide_data[i].N[j]*ss*0.25f;
+			if(j==0) pp += guide_data[i].T[j]*ss;
+			else pp += guide_data[i].T[j]*ss*0.25f;
 			
 			glVertex3f(pp.x, pp.y, pp.z);
 			
