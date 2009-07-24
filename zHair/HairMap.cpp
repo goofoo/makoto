@@ -242,7 +242,7 @@ void hairMap::draw()
 				
 				//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
 				dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
-				dv.setLength(dv0.length());
+				//dv.setLength(dv0.length());
 				
 				cc = croot + dcolor * j;
 				glColor3f(cc.x, cc.y, cc.z);
@@ -735,7 +735,9 @@ int hairMap::save(const char* filename)
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
-		outfile.write((char*)&guide_data[i].v, sizeof(float));	
+		outfile.write((char*)&guide_data[i].v, sizeof(float));
+		outfile.write((char*)&guide_data[i].radius, sizeof(float));
+		outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -767,6 +769,7 @@ int hairMap::saveStart(const char* filename)
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
 		outfile.write((char*)&guide_data[i].v, sizeof(float));
 		outfile.write((char*)&guide_data[i].radius, sizeof(float));
+		outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -809,6 +812,8 @@ int hairMap::load(const char* filename)
 		infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
+		infile.read((char*)&guide_data[i].radius, sizeof(float));
+		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
@@ -899,6 +904,7 @@ int hairMap::loadStart(const char* filename)
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
+		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));

@@ -16,13 +16,13 @@
 struct Dguide
 {
 	short num_seg;
-	XYZ dsp_col;
+	XYZ dsp_col, root;
 	XYZ* P;
 	XYZ* N;
 	XYZ* T;
 	XYZ* dispv;
 	MATRIX44F* space;
-	float u, v;
+	float u, v, radius;
 	
 	void getDvAtParam(XYZ& res, float param, int mapmax)
 	{
@@ -88,11 +88,12 @@ public:
 	const XYZ* getRootColors() const {return rootColorArray;}
 	const XYZ* getTipColors() const {return tipColorArray;}
 	const XYZ* getOs() const {return opacities;}
+	int getNumPoints() const {return npoints;}
 	
 private:
 	float ndice, rootwidth, tipwidth;
 	DiceParam* ddice;
-	int n_samp;
+	int n_samp, npoints;
 	float sum_area;
 	int* pconnection;
 	float* uarray;

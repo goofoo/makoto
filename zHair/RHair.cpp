@@ -55,11 +55,14 @@ void RHair::generateRIB(RtFloat detail)
 			
 	pHair->create();
 	
-	float cwidth = 0.01f;
 	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), 
 	"uniform float s", (RtFloat*)pHair->getS(), "uniform float t", (RtFloat*)pHair->getT(), 
 	"uniform color root_color", (RtColor*)pHair->getRootColors(), "uniform color tip_color", (RtColor*)pHair->getTipColors(), 
 	"Os", (RtColor*)pHair->getOs(), RI_NULL);
+	
+	
+	//float cw = 0.1;
+	//RiPoints((RtInt)pHair->getNumPoints(), "P", (RtPoint*)pHair->points(), "constantwidth", &cw, RI_NULL);
 	
 	delete pHair;
 	

@@ -23,6 +23,8 @@ copy .\plug-ins\HDREnvironmentViewer2008.mll D:\wamp\www\prt_release\plug-ins
 copy .\plug-ins\fishViz.mll D:\wamp\www\prt_release\plug-ins
 copy .\plug-ins\ZHair2008.mll D:\wamp\www\prt_release\plug-ins
 copy .\plug-ins\ZHair70.mll D:\wamp\www\prt_release\plug-ins
+copy .\plug-ins\cameraFrustum70.mll D:\wamp\www\prt_release\plug-ins
+copy ..\cameraFrustum\cameraFrustumNode.py D:\wamp\www\prt_release\plug-ins
 copy TOR.ini D:\wamp\www\prt_release
 copy slim.ini D:\wamp\www\prt_release
 copy rat_install.bat D:\wamp\www\prt_release
@@ -35,4 +37,5 @@ copy .\scripts\exrSet2ndDisplay.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\zhairMenus.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\combCurveProperties.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\combCurveValues.mel D:\wamp\www\prt_release\scripts
+copy .\scripts\cameraFrustumMenus.mel D:\wamp\www\prt_release\scripts
 copy .\application\prtServer.exe D:\wamp\www\prt_release\application
