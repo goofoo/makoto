@@ -147,7 +147,7 @@ void HairCache::bind()
 			bind_data[i].idx[2] = idx[validid].idx;
 		}
 		
-		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
+		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg;// * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
 		
 		delete[] idx;
 	}
