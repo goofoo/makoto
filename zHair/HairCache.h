@@ -16,7 +16,7 @@
 struct Dguide
 {
 	short num_seg;
-	XYZ dsp_col, root;
+	XYZ dsp_col;
 	XYZ* P;
 	XYZ* N;
 	XYZ* T;

@@ -580,7 +580,7 @@ void hairMap::updateGuide()
 			guide_data[patch_id].dispv[iseg] = XYZ(dv.x, dv.y, dv.z);
 			MPoint pr = cen - dv/2;
 			guide_data[patch_id].P[iseg] = XYZ(pr.x, pr.y, pr.z);
-			
+#ifndef USE_MAYA2007			
 			if(iseg==0) {
 				MPoint pom;
 				int iface = guide_data[patch_id].faceId;
@@ -588,10 +588,10 @@ void hairMap::updateGuide()
 				uv[0] = guide_data[patch_id].u;
 				uv[1] = guide_data[patch_id].v;
 				MString smap("map1");
-				baseFn.getPointAtUV (iface, pom, uv, MSpace::kObject, &smap, 0.01);
+				baseFn.getPointAtUV (iface, pom, uv, MSpace::kObject, &smap, 1.0);
 				guide_data[patch_id].P[iseg] = XYZ(pom.x, pom.y, pom.z);
 			}
-			
+#endif			
 			XYZ side = guide_data[patch_id].dispv[iseg].cross(guide_data[patch_id].N[iseg]);
 			side.normalize();
 			guide_data[patch_id].T[iseg] = guide_data[patch_id].N[iseg].cross(side);

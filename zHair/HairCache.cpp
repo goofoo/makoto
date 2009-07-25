@@ -101,12 +101,12 @@ void HairCache::bind()
 // find closest guider valid in 3D
 		unsigned validid = 0;
 		XYZ pto = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-		XYZ dto = pto - guide_data[idx[validid].idx].root;
+		XYZ dto = pto - guide_data[idx[validid].idx].P[0];
 		float dist2valid = dto.length();
 		
 		while(dist2valid > guide_data[idx[validid].idx].radius*2 && validid<num_guide-1) {
 			validid++;
-			dto = pto - guide_data[idx[validid].idx].root;
+			dto = pto - guide_data[idx[validid].idx].P[0];
 			dist2valid = dto.length();
 		}
 		
@@ -129,9 +129,9 @@ void HairCache::bind()
 				corner[1].y = guide_data[idx[validid+1+hdl].idx].v;
 				corner[2].y = guide_data[idx[validid+2+hdl].idx].v;
 				
-				pw[0] = guide_data[idx[validid].idx].root;
-				pw[1] = guide_data[idx[validid+1+hdl].idx].root;
-				pw[2] = guide_data[idx[validid+2+hdl].idx].root;
+				pw[0] = guide_data[idx[validid].idx].P[0];
+				pw[1] = guide_data[idx[validid+1+hdl].idx].P[0];
+				pw[2] = guide_data[idx[validid+2+hdl].idx].P[0];
 				
 				dist[0] = guide_data[idx[validid].idx].radius;
 				dist[1] = guide_data[idx[validid+1+hdl].idx].radius;
@@ -184,7 +184,6 @@ int HairCache::load(const char* filename)
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
-		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
@@ -247,7 +246,6 @@ int HairCache::loadStart(const char* filename)
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
-		infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
