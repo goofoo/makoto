@@ -186,11 +186,11 @@ int HairCache::load(const char* filename)
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
-	infile.read((char*)&n_tri,sizeof(unsigned));
+	//infile.read((char*)&n_tri,sizeof(unsigned));
 	
-	if(pconnection) delete[] pconnection;
-	pconnection = new int[n_tri*3];
-	infile.read((char*)pconnection, sizeof(int)*n_tri*3);
+	//if(pconnection) delete[] pconnection;
+	//pconnection = new int[n_tri*3];
+	//infile.read((char*)pconnection, sizeof(int)*n_tri*3);
 	
 	infile.read((char*)&n_vert, sizeof(unsigned));
 	
@@ -394,60 +394,93 @@ void HairCache::create()
 		int num_seg = pNSeg[i];
 		float dparam = 1.f/(float)num_seg;
 		float param;
-		for(int j = 0; j< num_seg; j++) {
-			param = dparam*j;
-			
-			guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
-			guide_data[bind_data[i].idx[1]].getDvAtParam(dv1, param, num_seg);
-			guide_data[bind_data[i].idx[2]].getDvAtParam(dv2, param, num_seg);
+		if(bind_data[i].wei[0] > .9f) {
+			for(int j = 0; j< num_seg; j++) {
+				param = dparam*j;
 				
-			guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
-			guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace1, param);
-			guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace2, param);
-			
-			vertices[acc] = ppre;
-			acc++;
-			
-			//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
-			dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
-			//dv.setLength(dv0.length());
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				guide_data[bind_data[i].idx[0]].getDvAtParam(dv, param, num_seg);
+				guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
+				
+				vertices[acc] = ppre;
+				acc++;
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				
+				keepx = pt[0].x;
+				pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+				pw[0] *= noi;
+				pw[0].x = keepx;
+				tspace.transform(pw[0]);
+				
+				pcur = pw[0];
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+				dv *= noi;
+				pcur += dv;
+				
+				ddv = pcur - ppre;
+				ddv.normalize();
+				ddv *= dv.length();
 
-			keepx = pt[0].x;
-			pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
-			pw[0] *= noi;
-			pw[0].x = keepx;
-			//guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
-			tspace.transform(pw[0]);
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			keepx = pt[1].x;
-			pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
-			pw[1] *= noi;
-			pw[1].x = keepx;
-			//guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
-			tspace1.transform(pw[1]);
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-			keepx = pt[2].x;
-			pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
-			pw[2] *= noi;
-			pw[2].x = keepx;
-			//guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
-			tspace2.transform(pw[2]);
-			
-			pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
-			
-			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
-			dv *= noi;
-			pcur += dv;
-			
-			ddv = pcur - ppre;
-			ddv.normalize();
-			ddv *= dv.length();
+				ppre += ddv;
+			}
+		}
+		else {
+			for(int j = 0; j< num_seg; j++) {
+				param = dparam*j;
+				
+				guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
+				guide_data[bind_data[i].idx[1]].getDvAtParam(dv1, param, num_seg);
+				guide_data[bind_data[i].idx[2]].getDvAtParam(dv2, param, num_seg);
+					
+				guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
+				guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace1, param);
+				guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace2, param);
+				
+				vertices[acc] = ppre;
+				acc++;
+				
+				//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
+				dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
+				//dv.setLength(dv0.length());
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
 
-			ppre += ddv;
+				keepx = pt[0].x;
+				pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+				pw[0] *= noi;
+				pw[0].x = keepx;
+				//guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+				tspace.transform(pw[0]);
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				keepx = pt[1].x;
+				pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
+				pw[1] *= noi;
+				pw[1].x = keepx;
+				//guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+				tspace1.transform(pw[1]);
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+				keepx = pt[2].x;
+				pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
+				pw[2] *= noi;
+				pw[2].x = keepx;
+				//guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+				tspace2.transform(pw[2]);
+				
+				pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+				dv *= noi;
+				pcur += dv;
+				
+				ddv = pcur - ppre;
+				ddv.normalize();
+				ddv *= dv.length();
+
+				ppre += ddv;
+			}
 		}
 		vertices[acc] = ppre;
 		acc++;

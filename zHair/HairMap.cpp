@@ -782,8 +782,8 @@ int hairMap::save(const char* filename)
 		//outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
-	outfile.write((char*)&n_tri, sizeof(unsigned));
-	outfile.write((char*)pconnection, sizeof(int)*n_tri*3);
+	//outfile.write((char*)&n_tri, sizeof(unsigned));
+	//outfile.write((char*)pconnection, sizeof(int)*n_tri*3);
 	outfile.write((char*)&n_vert, sizeof(unsigned));
 	outfile.write((char*)parray, sizeof(XYZ)*n_vert);
 	outfile.close();
@@ -858,11 +858,11 @@ int hairMap::load(const char* filename)
 		//infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
-	infile.read((char*)&n_tri,sizeof(unsigned));
+	//infile.read((char*)&n_tri,sizeof(unsigned));
 	
-	if(pconnection) delete[] pconnection;
-	pconnection = new int[n_tri*3];
-	infile.read((char*)pconnection, sizeof(int)*n_tri*3);
+	//if(pconnection) delete[] pconnection;
+	//pconnection = new int[n_tri*3];
+	//infile.read((char*)pconnection, sizeof(int)*n_tri*3);
 	
 	infile.read((char*)&n_vert, sizeof(unsigned));
 	
