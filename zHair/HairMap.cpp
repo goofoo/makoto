@@ -21,7 +21,7 @@ using namespace std;
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),order(0),isInterpolate(0),nsegbuf(0)
+draw_step(1),order(0),isInterpolate(0),nsegbuf(0),m_offset(1.f)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
@@ -69,8 +69,11 @@ void hairMap::updateBase()
 	
 	if(parray) delete[] parray; 
 	parray = new XYZ[n_vert];
-	
-	for(unsigned i=0; i<n_vert; i++) parray[i] = XYZ(p_vert[i].x, p_vert[i].y, p_vert[i].z);
+	MVector vn;
+	for(unsigned i=0; i<n_vert; i++) {
+		meshFn.getVertexNormal (i, vn, MSpace::kObject);
+		parray[i] = XYZ(p_vert[i].x+vn.x*m_offset, p_vert[i].y+vn.y*m_offset, p_vert[i].z+vn.z*m_offset);
+	}
 	
 	p_vert.clear();
 	

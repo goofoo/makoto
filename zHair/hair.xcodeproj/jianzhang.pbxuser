@@ -109,6 +109,8 @@
 			7FE8D3C0101B03AC00A495D9 /* PBXTextBookmark */ = 7FE8D3C0101B03AC00A495D9 /* PBXTextBookmark */;
 			7FE8D3C3101B062B00A495D9 /* PBXTextBookmark */ = 7FE8D3C3101B062B00A495D9 /* PBXTextBookmark */;
 			7FE8D3C4101B062B00A495D9 /* PBXTextBookmark */ = 7FE8D3C4101B062B00A495D9 /* PBXTextBookmark */;
+			7FE8D3C6101B147600A495D9 /* PBXTextBookmark */ = 7FE8D3C6101B147600A495D9 /* PBXTextBookmark */;
+			7FE8D3C7101B147600A495D9 /* PBXTextBookmark */ = 7FE8D3C7101B147600A495D9 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -231,9 +233,9 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1268, 14770}}";
-			sepNavSelRange = "{17244, 0}";
-			sepNavVisRange = "{16610, 1389}";
+			sepNavIntBoundsRect = "{{0, 0}, {1154, 14504}}";
+			sepNavSelRange = "{30802, 6}";
+			sepNavVisRange = "{30188, 1215}";
 			sepNavWindowFrame = "{{679, 98}, {535, 678}}";
 		};
 	};
@@ -302,7 +304,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 402";
 		rLen = 25;
-		rLoc = 11093;
+		rLoc = 11218;
 		rType = 0;
 		vrLen = 1473;
 		vrLoc = 12495;
@@ -312,7 +314,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 465";
 		rLen = 24;
-		rLoc = 13498;
+		rLoc = 13623;
 		rType = 0;
 		vrLen = 1389;
 		vrLoc = 12067;
@@ -322,7 +324,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 465";
 		rLen = 0;
-		rLoc = 13415;
+		rLoc = 13540;
 		rType = 0;
 		vrLen = 1485;
 		vrLoc = 12067;
@@ -332,7 +334,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 466";
 		rLen = 0;
-		rLoc = 13401;
+		rLoc = 13526;
 		rType = 0;
 		vrLen = 1418;
 		vrLoc = 12067;
@@ -341,7 +343,7 @@
 		isa = PBXTextBookmark;
 		fRef = 7FE8D38E101AFB9400A495D9 /* HairMap.h */;
 		rLen = 0;
-		rLoc = 2147483654;
+		rLoc = 2147483722;
 		rType = 0;
 	};
 	7FE8D38E101AFB9400A495D9 /* HairMap.h */ = {
@@ -378,7 +380,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 584";
 		rLen = 0;
-		rLoc = 17077;
+		rLoc = 17202;
 		rType = 0;
 		vrLen = 1578;
 		vrLoc = 16203;
@@ -408,7 +410,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 473";
 		rLen = 0;
-		rLoc = 13467;
+		rLoc = 13592;
 		rType = 0;
 		vrLen = 1587;
 		vrLoc = 12486;
@@ -428,7 +430,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 472";
 		rLen = 0;
-		rLoc = 13408;
+		rLoc = 13533;
 		rType = 0;
 		vrLen = 1587;
 		vrLoc = 12486;
@@ -448,7 +450,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 471";
 		rLen = 0;
-		rLoc = 13401;
+		rLoc = 13526;
 		rType = 0;
 		vrLen = 1608;
 		vrLoc = 12486;
@@ -468,7 +470,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 472";
 		rLen = 0;
-		rLoc = 13408;
+		rLoc = 13533;
 		rType = 0;
 		vrLen = 1606;
 		vrLoc = 12486;
@@ -488,7 +490,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 473";
 		rLen = 0;
-		rLoc = 13460;
+		rLoc = 13585;
 		rType = 0;
 		vrLen = 1576;
 		vrLoc = 12486;
@@ -508,7 +510,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 473";
 		rLen = 0;
-		rLoc = 13460;
+		rLoc = 13585;
 		rType = 0;
 		vrLen = 1586;
 		vrLoc = 12486;
@@ -528,7 +530,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 473";
 		rLen = 0;
-		rLoc = 13412;
+		rLoc = 13537;
 		rType = 0;
 		vrLen = 1586;
 		vrLoc = 12486;
@@ -548,7 +550,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 517";
 		rLen = 0;
-		rLoc = 14903;
+		rLoc = 15028;
 		rType = 0;
 		vrLen = 1150;
 		vrLoc = 14207;
@@ -568,7 +570,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 470";
 		rLen = 0;
-		rLoc = 13303;
+		rLoc = 13428;
 		rType = 0;
 		vrLen = 1533;
 		vrLoc = 12311;
@@ -588,7 +590,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 1015";
 		rLen = 0;
-		rLoc = 31443;
+		rLoc = 31568;
 		rType = 0;
 		vrLen = 952;
 		vrLoc = 30589;
@@ -608,7 +610,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 714";
 		rLen = 0;
-		rLoc = 21241;
+		rLoc = 21366;
 		rType = 0;
 		vrLen = 894;
 		vrLoc = 20593;
@@ -628,7 +630,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 721";
 		rLen = 0;
-		rLoc = 21427;
+		rLoc = 21552;
 		rType = 0;
 		vrLen = 891;
 		vrLoc = 20593;
@@ -648,12 +650,32 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 591";
 		rLen = 0;
-		rLoc = 17244;
+		rLoc = 17369;
 		rType = 0;
 		vrLen = 1389;
 		vrLoc = 16610;
 	};
 	7FE8D3C4101B062B00A495D9 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE8D390101AFB9400A495D9 /* HairMap.h */;
+		name = "HairMap.h: 27";
+		rLen = 0;
+		rLoc = 491;
+		rType = 0;
+		vrLen = 952;
+		vrLoc = 133;
+	};
+	7FE8D3C6101B147600A495D9 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
+		name = "HairMap.cpp: 994";
+		rLen = 6;
+		rLoc = 30843;
+		rType = 0;
+		vrLen = 1215;
+		vrLoc = 30188;
+	};
+	7FE8D3C7101B147600A495D9 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 7FE8D390101AFB9400A495D9 /* HairMap.h */;
 		name = "HairMap.h: 27";

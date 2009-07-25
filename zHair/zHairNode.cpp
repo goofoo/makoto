@@ -19,6 +19,7 @@ MObject HairNode::astep;
 MObject HairNode::aalternativepatch;
 MObject HairNode::ainterpolate;
 MObject HairNode::adraw;
+MObject HairNode::aoffset;
 
 HairNode::HairNode(): idraw(0)
 {
@@ -48,13 +49,14 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		}
 		
 		m_base->setGuide(guidelist);
-		m_base->updateBase();
 		
-		//MMatrix mat = data.inputValue(aworldSpace).asMatrix();
+		int startFrame = data.inputValue(astartframe, &status).asInt();
 		MTime currentTime = data.inputValue(acurrenttime, &status).asTime();
 		int frame = (int)currentTime.value();
 		
-		int startFrame = data.inputValue(astartframe, &status).asInt();
+		if(startFrame == frame) m_base->setOffset(0.f);
+		else m_base->setOffset(data.inputValue(aoffset).asFloat());
+		m_base->updateBase();
 		
 		MString cache_path, cache_start, proj_path;
 		MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj_path);
@@ -181,6 +183,15 @@ MStatus HairNode::initialize()
 	numAttr.setCached( true );
 	addAttribute(aSize);
 	
+	aoffset = numAttr.create("offset", "ofs",
+						  MFnNumericData::kFloat, 0.f, &status);
+    CHECK_MSTATUS( status );
+    CHECK_MSTATUS( numAttr.setStorable(true));
+    CHECK_MSTATUS( numAttr.setKeyable(true));
+    CHECK_MSTATUS( numAttr.setDefault(0.f));
+	numAttr.setCached( true );
+	addAttribute(aoffset);
+	
 	astep = numAttr.create( "drawStep", "dsp", MFnNumericData::kInt, 1 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
@@ -250,6 +261,7 @@ MStatus HairNode::initialize()
 	attributeAffects( aalternativepatch, aoutput );
 	attributeAffects( ainterpolate, aoutput );
 	attributeAffects( adraw, aoutput );
+	attributeAffects( aoffset, aoutput );
 	
 	return MS::kSuccess;
 }

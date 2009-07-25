@@ -51,6 +51,7 @@ MObject HairDguideNode::amutantcolorscale;
 MObject HairDguideNode::adice;
 MObject HairDguideNode::adraw;
 MObject HairDguideNode::ainterpolate;
+MObject HairDguideNode::aoffset;
 
 HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0),idice(0),idraw(0)
 {
@@ -208,6 +209,14 @@ MStatus HairDguideNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(aclump);
 	
+	aoffset = numAttr.create("offset", "ofs",
+						  MFnNumericData::kFloat, 0.f, &stat);
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
+    numAttr.setDefault(0.f);
+	numAttr.setCached( true );
+	addAttribute(aoffset);
+	
 	astep = numAttr.create( "drawStep", "dsp", MFnNumericData::kInt, 1 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
@@ -296,6 +305,7 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( ainterpolate, output );
 	attributeAffects( adice, output );
 	attributeAffects( adraw, output );
+	attributeAffects( aoffset, output );
 	
 	return MS::kSuccess;
 

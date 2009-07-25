@@ -55,6 +55,7 @@ public:
 	static MObject aalternativepatch;
 	static MObject ainterpolate;
 	static MObject adraw;
+	static MObject aoffset;
 	static	MTypeId		id;
 
 private :
