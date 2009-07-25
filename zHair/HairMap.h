@@ -121,6 +121,8 @@ public:
 	float getMutantColorB() const {return mutant_color.z;}
 	float getMutantColorScale() const {return mutant_scale;}
 	
+	void createSnow(MObject& meshData) const;
+	
 private:
 	char has_base, has_guide;
 	MObject obase;

@@ -1029,4 +1029,27 @@ void hairMap::drawBind()
 	}
 	glEnd();
 }
+
+void hairMap::createSnow(MObject& meshData) const
+{
+	MPointArray vertexArray;
+	MIntArray polygonCounts;
+	MIntArray polygonConnects;
+	MFloatArray uarray, varray;
+	
+	vertexArray.append(MPoint(0,1,0));
+	vertexArray.append(MPoint(1,1,0));
+	vertexArray.append(MPoint(0,0,1));
+	
+	polygonCounts.append(3);
+				
+	polygonConnects.append(0);
+	polygonConnects.append(1);
+	polygonConnects.append(2);
+		
+	MFnMesh meshFn;
+	meshFn.create(vertexArray.length(), 1, vertexArray, polygonCounts, polygonConnects, meshData );
+	//meshFn.setUVs ( uarray, varray );
+	//meshFn.assignUVs ( polygonCounts, polygonConnects );
+}
 //~:

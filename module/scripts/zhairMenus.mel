@@ -308,6 +308,16 @@ global proc doloadzhair()
 	setAttr -type "string" ($node + ".cachePath") $path;
 	connectAttr -f "time1.outTime" ($node + ".currentTime");
 	connectAttr -f ($node + ".output") ($dummy+".translateX");
+	
+	if(`checkBox -q -v loadzhairCreateSnowGrp`) {
+		$node = `createNode SnowInHair`;
+		setAttr -type "string" ($node + ".cachePath") $path;
+		connectAttr -f "time1.outTime" ($node + ".currentTime");
+		string $cub[] = `polyCube -ch 0`;
+		select -r $cub[0];
+		$cub = `pickWalk -d down`;
+		connectAttr -f ($node+".outMesh") ($cub[0] + ".inMesh");
+	}
 }
 
 global proc openLoadHairMapWin()
@@ -330,6 +340,7 @@ columnLayout -adjustableColumn true;
      -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
 	 -bc "set_hairCacheDataPathLoad"
      loadzhairCachePathGrp;
+	checkBox -l "Create Snow as Well" -v 0 loadzhairCreateSnowGrp;
     
 //row begin
 button -l "Save" -c "doloadzhair;deleteUI loadzhairWin"-p $row;
@@ -761,7 +772,7 @@ global proc dodeformzhair()
 
 global proc zhair_set_solver(string $solver)
 {
-	setAttr ($solver+".gravity") 200;
+	setAttr ($solver+".gravity") 600;
 	setAttr ($solver+".airDensity") 0.01;
 }
 
