@@ -107,6 +107,8 @@
 			7FE8D3BD101B033E00A495D9 /* PBXTextBookmark */ = 7FE8D3BD101B033E00A495D9 /* PBXTextBookmark */;
 			7FE8D3BF101B03AC00A495D9 /* PBXTextBookmark */ = 7FE8D3BF101B03AC00A495D9 /* PBXTextBookmark */;
 			7FE8D3C0101B03AC00A495D9 /* PBXTextBookmark */ = 7FE8D3C0101B03AC00A495D9 /* PBXTextBookmark */;
+			7FE8D3C3101B062B00A495D9 /* PBXTextBookmark */ = 7FE8D3C3101B062B00A495D9 /* PBXTextBookmark */;
+			7FE8D3C4101B062B00A495D9 /* PBXTextBookmark */ = 7FE8D3C4101B062B00A495D9 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -229,9 +231,9 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1280, 14322}}";
-			sepNavSelRange = "{21388, 0}";
-			sepNavVisRange = "{20593, 891}";
+			sepNavIntBoundsRect = "{{0, 0}, {1268, 14770}}";
+			sepNavSelRange = "{17244, 0}";
+			sepNavVisRange = "{16610, 1389}";
 			sepNavWindowFrame = "{{679, 98}, {535, 678}}";
 		};
 	};
@@ -586,7 +588,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 1015";
 		rLen = 0;
-		rLoc = 31404;
+		rLoc = 31443;
 		rType = 0;
 		vrLen = 952;
 		vrLoc = 30589;
@@ -606,7 +608,7 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 714";
 		rLen = 0;
-		rLoc = 21202;
+		rLoc = 21241;
 		rType = 0;
 		vrLen = 894;
 		vrLoc = 20593;
@@ -626,12 +628,32 @@
 		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
 		name = "HairMap.cpp: 721";
 		rLen = 0;
-		rLoc = 21388;
+		rLoc = 21427;
 		rType = 0;
 		vrLen = 891;
 		vrLoc = 20593;
 	};
 	7FE8D3C0101B03AC00A495D9 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE8D390101AFB9400A495D9 /* HairMap.h */;
+		name = "HairMap.h: 27";
+		rLen = 0;
+		rLoc = 491;
+		rType = 0;
+		vrLen = 952;
+		vrLoc = 133;
+	};
+	7FE8D3C3101B062B00A495D9 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
+		name = "HairMap.cpp: 591";
+		rLen = 0;
+		rLoc = 17244;
+		rType = 0;
+		vrLen = 1389;
+		vrLoc = 16610;
+	};
+	7FE8D3C4101B062B00A495D9 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 7FE8D390101AFB9400A495D9 /* HairMap.h */;
 		name = "HairMap.h: 27";

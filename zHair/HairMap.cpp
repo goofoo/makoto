@@ -587,7 +587,8 @@ void hairMap::updateGuide()
 				float uv[2];
 				uv[0] = guide_data[patch_id].u;
 				uv[1] = guide_data[patch_id].v;
-				baseFn.getPointAtUV (iface, pom, uv, MSpace::kObject);
+				MString smap("map1");
+				baseFn.getPointAtUV (iface, pom, uv, MSpace::kObject, &smap, 0.01);
 				guide_data[patch_id].P[iseg] = XYZ(pom.x, pom.y, pom.z);
 			}
 			
