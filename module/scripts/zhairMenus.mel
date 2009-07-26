@@ -583,6 +583,7 @@ global proc zhair_parse_nucactive(string $solver)
 	
 	columnLayout -p zhair_frm_dynattr;
 	button -l "Hide/Show" -c ("zhair_tglactivedsy "+$solver);
+	attrControlGrp -attribute ($solver+".thickness");
 	attrControlGrp -attribute ($solver+".collide");
 	attrControlGrp -attribute ($solver+".selfCollide");
 	attrControlGrp -attribute ($solver+".pointMass");
@@ -615,6 +616,8 @@ global proc zhair_parse_nucpassive(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
+	button -l "Hide/Show" -c ("zhair_tglactivedsy "+$solver);
+	attrControlGrp -attribute ($solver+".thickness");
 	attrControlGrp -attribute ($solver+".bounce");
 	attrControlGrp -attribute ($solver+".friction");
 	attrControlGrp -attribute ($solver+".trappedCheck");
