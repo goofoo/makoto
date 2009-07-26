@@ -51,7 +51,7 @@ MObject HairDguideNode::amutantcolorscale;
 MObject HairDguideNode::adice;
 MObject HairDguideNode::adraw;
 MObject HairDguideNode::ainterpolate;
-//MObject HairDguideNode::aoffset;
+MObject HairDguideNode::abald;
 
 HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0),idice(0),idraw(0)
 {
@@ -114,6 +114,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 			m_base->setTipColor(data.inputValue(atipcolorr).asDouble(), data.inputValue(atipcolorg).asDouble(), data.inputValue(atipcolorb).asDouble());
 			m_base->setMutantColor(data.inputValue(amutantcolorr).asDouble(), data.inputValue(amutantcolorg).asDouble(), data.inputValue(amutantcolorb).asDouble());
 			m_base->setMutantColorScale(data.inputValue(amutantcolorscale).asDouble());
+			m_base->setBald(data.inputValue(abald).asFloat());
 		}
 		
 		MDataHandle outputHandle = data.outputValue(output); 
@@ -209,13 +210,14 @@ MStatus HairDguideNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(aclump);
 	
-	//aoffset = numAttr.create("offset", "ofs",
-	//					  MFnNumericData::kFloat, 0.f, &stat);
-    //numAttr.setStorable(true);
-    //numAttr.setKeyable(true);
-    //numAttr.setDefault(0.f);
-	//numAttr.setCached( true );
-	//addAttribute(aoffset);
+	abald = numAttr.create("bald", "bld",
+						  MFnNumericData::kFloat, 0.f, &stat);
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
+    numAttr.setMin(0.f);
+	numAttr.setMax(1.f);
+	numAttr.setCached( true );
+	addAttribute(abald);
 	
 	astep = numAttr.create( "drawStep", "dsp", MFnNumericData::kInt, 1 );
 	numAttr.setStorable(true);
@@ -305,7 +307,7 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( ainterpolate, output );
 	attributeAffects( adice, output );
 	attributeAffects( adraw, output );
-	//attributeAffects( aoffset, output );
+	attributeAffects( abald, output );
 	
 	return MS::kSuccess;
 

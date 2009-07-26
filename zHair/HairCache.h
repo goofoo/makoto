@@ -73,13 +73,14 @@ public:
 	void setTipColor(const float r, const float g, const float b) {tip_color.x = r; tip_color.y = g; tip_color.z = b;}
 	void setMutantColor(const float r, const float g, const float b) {mutant_color.x = r; mutant_color.y = g; mutant_color.z = b;}
 	void setMutantColorScale(const float v) {mutant_scale = v;}
+	void setBald(const float v) {kbald = v;}
 	
 	const char* getCacheName() const {return m_cachename.c_str();}
 	float getClumping() const {return clumping;}
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
 	
-	int getNumCurves() const {return n_samp;}
+	int getNumCurves() const {return realncurve;}
 	const int* getNumVertices() const {return nvertices;}
 	const XYZ* points() const {return vertices;}
 	const float* getWidth() const {return widths;}
@@ -105,7 +106,7 @@ private:
 	unsigned num_guide, n_vert, n_tri;
 
 	triangle_bind_info* bind_data;
-	float clumping, fuzz, kink, mutant_scale;
+	float clumping, fuzz, kink, mutant_scale, kbald;
 	MATRIX44F* guide_spaceinv;
 	std::string m_cachename;
 	int* nvertices;
@@ -115,5 +116,6 @@ private:
 	XYZ tip_color, root_color, mutant_color;
 	XYZ *rootColorArray, *tipColorArray, *opacities;
 	int isInterpolate;
+	int realncurve;
 };
 #endif

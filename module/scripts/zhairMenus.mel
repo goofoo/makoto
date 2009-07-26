@@ -377,6 +377,9 @@ global proc zhair_modify()
 			
 			float $val = `floatSliderGrp -q -v zhairmutantscalegrp`;
 			setAttr ($an +".mutantColorScale") $val;
+			
+			float $val = `floatSliderGrp -q -v zhairbaldgrp`;
+			setAttr ($an +".bald") $val;
 		}
 	}
 }
@@ -410,7 +413,7 @@ columnLayout -adjustableColumn true;
 	colorSliderGrp -cw 1 110 -label "Tip Color" -rgb `getAttr ($node +".tipColorR")` `getAttr ($node +".tipColorG")` `getAttr ($node +".tipColorB")` -cc "zhair_modify" zhairtipcolgrp;
 	colorSliderGrp -cw 1 110 -label "Mutant Color" -rgb `getAttr ($node +".mutantColorR")` `getAttr ($node +".mutantColorG")` `getAttr ($node +".mutantColorB")` -cc "zhair_modify" zhairmutantcolgrp;
 	floatSliderGrp -cw 1 110 -label "Mutant Scale" -field true -minValue 0.0 -maxValue 1.0 -value `getAttr ($node +".mutantColorScale")` -cc "zhair_modify" zhairmutantscalegrp;
-  
+	floatSliderGrp -cw 1 110 -label "Baldness" -field true -minValue 0.0 -maxValue 1.0 -value `getAttr ($node +".bald")` -cc "zhair_modify" zhairbaldgrp;
 //row begin
 //button -l "Save" -c "doloadzhair;deleteUI editzhairWin"-p $row;
 //button -l "Apply" -c "doloadzhair" -p $row;

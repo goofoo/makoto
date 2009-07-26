@@ -98,6 +98,7 @@ public:
 	void setMutantColorScale(const float v) {mutant_scale = v;}
 	void setInterpolate(const int val) {isInterpolate = val;}
 	void setOffset(const float val) {m_offset = val;}
+	void setBald(const float val) {m_bald = val;}
 	
 	float getBBox0X() const {return bbox_low.x;}
 	float getBBox0Y() const {return bbox_low.y;}
@@ -120,6 +121,7 @@ public:
 	float getMutantColorG() const {return mutant_color.y;}
 	float getMutantColorB() const {return mutant_color.z;}
 	float getMutantColorScale() const {return mutant_scale;}
+	float getBald() const {return m_bald;}
 	
 private:
 	char has_base, has_guide;
@@ -146,6 +148,6 @@ private:
 	XYZ tip_color, root_color, mutant_color;
 	int order, isInterpolate;
 	int* nsegbuf;
-	float m_offset;
+	float m_offset, m_bald;
 };
 #endif

@@ -8,7 +8,7 @@ m_ndice(24)
 {
 	m_cache_name = new char[256];
 
-	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %f %f %f %d %f %f %f %f %d", 
+	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %f %f %f %f %d %f %f %f %f %d", 
 	&m_ndice,
 	&m_width0, &m_width1,
 	&m_root_colorR, &m_root_colorG, &m_root_colorB, 
@@ -19,6 +19,7 @@ m_ndice(24)
 	&m_clumping, 
 	&m_fuzz, 
 	&m_kink,
+	&m_bald,
 	&m_isInterpolate,
 	&m_shutter_open, &m_shutter_close,
 	&m_hair_0, &m_hair_1,
@@ -52,7 +53,7 @@ void RHair::generateRIB(RtFloat detail)
 	pHair->setTipColor(m_tip_colorR, m_tip_colorG, m_tip_colorB);
 	pHair->setMutantColor(m_mutant_colorR, m_mutant_colorG, m_mutant_colorB);
 	pHair->setMutantColorScale(m_mutant_scale);
-			
+	pHair->setBald(m_bald);
 	pHair->create();
 	
 	RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), 

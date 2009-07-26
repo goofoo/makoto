@@ -19,5 +19,6 @@ private:
 	float m_tip_colorR, m_tip_colorG, m_tip_colorB; 
 	float m_mutant_colorR, m_mutant_colorG, m_mutant_colorB; 
 	float m_mutant_scale;
+	float m_bald;
 	int m_is_blur, m_isInterpolate;
 };
