@@ -110,11 +110,11 @@ MStatus snowInHairNode::compute( const MPlug& plug, MDataBlock& data )
 			m_base->setClumping(data.inputValue(aclump).asFloat());
 			m_base->setFuzz(data.inputValue(afuzz).asFloat());
 			m_base->setKink(data.inputValue(akink).asFloat());
-			m_base->setDrawAccuracy(data.inputValue(astep).asInt());
-			m_base->setRootColor(data.inputValue(arootcolorr).asDouble(), data.inputValue(arootcolorg).asDouble(), data.inputValue(arootcolorb).asDouble());
-			m_base->setTipColor(data.inputValue(atipcolorr).asDouble(), data.inputValue(atipcolorg).asDouble(), data.inputValue(atipcolorb).asDouble());
-			m_base->setMutantColor(data.inputValue(amutantcolorr).asDouble(), data.inputValue(amutantcolorg).asDouble(), data.inputValue(amutantcolorb).asDouble());
-			m_base->setMutantColorScale(data.inputValue(amutantcolorscale).asDouble());
+			//m_base->setDrawAccuracy(data.inputValue(astep).asInt());
+			//m_base->setRootColor(data.inputValue(arootcolorr).asDouble(), data.inputValue(arootcolorg).asDouble(), data.inputValue(arootcolorb).asDouble());
+			//m_base->setTipColor(data.inputValue(atipcolorr).asDouble(), data.inputValue(atipcolorg).asDouble(), data.inputValue(atipcolorb).asDouble());
+			//m_base->setMutantColor(data.inputValue(amutantcolorr).asDouble(), data.inputValue(amutantcolorg).asDouble(), data.inputValue(amutantcolorb).asDouble());
+			//m_base->setMutantColorScale(data.inputValue(amutantcolorscale).asDouble());
 			
 			MFnMeshData dataCreator;
 			MObject outMeshData = dataCreator.create(&status);

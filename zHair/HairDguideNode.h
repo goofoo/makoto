@@ -45,8 +45,8 @@ public:
 	// the node will have.  These handles are needed for getting and setting
 	// the values later.
 	//
-	static  MObject		output;		// Example output attribute
-
+	static MObject output;		// Example output attribute
+	static MObject aoutmesh;
 	static MObject acachename;
 	static MObject aframe;
 	static MObject afuzz;
@@ -67,10 +67,8 @@ public:
 	static MObject adraw;
 	static MObject ainterpolate;
 	//static MObject aoffset;
-	// The typeid is a unique 32bit indentifier that describes this node.
-	// It is used to save and retrieve nodes of this type from the binary
-	// file format.  If it is not unique, it will cause file IO problems.
-	//
+	static MObject asnowsize;
+	static MObject asnowrate;
 	static	MTypeId		id;
 	
 	const hairMap* getBase() const {return m_base;}

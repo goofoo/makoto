@@ -13,6 +13,7 @@
 #include <maya/MDataHandle.h>
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFnNumericAttribute.h>
+#include <maya/MFnMeshData.h>
 #include <maya/MGlobal.h>
 #include "HairDguideNode.h"
 #include "../shared/zData.h"
@@ -31,7 +32,8 @@ MTypeId     HairDguideNode::id( 0x0002519 );
 
 // Example attributes
 //        
-MObject     HairDguideNode::output;
+MObject HairDguideNode::output;
+MObject HairDguideNode::aoutmesh;
 MObject HairDguideNode::acachename;
 MObject HairDguideNode::aframe;
 MObject HairDguideNode::afuzz;
@@ -52,6 +54,8 @@ MObject HairDguideNode::adice;
 MObject HairDguideNode::adraw;
 MObject HairDguideNode::ainterpolate;
 //MObject HairDguideNode::aoffset;
+MObject HairDguideNode::asnowsize;
+MObject HairDguideNode::asnowrate;
 
 HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0),idice(0),idraw(0)
 {
@@ -119,6 +123,48 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		MDataHandle outputHandle = data.outputValue(output); 
 		outputHandle.set( 1.0 ); 
 		data.setClean(plug);
+		return MS::kSuccess;
+	}
+	
+	if( plug == aoutmesh )
+	{
+		double dtime = data.inputValue( aframe ).asDouble();
+		MString sname = data.inputValue( acachename).asString();
+		string sbuf(sname.asChar());
+		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
+		int eta = data.inputValue(adice).asInt();
+		idraw = data.inputValue(adraw).asInt();
+		if(m_base) 
+		{
+			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice)
+			{
+				curname = sname;
+				string head = sbuf;
+				zGlobal::cutByFirstDot(head);
+				head += ".hairstart";
+				m_base->loadStart(head.c_str());
+				idice = eta;
+				MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
+				isInterpolate = data.inputValue(ainterpolate).asInt();
+				m_base->setInterpolate(isInterpolate);
+				m_base->bind();
+			}
+			int iss = m_base->load(sbuf.c_str());
+			if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
+			
+			m_base->setSnowSize(data.inputValue(asnowsize).asFloat());
+			m_base->setSnowRate(data.inputValue(asnowrate).asFloat());
+			//m_base->setKink(data.inputValue(akink).asFloat());
+
+			MFnMeshData dataCreator;
+			MObject outMeshData = dataCreator.create(&returnStatus);
+			
+			m_base->createSnow(outMeshData);
+			
+			MDataHandle meshh = data.outputValue(aoutmesh, &returnStatus);
+			meshh.set(outMeshData);
+			data.setClean(plug);
+		}
 		return MS::kSuccess;
 	}
 	return MS::kUnknownParameter;
@@ -282,6 +328,19 @@ MStatus HairDguideNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(ainterpolate);
 	
+	zCheckStatus(zWorks::createTypedAttr(aoutmesh, MString("outMesh"), MString("om"), MFnData::kMesh), "ERROR creating out mesh");
+	zCheckStatus(addAttribute(aoutmesh), "ERROR adding out mesh");
+	
+	asnowsize = numAttr.create( "snowSize", "snz", MFnNumericData::kFloat, 1.0 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(asnowsize);
+	
+	asnowrate = numAttr.create( "snowRate", "snr", MFnNumericData::kFloat, 0.2 );
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute(asnowrate);
+	
 	// Set up a dependency between the input and the output.  This will cause
 	// the output to be marked dirty when the input changes.  The output will
 	// then be recomputed the next time the value of the output is requested.
@@ -306,6 +365,9 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( adice, output );
 	attributeAffects( adraw, output );
 	//attributeAffects( aoffset, output );
+	attributeAffects( adice, aoutmesh );
+	attributeAffects( asnowsize, aoutmesh );
+	attributeAffects( asnowrate, aoutmesh );
 	
 	return MS::kSuccess;
 

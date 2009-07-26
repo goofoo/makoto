@@ -310,9 +310,6 @@ global proc doloadzhair()
 	connectAttr -f ($node + ".output") ($dummy+".translateX");
 	
 	if(`checkBox -q -v loadzhairCreateSnowGrp`) {
-		$node = `createNode SnowInHair`;
-		setAttr -type "string" ($node + ".cachePath") $path;
-		connectAttr -f "time1.outTime" ($node + ".currentTime");
 		string $cub[] = `polyCube -ch 0`;
 		select -r $cub[0];
 		$cub = `pickWalk -d down`;

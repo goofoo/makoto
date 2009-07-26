@@ -26,7 +26,6 @@
 		7FE735A40FD186A100718607 /* FeatherNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE735A30FD186A100718607 /* FeatherNode.cpp */; };
 		7FE735AC0FD1890600718607 /* FeatherMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE735AB0FD1890600718607 /* FeatherMap.cpp */; };
 		7FE735E50FD4FB2000718607 /* curvePatchNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */; };
-		7FE8D3FF101B854A00A495D9 /* snowInHairNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE8D3FE101B854A00A495D9 /* snowInHairNode.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,7 +50,6 @@
 		7FE735A30FD186A100718607 /* FeatherNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FeatherNode.cpp; sourceTree = "<group>"; };
 		7FE735AB0FD1890600718607 /* FeatherMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FeatherMap.cpp; sourceTree = "<group>"; };
 		7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = curvePatchNode.cpp; sourceTree = "<group>"; };
-		7FE8D3FE101B854A00A495D9 /* snowInHairNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = snowInHairNode.cpp; sourceTree = "<group>"; };
 		7FFB47620FBE326900C8F9AB /* zhairMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = zhairMenus.mel; path = ../module/scripts/zhairMenus.mel; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* ZHair.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ZHair.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -81,7 +79,6 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				7FE8D3FE101B854A00A495D9 /* snowInHairNode.cpp */,
 				7F0C5715100DD89800F5263A /* zData.h */,
 				7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */,
 				7F7473F50FF253AF00132DED /* QuickSort.cpp */,
@@ -201,7 +198,6 @@
 				7F7473F70FF253AF00132DED /* QuickSort.cpp in Sources */,
 				7F74740C0FF26E1800132DED /* BindTriangle.cpp in Sources */,
 				7F1F57151004EDDE00B6B51B /* hairDeformer.cpp in Sources */,
-				7FE8D3FF101B854A00A495D9 /* snowInHairNode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
