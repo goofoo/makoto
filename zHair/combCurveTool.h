@@ -106,6 +106,8 @@ private:
 	void dragRoot();
 	void grow();
 	void doCollide(const MPoint& vert, MVector &v);
+	void toClosest(const MPoint& vert, MVector &v);
+	void pin();
 };
 
 class combCurveContextCmd : public MPxContextCommand

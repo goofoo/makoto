@@ -308,6 +308,13 @@ global proc doloadzhair()
 	setAttr -type "string" ($node + ".cachePath") $path;
 	connectAttr -f "time1.outTime" ($node + ".currentTime");
 	connectAttr -f ($node + ".output") ($dummy+".translateX");
+	
+	if(`checkBox -q -v loadzhairCreateSnowGrp`) {
+		string $cub[] = `polyCube -ch 0`;
+		select -r $cub[0];
+		$cub = `pickWalk -d down`;
+		connectAttr -f ($node+".outMesh") ($cub[0] + ".inMesh");
+	}
 }
 
 global proc openLoadHairMapWin()
@@ -330,6 +337,7 @@ columnLayout -adjustableColumn true;
      -cw 1 110 -label "Cache Path" -buttonLabel "Pick"
 	 -bc "set_hairCacheDataPathLoad"
      loadzhairCachePathGrp;
+	checkBox -l "Create Snow as Well" -v 0 loadzhairCreateSnowGrp;
     
 //row begin
 button -l "Save" -c "doloadzhair;deleteUI loadzhairWin"-p $row;
@@ -578,6 +586,7 @@ global proc zhair_parse_nucactive(string $solver)
 	
 	columnLayout -p zhair_frm_dynattr;
 	button -l "Hide/Show" -c ("zhair_tglactivedsy "+$solver);
+	attrControlGrp -attribute ($solver+".thickness");
 	attrControlGrp -attribute ($solver+".collide");
 	attrControlGrp -attribute ($solver+".selfCollide");
 	attrControlGrp -attribute ($solver+".pointMass");
@@ -610,6 +619,8 @@ global proc zhair_parse_nucpassive(string $solver)
 	}
 	
 	columnLayout -p zhair_frm_dynattr;
+	button -l "Hide/Show" -c ("zhair_tglactivedsy "+$solver);
+	attrControlGrp -attribute ($solver+".thickness");
 	attrControlGrp -attribute ($solver+".bounce");
 	attrControlGrp -attribute ($solver+".friction");
 	attrControlGrp -attribute ($solver+".trappedCheck");
@@ -764,7 +775,7 @@ global proc dodeformzhair()
 
 global proc zhair_set_solver(string $solver)
 {
-	setAttr ($solver+".gravity") 200;
+	setAttr ($solver+".gravity") 600;
 	setAttr ($solver+".airDensity") 0.01;
 }
 

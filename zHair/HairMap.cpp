@@ -1040,4 +1040,114 @@ void hairMap::drawBind()
 	}
 	glEnd();
 }
+
+void hairMap::createSnow(MObject& meshData) const
+{
+	MPointArray vertexArray;
+	MIntArray polygonCounts;
+	MIntArray polygonConnects;
+	MFloatArray uarray, varray;
+	
+	XYZ* pbuf = new XYZ[n_samp];
+	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+	
+	int g_seed = 13;
+	FNoise fnoi;
+	float noi, size;
+	int acc = 0;
+	XYZ pobj, a, b, c, d; MATRIX44F tspace;
+	for(unsigned i=0; i<n_samp; i++)
+	{
+		noi  = fnoi.randfint( g_seed ); g_seed++;
+		
+		if(noi<m_snow_rate) {
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			
+			pobj = pbuf[i];
+			guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
+			guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, noi*0.65);
+			
+			a = pobj;
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi -= .5f;
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			size = (1.f+(noi-0.5)*0.5)*m_snow_size;
+			b = pobj + XYZ(noi* size,0, size);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi -= .5f;
+			c = pobj + XYZ(noi* size, size,0);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi -= .5f;
+			d = pobj + XYZ(noi* size, size, size);
+			tspace.transform(a);
+			tspace.transform(b);
+			tspace.transform(c);
+			tspace.transform(d);
+			
+			vertexArray.append(MPoint(a.x, a.y, a.z));
+			vertexArray.append(MPoint(b.x, b.y, b.z));
+			vertexArray.append(MPoint(c.x, c.y, c.z));
+			vertexArray.append(MPoint(d.x, d.y, d.z));
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			uarray.append(noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			uarray.append(1.0-noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			uarray.append(noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			uarray.append(1.0-noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			varray.append(1.0-noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			varray.append(1.0-noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			varray.append(noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			varray.append(noi);
+			
+			polygonCounts.append(3);
+			polygonCounts.append(3);
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			if(noi>.5f) {
+				polygonConnects.append(acc);
+				polygonConnects.append(acc+2);
+				polygonConnects.append(acc+1);
+				
+				polygonConnects.append(acc+3);
+				polygonConnects.append(acc+1);
+				polygonConnects.append(acc+2);
+			}
+			else {
+				polygonConnects.append(acc+1);
+				polygonConnects.append(acc);
+				polygonConnects.append(acc+3);
+				
+				polygonConnects.append(acc+2);
+				polygonConnects.append(acc+3);
+				polygonConnects.append(acc);
+			}
+			
+			acc += 4;
+		}
+	}
+	
+	delete[] pbuf;
+		
+	MFnMesh meshFn;
+	meshFn.create(vertexArray.length(), polygonCounts.length(), vertexArray, polygonCounts, polygonConnects, meshData );
+	meshFn.setUVs ( uarray, varray );
+	meshFn.assignUVs ( polygonCounts, polygonConnects );
+}
 //~:

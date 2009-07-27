@@ -1,15 +1,15 @@
 //
 // Copyright (C) YiLi
 // 
-// File: HairDguideNode.h
+// File: snowInHairNode.h
 //
-// Dependency Graph Node: HairDguide
+// Dependency Graph Node: snowInHair
 //
 // Author: Maya Plug-in Wizard 2.0
 //
 
-#ifndef _HairGuideNode
-#define _HairGuideNode
+#ifndef _SNOWINHAIRNODE_H
+#define _SNOWINHAIRNODE_H
 
 #include <maya/MPxLocatorNode.h> 
 #include <maya/MString.h> 
@@ -24,19 +24,13 @@
 #include "../shared/zData.h"
 #include "HairMap.h"
 
-class HairDguideNode : public MPxLocatorNode
+class snowInHairNode : public MPxNode
 {
 public:
-						HairDguideNode();
-	virtual				~HairDguideNode(); 
+						snowInHairNode();
+	virtual				~snowInHairNode(); 
 
 	virtual MStatus		compute( const MPlug& plug, MDataBlock& data );
-	virtual void        draw( M3dView & view, const MDagPath & path, 
-                              M3dView::DisplayStyle style,
-                              M3dView::DisplayStatus status );
-							  
-	virtual bool            isBounded() const;
-	virtual MBoundingBox    boundingBox() const;
 
 	static  void*		creator();
 	static  MStatus		initialize();
@@ -45,8 +39,8 @@ public:
 	// the node will have.  These handles are needed for getting and setting
 	// the values later.
 	//
-	static MObject output;		// Example output attribute
-	static MObject aoutmesh;
+	static  MObject		aoutput;		// Example output attribute
+
 	static MObject acachename;
 	static MObject aframe;
 	static MObject afuzz;
@@ -66,10 +60,11 @@ public:
 	static MObject adice;
 	static MObject adraw;
 	static MObject ainterpolate;
-	static MObject abald;
-	static MObject asnowsize;
-	static MObject asnowrate;
-
+	
+	// The typeid is a unique 32bit indentifier that describes this node.
+	// It is used to save and retrieve nodes of this type from the binary
+	// file format.  If it is not unique, it will cause file IO problems.
+	//
 	static	MTypeId		id;
 	
 	const hairMap* getBase() const {return m_base;}

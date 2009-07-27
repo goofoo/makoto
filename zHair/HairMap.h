@@ -99,6 +99,8 @@ public:
 	void setInterpolate(const int val) {isInterpolate = val;}
 	void setOffset(const float val) {m_offset = val;}
 	void setBald(const float val) {m_bald = val;}
+	void setSnowSize(const float val) {m_snow_size = val;}
+	void setSnowRate(const float val) {m_snow_rate = val;}
 	
 	float getBBox0X() const {return bbox_low.x;}
 	float getBBox0Y() const {return bbox_low.y;}
@@ -122,6 +124,8 @@ public:
 	float getMutantColorB() const {return mutant_color.z;}
 	float getMutantColorScale() const {return mutant_scale;}
 	float getBald() const {return m_bald;}
+	
+	void createSnow(MObject& meshData) const;
 	
 private:
 	char has_base, has_guide;
@@ -148,6 +152,7 @@ private:
 	XYZ tip_color, root_color, mutant_color;
 	int order, isInterpolate;
 	int* nsegbuf;
-	float m_offset, m_bald;
+
+	float m_offset, m_bald, m_snow_size, m_snow_rate;
 };
 #endif

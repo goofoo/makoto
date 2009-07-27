@@ -234,6 +234,9 @@ MStatus combCurveContext::doDrag( MEvent & event )
 		case 5 :
 			dragRoot();
 			break;
+		case 6 :
+			pin();
+			break;
 		default:
 			;
 	}
@@ -351,8 +354,17 @@ void combCurveContext::doCollide(const MPoint& vert, MVector &v)
 	MPoint closestP;
 	MVector closestN;
 	fcollide.getClosestPointAndNormal (moveto, closestP, closestN, MSpace::kObject);
-	MVector tocloest = closestP - moveto;
+	MVector tocloest = closestP  + closestN*0.1 - moveto;
 	if(tocloest*closestN > 0.f) v = tocloest;
+}
+
+void combCurveContext::toClosest(const MPoint& vert, MVector &v)
+{
+	MPoint moveto = vert + v;
+	MPoint closestP;
+	MVector closestN;
+	fcollide.getClosestPointAndNormal (moveto, closestP, closestN, MSpace::kObject);
+	v = closestP + closestN*0.1 - vert;
 }
 
 void combCurveContext::moveAll()
@@ -705,6 +717,58 @@ void combCurveContext::grow()
 			}
 			fcurve.create ( cvs, knots, 1, MFnNurbsCurve::kOpen , 0, 0, MObject::kNullObj, &stat );
 		}
+	}
+}
+
+void combCurveContext::pin()
+{
+	//float mag = last_x - start_x - last_y + start_y;
+	//mag /= 48;
+	MPoint toNear, toFar;
+	view.viewToWorld ( last_x, last_y, toNear, toFar );
+	
+	MPoint fromNear, fromFar;
+	view.viewToWorld ( start_x, start_y, fromNear, fromFar );
+	
+	MVector dispNear = toNear - fromNear;
+	MVector dispFar = toFar - fromFar;
+	
+	short vert_x, vert_y;
+	XY cursor(start_x, start_y);
+	
+	MStatus stat;
+	MVector disp;
+	XYZ pp;
+	for(unsigned i=0; i<curveList.length(); i++)
+	{
+		MFnNurbsCurve fCurve(curveList[i]);
+		int numCv = fCurve.numCVs();
+		MPointArray cvs;
+		fCurve.getCVs ( cvs, MSpace::kObject );
+		
+		pp = XYZ(cvs[0].x, cvs[0].y, cvs[0].z);
+		mat.transform(pp);
+		if(pp.z > clipNear) {
+			view.worldToView (cvs[0], vert_x, vert_y);
+						
+			XY pscrn(vert_x, vert_y);
+			float weight = pscrn.distantTo(cursor);
+			weight = 1.f - weight/64.f;
+			if(weight>0) {
+				disp = dispNear + (dispFar - dispNear)*(pp.z-clipNear)/(clipFar-clipNear);
+				disp *= sqrt(weight);
+				toClosest(cvs[0], disp);
+				
+				for(unsigned j=0; j<numCv; j++) {
+
+					if(goCollide) doCollide(cvs[j], disp);
+					
+					cvs[j] += disp;
+				}
+			}
+		}
+		fCurve.setCVs (cvs, MSpace::kObject );
+		fCurve.updateCurve();
 	}
 }
 
