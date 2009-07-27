@@ -3,7 +3,7 @@
 #include "../shared/eigenSystem.h"
 #include "../shared/gBase.h"
 #define MAX_N_SPLAT 1548576
-#define MIN_CONE 0.5
+#define MIN_CONE .5
 #define POOLSCALE 2.25
 
 FQSPLAT::FQSPLAT():m_himap(0),is_null(1),m_col_buf(0),m_coe_buf(0)
@@ -383,7 +383,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
+	if(hi-lo < 4 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -457,7 +457,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
+	if(hi-lo < 4 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -531,7 +531,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
+	if(hi-lo < 4 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -608,7 +608,7 @@ void FQSPLAT::createTree(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode*
 	
 	if(parent_id>-1) res[parent_id].child[child_id] = nodeId;
 		
-	if(hi-lo < 4/*8 && ap.cone > MIN_CONE*/)
+	if(hi-lo < 4 && ap.cone > MIN_CONE)
 	{
 		res[nodeId].is_leaf = 1;
 		m_num_leaf++;
@@ -789,7 +789,7 @@ void FQSPLAT::recursive_lookupSubsurface(const XYZ& origin, const XYZ& ray, int 
 	
 	float solid_angle = node.r/dist;
 	
-	if( solid_angle<  VIS_DELTA_THETA || node.is_leaf)
+	if( solid_angle<  VIS_DELTA_THETA/2 || node.is_leaf)
 	{
 		//if(node.nor.dot(ray)<0) return;
 		if(tsdotn<0) return;

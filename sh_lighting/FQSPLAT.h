@@ -210,6 +210,7 @@ public:
 	
 	unsigned int getNumSplat() {return m_num_hipix;}
 	unsigned int getNumSplat() const {return m_num_hipix;}
+	unsigned int getNumLeaf() const {return m_num_leaf;}
 	
 	void getCenterAndNormal(const int id, XYZ& center, XYZ& normal) const
 	{
