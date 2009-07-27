@@ -370,6 +370,8 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( adice, aoutmesh );
 	attributeAffects( asnowsize, aoutmesh );
 	attributeAffects( asnowrate, aoutmesh );
+	attributeAffects( abald, aoutmesh );
+	attributeAffects( aframe, aoutmesh );
 	
 	return MS::kSuccess;
 
