@@ -69,8 +69,14 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 270301690;
-			PBXWorkspaceStateSaveDate = 270301690;
+			PBXPerProjectTemplateStateSaveDate = 270420006;
+			PBXWorkspaceStateSaveDate = 270420006;
+		};
+		perUserProjectItems = {
+			7F409B02101E5B3400074F8D /* PBXTextBookmark */ = 7F409B02101E5B3400074F8D /* PBXTextBookmark */;
+			7F409B04101E5B3400074F8D /* PBXTextBookmark */ = 7F409B04101E5B3400074F8D /* PBXTextBookmark */;
+			7FFD610E101C809B00356B79 /* PBXTextBookmark */ = 7FFD610E101C809B00356B79 /* PBXTextBookmark */;
+			7FFD6113101C809B00356B79 /* PBXTextBookmark */ = 7FFD6113101C809B00356B79 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -92,6 +98,38 @@
 			sepNavWindowFrame = "{{5, 63}, {702, 705}}";
 		};
 	};
+	7F409B02101E5B3400074F8D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F409B03101E5B3400074F8D /* combCurveTool.h */;
+		name = "combCurveTool.h: 109";
+		rLen = 47;
+		rLoc = 2383;
+		rType = 0;
+		vrLen = 991;
+		vrLoc = 1512;
+	};
+	7F409B03101E5B3400074F8D /* combCurveTool.h */ = {
+		isa = PBXFileReference;
+		name = combCurveTool.h;
+		path = /Users/jianzhang/Documents/plankton/zHair/combCurveTool.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {471, 1764}}";
+			sepNavSelRange = "{2383, 47}";
+			sepNavVisRange = "{1512, 991}";
+			sepNavWindowFrame = "{{15, 58}, {530, 715}}";
+		};
+	};
+	7F409B04101E5B3400074F8D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 764";
+		rLen = 0;
+		rLoc = 17332;
+		rType = 0;
+		vrLen = 1015;
+		vrLoc = 16466;
+	};
 	7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {780, 742}}";
@@ -104,7 +142,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {806, 4172}}";
 			sepNavSelRange = "{5381, 12}";
-			sepNavVisRange = "{6195, 797}";
+			sepNavVisRange = "{0, 720}";
 			sepNavWindowFrame = "{{28, 87}, {605, 691}}";
 		};
 	};
@@ -150,17 +188,17 @@
 	};
 	7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {794, 11634}}";
-			sepNavSelRange = "{14498, 0}";
-			sepNavVisRange = "{14310, 873}";
+			sepNavIntBoundsRect = "{{0, 0}, {794, 12572}}";
+			sepNavSelRange = "{17332, 0}";
+			sepNavVisRange = "{16466, 1015}";
 			sepNavWindowFrame = "{{400, 59}, {616, 716}}";
 		};
 	};
 	7F77E59B0FD7E423006D7D1A /* combCurveProperties.mel */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {906, 1022}}";
-			sepNavSelRange = "{1435, 0}";
-			sepNavVisRange = "{738, 1605}";
+			sepNavIntBoundsRect = "{{0, 0}, {906, 1134}}";
+			sepNavSelRange = "{2118, 0}";
+			sepNavVisRange = "{1081, 1486}";
 			sepNavWindowFrame = "{{43, 134}, {965, 608}}";
 		};
 	};
@@ -262,6 +300,33 @@
 			sepNavVisRange = "{8896, 1585}";
 			sepNavWindowFrame = "{{353, 82}, {865, 685}}";
 		};
+	};
+	7FFD610E101C809B00356B79 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F77E5660FD7D432006D7D1A /* combCurveTool.cpp */;
+		name = "combCurveTool.cpp: 357";
+		rLen = 0;
+		rLoc = 8103;
+		rType = 0;
+		vrLen = 1033;
+		vrLoc = 7657;
+	};
+	7FFD6113101C809B00356B79 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FFD6114101C809B00356B79 /* combCurveTool.h */;
+		name = "combCurveTool.h: 109";
+		rLen = 47;
+		rLoc = 2383;
+		rType = 0;
+		vrLen = 1000;
+		vrLoc = 1512;
+	};
+	7FFD6114101C809B00356B79 /* combCurveTool.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = combCurveTool.h;
+		path = /Users/jianzhang/Documents/plankton/zHair/combCurveTool.h;
+		sourceTree = "<absolute>";
 	};
 	D2AAC0620554660B00DB518D /* ZHair */ = {
 		activeExec = 0;

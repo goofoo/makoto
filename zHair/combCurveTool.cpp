@@ -756,12 +756,12 @@ void combCurveContext::pin()
 			weight = 1.f - weight/64.f;
 			if(weight>0) {
 				disp = dispNear + (dispFar - dispNear)*(pp.z-clipNear)/(clipFar-clipNear);
-				disp *= sqrt(weight);
+				
 				toClosest(cvs[0], disp);
 				
 				for(unsigned j=0; j<numCv; j++) {
 
-					if(goCollide) doCollide(cvs[j], disp);
+					//if(goCollide) doCollide(cvs[j], disp);
 					
 					cvs[j] += disp;
 				}
