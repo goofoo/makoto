@@ -116,7 +116,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 
 		if (cache_color) {
 			acc = add;
-			if(ps.hasRgb()){
+			//if(ps.hasRgb()){
 				MVectorArray color;
 				ps.rgb(color);
 				for(unsigned i=0; i<positions.length(); i++,acc++ ){	
@@ -125,7 +125,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 			        pco[acc].y = c[1];
 			        pco[acc].z = c[2];
 				}
-			}
+			//}
 		}
 
 		if (cache_acceleration) {
