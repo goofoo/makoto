@@ -60,6 +60,7 @@ void OcTree::release(TreeNode *node)
 void OcTree::construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level)
 {
 	release();
+	if(num_data == 0) return;
 	root = new TreeNode();
 	max_level = level;
 	num_voxel = 0;
@@ -192,7 +193,7 @@ void OcTree::setSingle(float *res, TreeNode *node, const float *rawdata, const P
 		
 		mean /= float(node->high - node->low + 1);
 		
-		res[node->index] = mean;
+		res[node->index - 1] = mean;
 		
 	    setSingle(res, node->child000, rawdata, index);
 		setSingle(res, node->child001, rawdata, index);
@@ -207,12 +208,11 @@ void OcTree::setSingle(float *res, TreeNode *node, const float *rawdata, const P
 
 void OcTree::addThree(const XYZ *rawdata, const char* name, const PosAndId *index)
 {
+	if(num_voxel == 0) return;
 	NamedThree* attr = new NamedThree();
 	attr->name = name;
 	attr->data = new XYZ[num_voxel];
-	
 	setThree(attr->data, root, rawdata, index);
-	
 	dThree.push_back(attr);
 }
 
@@ -226,7 +226,7 @@ void OcTree::setThree(XYZ *res, TreeNode *node, const XYZ *rawdata, const PosAnd
 		
 		mean /= float(node->high - node->low + 1);
 		
-		res[node->index] = mean;
+		res[node->index - 1] = mean;
 		
 	    setThree(res, node->child000, rawdata, index);
 		setThree(res, node->child001, rawdata, index);
@@ -248,7 +248,6 @@ void OcTree::save(const char *filename) const
 	
 	//outfile.write((char*)&sum,sizeof(sum));
 	outfile.write((char*)&num_voxel,sizeof(unsigned));
-	
 	save(outfile, root);
 	
 	int datatype = 4;
@@ -257,15 +256,15 @@ void OcTree::save(const char *filename) const
 		outfile.write((char*)&datatype, 4);
 		datalen = dSingle[i]->name.size();
 		outfile.write((char*)&datalen, 4);
-		outfile.write((char*)dSingle[i]->name.c_str(), dSingle[i]->name.size());
+		outfile.write((char*)dSingle[i]->name.c_str(), datalen);
 		outfile.write((char*)dSingle[i]->data, sizeof(float)*num_voxel);
 	}
 	datatype = 12;
 	for(unsigned i=0; i<dThree.size(); i++) {
 		outfile.write((char*)&datatype, 4);
 		datalen = dThree[i]->name.size();
-		outfile.write((char*)&datalen, 4);
-		outfile.write((char*)dThree[i]->name.c_str(), dThree[i]->name.size());
+		outfile.write((char*)&datalen,4);
+		outfile.write((char*)dThree[i]->name.c_str(), datalen);
 		outfile.write((char*)dThree[i]->data, sizeof(XYZ)*num_voxel);
 	}
 
@@ -314,21 +313,32 @@ int OcTree::load(const char*filename)
 		root = new TreeNode();
 		load(infile, root);
 		
-		int datatype = 4;
+		int datatype;
 		int datalen;
 		
 		infile.read((char*)&datatype, 4);
-		while(infile) {
-			if(datatype == 12) {
+		while(!infile.eof()) {
+			if(datatype == 12) {;
 				infile.read((char*)&datalen, 4);
 				char *cn = new char[datalen];
 				infile.read((char*)cn, datalen);
-				
 				NamedThree* attr = new NamedThree();
-				attr->name = cn;
+				for(int i = 0;i<datalen;i++)
+					attr->name.append(1,cn[i]);
 				attr->data = new XYZ[num_voxel];
 				infile.read((char*)attr->data, 12*num_voxel);
 				dThree.push_back(attr);
+			}
+			if(datatype == 4){
+			    infile.read((char*)&datalen, 4);
+				char *cn = new char[datalen];
+                infile.read((char*)cn, datalen);
+				NamedSingle* attr = new NamedSingle();
+				for(int i = 0;i<datalen;i++)
+					attr->name.append(1,cn[i]);
+				attr->data = new float[num_voxel];
+				infile.read((char*)attr->data, 4*num_voxel);
+				dSingle.push_back(attr);
 			}
 			infile.read((char*)&datatype, 4);
 		}
@@ -418,7 +428,11 @@ void OcTree::draw(const TreeNode *node, const particleView *pview)
 			XYZ cen = node->center;
 			float size = node->size;
 			
-			if(hasColor()) glColor3f(dThree[0]->data[node->index -1].x, dThree[0]->data[node->index -1].y, dThree[0]->data[node->index -1].z);
+			int i = hasColor();
+			if(i>=0)
+				glColor3f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z);
+			else 
+				glColor3f(1,0,0);
 			
 			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
@@ -463,10 +477,13 @@ void OcTree::draw(const TreeNode *node, const particleView *pview)
 	}
 }
 
-char OcTree::hasColor() const
+int OcTree::hasColor() const
 {
-	if(dThree.size()>0) return 1;
-	else return 0;
+	if(dThree.size()) 
+		for(unsigned int i = 0;i<dThree.size();i++)
+			if(dThree[i]->name=="color")
+				return i;
+	return -1;
 }
 
 void OcTree::getRootCenterNSize(XYZ& center, float&size) const

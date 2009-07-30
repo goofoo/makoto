@@ -69,7 +69,7 @@ public:
 	void load(ifstream& file, TreeNode *node);
 	
 	unsigned getNumVoxel() const {return num_voxel;}
-	char hasColor() const;
+	int hasColor() const;
 	
 	void draw(const particleView *pview);
 	void draw(const TreeNode *node, const particleView *pview);
