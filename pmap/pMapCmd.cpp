@@ -10,10 +10,10 @@ MSyntax pMapCmd::newSyntax()
 
 	syntax.addFlag("-p", "-path", MSyntax::kString);
 	syntax.addFlag("-n", "-name", MSyntax::kString);
-	syntax.addFlag("-c","color",MSyntax::kBoolean);
-	syntax.addFlag("-v","velocity",MSyntax::kBoolean);
-	syntax.addFlag("-a","acceleration",MSyntax::kBoolean);
-	syntax.addFlag("-l","lifespan",MSyntax::kBoolean); 
+	syntax.addFlag("-c","-color",MSyntax::kBoolean);
+	syntax.addFlag("-v","-velocity",MSyntax::kBoolean);
+	syntax.addFlag("-a","-attrib",MSyntax::kString);
+	syntax.addFlag("-l","-lifespan",MSyntax::kBoolean); 
 
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
