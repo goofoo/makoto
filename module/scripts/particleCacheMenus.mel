@@ -104,9 +104,10 @@ global proc exportParticleCacheSingleFrame()
 {
 	string $cmd;
 
-	if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" ) $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName`";
-	else $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`";
-	
+	if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
+             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -v `checkBox -q -v checkVelocity` -c `checkBox -q -v checkColor` -a `checkBox -q -v checkAcceleration` -l `checkBox -q -v checkLifespan`";
+	else
+             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -v `checkBox -q -v checkVelocity` -c `checkBox -q -v checkColor` -a `checkBox -q -v checkAcceleration` -l `checkBox -q -v checkLifespan`";
 	eval($cmd);
 }
 
@@ -134,10 +135,17 @@ textFieldButtonGrp
      -cw 1 110 -label "Cache Path" -buttonLabel "Browse.."
      -bc "fileBrowser \"setParticleCachePath\" \"Set Path\" \"\" 4"
      exportParticleCachePath;
-
 checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en exportParticleCacheRange`) exportParticleCacheRange" exportParticleCacheMuilt;
 intFieldGrp -en 0 -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
 
+frameLayout -label "Save Attribute" -labelAlign "center" -borderStyle "etchedIn" -collapsable 1;
+columnLayout;
+checkBox -al "left" -l "Velocity" -v 0  checkVelocity;
+checkBox -al "left" -l "Color" -v 0  checkColor;
+checkBox -al "left" -l "Acceleration" -v 0  checkAcceleration;
+checkBox -al "left" -l "Lifespan" -v 0 checkLifespan;
+setParent ..;
+setParent ..;
 //row begin
 button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" -p $row;
 button -l "Apply" -c "doExportParticleCache" -p $row;

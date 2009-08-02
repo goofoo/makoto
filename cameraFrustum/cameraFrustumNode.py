@@ -50,8 +50,12 @@ class spCameraFrustumNode(OpenMayaMPx.MPxLocatorNode):
 		
 		near_clip = plug.asDouble()
 		
+		near_clip = near_clip  - 0.01
+		
 		plug = OpenMaya.MPlug(thisNode, self.afar)
 		far_clip = plug.asDouble()
+		
+		far_clip = far_clip + 0.01
 		
 		plug = OpenMaya.MPlug(thisNode, self.ahaperture)
 		h_aperture = plug.asDouble()
@@ -68,90 +72,90 @@ class spCameraFrustumNode(OpenMayaMPx.MPxLocatorNode):
 		plug = OpenMaya.MPlug(thisNode, self.aorthographic)
 		orth = plug.asBool()
 		
-		h_fov = h_aperture * 0.5 / ( fl * 0.03937 );
-		v_fov = v_aperture * 0.5 / ( fl * 0.03937 );
+		h_fov = h_aperture * 0.5 / ( fl * 0.03937 )
+		v_fov = v_aperture * 0.5 / ( fl * 0.03937 )
 	
-		fright = far_clip * h_fov;
-		ftop = far_clip * v_fov;
+		fright = far_clip * h_fov
+		ftop = far_clip * v_fov
 	
-		nright = near_clip * h_fov;
-		ntop = near_clip * v_fov;
+		nright = near_clip * h_fov
+		ntop = near_clip * v_fov
 
 		if orth:
-                        fright = ftop = nright = ntop = orthwidth/2.0;
+			fright = ftop = nright = ntop = orthwidth/2.0
 	
 	
-		corner_a = OpenMaya.MPoint(fright,ftop,-far_clip);
-		corner_a *= mat;
+		corner_a = OpenMaya.MPoint(fright,ftop,-far_clip)
+		corner_a *= mat
 	
-		corner_b = OpenMaya.MPoint(-fright,ftop,-far_clip);
-		corner_b *= mat;
+		corner_b = OpenMaya.MPoint(-fright,ftop,-far_clip)
+		corner_b *= mat
 		
-		corner_c = OpenMaya.MPoint(-fright,-ftop,-far_clip);
-		corner_c *= mat;
+		corner_c = OpenMaya.MPoint(-fright,-ftop,-far_clip)
+		corner_c *= mat
 		
-		corner_d = OpenMaya.MPoint(fright,-ftop,-far_clip);
-		corner_d *= mat;
+		corner_d = OpenMaya.MPoint(fright,-ftop,-far_clip)
+		corner_d *= mat
 		
-		corner_e = OpenMaya.MPoint(nright,ntop,-near_clip);
-		corner_e *= mat;
+		corner_e = OpenMaya.MPoint(nright,ntop,-near_clip)
+		corner_e *= mat
 		
-		corner_f = OpenMaya.MPoint(-nright,ntop,-near_clip);
-		corner_f *= mat;
+		corner_f = OpenMaya.MPoint(-nright,ntop,-near_clip)
+		corner_f *= mat
 		
-		corner_g = OpenMaya.MPoint(-nright,-ntop,-near_clip);
-		corner_g *= mat;
+		corner_g = OpenMaya.MPoint(-nright,-ntop,-near_clip)
+		corner_g *= mat
 		
-		corner_h = OpenMaya.MPoint(nright,-ntop,-near_clip);
-		corner_h *= mat;
+		corner_h = OpenMaya.MPoint(nright,-ntop,-near_clip)
+		corner_h *= mat
 		
 		view.beginGL()
 		
-		glFT.glBegin( OpenMayaRender.MGL_LINES );
+		glFT.glBegin( OpenMayaRender.MGL_LINES )
 
-		glFT.glVertex3f( corner_a.x , corner_a.y, corner_a.z );
-		glFT.glVertex3f( corner_e.x , corner_e.y, corner_e.z );
+		glFT.glVertex3f( corner_a.x , corner_a.y, corner_a.z )
+		glFT.glVertex3f( corner_e.x , corner_e.y, corner_e.z )
 		
-		glFT.glVertex3f( corner_b.x , corner_b.y, corner_b.z );
-		glFT.glVertex3f( corner_f.x , corner_f.y, corner_f.z );
+		glFT.glVertex3f( corner_b.x , corner_b.y, corner_b.z )
+		glFT.glVertex3f( corner_f.x , corner_f.y, corner_f.z )
 		
-		glFT.glVertex3f( corner_c.x , corner_c.y, corner_c.z );
-		glFT.glVertex3f( corner_g.x , corner_g.y, corner_g.z );
+		glFT.glVertex3f( corner_c.x , corner_c.y, corner_c.z )
+		glFT.glVertex3f( corner_g.x , corner_g.y, corner_g.z )
 		
-		glFT.glVertex3f( corner_d.x , corner_d.y, corner_d.z );
-		glFT.glVertex3f( corner_h.x , corner_h.y, corner_h.z );
+		glFT.glVertex3f( corner_d.x , corner_d.y, corner_d.z )
+		glFT.glVertex3f( corner_h.x , corner_h.y, corner_h.z )
 		
-		glFT.glVertex3f( corner_a.x , corner_a.y, corner_a.z );
-		glFT.glVertex3f( corner_b.x , corner_b.y, corner_b.z );
+		glFT.glVertex3f( corner_a.x , corner_a.y, corner_a.z )
+		glFT.glVertex3f( corner_b.x , corner_b.y, corner_b.z )
 		
-		glFT.glVertex3f( corner_b.x , corner_b.y, corner_b.z );
-		glFT.glVertex3f( corner_c.x , corner_c.y, corner_c.z );
+		glFT.glVertex3f( corner_b.x , corner_b.y, corner_b.z )
+		glFT.glVertex3f( corner_c.x , corner_c.y, corner_c.z )
 		
-		glFT.glVertex3f( corner_c.x , corner_c.y, corner_c.z );
-		glFT.glVertex3f( corner_d.x , corner_d.y, corner_d.z );
+		glFT.glVertex3f( corner_c.x , corner_c.y, corner_c.z )
+		glFT.glVertex3f( corner_d.x , corner_d.y, corner_d.z )
 		
-		glFT.glVertex3f( corner_d.x , corner_d.y, corner_d.z );
-		glFT.glVertex3f( corner_a.x , corner_a.y, corner_a.z );
+		glFT.glVertex3f( corner_d.x , corner_d.y, corner_d.z )
+		glFT.glVertex3f( corner_a.x , corner_a.y, corner_a.z )
 		
-		glFT.glVertex3f( corner_e.x , corner_e.y, corner_e.z );
-		glFT.glVertex3f( corner_f.x , corner_f.y, corner_f.z );
+		glFT.glVertex3f( corner_e.x , corner_e.y, corner_e.z )
+		glFT.glVertex3f( corner_f.x , corner_f.y, corner_f.z )
 		
-		glFT.glVertex3f( corner_f.x , corner_f.y, corner_f.z );
-		glFT.glVertex3f( corner_g.x , corner_g.y, corner_g.z );
+		glFT.glVertex3f( corner_f.x , corner_f.y, corner_f.z )
+		glFT.glVertex3f( corner_g.x , corner_g.y, corner_g.z )
 		
-		glFT.glVertex3f( corner_g.x , corner_g.y, corner_g.z );
-		glFT.glVertex3f( corner_h.x , corner_h.y, corner_h.z );
+		glFT.glVertex3f( corner_g.x , corner_g.y, corner_g.z )
+		glFT.glVertex3f( corner_h.x , corner_h.y, corner_h.z )
 		
-		glFT.glVertex3f( corner_h.x , corner_h.y, corner_h.z );
-		glFT.glVertex3f( corner_e.x , corner_e.y, corner_e.z );
+		glFT.glVertex3f( corner_h.x , corner_h.y, corner_h.z )
+		glFT.glVertex3f( corner_e.x , corner_e.y, corner_e.z )
 		
-		glFT.glEnd();
+		glFT.glEnd()
 
 		if style == OpenMayaUI.M3dView.kFlatShaded or style == OpenMayaUI.M3dView.kGouraudShaded:
 			glFT.glPushAttrib(OpenMayaRender.MGL_ALL_ATTRIB_BITS)
 			
 			glFT.glClearDepth(1.0)
-    	
+
                         glFT.glEnable(OpenMayaRender.MGL_BLEND)
 
                         glFT.glEnable(OpenMayaRender.MGL_DEPTH_TEST)
@@ -164,7 +168,7 @@ class spCameraFrustumNode(OpenMayaMPx.MPxLocatorNode):
                         glFT.glDepthMask( OpenMayaRender.MGL_FALSE )
 
                         glFT.glColor4f(0.05, 0.6, 0.2, 0.2)
-			
+
 			glFT.glBegin( OpenMayaRender.MGL_QUADS )
 			glFT.glVertex3f( corner_e.x , corner_e.y, corner_e.z )
 			glFT.glVertex3f( corner_f.x , corner_f.y, corner_f.z )
