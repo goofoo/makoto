@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F409B02101E5B3400074F8D</string>
+						<string>7FCE44441023134600F025DA</string>
 						<key>history</key>
 						<array>
-							<string>7FFD6113101C809B00356B79</string>
+							<string>7F94F250101FAEEC00B9E200</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -256,10 +256,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F409B04101E5B3400074F8D</string>
+						<string>7FCE44461023134600F025DA</string>
 						<key>history</key>
 						<array>
-							<string>7FFD610E101C809B00356B79</string>
+							<string>7F94F252101FAEEC00B9E200</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -312,6 +312,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -358,13 +360,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>24</integer>
-									<integer>21</integer>
+									<integer>15</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 186}, {186, 273}}</string>
+							<string>{{0, 64}, {186, 273}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -428,8 +430,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -466,9 +466,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F409AF7101E483300074F8D</string>
+				<string>7FCE44421023134600F025DA</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F409AF8101E483300074F8D</string>
+				<string>7FCE44431023134600F025DA</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -602,7 +602,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7FE58BA50FB61F9000187112</string>
+		<string>7FCE44471023134600F025DA</string>
 		<string>7FFD610C101C809B00356B79</string>
 		<string>7FFD610F101C809B00356B79</string>
 		<string>/Users/jianzhang/Documents/plankton/zHair/hair.xcodeproj</string>
@@ -685,7 +685,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FE58BA50FB61F9000187112</string>
-				<string>7F409AFB101E483300074F8D</string>
+				<string>7F94F253101FAEEC00B9E200</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F1F57031004CAC000B6B51B</string>
+						<string>7FCE43B21022C67900F025DA</string>
 						<key>history</key>
 						<array>
-							<string>7F1F56FD1004A97700B6B51B</string>
+							<string>7F1F57031004CAC000B6B51B</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -235,7 +235,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>15 107 708 666 0 0 1280 778 </string>
+				<string>15 112 708 666 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -320,13 +320,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>22</integer>
+									<integer>25</integer>
 									<integer>2</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 230}, {186, 338}}</string>
+							<string>{{0, 260}, {186, 338}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -345,7 +345,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>233 214 690 397 0 0 1280 778 </string>
+						<string>370 231 690 397 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -382,7 +382,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {482, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>233 214 690 397 0 0 1280 778 </string>
+								<string>370 231 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -402,7 +402,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {482, 351}}</string>
 								<key>RubberWindowFrame</key>
-								<string>233 214 690 397 0 0 1280 778 </string>
+								<string>370 231 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -426,9 +426,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F1F56FF1004CAC000B6B51B</string>
+				<string>7FCE43B01022C67900F025DA</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F1F57001004CAC000B6B51B</string>
+				<string>7FCE43B11022C67900F025DA</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -562,12 +562,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>7FCE43B41022C67900F025DA</string>
 		<string>7FE58BA50FB61F9000187112</string>
 		<string>7F1F57011004CAC000B6B51B</string>
 		<string>/Users/jianzhang/Documents/plankton/vertexCache/mcache.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>233 214 690 397 0 0 1280 778 </string>
+	<string>370 231 690 397 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -644,7 +645,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FE58BA50FB61F9000187112</string>
-				<string>7F1F57041004CAC000B6B51B</string>
+				<string>7FCE43B31022C67900F025DA</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

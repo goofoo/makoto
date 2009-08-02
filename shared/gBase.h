@@ -39,6 +39,7 @@ public :
 	static void drawSplat121(qnode& data, float scale);
 	static void drawSplat12(qnode& data, XYZ& eye, float scale);
 	static void drawSplat12(float px, float py, float pz, float nx, float ny, float nz, float radius);
+	static void drawSplatAt(const XYZ& pos, const XYZ& facing, const float& radius);
 	static void drawSplatAt(XYZ& pos, XYZ& facing, float radius);
 	static void drawQuadAt(XYZ& pos, XYZ& facing, float size);
 	static void drawSplatST(float s, float t, float radius, float r, float g, float b);

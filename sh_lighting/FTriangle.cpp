@@ -62,22 +62,31 @@ void FTriangle::create(const XYZ& p0, const XYZ& p1, const XYZ& p2)
 	V[1].normalize();
 	V[2].normalize();
 	
-	int a , b;
+	int a, b;
 	
 	if(edge_length[0] > edge_length[1] && edge_length[0] > edge_length[2])
 	{
 		a = 0;
 		b = 1;
+		
+		if(edge_length[1] > edge_length[2]) m_min_length = edge_length[2];
+		else m_min_length = edge_length[1];
 	}
 	else if(edge_length[1] > edge_length[2] && edge_length[1] > edge_length[0])
 	{
-		a = 1;
+		a = 1; 
 		b = 2;
+		
+		if(edge_length[2] > edge_length[0]) m_min_length = edge_length[0];
+		else m_min_length = edge_length[2];
 	}
 	else
 	{
 		a = 2;
 		b = 0;
+		
+		if(edge_length[1] > edge_length[0]) m_min_length = edge_length[0];
+		else m_min_length = edge_length[1];
 	}
 	
 	XYZ side = V[a];
@@ -182,30 +191,18 @@ void FTriangle::rasterize(const float delta, pcdSample* res, int& count)
 	
 	float alpha, beta, gamma, x, y;
 	XYZ p_interp, n_interp, c_interp, t_interp;
-	/*
-	if(grid_x ==1 || grid_y == 1)
-	{
-		alpha = beta = gamma = 1.0f/3.0f;
-		p_interp = P[0]*alpha + P[1]*beta + P[2]*gamma;
-		n_interp = normal[0]*alpha + normal[1]*beta + normal[2]*gamma;n_interp.normalize();
-		c_interp = color[0]*alpha + color[1]*beta + color[2]*gamma;
-			//t_interp = tangent[0]*alpha + tangent[1]*beta + tangent[2]*gamma;
-			
-			res[count].pos = p_interp;
-			res[count].nor = n_interp;
-			res[count].col = c_interp;
-			res[count].area = delta*delta*2.f;
-			
-			count++;
-		return;
-	}
-	*/
+
+	float real_delta = delta;
+	
+	if(real_delta > m_min_length) real_delta = m_min_length;
+	if(real_delta < delta/4) real_delta = delta/4;
+	
 	for(int j=0; j<grid_y; j++)
 	{
 		for(int i=0; i<grid_x; i++)
 		{
-			x = delta*(i+0.5);
-			y = delta*(j+0.5);
+			x = real_delta*(i+0.5);
+			y = real_delta*(j+0.5);
 			alpha = barycentric_coord(p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y, x, y)/f120;
 			if(alpha<0 || alpha>1) continue;
 			beta = barycentric_coord(p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y, x, y)/f201;
@@ -216,12 +213,11 @@ void FTriangle::rasterize(const float delta, pcdSample* res, int& count)
 			p_interp = P[0]*alpha + P[1]*beta + P[2]*gamma;
 			n_interp = normal[0]*alpha + normal[1]*beta + normal[2]*gamma;n_interp.normalize();
 			c_interp = color[0]*alpha + color[1]*beta + color[2]*gamma;
-			//t_interp = tangent[0]*alpha + tangent[1]*beta + tangent[2]*gamma;
-			
+
 			res[count].pos = p_interp;
 			res[count].nor = n_interp;
 			res[count].col = c_interp;
-			res[count].area = delta/1.414;
+			res[count].area = real_delta/1.414;
 			
 			count++;
 		}
@@ -243,34 +239,18 @@ void FTriangle::rasterize(const float delta, const CoeRec* vertex_coe, pcdSample
 	
 	float alpha, beta, gamma, x, y;
 	XYZ p_interp, n_interp, c_interp, t_interp;
-	/*
-	if(grid_x ==1 || grid_y == 1)
-	{
-		alpha = beta = gamma = 1.0f/3.0f;
-		p_interp = P[0]*alpha + P[1]*beta + P[2]*gamma;
-		n_interp = normal[0]*alpha + normal[1]*beta + normal[2]*gamma;n_interp.normalize();
-		c_interp = color[0]*alpha + color[1]*beta + color[2]*gamma;
-			
-			res[count].pos = p_interp;
-			res[count].nor = n_interp;
-			res[count].col = c_interp;
-			res[count].area = delta*delta*2.f;
-		
-		for(int j=0; j<16; j++)
-		{
-			coe_res[count].data[j] = vertex_coe[id[0]].data[j] * alpha + vertex_coe[id[1]].data[j] * beta + vertex_coe[id[2]].data[j] * gamma;
-		}
-			
-			count++;
-		return;
-	}
-	*/
+	
+	float real_delta = delta;
+	
+	if(real_delta > m_min_length) real_delta = m_min_length;
+	if(real_delta < delta/4) real_delta = delta/4;
+
 	for(int j=0; j<grid_y; j++)
 	{
 		for(int i=0; i<grid_x; i++)
 		{
-			x = delta*(i+0.5);
-			y = delta*(j+0.5);
+			x = real_delta*(i+0.5);
+			y = real_delta*(j+0.5);
 			alpha = barycentric_coord(p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y, x, y)/f120;
 			if(alpha<0 || alpha>1) continue;
 			beta = barycentric_coord(p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y, x, y)/f201;
@@ -285,7 +265,7 @@ void FTriangle::rasterize(const float delta, const CoeRec* vertex_coe, pcdSample
 			res[count].pos = p_interp;
 			res[count].nor = n_interp;
 			res[count].col = c_interp;
-			res[count].area = delta/1.414;
+			res[count].area = real_delta/1.414;
 			
 			for(int k=0; k<16; k++)
 			{
@@ -296,97 +276,5 @@ void FTriangle::rasterize(const float delta, const CoeRec* vertex_coe, pcdSample
 		}
 	}
 }
-/*
-void FTriangle::rasterize(const float delta, const CoeRec* vertex_coe, pcdSample* res, CoeRec* coe_res, int& count, XYZ* hdr)
-{
-	float x_max = 0;
-	float y_max = 0;
-	for(int i=0; i<3; i++)
-	{
-		if(p_obj[i].x > x_max) x_max = p_obj[i].x;
-		if(p_obj[i].y > y_max) y_max = p_obj[i].y;
-	}
-	
-	int grid_x = x_max/delta + 1;
-	int grid_y = y_max/delta + 1;
-	
-	float alpha, beta, gamma, x, y;
-	XYZ p_interp, n_interp, c_interp, t_interp;
-	
-	if(grid_x ==1 || grid_y == 1)
-	{
-		alpha = beta = gamma = 1.0f/3.0f;
-		p_interp = P[0]*alpha + P[1]*beta + P[2]*gamma;
-		n_interp = normal[0]*alpha + normal[1]*beta + normal[2]*gamma;n_interp.normalize();
-		c_interp = color[0]*alpha + color[1]*beta + color[2]*gamma;
-			
-			res[count].pos = p_interp;
-			res[count].nor = n_interp;
-			res[count].col = c_interp;
-			res[count].area = delta;
-		
-		for(int j=0; j<16; j++)
-		{
-			coe_res[count].data[j] = vertex_coe[id[0]].data[j] * alpha + vertex_coe[id[1]].data[j] * beta + vertex_coe[id[2]].data[j] * gamma;
-		}
-		
-		XYZ col0(0.f);
-		for(int j=0; j<16; j++)
-		{
-			col0.x += coe_res[count].data[j].x * hdr[j].x;
-			col0.y += coe_res[count].data[j].y * hdr[j].y;
-			col0.z += coe_res[count].data[j].z * hdr[j].z;
-		}
-		
-		glColor3f(col0.x, col0.y, col0.z);
-		glVertex3f(res[count].pos.x, res[count].pos.y, res[count].pos.z);
-			
-			count++;
-		return;
-	}
-	
-	for(int j=0; j<grid_y; j++)
-	{
-		for(int i=0; i<grid_x; i++)
-		{
-			x = delta*(i+0.5);
-			y = delta*(j+0.5);
-			alpha = barycentric_coord(p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y, x, y)/f120;
-			if(alpha<0 || alpha>1) continue;
-			beta = barycentric_coord(p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y, x, y)/f201;
-			if(beta<0 || beta>1) continue;
-			gamma = barycentric_coord(p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y, x, y)/f012;
-			if(gamma<0 || gamma>1) continue;
-			
-			p_interp = P[0]*alpha + P[1]*beta + P[2]*gamma;
-			n_interp = normal[0]*alpha + normal[1]*beta + normal[2]*gamma;n_interp.normalize();
-			c_interp = color[0]*alpha + color[1]*beta + color[2]*gamma;
-			
-			res[count].pos = p_interp;
-			res[count].nor = n_interp;
-			res[count].col = c_interp;
-			res[count].area = delta/2;
-			
-			for(int k=0; k<16; k++)
-			{
-				coe_res[count].data[k] = vertex_coe[id[0]].data[k] * alpha + vertex_coe[id[1]].data[k] * beta + vertex_coe[id[2]].data[k] * gamma;
-			}
-			
-			XYZ col0(0.f);
-			for(int k=0; k<16; k++)
-			{
-				col0.x += coe_res[count].data[k].x * hdr[k].x;
-				col0.y += coe_res[count].data[k].y * hdr[k].y;
-				col0.z += coe_res[count].data[k].z * hdr[k].z;
-			}
-			
-			glColor3f(col0.x, col0.y, col0.z);
-			glVertex3f(res[count].pos.x, res[count].pos.y, res[count].pos.z);
-			
-			count++;
-		}
-	}
-}
-*/
 
 //:~

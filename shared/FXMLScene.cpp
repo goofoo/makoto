@@ -539,7 +539,7 @@ void FXMLScene::diceWithRT(int n_cell, FQSPLAT* cloud) const
 	}
 
 	cout<<"\r n samples: "<<n_samp<<endl;
-	cloud->create(samp, coe_samp, n_samp);
+	cloud->createRT(samp, coe_samp, n_samp);
 	delete[] samp;
 	delete[] coe_samp;
 }
