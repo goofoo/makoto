@@ -3,15 +3,15 @@
 #include "../shared/eigenSystem.h"
 #include "../shared/gBase.h"
 #define MAX_N_SPLAT 1548576
-#define MIN_CONE -0.1
-#define POOLSCALE 2.25
+#define MIN_CONE -0.09
+#define POOLSCALE 1.99
 
 FQSPLAT::FQSPLAT():m_root(0),is_null(1),m_col_buf(0),m_coe_buf(0)
 {}
 
 FQSPLAT::~FQSPLAT(void)
 {
-	if(m_root) delete[] m_root;
+	if(m_root) delete m_root;
 		if(m_col_buf) delete[] m_col_buf;
 			if(m_coe_buf) delete[] m_coe_buf;
 }
@@ -50,9 +50,9 @@ void FQSPLAT::createNoColor(pcdSample* rec, int n_rec)
 		if(m_root[i].is_leaf && m_root[i].r>max_leaf) max_leaf = m_root[i].r;
 		if(m_root[i].is_leaf && m_root[i].r<min_leaf) min_leaf = m_root[i].r;
 	}
-		
-	cout<<" n QSPLAT Node:"<<m_num_hipix<<" n Leaf Node:"<<m_num_leaf<<" min leaf size:"<<min_leaf<<" max leaf size:"<<max_leaf<<endl;
 	*/
+	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<endl;
+	
 }
 
 void FQSPLAT::createRT(pcdSample* rec, CoeRec* coe_rec, int n_rec)
@@ -74,9 +74,9 @@ void FQSPLAT::createRT(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 		if(m_root[i].is_leaf && m_root[i].r>max_leaf) max_leaf = m_root[i].r;
 		if(m_root[i].is_leaf && m_root[i].r<min_leaf) min_leaf = m_root[i].r;
 	}
-		
-	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<" min leaf size:"<<min_leaf<<" max leaf size:"<<max_leaf<<endl;
-	*/
+	*/	
+	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<endl;
+	
 }
 
 void FQSPLAT::createRTandColor(pcdSample* rec, CoeRec* coe_rec, int n_rec)
@@ -99,9 +99,8 @@ void FQSPLAT::createRTandColor(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 		if(m_root[i].is_leaf && m_root[i].r>max_leaf) max_leaf = m_root[i].r;
 		if(m_root[i].is_leaf && m_root[i].r<min_leaf) min_leaf = m_root[i].r;
 	}
-		
-	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<" min leaf size:"<<min_leaf<<" max leaf size:"<<max_leaf<<endl;
 	*/
+	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<endl;
 }
 
 void FQSPLAT::combineSamplesNoColor(pcdSample* data, int lo, int hi, HierarchyQSPLATNode& node)
@@ -620,9 +619,9 @@ void FQSPLAT::createTreeRTNColor(pcdSample* data, CoeRec* coe_data, HierarchyQSP
 	res->child3 = new HierarchyQSPLATNode();
 	
 	createTreeRTNColor(data, coe_data, res->child0, coe_res, color_res, count, lo, 		aa);
-	createTreeRTNColor(data, coe_data, res->child0, coe_res, color_res, count, ab, 		a);
-	createTreeRTNColor(data, coe_data, res->child0, coe_res, color_res, count, b, 		ba);
-	createTreeRTNColor(data, coe_data, res->child0, coe_res, color_res, count, bb, 		hi);
+	createTreeRTNColor(data, coe_data, res->child1, coe_res, color_res, count, ab, 		a);
+	createTreeRTNColor(data, coe_data, res->child2, coe_res, color_res, count, b, 		ba);
+	createTreeRTNColor(data, coe_data, res->child3, coe_res, color_res, count, bb, 		hi);
 }
 
 void FQSPLAT::lookup(const XYZ& origin, const XYZ& ray,  CVisibilityBuffer* visibility, const float bias) const

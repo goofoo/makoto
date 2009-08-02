@@ -539,7 +539,7 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 			(*it)->diceWithRT(epsilon, samp, coe_samp, n_samp);
 
 			cout<<" n samples: "<<n_samp<<endl;
-			tree->create(samp, coe_samp, n_samp);
+			tree->createRT(samp, coe_samp, n_samp);
 			delete[] samp;
 			delete[] coe_samp;
 	
@@ -614,12 +614,14 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 				float* coebf = new float[n_vert*SH_N_BASES];
 			
 				XYZ Q, ray, tang;
+				
+				float glb_gridsize = sqrt((*it)->getArea()/(*it)->getNumTriangle())/2;
 			
 				for(int i=0; i<n_vert; i++)
 				{
 					(*it)->getVertex(Q, i);
 					(*it)->getNormal(ray , i);
-					gridsize = (*it)->getGrid(i);
+					gridsize = ((*it)->getGrid(i) + glb_gridsize)/2;
 					Q -= ray*gridsize/3;
 
 					b_vis->initialize();
