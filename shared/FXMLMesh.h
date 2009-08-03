@@ -147,6 +147,8 @@ public:
 	void diceWithRT(float epsilon, pcdSample* res, CoeRec* coe_res, int& n_res);
 	int checkExistingRT() const;
 	int hasAttrib(const char* attribname) const;
+	
+	void interpolateRT(int lo, int hi, int frame, float weight, const char* extension, int fpv);
 private:
 	ZXMLDoc doc;
 	int pos_s, pos_d;

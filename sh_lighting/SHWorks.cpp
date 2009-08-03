@@ -724,4 +724,31 @@ void SHWorks::printConstantCoeff() const
 	printf("Constant coeff\n");
 	for(int i=0; i<SH_N_BASES; i++) printf("%f %f %f\n", constantCoeff[i].x, constantCoeff[i].y, constantCoeff[i].z);
 }
+
+void SHWorks::cheat(const FXMLScene* scene, int lo, int hi, int frame)
+{
+	float wei1 = 1.f;
+	if(hi != lo) wei1 = float(frame - lo)/float(hi - lo);
+	
+	MeshList list = scene->getMesh();
+	for(MeshList::iterator it=list.begin(); it != list.end(); ++it) {
+		if((*it)->hasAttrib("asLightsource") !=1 && (*it)->hasAttrib("invisible") !=1) {
+			cout<<" cheat "<<(*it)->getMeshName()<<" at frame "<<frame<<endl;
+			
+			(*it)->interpolateRT(lo, hi, frame, wei1, "prt", 16);
+			(*it)->interpolateRT(lo, hi, frame, wei1, "prtu", 16);
+			(*it)->interpolateRT(lo, hi, frame, wei1, "prtl", 48);
+			(*it)->interpolateRT(lo, hi, frame, wei1, "prtj", 48);
+			
+			if((*it)->hasAttrib("skipScatter") !=1) {
+				(*it)->interpolateRT(lo, hi, frame, wei1, "prts", 16);
+				(*it)->interpolateRT(lo, hi, frame, wei1, "prte", 16);
+			}
+			
+			if((*it)->hasAttrib("skipBackscatter") !=1) (*it)->interpolateRT(lo, hi, frame, wei1, "prtb", 16);
+			
+			if((*it)->hasAttrib("skipIndirect") !=1) (*it)->interpolateRT(lo, hi, frame, wei1, "prti", 48);
+		}
+	}
+}
 //:~

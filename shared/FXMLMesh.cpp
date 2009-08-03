@@ -1256,5 +1256,62 @@ void FXMLMesh::resetHDRLighting()
 {
 	for(unsigned i=0; i<16; i++) usr_hdrCoeff[i] = XYZ(hdrCoeff[i*16], hdrCoeff[i*16+1], hdrCoeff[i*16+2]);
 }
+
+void FXMLMesh::interpolateRT(int lo, int hi, int frame, float weight, const char* extension, int fpv)
+{
+	float* vex_coe = new float[m_numVertex*fpv];
+	
+	string rtName = m_xml_name;
+	zGlobal::replacefilename(rtName, m_meshName);
+	zGlobal::changeFilenameExtension(rtName, extension);
+	zGlobal::changeFrameNumber(rtName, lo);
+	
+	ifstream ifile;
+	ifile.open(rtName.c_str(), ios::in | ios::binary | ios::ate);
+	
+	if(!ifile.is_open()) return;
+
+	ifstream::pos_type size = ifile.tellg();
+	
+	if((int)size == m_numVertex*fpv*sizeof(float)) {
+		ifile.seekg(0, ios::beg);
+		ifile.read((char*)vex_coe, m_numVertex*fpv*sizeof(float));
+		ifile.close();
+	}
+	
+	if(weight < 1.f) {
+		float wei0 = 1.f - weight;
+		float* vex_coe1 = new float[m_numVertex*fpv];
+	
+		zGlobal::changeFrameNumber(rtName, hi);
+		
+		ifile.open(rtName.c_str(), ios::in | ios::binary | ios::ate);
+		
+		if(!ifile.is_open()) return;
+
+		ifstream::pos_type size = ifile.tellg();
+		
+		if((int)size == m_numVertex*fpv*sizeof(float)) {
+			ifile.seekg(0, ios::beg);
+			ifile.read((char*)vex_coe1, m_numVertex*fpv*sizeof(float));
+			ifile.close();
+		}
+		
+		for(unsigned i=0; i<m_numVertex*fpv; i++) {
+			vex_coe[i] = vex_coe1[i] * weight + vex_coe[i] * wei0;
+		}
+		delete[] vex_coe1;	
+	}
+
+	zGlobal::changeFrameNumber(rtName, frame);
+	ofstream ofile;
+	ofile.open(rtName.c_str(), ios::out | ios::binary);
+	if(!ofile.is_open()) return;
+	
+	ofile.write((char*)vex_coe, m_numVertex*fpv*sizeof(float));
+	ofile.close();
+	
+	delete[] vex_coe;	
+}
 //~:
 

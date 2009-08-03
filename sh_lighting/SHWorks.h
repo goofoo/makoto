@@ -93,6 +93,8 @@ public:
 	void printHDRCoeff() const;
 	void printConstantCoeff() const;
 	
+	void cheat(const FXMLScene* scene, int lo, int hi, int frame);
+	
 private:
 	sphericalHarmonics* f_sh;
 	CVisibilityBuffer* b_vis;
