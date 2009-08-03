@@ -19,7 +19,7 @@ FXMLScene* fscene;
 
 int main (int argc, char * const argv[]) {
     // insert code here...
-    std::cout << "PRT Server 1.8.0 080209"<<endl;
+    std::cout << "PRT Server 1.8.1 080309"<<endl;
     
 	// check out
 	if(argc !=11 || strcmp(argv[1], "-path")!=0 || strcmp(argv[3], "-dice")!=0 || strcmp(argv[5], "-operation")!=0)	 

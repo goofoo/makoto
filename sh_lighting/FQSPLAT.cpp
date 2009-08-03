@@ -2,18 +2,30 @@
 #include "../shared/zMath.h"
 #include "../shared/eigenSystem.h"
 #include "../shared/gBase.h"
-#define MAX_N_SPLAT 1548576
+//#define MAX_N_SPLAT 1548576
 #define MIN_CONE -0.09
-#define POOLSCALE 1.99
+#define POOLSCALE 1.09
 
 FQSPLAT::FQSPLAT():m_root(0),is_null(1),m_col_buf(0),m_coe_buf(0)
 {}
 
 FQSPLAT::~FQSPLAT(void)
 {
-	if(m_root) delete m_root;
+	if(m_root) release(m_root);
 		if(m_col_buf) delete[] m_col_buf;
 			if(m_coe_buf) delete[] m_coe_buf;
+}
+
+void FQSPLAT::release(HierarchyQSPLATNode* node)
+{
+	if(!node) return;
+	
+	if(node->child0) release(node->child0);
+	if(node->child1) release(node->child1);
+	if(node->child2) release(node->child2);
+	if(node->child3) release(node->child3);
+
+	delete node;
 }
 
 void FQSPLAT::create(pcdSample* rec, int n_rec)

@@ -10,15 +10,6 @@ using namespace std;
 struct HierarchyQSPLATNode
 {
 	HierarchyQSPLATNode():child0(0), child1(0), child2(0), child3(0), is_leaf(1) {}
-	~HierarchyQSPLATNode() 
-	{
-		if(!is_leaf) {
-			delete child0;
-			delete child1;
-			delete child2;
-			delete child3;
-		}
-	}
 	float cone, r;
 	unsigned index;
 	XYZ mean, nor;
@@ -252,6 +243,8 @@ private:
 	void createTreeRTNColor(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNode* res, CoeRec* coe_res, XYZ* color_res, unsigned int& count, int lo, int hi);
 
 	char is_null;
+	
+	void release(HierarchyQSPLATNode* node);
 
 /*recursive lookup*/
 	void recursive_lookup(const XYZ& origin, const XYZ& ray, HierarchyQSPLATNode* node,  CVisibilityBuffer* visibility, const float bias) const ;
