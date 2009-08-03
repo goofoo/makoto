@@ -481,7 +481,7 @@ int OcTree::hasColor() const
 {
 	if(dThree.size()) 
 		for(unsigned int i = 0;i<dThree.size();i++)
-			if(dThree[i]->name=="color")
+			if(dThree[i]->name=="rgbPP")
 				return i;
 	return -1;
 }
