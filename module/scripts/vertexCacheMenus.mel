@@ -74,6 +74,7 @@ global proc meshCacheAppendMenuItems()
 	menuItem -divider true;
 	menuItem -l "Load MCF Mesh Cache" -c "openImportMeshCacheWin";
 	menuItem -l "Add Cache Deformer" -c "openAddCacheDeformerWin";
+	menuItem -l "Snap To Second" -c "mfc_UtilSnap";
 	menuItem -divider true;
 	menuItem -l "Attach PRT Attribute" -c "mcf_addAttr";
 	menuItem -l "Edit PRT Attribute" -c "mcf_editAttr";
@@ -1164,4 +1165,13 @@ global proc mshc_loadsingle()
 	string $sname = $buffer[0];
 	$numTokens = `tokenize $sname "/" $buffer`;
 	rename $shape $buffer[$numTokens-1];
+}
+
+global proc mfc_UtilSnap()
+{
+	string $sel[] =`ls -sl`;
+	float $dist[] = `mshUtil`;
+	string $scmd = "move -r " + $dist[0] + " " + $dist[1] + " " + $dist[2] + " " + $sel[0];
+	print($scmd);
+	eval($scmd);
 }

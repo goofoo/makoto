@@ -17,11 +17,12 @@
 #include "prtAttribNode.h"
 #include "importSceneCmd.h"
 #include "cacheTransform.h"
+#include "mshUtil.h"
  
 MStatus initializePlugin( MObject obj ) 
 {
 MStatus status;
-MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.5.3 07/07/09", "Any" );
+MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.6.0 08/03/09", "Any" );
 
 	//if( licenseIsValid ( "C:/flexlm/shot_sculptor.lic" ) ) {
 		status = plugin.registerCommand( "vxCache", vxCache::creator, vxCache::newSyntax);
@@ -31,6 +32,12 @@ MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.5.3 07/07/09", "Any" );
 		}
 	//}
 	status = plugin.registerCommand( "obj2mcf", obj2mcf::creator, obj2mcf::newSyntax);
+		if (!status) {
+			status.perror("registerCommand");
+			return status;
+	}
+	
+	status = plugin.registerCommand( "mshUtil", mshUtil::creator, mshUtil::newSyntax);
 		if (!status) {
 			status.perror("registerCommand");
 			return status;
@@ -106,6 +113,12 @@ MFnPlugin plugin( obj );
 		}
 		
 		status = plugin.deregisterCommand( "obj2mcf" );
+		if (!status) {
+		      status.perror("deregisterCommand");
+		      return status;
+		}
+		
+		status = plugin.deregisterCommand( "mshUtil" );
 		if (!status) {
 		      status.perror("deregisterCommand");
 		      return status;
