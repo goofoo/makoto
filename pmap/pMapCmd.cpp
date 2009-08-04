@@ -10,10 +10,11 @@ MSyntax pMapCmd::newSyntax()
 
 	syntax.addFlag("-p", "-path", MSyntax::kString);
 	syntax.addFlag("-n", "-name", MSyntax::kString);
-	syntax.addFlag("-c","-color",MSyntax::kBoolean);
-	syntax.addFlag("-v","-velocity",MSyntax::kBoolean);
+	//syntax.addFlag("-c","-color",MSyntax::kBoolean);
+	//syntax.addFlag("-v","-velocity",MSyntax::kBoolean);
 	syntax.addFlag("-a","-attrib",MSyntax::kString);
-	syntax.addFlag("-l","-lifespan",MSyntax::kBoolean); 
+	//syntax.addFlag("-l","-lifespan",MSyntax::kBoolean); 
+	syntax.addFlag("-md","-mindist",MSyntax::kDouble);
 
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -36,18 +37,27 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	MGlobal::executeCommand( MString ("string $p = `workspace -q -fn`"), proj );
 
     MString cache_path = proj + "/data";
-	MString cache_name = "foo";
-	bool cache_velocity;
-	bool cache_color ;
-	bool cache_acceleration;
-	bool cache_lifespan;
+	MString cache_name = "foo";;
+	MString cache_attrib;
+	double cache_mindist;
 
 	if (argData.isFlagSet("-p")) argData.getFlagArgument("-p", 0, cache_path);
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
-	if (argData.isFlagSet("-v")) argData.getFlagArgument("-v", 0, cache_velocity);
-	if (argData.isFlagSet("-c")) argData.getFlagArgument("-c", 0, cache_color);
-	if (argData.isFlagSet("-a")) argData.getFlagArgument("-a", 0, cache_acceleration);
-	if (argData.isFlagSet("-l")) argData.getFlagArgument("-l", 0, cache_lifespan);
+	//if (argData.isFlagSet("-v")) argData.getFlagArgument("-v", 0, cache_velocity);
+	//if (argData.isFlagSet("-c")) argData.getFlagArgument("-c", 0, cache_color);
+	if (argData.isFlagSet("-a")) argData.getFlagArgument("-a", 0, cache_attrib);
+	//if (argData.isFlagSet("-l")) argData.getFlagArgument("-l", 0, cache_lifespan);
+	if (argData.isFlagSet("-md")) argData.getFlagArgument("-md", 0, cache_mindist);
+
+	MStringArray attribArray;
+	cache_attrib.split('.',attribArray);
+	//}
+	//for(int i = 0;i<attribArray.length();i++ ){
+		//cache_attrib.split(' ',attribArray);
+	//	MGlobal::displayInfo(MString("caoniama   ") + attribArray[i]);
+	//}
+    
+	//MGlobal::displayInfo(MString("cache_attrib: ")+cache_attrib);
 
     MSelectionList slist;
 	MGlobal::getActiveSelectionList( slist );
@@ -69,7 +79,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 
 	MDagPath fDagPath;
 	
-	unsigned npt = 0,acc = 0,add = 0;
+	unsigned npt = 0,acc = 0;
 	for(;!list.isDone();list.next()) {
 		list.getDagPath (fDagPath, component);
 	    MFnParticleSystem ps( fDagPath );
@@ -77,10 +87,6 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 	
 	PosAndId *buf = new PosAndId[npt];
-	XYZ *pco = new XYZ[npt];
-	XYZ *pve = new XYZ[npt];
-	XYZ *pac = new XYZ[npt];
-	float *plf = new float[npt];
 	
 	list.reset();
 	for(;!list.isDone();list.next()) {
@@ -88,8 +94,8 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MFnParticleSystem ps( fDagPath );
  
 		const unsigned int count = ps.count();
-	    MIntArray ids;
-	    ps.particleIds( ids );
+	    //MIntArray ids;
+	    //ps.particleIds( ids );
 	    MVectorArray positions;
 	    ps.position( positions );
 		assert( positions.length() == count);
@@ -101,7 +107,8 @@ MStatus pMapCmd::doIt( const MArgList& args)
 			buf[acc].pos.z = p[2];
 		    buf[acc].idx = acc;
 		}
-
+		
+/*
 		if (cache_velocity){
 			acc = add;
 			MVectorArray velocity;
@@ -149,39 +156,104 @@ MStatus pMapCmd::doIt( const MArgList& args)
 			}
 		}
 
-		add += count;
+		add += count;*/
 	}
 
 	XYZ rootCenter;
 	float rootSize;
     OcTree::getBBox(buf, npt, rootCenter, rootSize);
-	float mindist = 0.1;
+	//float mindist = 0.1;
 	short maxlevel = 0;
-	while(mindist<rootSize) {
+	while(cache_mindist<rootSize) {
 		maxlevel++;
-		mindist*=2;
+		cache_mindist*=2;
 	}
 	MGlobal::displayInfo(MString("  max leval: ")+ maxlevel);
 	
 	OcTree* tree = new OcTree();
 	tree->construct(buf, npt, rootCenter, rootSize, maxlevel);
-	if (cache_velocity)
-		tree->addThree(pve, "velocity", buf);
-	if (cache_color)
-		tree->addThree(pco, "color", buf);
-	if (cache_acceleration)
-		tree->addThree(pac, "acceleration", buf);
-	if (cache_lifespan)
-		tree->addSingle(plf, "lifespan", buf);
+
+	XYZ* attrArray = new XYZ[npt];
+	float* attr = new float[npt];
+	for(unsigned i=0; i<attribArray.length(); i++)
+	{ 
+		acc = 0;
+		MStringArray tokenizeAttr;
+		MString attribute;
+		attribute = attribArray[i];
+		attribute.split(':',tokenizeAttr);
+
+		MString temp = tokenizeAttr[0];
+		//char* attriName = temp.asChar();
+		list.reset();
+		list.getDagPath (fDagPath, component);
+		MFnParticleSystem ps( fDagPath );
+			
+		if(tokenizeAttr[1] == "vectorArray")
+			{
+				if(ps.hasAttribute(tokenizeAttr[0]))
+				{
+					list.reset();
+					for(;!list.isDone();list.next()) {
+		                list.getDagPath (fDagPath, component);
+		                MFnParticleSystem ps( fDagPath );
+
+						MVectorArray attribute;
+						ps.getPerParticleAttribute(tokenizeAttr[0],attribute);
+						for(unsigned j=0; j<attribute.length(); j++,acc++ )
+						{
+							MVector p = attribute[j];
+							attrArray[acc].x = p[0];
+							attrArray[acc].y = p[1];
+							attrArray[acc].z = p[2];
+						}
+					}
+					tree->addThree(attrArray,temp.asChar(),buf);
+					//MGlobal::displayInfo(MString("")+temp.asChar());
+				}
+				else MGlobal::displayWarning(MString("This object has't ")+tokenizeAttr[0]+MString(" attribute"));
+			}
+			
+			if(tokenizeAttr[1] == "floatArray")
+			{
+				if(ps.hasAttribute(tokenizeAttr[0]))
+				{
+					list.reset();
+					for(;!list.isDone();list.next()) {
+		                list.getDagPath (fDagPath, component);
+		                MFnParticleSystem ps( fDagPath );
+
+					    MDoubleArray attribute;
+					    ps.getPerParticleAttribute(tokenizeAttr[0],attribute);
+					    for(unsigned j=0; j<attribute.length(); j++,acc++ )
+							attr[j] = attribute[j]; 
+					}
+					tree->addSingle(attr,temp.asChar(),buf);
+					//MGlobal::displayInfo(MString("")+temp.asChar());
+				}
+				else MGlobal::displayWarning(MString("This object has't ")+tokenizeAttr[0]+MString(" attribute"));
+			}
+			//delete[] attrArray;
+			//delete attrArray;
+	}
+
+	//if (cache_velocity)
+	//	tree->addThree(pve, "velocity", buf);
+	//if (cache_color)
+	//	tree->addThree(pco, "color", buf);
+	//if (cache_acceleration)
+	//	tree->addThree(pac, "acceleration", buf);
+	//if (cache_lifespan)
+	//	tree->addSingle(plf, "lifespan", buf);
 	tree->save(filename);
 	
 	//if(tree->hasColor()) MGlobal::displayInfo("check color");
 	
 	delete[] buf;
-	delete[] pco;
-	delete[] pve;
-	delete[] pac;
-	delete[] plf;
+	//delete[] pco;
+	//delete[] pve;
+	//delete[] pac;
+	//delete[] plf;
 	delete tree;
 	return MS::kSuccess;
 }

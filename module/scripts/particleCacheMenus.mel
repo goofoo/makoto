@@ -20,7 +20,7 @@ global proc particleCacheRemoveMenus()
         if ($menuIndex == -1) {
             $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
         }
-       
+
         // if particle map menu exists, delete it first.
         else {
             if(`menuItem -exists particleMapItems` ) deleteUI particleMapItems;
@@ -102,13 +102,56 @@ global proc doExportParticleCache()
 
 global proc exportParticleCacheSingleFrame()
 {
-	string $cmd;
+  string $attr[];
+  int $index = 0;
+  if(`columnLayout -q -nch basicAttriColumnLyt`)
+  {
+    string $arrayBasic[] = `columnLayout -q -ca basicAttriColumnLyt`;
+    for($i = 0;$i<size($arrayBasic);$i++,$index++)
+    {
+      if(`checkBox -q -v $arrayBasic`)
+      $attr[$index] = $arrayBasic[$i];
+    }
+  }
+  
+  if(`columnLayout -q -nch appendedAttriColumnLyt`)
+  {
+    string $arrayAppend[] = `columnLayout -q -ca appendedAttriColumnLyt`;
+    for($i = 0;$i<size($arrayAppend);$i++,$index++)
+    {
+      if(`checkBox -q -v $arrayAppend`)
+      $attr[$index] = $arrayAppend[$i];
+    }
+  }
 
-	if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -v `checkBox -q -v checkVelocity` -c `checkBox -q -v checkColor` -a `checkBox -q -v checkAcceleration` -l `checkBox -q -v checkLifespan`";
+  float $mindist;
+  string $attribute = stringArrayToString($attr,".");
+   if(`checkBox -q -v checkBoxRadius`)
+  {
+    $mindist = `floatSliderGrp -q -v fSliderRadius`;
+    if($mindist == 0) 
+    {
+      warning("Radius must bigger than 0");
+      $mindist = 0.1;
+    }
+  }
+  else  $mindist = 0.1;
+  string $dist = " -md "+$mindist;    
+  string $cmd;
+  //for($i = 0;$i<size($attr);$i++,$index++)
+       if($attribute == ""){
+        if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
+             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
 	else
-             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -v `checkBox -q -v checkVelocity` -c `checkBox -q -v checkColor` -a `checkBox -q -v checkAcceleration` -l `checkBox -q -v checkLifespan`";
-	eval($cmd);
+             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
+             }
+        else{
+        if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
+             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
+	else
+             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
+             }
+        eval($cmd);
 }
 
 global proc openExportParticleCacheWin()
@@ -118,12 +161,21 @@ global proc openExportParticleCacheWin()
  if ( (`window -exists exportParticleCacheWin`) == true ) deleteUI exportParticleCacheWin;
  
 //Create the window.
- window -title "particleCache - Save Particle Cache Options" -wh 400 300  -mb false exportParticleCacheWin;
+ window -title "particleCache - Save Particle Cache Options" -wh 400 300  -menuBar true -retain exportParticleCacheWin;
 
-//Layout
-string $form = `formLayout -numberOfDivisions 100`;
-string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
-string $scroll = `scrollLayout -p $form`;
+ menu -label "Attributes" ;
+        menuItem -l "Add Attributes..." -c "openAddAttrWin";
+        menuItem -l "Delete Attributes..." -c "openDeleteAttrWin";
+
+formLayout  -numberOfDivisions 100 windowLyt;
+$scrollLayout = `scrollLayout -childResizable true `;
+$form = `formLayout`;
+//scrollLayout;
+$frameSetting = `frameLayout -label "Setting Path And File Name" -borderVisible true
+		-collapsable true -borderStyle "etchedIn"`;
+//string $form = `formLayout -numberOfDivisions 100`;
+//string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+//string $scroll = `scrollLayout -p $form`;
 
 columnLayout -adjustableColumn true;
 
@@ -137,35 +189,152 @@ textFieldButtonGrp
      exportParticleCachePath;
 checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en exportParticleCacheRange`) exportParticleCacheRange" exportParticleCacheMuilt;
 intFieldGrp -en 0 -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
+checkBox -al "left" -l "Radius" -v 0 -cc "floatSliderGrp -e -en (!`floatSliderGrp -q -en fSliderRadius`) fSliderRadius" checkBoxRadius;
+floatSliderGrp  -en 0 -cw 1 110 -label "Min Radius" -field true -minValue 0.0 -maxValue 10.0 -value 0.1 fSliderRadius;
 
-frameLayout -label "Save Attribute" -labelAlign "center" -borderStyle "etchedIn" -collapsable 1;
-columnLayout;
-checkBox -al "left" -l "Velocity" -v 0  checkVelocity;
-checkBox -al "left" -l "Color" -v 0  checkColor;
-checkBox -al "left" -l "Acceleration" -v 0  checkAcceleration;
-checkBox -al "left" -l "Lifespan" -v 0 checkLifespan;
+//button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" -p $row;
+//button -l "Apply" -c "doExportParticleCache" -p $row;
+//button -l "Close" -c "deleteUI exportParticleCacheWin" -p $row;
 setParent ..;
 setParent ..;
-//row begin
-button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" -p $row;
-button -l "Apply" -c "doExportParticleCache" -p $row;
-button -l "Close" -c "deleteUI exportParticleCacheWin" -p $row;
+$frameBasic = `frameLayout -label "Basic Attribute" -borderVisible true
+		-collapsable true -borderStyle "etchedIn"`;
+columnLayout -adjustableColumn true basicAttriColumnLyt;
+checkBox -al "left" -l "velocity:vectorArray" velocity:vectorArray;
+
+setParent ..;
+setParent ..;
+$frameAppended = `frameLayout -label "Appended Attribute" -borderVisible true
+		-collapsable true -borderStyle "etchedIn"`;
+columnLayout -adjustableColumn true appendedAttriColumnLyt;
+
+setParent ..;
+setParent ..;
+setParent ..;
+setParent ..;
+
+button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" exportBtn;
+button -l "Apply" -c "doExportParticleCache" applyBtn;
+button -l "Close" -c "deleteUI exportParticleCacheWin" closeBtn;
 
 formLayout -edit
-        -attachNone  $row     "top"
-        -attachForm     $row     "left"   2
-        -attachForm	$row     "bottom" 2
-        -attachForm 	$row     "right"  2
-
-        -attachForm     $scroll "top"    2
-        -attachForm	$scroll "left"   2
-        -attachControl	$scroll "bottom" 2 $row
-        -attachForm     $scroll "right"  2
+        -attachForm     $frameSetting     "top"    2
+        -attachForm     $frameSetting     "left"   1
+        //-attachForm	$frame     "bottom" 2
+        -attachForm 	$frameSetting     "right"  1
+        
+        -ac             $frameBasic     "top"    1  $frameSetting
+        -attachForm     $frameBasic     "left"   1
+        //-attachForm	$frame     "bottom" 2
+        -attachForm 	$frameBasic     "right"  1
+        
+        -ac             $frameAppended     "top"    1  $frameBasic
+        -attachForm     $frameAppended     "left"   1
+        //-attachForm	$frame     "bottom" 2
+        -attachForm 	$frameAppended     "right"  1
     $form;
 
-showWindow exportParticleCacheWin;
+formLayout -edit
+
+        -af $scrollLayout    top 1
+        -af $scrollLayout    left 1
+        -af $scrollLayout    right 1
+        -ac $scrollLayout    bottom 2 applyBtn
+
+        -af exportBtn left 5
+        -ap exportBtn right 3 33
+        -af exportBtn bottom 5
+
+        -ap applyBtn left 2 33
+        -ap applyBtn right 3 66
+        -af applyBtn bottom 5
+		
+	-ap closeBtn left 2 66
+	-af closeBtn right 5
+	-af closeBtn bottom 5
+ windowLyt;
+
+ showWindow exportParticleCacheWin;
 
 }
+
+global proc openAddAttrWin()
+{
+  global string $gAddAttrWin;
+   if ( (`window -exists addAttrWin`) == true ) deleteUI addAttrWin;
+   window -title "Add Attribute"
+	  -minimizeButton false
+	  -maximizeButton false
+	  -width 350
+	  -height 400  addAttrWin;
+
+   formLayout -nd 100 addAttrFormLyt;
+
+   button -l "OK" -h 26 -c "doAddAttr;deleteUI addAttrWin" okBtn;
+   button -l "Add" -h 26 -c "doAddAttr" addBtn;
+   button -l "Cancel" -h 26 -c "deleteUI addAttrWin" cancelBtn;
+   
+   separator -style "in" -horizontal true sep1;
+
+
+        text -label "Per Voxel(Array) Attributes" nameLbl;
+
+        textScrollList -allowMultiSelection true attrLst;
+        string	$attrAry[] = getAttrList();
+
+	for ($i = 0; $i < size( $attrAry ); $i++)
+	{
+              // string $tokenAry[];
+              // tokenize( $attrAry[$i], ":", $tokenAry );
+
+               textScrollList -e -a $attrAry[$i]  attrLst;
+	}
+
+	formLayout -e
+        	-af nameLbl top 1
+                -af nameLbl left 1
+                -an nameLbl right
+                -an nameLbl bottom
+
+	      -af okBtn left 5
+	      -ap okBtn right 3 33
+	      -af okBtn bottom 5
+
+              -ap addBtn left 2 33
+              -ap addBtn right 3 66
+              -af addBtn bottom 5
+		
+		-ap cancelBtn left 2 66
+		-af cancelBtn right 5
+		-af cancelBtn bottom 5
+
+		-af sep1 left 0
+		-af sep1 right 0
+		-ac sep1 bottom 5 okBtn
+		
+		-ac attrLst top 1 nameLbl
+                -af attrLst left 1
+                -af attrLst right 1
+                -ac attrLst bottom 1 addBtn
+                addAttrFormLyt;
+
+	showWindow addAttrWin;
+}
+
+global proc doAddAttr()
+{
+  string $itemAry[] = `textScrollList -q -si attrLst`;
+  for ($i = 0; $i < size( $itemAry ); $i++)
+  {
+    textScrollList -e -removeItem `textScrollList -q -si attrLst` attrLst;
+    checkBox -al "left" -l $itemAry[$i] -v 1 -p appendedAttriColumnLyt $itemAry[$i];
+  }
+}
+
+global proc openRenameAttrWin()
+{
+}
+
 
 global proc int setParticleCachePath(string $path, string $type)
 {
@@ -178,7 +347,7 @@ global proc openImportParticleCacheWin()
 
 //If such a window already exists, destory it.
  if ( (`window -exists importParticleCacheWin`) == true ) deleteUI importParticleCacheWin;
- 
+
 //Create the window.
  window -title "particleCache 4.1 - Load Particle Cache Options" -wh 400 300  -mb false importParticleCacheWin;
 
@@ -244,3 +413,182 @@ global proc string findImportParticleCachePath()
 	string $path = `fileDialog -dm ($proj+"*.dat")`;
 	return $path;
 }
+
+global proc string[]  getAttrList( )
+{
+
+        string	$attrAry[];
+
+	int		$i = 0;
+	$attrAry[$i] = "incandescencePP:vectorArray";
+	$i++;
+	
+	$attrAry[$i] = "radiusPP:floatArray";
+	$i++;
+	
+	$attrAry[$i] = "spriteNumPP:floatArray";
+	$i++;
+	
+	$attrAry[$i] = "spriteScaleXPP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "spriteScaleYPP:floatArray ";
+	$i++;
+	
+	$attrAry[$i] = "spriteTwistPP:floatArray ";
+	$i++;
+	
+	$attrAry[$i] = "position:vectorArray ";
+	$i++;
+	
+	$attrAry[$i] = "rgbPP:vectorArray ";
+	$i++;
+	
+	$attrAry[$i] = "rampPosition:vectorArray";
+	$i++;
+	
+	$attrAry[$i] = "rampVelocity:vectorArray";
+	$i++;
+	
+	$attrAry[$i] = "rampAcceleration:vectorArray";
+	$i++;
+	
+	$attrAry[$i] = "acceleration:vectorArray";
+	$i++;
+	
+	$attrAry[$i] = "mass:floatArray";
+	$i++;
+	
+	$attrAry[$i] = "lifespanPP:floatArray";
+	$i++;
+	
+	$attrAry[$i] = "worldVelocity:vectorArray";
+	$i++;
+	
+	$attrAry[$i] = "opacityPP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "parentU:floatArray";
+	$i++;
+
+	$attrAry[$i] = "parentV:floatArray";
+	$i++;
+
+	$attrAry[$i] = "parentId:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalU:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalV:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalWeight0PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalWeight1PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalWeight2PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalWeight3PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalWeight4PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "goalOffset:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionU:floatArray";
+	$i++;
+
+	$attrAry[$i] = "collisionV:floatArray";
+	$i++;
+
+	$attrAry[$i] = "collisionGeometryIndex:floatArray";
+	$i++;
+
+	$attrAry[$i] = "collisionPosition:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionWorldPosition:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionNormal:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionWorldNormal:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionIncomingVelocity:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionWorldIncomingVelocity:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionOutgoingVelocity:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionWorldOutgoingVelocity:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionForce:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionWorldForce:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "collisionComponentId:floatArray";
+	$i++;
+
+	$attrAry[$i] = "collisionTime:floatArray";
+	$i++;
+
+	$attrAry[$i] = "traceDepthPP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "birthWorldPosition:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "birthPosition:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "userScalar1PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "userScalar2PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "userScalar3PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "userScalar4PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "userScalar5PP:floatArray";
+	$i++;
+
+	$attrAry[$i] = "userVector1PP:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "userVector2PP:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "userVector3PP:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "userVector4PP:vectorArray";
+	$i++;
+
+	$attrAry[$i] = "userVector5PP:vectorArray";
+	$i++;
+
+	$attrAry = sort( $attrAry );
+
+	return( $attrAry);
+}
+
+
+

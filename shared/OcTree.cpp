@@ -416,24 +416,30 @@ void OcTree::load(ifstream& file, TreeNode *node)
 	else node->child111 = NULL;
 }
 
-void OcTree::draw(const particleView *pview)
+void OcTree::draw(const particleView *pview,XYZ facing)
 {
-	if(root) draw(root, pview);
+	if(root) draw(root, pview,facing);
 }
 
-void OcTree::draw(const TreeNode *node, const particleView *pview)
+void OcTree::draw(const TreeNode *node, const particleView *pview,XYZ facing)
 {
 	if(!node) return;
+	int i = hasColor();
 	if(!pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) {
 			XYZ cen = node->center;
 			float size = node->size;
+			//if(i>=0)
+			//	glColor3f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z);
+			//else 
+			//	glColor3f(1,0,0);
 			
-			int i = hasColor();
 			if(i>=0)
-				glColor3f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z);
-			else 
-				glColor3f(1,0,0);
-			
+				glColor4f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z, 0.2f);
+            else
+				glColor4f(0.05f, 0.6f, 0.2f, 0.2f);
+			gBase::drawSplatAt(cen,facing,size);
+	
+			/*
 			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
@@ -463,17 +469,18 @@ void OcTree::draw(const TreeNode *node, const particleView *pview)
 			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
 			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
+			*/
 		
 	}
 	else {
-		draw(node->child000,pview);
-		draw(node->child001,pview);
-		draw(node->child010,pview);
-		draw(node->child011,pview);
-		draw(node->child100,pview);
-		draw(node->child101,pview);
-		draw(node->child110,pview);
-		draw(node->child111,pview);
+		draw(node->child000,pview,facing);
+		draw(node->child001,pview,facing);
+		draw(node->child010,pview,facing);
+		draw(node->child011,pview,facing);
+		draw(node->child100,pview,facing);
+		draw(node->child101,pview,facing);
+		draw(node->child110,pview,facing);
+		draw(node->child111,pview,facing);
 	}
 }
 
@@ -481,7 +488,7 @@ int OcTree::hasColor() const
 {
 	if(dThree.size()) 
 		for(unsigned int i = 0;i<dThree.size();i++)
-			if(dThree[i]->name=="color")
+			if(dThree[i]->name=="rgbPP")
 				return i;
 	return -1;
 }
