@@ -35,7 +35,7 @@ public:
 	double getT(int id) const {return coord_t[id]; }
 	
 	XYZ& getVertexById( int id ) { return cvs[id]; }
-	XYZ& getNormalById( int id ) { return normals[id]; }
+	//XYZ& getNormalById( int id ) { return normals[id]; }
 	
 	int* nverts() const {return faceCount;}
 	int* verts() const {return vertices;}
@@ -44,37 +44,37 @@ public:
 	void facevaryingT(float* res) const;
 	void rmanVertices(int* res) const;
 	
-	void getVertAndNormal(XYZ& p, XYZ& n, unsigned int id) const
-	{
-		p = cvs[id];
-		n = normals[id];
-	}
-	
-	void getNormal(XYZ& n, unsigned int id) const
-	{
-		n = normals[id];
-	}
-	
-	void getTangent(XYZ& t, unsigned int id) const
-	{
-		t = tangents[id];
-	}
+	//void getVertAndNormal(XYZ& p, XYZ& n, unsigned int id) const
+	//{
+	//	p = cvs[id];
+	//	n = normals[id];
+	//}
+	//
+	//void getNormal(XYZ& n, unsigned int id) const
+	//{
+	//	n = normals[id];
+	//}
+	//
+	//void getTangent(XYZ& t, unsigned int id) const
+	//{
+	//	t = tangents[id];
+	//}
 
 	void getVertex(XYZ& p, unsigned int id) const
 	{
 		p = cvs[id];
 	}
 	
-	void getMovedVertex(XYZ& p, const float d, unsigned int id) const
-	{
-		p = disp_cvs[id];
-		p +=normals[id]*d;
-	}
-	
-	void setDrawColor(const XYZ& col, unsigned int id)
-	{
-		draw_colors[id] = col;
-	}
+	//void getMovedVertex(XYZ& p, const float d, unsigned int id) const
+	//{
+	//	p = disp_cvs[id];
+	//	p +=normals[id]*d;
+	//}
+	//
+	//void setDrawColor(const XYZ& col, unsigned int id)
+	//{
+	//	draw_colors[id] = col;
+	//}
 	
 	int toSkipInterreflection() const { return i_skip_interreflection; }
 	int toSkipScattering() const { return i_skip_scattering; }
@@ -91,10 +91,10 @@ public:
 			const int* vertex_id, 
 			const int* uv_id,
 			const XYZ* pcv,
-			const XYZ* pdcv,
-			const XYZ* pnor,
-			const XYZ* ptang,
-			const XYZ* pcol,
+			//const XYZ* pdcv,
+			//const XYZ* pnor,
+			//const XYZ* ptang,
+			//const XYZ* pcol,
 			const double* pu,
 			const double* pv,
 			const char* _filename);
@@ -107,11 +107,11 @@ private:
 	int* vertices;
 	int* uvs;
 	XYZ* cvs;
-	XYZ* disp_cvs;
-	XYZ* normals;
-	XYZ* tangents;
-	XYZ* colors;
-	XYZ* draw_colors;
+	//XYZ* disp_cvs;
+	//XYZ* normals;
+	//XYZ* tangents;
+	//XYZ* colors;
+	//XYZ* draw_colors;
 	double* coord_s;
 	double* coord_t;
 	char is_null;

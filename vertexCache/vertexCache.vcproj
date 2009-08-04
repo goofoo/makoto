@@ -440,6 +440,9 @@
 				RelativePath="..\shared\FXMLScene.cpp">
 			</File>
 			<File
+				RelativePath="..\shared\gBase.cpp">
+			</File>
+			<File
 				RelativePath=".\importSceneCmd.cpp">
 			</File>
 			<File
@@ -450,6 +453,9 @@
 			</File>
 			<File
 				RelativePath=".\meshCacheVizNode.cpp">
+			</File>
+			<File
+				RelativePath=".\mshUtil.cpp">
 			</File>
 			<File
 				RelativePath=".\obj2mcf.cpp">

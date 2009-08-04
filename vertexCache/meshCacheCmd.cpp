@@ -187,7 +187,7 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 		ubuf[i] = uArray[i];
 		vbuf[i] = vArray[i];
 	}
-
+/*
 	XYZ *norbuf = new XYZ[mesh.numVertices];
 	vertIter.reset();
 	MVector tnor;
@@ -284,7 +284,7 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 		tangbuf[i] = norbuf[i].cross(tangbuf[i]);
 		tangbuf[i].normalize();
 	}
-	
+*/	
 	FMCFMesh fmesh;
 	fmesh.save(mesh.numVertices, 
 			mesh.numFaceVertices, 
@@ -296,10 +296,10 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 			vertex_id, 
 			uv_id,
 			pbuf,
-			vsbuf,
-			norbuf,
-			tangbuf,
-			colbuf,
+			//vsbuf,
+			//norbuf,
+			//tangbuf,
+			//colbuf,
 			ubuf,
 			vbuf,
 			filename);
@@ -308,10 +308,10 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 	delete[] vertex_id;
 	delete[] uv_id;
 	delete[] pbuf;
-	delete[] vsbuf;
-	delete[] norbuf;
-	delete[] tangbuf;
-	delete[] colbuf;
+	//delete[] vsbuf;
+	//delete[] norbuf;
+	//delete[] tangbuf;
+	//delete[] colbuf;
 	delete[] ubuf;
 	delete[] vbuf;
 
