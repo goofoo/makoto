@@ -17,7 +17,13 @@ pos_s(0),
 pos_d(0),
 m_rt_tree(0)
 {}
-FXMLScene::~FXMLScene() {}
+FXMLScene::~FXMLScene() 
+{
+	for(unsigned i=0; i<m_mesh.size(); i++) delete m_mesh[i];
+	m_mesh.clear();
+	for(unsigned i=0; i<m_light.size(); i++) delete m_light[i];
+	m_light.clear();
+}
 
 void FXMLScene::begin(const char* filename, int frame)
 {

@@ -1269,7 +1269,10 @@ void FXMLMesh::interpolateRT(int lo, int hi, int frame, float weight, const char
 	ifstream ifile;
 	ifile.open(rtName.c_str(), ios::in | ios::binary | ios::ate);
 	
-	if(!ifile.is_open()) return;
+	if(!ifile.is_open()) {
+		delete[] vex_coe;
+		return;
+	}
 
 	ifstream::pos_type size = ifile.tellg();
 	
@@ -1287,18 +1290,19 @@ void FXMLMesh::interpolateRT(int lo, int hi, int frame, float weight, const char
 		
 		ifile.open(rtName.c_str(), ios::in | ios::binary | ios::ate);
 		
-		if(!ifile.is_open()) return;
+		if(ifile.is_open()) {
 
-		ifstream::pos_type size = ifile.tellg();
-		
-		if((int)size == m_numVertex*fpv*sizeof(float)) {
-			ifile.seekg(0, ios::beg);
-			ifile.read((char*)vex_coe1, m_numVertex*fpv*sizeof(float));
-			ifile.close();
-		}
-		
-		for(unsigned i=0; i<m_numVertex*fpv; i++) {
-			vex_coe[i] = vex_coe1[i] * weight + vex_coe[i] * wei0;
+			ifstream::pos_type size = ifile.tellg();
+			
+			if((int)size == m_numVertex*fpv*sizeof(float)) {
+				ifile.seekg(0, ios::beg);
+				ifile.read((char*)vex_coe1, m_numVertex*fpv*sizeof(float));
+				ifile.close();
+			}
+			
+			for(unsigned i=0; i<m_numVertex*fpv; i++) {
+				vex_coe[i] = vex_coe1[i] * weight + vex_coe[i] * wei0;
+			}
 		}
 		delete[] vex_coe1;	
 	}

@@ -53,10 +53,10 @@ MStatus mshUtil::doIt( const MArgList& args )
 	MPointArray vxa;
 	meshFn.getPoints (vxa, MSpace::kWorld);
 	
-	MPoint cento(0.f, 0.f, 0.f);
-	for(unsigned i=0; i<vxa.length(); i++) cento += vxa[i];
+	MPoint cenfrom(0.f, 0.f, 0.f);
+	for(unsigned i=0; i<vxa.length(); i++) cenfrom += vxa[i];
 	
-	cento = cento/(float)vxa.length();
+	cenfrom = cenfrom/(float)vxa.length();
 	
 	iter.next();
 	iter.getDagPath( meshPath );
@@ -73,10 +73,10 @@ MStatus mshUtil::doIt( const MArgList& args )
 	vxa.clear();
 	mesh1Fn.getPoints (vxa, MSpace::kWorld);
 	
-	MPoint cenfrom(0.f, 0.f, 0.f);
-	for(unsigned i=0; i<vxa.length(); i++) cenfrom += vxa[i];
+	MPoint cento(0.f, 0.f, 0.f);
+	for(unsigned i=0; i<vxa.length(); i++) cento += vxa[i];
 	
-	cenfrom = cenfrom/(float)vxa.length();
+	cento = cento/(float)vxa.length();
 	
 	MVector diff = cento - cenfrom;
 	

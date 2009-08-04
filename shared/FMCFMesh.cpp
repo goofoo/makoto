@@ -30,8 +30,8 @@ void FMCFMesh::release()
 		if(cvs) delete[] cvs;
 		//if(disp_cvs) delete[] disp_cvs;
 		//if(normals) delete[] normals;
-		//if(coord_s) delete[] coord_s;
-		//if(coord_t) delete[] coord_t;
+		if(coord_s) delete[] coord_s;
+		if(coord_t) delete[] coord_t;
 		if(faceCount) delete[] faceCount;
 		if(uvs) delete[] uvs;
 			//if(colors) delete[] colors;
