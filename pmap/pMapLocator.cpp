@@ -121,6 +121,8 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
 	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
+	XYZ facing;
+	facing.x = viewDir[0];facing.y = viewDir[1];facing.z = viewDir[2];
 	
 	double clipNear, clipFar;
 	clipNear = fnCamera.nearClippingPlane();
@@ -153,13 +155,11 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	mat.inverse();
 
 	view.beginGL(); 
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-	glShadeModel(GL_SMOOTH);
+	//glPushAttrib(GL_ALL_ATTRIB_BITS);
 	
 	particleView *pview = new particleView(); 
 	//double signal = 0.01;
-	pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez);
-	
+	pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez);  
 	/*
 	glPointSize(3);
 	if(num_raw_data > 0 && raw_data) {
@@ -173,9 +173,14 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	 	*/
 
 	if(tree){
-		glBegin(GL_QUADS);
-		tree->draw(pview);
-		glEnd();
+		//glBegin(GL_QUADS);
+		glClearDepth(1.0);
+	    glEnable(GL_BLEND);
+	    glDepthFunc(GL_LEQUAL);
+	    glShadeModel(GL_SMOOTH);
+	    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		tree->draw(pview,facing);
+		//glEnd();
 	}
 	glPopAttrib();
 	view.endGL();

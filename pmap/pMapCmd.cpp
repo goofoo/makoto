@@ -39,7 +39,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
     MString cache_path = proj + "/data";
 	MString cache_name = "foo";;
 	MString cache_attrib;
-	//double mindist;
+	double cache_mindist;
 
 	if (argData.isFlagSet("-p")) argData.getFlagArgument("-p", 0, cache_path);
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
@@ -47,7 +47,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	//if (argData.isFlagSet("-c")) argData.getFlagArgument("-c", 0, cache_color);
 	if (argData.isFlagSet("-a")) argData.getFlagArgument("-a", 0, cache_attrib);
 	//if (argData.isFlagSet("-l")) argData.getFlagArgument("-l", 0, cache_lifespan);
-	//if (argData.isFlagSet("-md")) argData.getFlagArgument("-a", 0, mindist);
+	if (argData.isFlagSet("-md")) argData.getFlagArgument("-md", 0, cache_mindist);
 
 	MStringArray attribArray;
 	cache_attrib.split('.',attribArray);
@@ -94,7 +94,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	    MFnParticleSystem ps( fDagPath );
  
 		const unsigned int count = ps.count();
-	   // MIntArray ids;
+	    //MIntArray ids;
 	    //ps.particleIds( ids );
 	    MVectorArray positions;
 	    ps.position( positions );
@@ -162,22 +162,21 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	XYZ rootCenter;
 	float rootSize;
     OcTree::getBBox(buf, npt, rootCenter, rootSize);
-	float mindist = 0.1;
+	//float mindist = 0.1;
 	short maxlevel = 0;
-	while(mindist<rootSize) {
+	while(cache_mindist<rootSize) {
 		maxlevel++;
-		mindist*=2;
+		cache_mindist*=2;
 	}
 	MGlobal::displayInfo(MString("  max leval: ")+ maxlevel);
 	
 	OcTree* tree = new OcTree();
 	tree->construct(buf, npt, rootCenter, rootSize, maxlevel);
-	
+
+	XYZ* attrArray = new XYZ[npt];
+	float* attr = new float[npt];
 	for(unsigned i=0; i<attribArray.length(); i++)
-	{
-		XYZ* attrArray = new XYZ[npt];
-	    float* attr = new float[npt];
-        
+	{ 
 		acc = 0;
 		MStringArray tokenizeAttr;
 		MString attribute;
@@ -212,6 +211,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 					tree->addThree(attrArray,temp.asChar(),buf);
 					//MGlobal::displayInfo(MString("")+temp.asChar());
 				}
+				else MGlobal::displayWarning(MString("This object has't ")+tokenizeAttr[0]+MString(" attribute"));
 			}
 			
 			if(tokenizeAttr[1] == "floatArray")
@@ -231,9 +231,10 @@ MStatus pMapCmd::doIt( const MArgList& args)
 					tree->addSingle(attr,temp.asChar(),buf);
 					//MGlobal::displayInfo(MString("")+temp.asChar());
 				}
+				else MGlobal::displayWarning(MString("This object has't ")+tokenizeAttr[0]+MString(" attribute"));
 			}
-			delete[] attrArray;
-			delete attrArray;
+			//delete[] attrArray;
+			//delete attrArray;
 	}
 
 	//if (cache_velocity)

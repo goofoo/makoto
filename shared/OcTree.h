@@ -8,6 +8,8 @@
 #include <vector>
 #include "QuickSort.h"
 #include "view.h"
+#include "../shared/gBase.h"
+
 using namespace std;
 
 struct NamedSingle
@@ -71,8 +73,8 @@ public:
 	unsigned getNumVoxel() const {return num_voxel;}
 	int hasColor() const;
 	
-	void draw(const particleView *pview);
-	void draw(const TreeNode *node, const particleView *pview);
+	void draw(const particleView *pview,XYZ facing);
+	void draw(const TreeNode *node, const particleView *pview,XYZ facing);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 

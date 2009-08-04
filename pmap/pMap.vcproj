@@ -107,6 +107,9 @@
 			Name="Source Files"
 			Filter="cpp">
 			<File
+				RelativePath="..\shared\gBase.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\OcTree.cpp">
 			</File>
 			<File

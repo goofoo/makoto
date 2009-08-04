@@ -20,7 +20,7 @@ global proc particleCacheRemoveMenus()
         if ($menuIndex == -1) {
             $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
         }
-       
+
         // if particle map menu exists, delete it first.
         else {
             if(`menuItem -exists particleMapItems` ) deleteUI particleMapItems;
@@ -123,21 +123,33 @@ global proc exportParticleCacheSingleFrame()
       $attr[$index] = $arrayAppend[$i];
     }
   }
+
+  float $mindist;
   string $attribute = stringArrayToString($attr,".");
+   if(`checkBox -q -v checkBoxRadius`)
+  {
+    $mindist = `floatSliderGrp -q -v fSliderRadius`;
+    if($mindist == 0) 
+    {
+      warning("Radius must bigger than 0");
+      $mindist = 0.1;
+    }
+  }
+  else  $mindist = 0.1;
+  string $dist = " -md "+$mindist;    
   string $cmd;
-  print($attribute);
   //for($i = 0;$i<size($attr);$i++,$index++)
        if($attribute == ""){
         if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` ";
+             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
 	else
-             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`";
+             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
              }
         else{
         if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName`  -a "+$attribute;
+             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
 	else
-             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`  -a "+$attribute;
+             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
              }
         eval($cmd);
 }
@@ -159,7 +171,7 @@ formLayout  -numberOfDivisions 100 windowLyt;
 $scrollLayout = `scrollLayout -childResizable true `;
 $form = `formLayout`;
 //scrollLayout;
-$frame1 = `frameLayout -label "Setting Path And File Name" -borderVisible true
+$frameSetting = `frameLayout -label "Setting Path And File Name" -borderVisible true
 		-collapsable true -borderStyle "etchedIn"`;
 //string $form = `formLayout -numberOfDivisions 100`;
 //string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
@@ -177,19 +189,22 @@ textFieldButtonGrp
      exportParticleCachePath;
 checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en exportParticleCacheRange`) exportParticleCacheRange" exportParticleCacheMuilt;
 intFieldGrp -en 0 -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
+checkBox -al "left" -l "Radius" -v 0 -cc "floatSliderGrp -e -en (!`floatSliderGrp -q -en fSliderRadius`) fSliderRadius" checkBoxRadius;
+floatSliderGrp  -en 0 -cw 1 110 -label "Min Radius" -field true -minValue 0.0 -maxValue 10.0 -value 0.1 fSliderRadius;
+
 //button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" -p $row;
 //button -l "Apply" -c "doExportParticleCache" -p $row;
 //button -l "Close" -c "deleteUI exportParticleCacheWin" -p $row;
 setParent ..;
 setParent ..;
-$frame2 = `frameLayout -label "Basic Attribute" -borderVisible true
+$frameBasic = `frameLayout -label "Basic Attribute" -borderVisible true
 		-collapsable true -borderStyle "etchedIn"`;
 columnLayout -adjustableColumn true basicAttriColumnLyt;
 checkBox -al "left" -l "velocity:vectorArray" velocity:vectorArray;
 
 setParent ..;
 setParent ..;
-$frame3 = `frameLayout -label "Appended Attribute" -borderVisible true
+$frameAppended = `frameLayout -label "Appended Attribute" -borderVisible true
 		-collapsable true -borderStyle "etchedIn"`;
 columnLayout -adjustableColumn true appendedAttriColumnLyt;
 
@@ -203,20 +218,20 @@ button -l "Apply" -c "doExportParticleCache" applyBtn;
 button -l "Close" -c "deleteUI exportParticleCacheWin" closeBtn;
 
 formLayout -edit
-        -attachForm     $frame1     "top"    2
-        -attachForm     $frame1     "left"   1
+        -attachForm     $frameSetting     "top"    2
+        -attachForm     $frameSetting     "left"   1
         //-attachForm	$frame     "bottom" 2
-        -attachForm 	$frame1     "right"  1
+        -attachForm 	$frameSetting     "right"  1
         
-        -ac             $frame2     "top"    1  $frame1
-        -attachForm     $frame2     "left"   1
+        -ac             $frameBasic     "top"    1  $frameSetting
+        -attachForm     $frameBasic     "left"   1
         //-attachForm	$frame     "bottom" 2
-        -attachForm 	$frame2     "right"  1
+        -attachForm 	$frameBasic     "right"  1
         
-        -ac             $frame3     "top"    1  $frame2
-        -attachForm     $frame3     "left"   1
+        -ac             $frameAppended     "top"    1  $frameBasic
+        -attachForm     $frameAppended     "left"   1
         //-attachForm	$frame     "bottom" 2
-        -attachForm 	$frame3     "right"  1
+        -attachForm 	$frameAppended     "right"  1
     $form;
 
 formLayout -edit
