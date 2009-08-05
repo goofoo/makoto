@@ -68,16 +68,25 @@ void DiceTriangle::create(const XYZ& p0, const XYZ& p1, const XYZ& p2)
 	{
 		a = 0;
 		b = 1;
+		
+		if(edge_length[1] > edge_length[2]) m_min_length = edge_length[2];
+		else m_min_length = edge_length[1];
 	}
 	else if(edge_length[1] > edge_length[2] && edge_length[1] > edge_length[0])
 	{
 		a = 1;
 		b = 2;
+		
+		if(edge_length[2] > edge_length[0]) m_min_length = edge_length[0];
+		else m_min_length = edge_length[2];
 	}
 	else
 	{
 		a = 2;
 		b = 0;
+		
+		if(edge_length[1] > edge_length[0]) m_min_length = edge_length[0];
+		else m_min_length = edge_length[1];
 	}
 	
 	XYZ side = V[a];
@@ -182,14 +191,19 @@ void DiceTriangle::rasterize(const float delta, DiceParam* res, int& count, cons
 	float alpha, beta, gamma, x, y;
 	
 	int g_seed = 13 + seed;
+	
+	float real_delta = delta;
+	
+	if(real_delta > m_min_length) real_delta = m_min_length;
+	if(real_delta < delta/4) real_delta = delta/4;
 
 	for(int j=0; j<grid_y; j++)
 	{
 		for(int i=0; i<grid_x; i++)
 		{
-			x = delta*(i+0.5+(randfint( g_seed )-0.5)*0.5);
+			x = real_delta*(i+0.5+(randfint( g_seed )-0.5)*0.5);
 			g_seed++;
-			y = delta*(j+0.5+(randfint( g_seed )-0.5)*0.5);
+			y = real_delta*(j+0.5+(randfint( g_seed )-0.5)*0.5);
 			g_seed++;
 			alpha = barycentric_coord(p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y, x, y)/f120;
 			if(alpha<0 || alpha>1) continue;

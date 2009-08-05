@@ -69,13 +69,14 @@ public:
 	static MObject abald;
 	static MObject asnowsize;
 	static MObject asnowrate;
+	static MObject adensitymap;
 
 	static	MTypeId		id;
 	
 	const hairMap* getBase() const {return m_base;}
 private:
 	hairMap* m_base;
-	MString curname;
+	MString curname, dnmname;
 	int isInterpolate, idice, idraw;
 };
 

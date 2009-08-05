@@ -49,7 +49,7 @@ private:
 	float s[3], t[3];
 	float edge_length[3];
 	MATRIX44F m_space;
-	float m_area;
+	float m_area, m_min_length;
 	float f120, f201, f012;
 };
 #endif

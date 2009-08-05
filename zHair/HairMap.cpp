@@ -14,6 +14,7 @@
 #include <maya/MItMeshPolygon.h>
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
+#include "../shared/zFnEXR.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -21,11 +22,12 @@ using namespace std;
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),order(0),isInterpolate(0),nsegbuf(0),m_offset(1.f),m_bald(0.f)
+draw_step(1),order(0),isInterpolate(0),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
 	mutant_color.x = mutant_color.y = mutant_color.z = 0.f;
+	m_densityname = "null";
 }
 hairMap::~hairMap() 
 {
@@ -39,6 +41,7 @@ hairMap::~hairMap()
 	if(varray) delete[] varray;
 	if(pNSeg) delete[] pNSeg;
 	if(nsegbuf) delete[] nsegbuf;
+	if(pDensmap) delete[] pDensmap;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -169,6 +172,7 @@ void hairMap::draw()
 	char* isoverbald = new char[n_samp];
 	for(unsigned i=0; i<n_samp; i++) {
 		noi = fnoi.randfint( g_seed ); g_seed++;
+		if(pDensmap) muliplyDensityMap(noi, ddice[i].coords, ddice[i].coordt);
 		if(noi > m_bald) isoverbald[i] = 1;
 		else isoverbald[i] = 0;
 	}
@@ -637,6 +641,12 @@ void hairMap::bind()
 	
 	for(unsigned i=0; i<n_samp; i++)
 	{
+// restrict st between 0 - 1
+		if(ddice[i].coords < 0) ddice[i].coords = 0;
+		if(ddice[i].coords > 1) ddice[i].coords = 1;
+		if(ddice[i].coordt < 0) ddice[i].coordt = 0;
+		if(ddice[i].coordt > 1) ddice[i].coordt = 1;
+		
 // finder 3 three nearest guides
 		XY from(ddice[i].coords, ddice[i].coordt);
 		ValueAndId* idx = new ValueAndId[num_guide];
@@ -1058,6 +1068,7 @@ void hairMap::createSnow(MObject& meshData) const
 	char* isoverbald = new char[n_samp];
 	for(unsigned i=0; i<n_samp; i++) {
 		noi = fnoi.randfint( g_seed ); g_seed++;
+		if(pDensmap) muliplyDensityMap(noi, ddice[i].coords, ddice[i].coordt);
 		if(noi > m_bald) isoverbald[i] = 1;
 		else isoverbald[i] = 0;
 	}
@@ -1166,5 +1177,35 @@ void hairMap::createSnow(MObject& meshData) const
 	meshFn.create(vertexArray.length(), polygonCounts.length(), vertexArray, polygonCounts, polygonConnects, meshData );
 	meshFn.setUVs ( uarray, varray );
 	meshFn.assignUVs ( polygonCounts, polygonConnects );
+}
+
+void hairMap::setDensityMap(const char* filename)
+{
+	densmap_w =-1, densmap_h = -1;
+	if(pDensmap) {
+		delete[] pDensmap;
+		pDensmap = 0;
+		m_densityname = "null";
+	}
+	try 
+	{
+		ZFnEXR::checkFile(filename, &densmap_w, &densmap_h);
+	}
+	catch (const std::exception &exc) 
+    { 
+		MGlobal::displayWarning(exc.what()); 
+	}
+	if(densmap_w > 16 && densmap_h > 16) {
+		pDensmap = new float[densmap_w*densmap_h];
+		ZFnEXR::readR(filename, densmap_w, densmap_h, pDensmap);
+		m_densityname = filename;
+	}
+}
+
+void hairMap::muliplyDensityMap(float& val, float& s, float& t) const
+{
+	int it = (densmap_h-1)*(1.f-t);
+	int is = (densmap_w-1)*s;
+	val *= pDensmap[it*densmap_w + is];
 }
 //~:

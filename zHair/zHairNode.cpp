@@ -20,6 +20,7 @@ MObject HairNode::aalternativepatch;
 MObject HairNode::ainterpolate;
 MObject HairNode::adraw;
 MObject HairNode::aoffset;
+MObject HairNode::adensitymap;
 
 HairNode::HairNode(): idraw(0)
 {
@@ -83,11 +84,10 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			int npt = m_base->dice(0);
 			MGlobal::displayInfo(MString("ZHair diced ") + npt + " samples");
 			m_base->initGuide();
-			//npt = m_base->saveDguide( );
-			//if(npt == 1)
-			//	MGlobal::displayInfo("Save Dguide data successed");
-			//else
-			//	MGlobal::displayInfo("Save Dguide data failed");
+			
+			MString dnmpath = data.inputValue(adensitymap, &status).asString();
+			if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
+			
 			m_base->bind();
 			if(isave==1) 
 			{
@@ -246,6 +246,9 @@ MStatus HairNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(adraw);
 	
+	zWorks::createStringAttr(adensitymap, "densityMap", "dnm");
+	addAttribute(adensitymap);
+	
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
 	attributeAffects( alengthnoise, aoutput );
@@ -262,6 +265,7 @@ MStatus HairNode::initialize()
 	attributeAffects( ainterpolate, aoutput );
 	attributeAffects( adraw, aoutput );
 	attributeAffects( aoffset, aoutput );
+	attributeAffects( adensitymap, aoutput );
 	
 	return MS::kSuccess;
 }

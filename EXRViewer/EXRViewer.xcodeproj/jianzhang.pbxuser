@@ -104,14 +104,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 267132282;
-			PBXWorkspaceStateSaveDate = 267132282;
-		};
-		perUserProjectItems = {
-			7F60F1440FEC1D200030E0B5 /* PBXTextBookmark */ = 7F60F1440FEC1D200030E0B5 /* PBXTextBookmark */;
-			7F60F1450FEC1D200030E0B5 /* PBXTextBookmark */ = 7F60F1450FEC1D200030E0B5 /* PBXTextBookmark */;
-			7FCEB0500FEC233100B6D045 /* PBXTextBookmark */ = 7FCEB0500FEC233100B6D045 /* PBXTextBookmark */;
-			7FCEB0510FEC233100B6D045 /* PBXTextBookmark */ = 7FCEB0510FEC233100B6D045 /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 271186796;
+			PBXWorkspaceStateSaveDate = 271186796;
 		};
 		sourceControlManager = 7FAB70280FE80CEE00A0E472 /* Source Control */;
 		userBuildSettings = {
@@ -156,26 +150,6 @@
 			sepNavVisRange = "{1017, 750}";
 			sepNavWindowFrame = "{{549, 92}, {662, 592}}";
 		};
-	};
-	7F60F1440FEC1D200030E0B5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F280A710FE96DFE002A2F3E /* myView.m */;
-		name = "myView.m: 98";
-		rLen = 0;
-		rLoc = 1880;
-		rType = 0;
-		vrLen = 396;
-		vrLoc = 1490;
-	};
-	7F60F1450FEC1D200030E0B5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F280A700FE96DFE002A2F3E /* myView.h */;
-		name = "myView.h: 18";
-		rLen = 0;
-		rLoc = 428;
-		rType = 0;
-		vrLen = 434;
-		vrLoc = 0;
 	};
 	7FAB700F0FE80CDD00A0E472 /* EXRViewer */ = {
 		isa = PBXExecutable;
@@ -239,26 +213,6 @@
 		lineNumber = 4;
 		modificationTime = 267133609.259267;
 		state = 0;
-	};
-	7FCEB0500FEC233100B6D045 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F280A710FE96DFE002A2F3E /* myView.m */;
-		name = "myView.m: 98";
-		rLen = 0;
-		rLoc = 1880;
-		rType = 0;
-		vrLen = 421;
-		vrLoc = 1465;
-	};
-	7FCEB0510FEC233100B6D045 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F280A700FE96DFE002A2F3E /* myView.h */;
-		name = "myView.h: 18";
-		rLen = 0;
-		rLoc = 428;
-		rType = 0;
-		vrLen = 434;
-		vrLoc = 0;
 	};
 	7FFB7FAD0FEAA84A00AD20C9 /* image.h */ = {
 		uiCtxt = {

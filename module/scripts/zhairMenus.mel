@@ -81,6 +81,8 @@ global proc zhairCreateMenus()
             menuItem -l "Save Cache" -c "openSaveHairMapWin";
 			menuItem -l "Load Cache" -c "openLoadHairMapWin";
             menuItem -divider true;
+			menuItem -l "Set Density Map" -c "zhair_do_set_densityMap";
+			menuItem -divider true;
 			menuItem -l "Existing Hairs" -subMenu true -postMenuCommand zhair_findexisting zhair_existinghairs;
 			setParent -menu ..;
 		setParent -menu ..;
@@ -421,7 +423,7 @@ columnLayout -adjustableColumn true;
 	colorSliderGrp -cw 1 110 -label "Tip Color" -rgb `getAttr ($node +".tipColorR")` `getAttr ($node +".tipColorG")` `getAttr ($node +".tipColorB")` -cc "zhair_modify" zhairtipcolgrp;
 	colorSliderGrp -cw 1 110 -label "Mutant Color" -rgb `getAttr ($node +".mutantColorR")` `getAttr ($node +".mutantColorG")` `getAttr ($node +".mutantColorB")` -cc "zhair_modify" zhairmutantcolgrp;
 	floatSliderGrp -cw 1 110 -label "Mutant Scale" -field true -minValue 0.0 -maxValue 1.0 -value `getAttr ($node +".mutantColorScale")` -cc "zhair_modify" zhairmutantscalegrp;
-	floatSliderGrp -cw 1 110 -label "Baldness" -field true -minValue 0.0 -maxValue 1.0 -value `getAttr ($node +".bald")` -cc "zhair_modify" zhairbaldgrp;
+	floatSliderGrp -cw 1 110 -label "Baldness" -field true -minValue 0.0 -maxValue 0.99 -step 0.001 -value `getAttr ($node +".bald")` -cc "zhair_modify" zhairbaldgrp;
 //row begin
 //button -l "Save" -c "doloadzhair;deleteUI editzhairWin"-p $row;
 //button -l "Apply" -c "doloadzhair" -p $row;
@@ -792,4 +794,15 @@ global proc zhair_set_active(string $solver)
 	setAttr ($solver+".inputMeshAttract") 1.0;
 	setAttr ($solver+".inputAttractDamp") 0.5;
 	setAttr ($solver+".trappedCheck") 1;
+}
+
+global proc zhair_do_set_densityMap()
+{
+	string $path = `fileDialog -dm ("*.exr")`;
+	string $node[] = `ls -type ZHairViz`;
+	string $an;
+	for($an in $node) setAttr -type "string" ($an + ".dnm") $path;
+		
+	$node = `ls -type ZHairCache`;
+	for($an in $node) setAttr -type "string" ($an + ".dnm") $path;
 }

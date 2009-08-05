@@ -124,8 +124,12 @@ public:
 	float getMutantColorB() const {return mutant_color.z;}
 	float getMutantColorScale() const {return mutant_scale;}
 	float getBald() const {return m_bald;}
+	const char* getDensityName() const {return m_densityname.c_str();}
 	
 	void createSnow(MObject& meshData) const;
+	
+	void setDensityMap(const char* filename);
+	void muliplyDensityMap(float& val, float& s, float& t) const;
 	
 private:
 	char has_base, has_guide;
@@ -148,11 +152,13 @@ private:
 	unsigned draw_step;
 	MATRIX44F* guide_spaceinv;
 	XYZ bbox_low, bbox_high;
-	std::string m_cachename;
+	std::string m_cachename, m_densityname;
 	XYZ tip_color, root_color, mutant_color;
 	int order, isInterpolate;
 	int* nsegbuf;
 
 	float m_offset, m_bald, m_snow_size, m_snow_rate;
+	int densmap_w, densmap_h;
+	float* pDensmap;
 };
 #endif

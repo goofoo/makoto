@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7F0C5716100DD89800F5263A /* zData.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F0C5715100DD89800F5263A /* zData.h */; };
 		7F1F57151004EDDE00B6B51B /* hairDeformer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */; };
+		7F6922641029FB5A0065E2D6 /* zFnEXR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6922631029FB5A0065E2D6 /* zFnEXR.cpp */; };
 		7F6F232F0FBA8F32003D0615 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F232D0FBA8F32003D0615 /* FNoise.cpp */; };
 		7F6F241A0FBBFF4C003D0615 /* guideCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */; };
 		7F6F241C0FBBFF5F003D0615 /* HairDguideNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */; };
@@ -31,6 +32,7 @@
 /* Begin PBXFileReference section */
 		7F0C5715100DD89800F5263A /* zData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zData.h; path = ../shared/zData.h; sourceTree = SOURCE_ROOT; };
 		7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hairDeformer.cpp; sourceTree = "<group>"; };
+		7F6922631029FB5A0065E2D6 /* zFnEXR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zFnEXR.cpp; path = ../shared/zFnEXR.cpp; sourceTree = SOURCE_ROOT; };
 		7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
 		7F6F24190FBBFF4C003D0615 /* guideCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guideCommand.cpp; sourceTree = "<group>"; };
 		7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HairDguideNode.cpp; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F6922631029FB5A0065E2D6 /* zFnEXR.cpp */,
 				7F0C5715100DD89800F5263A /* zData.h */,
 				7F1F57141004EDDE00B6B51B /* hairDeformer.cpp */,
 				7F7473F50FF253AF00132DED /* QuickSort.cpp */,
@@ -198,6 +201,7 @@
 				7F7473F70FF253AF00132DED /* QuickSort.cpp in Sources */,
 				7F74740C0FF26E1800132DED /* BindTriangle.cpp in Sources */,
 				7F1F57151004EDDE00B6B51B /* hairDeformer.cpp in Sources */,
+				7F6922641029FB5A0065E2D6 /* zFnEXR.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,8 +282,14 @@
 					_BOOL,
 					REQUIRE_IOSTREAM,
 				);
-				HEADER_SEARCH_PATHS = "$(MAYA_DIRECTORY)/devkit/include/";
-				LIBRARY_SEARCH_PATHS = "$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS";
+				HEADER_SEARCH_PATHS = (
+					"$(MAYA_DIRECTORY)/devkit/include/",
+					/usr/local/include/OpenEXR,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/lib,
+					"$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS",
+				);
 				LIBRARY_STYLE = BUNDLE;
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2008;
 				OTHER_LDFLAGS = (
@@ -294,6 +304,9 @@
 					AGL,
 					"-framework",
 					OpenGL,
+					"-lHalf",
+					"-lIlmImf",
+					"-lIlmThread",
 				);
 			};
 			name = Debug;

@@ -56,6 +56,7 @@ public:
 	static MObject ainterpolate;
 	static MObject adraw;
 	static MObject aoffset;
+	static MObject adensitymap;
 	static	MTypeId		id;
 
 private :

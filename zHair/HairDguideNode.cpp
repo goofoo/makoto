@@ -56,11 +56,12 @@ MObject HairDguideNode::ainterpolate;
 MObject HairDguideNode::abald;
 MObject HairDguideNode::asnowsize;
 MObject HairDguideNode::asnowrate;
+MObject HairDguideNode::adensitymap;
 
 HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0),idice(0),idraw(0)
 {
 	m_base = new hairMap();
-	curname = "null";
+	curname = dnmname = "null";
 }
 HairDguideNode::~HairDguideNode() 
 {
@@ -88,15 +89,17 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 	{
 		double dtime = data.inputValue( aframe ).asDouble();
 		MString sname = data.inputValue( acachename).asString();
+		MString dnmpath = data.inputValue(adensitymap).asString();
 		string sbuf(sname.asChar());
 		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
 		int eta = data.inputValue(adice).asInt();
 		idraw = data.inputValue(adraw).asInt();
 		if(m_base) 
 		{
-			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice)
+			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice || dnmname != dnmpath)
 			{
 				curname = sname;
+				dnmname = dnmpath;
 				string head = sbuf;
 				zGlobal::cutByFirstDot(head);
 				head += ".hairstart";
@@ -105,6 +108,10 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
 				isInterpolate = data.inputValue(ainterpolate).asInt();
 				m_base->setInterpolate(isInterpolate);
+				
+				
+				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
+			
 				m_base->bind();
 			}
 			int iss = m_base->load(sbuf.c_str());
@@ -148,6 +155,10 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
 				isInterpolate = data.inputValue(ainterpolate).asInt();
 				m_base->setInterpolate(isInterpolate);
+				
+				MString dnmpath = data.inputValue(adensitymap, &returnStatus).asString();
+				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
+				
 				m_base->bind();
 			}
 			int iss = m_base->load(sbuf.c_str());
@@ -178,6 +189,7 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 {
 	view.beginGL(); 
 	//glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glShadeModel(GL_SMOOTH);
 	if(m_base) {
 		if(idraw ==0) m_base->draw();
 		else if(idraw ==1) m_base->drawGuide();
@@ -343,10 +355,9 @@ MStatus HairDguideNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(asnowrate);
 	
-	// Set up a dependency between the input and the output.  This will cause
-	// the output to be marked dirty when the input changes.  The output will
-	// then be recomputed the next time the value of the output is requested.
-	//
+	zWorks::createStringAttr(adensitymap, "densityMap", "dnm");
+	addAttribute(adensitymap);
+	
 	attributeAffects( aframe, output );
 	attributeAffects( acachename, output );
 	attributeAffects( afuzz, output );
@@ -372,6 +383,8 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( asnowrate, aoutmesh );
 	attributeAffects( abald, aoutmesh );
 	attributeAffects( aframe, aoutmesh );
+	attributeAffects( adensitymap, output );
+	attributeAffects( adensitymap, aoutmesh );
 	
 	return MS::kSuccess;
 
