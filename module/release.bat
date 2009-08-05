@@ -39,3 +39,6 @@ copy .\scripts\combCurveProperties.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\combCurveValues.mel D:\wamp\www\prt_release\scripts
 copy .\scripts\cameraFrustumMenus.mel D:\wamp\www\prt_release\scripts
 copy .\application\prtServer.exe D:\wamp\www\prt_release\application
+copy .\application\laziPRT.exe D:\wamp\www\prt_release\application
+copy .\application\cheatPRT.bat D:\wamp\www\prt_release\application
+copy .\changeLog.txt D:\wamp\www\prt_release
