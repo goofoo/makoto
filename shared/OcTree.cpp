@@ -416,30 +416,72 @@ void OcTree::load(ifstream& file, TreeNode *node)
 	else node->child111 = NULL;
 }
 
-void OcTree::draw(const particleView *pview,XYZ facing)
+void OcTree::draw(const particleView *pview,XYZ facing,string drawType)
 {
-	if(root) draw(root, pview,facing);
+	if(root) 
+	{
+		if(drawType == "cube")
+			drawCube(root, pview);
+		if(drawType == "disk")
+		{
+			int index = 0;
+			DataAndId* drawList = new DataAndId[num_voxel];
+			getDrawList(root, pview,index,drawList);
+			QuickSort::sortDeep(drawList,0,index-1);
+			int co = hasColor();
+			for(int i = 0;i<index-1;i++)
+			{
+				if(co>=0)
+					glColor4f(dThree[co]->data[drawList[i].idx].x, dThree[co]->data[drawList[i].idx].y, dThree[co]->data[drawList[i].idx].z, 0.2f);
+				gBase::drawSplatAt(drawList[i].pos,facing,drawList[i].size);
+			}
+			delete[] drawList;
+		}
+	}
 }
 
-void OcTree::draw(const TreeNode *node, const particleView *pview,XYZ facing)
+void OcTree::getDrawList(const TreeNode *node, const particleView *pview,int &index,DataAndId* drawList)
+{
+	if(!node) return;
+	if(!pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) 
+	{
+		
+		XYZ cen = node->center;
+		float size = node->size;
+		drawList[index].pos = cen;
+		drawList[index].idx = node->index;
+		drawList[index].val =pview->deep(cen);
+		drawList[index].size = node->size;
+
+		index ++;        
+		//glColor4f(0.05f, 0.6f, 0.2f, 0.2f);
+		//gBase::drawSplatAt(cen,facing,size);
+	}
+	else {
+		getDrawList(node->child000,pview,index,drawList);
+		getDrawList(node->child001,pview,index,drawList);
+		getDrawList(node->child010,pview,index,drawList);
+		getDrawList(node->child011,pview,index,drawList);
+		getDrawList(node->child100,pview,index,drawList);
+		getDrawList(node->child101,pview,index,drawList);
+		getDrawList(node->child110,pview,index,drawList);
+		getDrawList(node->child111,pview,index,drawList);
+	}
+}
+
+void OcTree::drawCube(const TreeNode *node, const particleView *pview)
 {
 	if(!node) return;
 	int i = hasColor();
 	if(!pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) {
 			XYZ cen = node->center;
 			float size = node->size;
-			//if(i>=0)
-			//	glColor3f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z);
-			//else 
-			//	glColor3f(1,0,0);
-			
+			glBegin(GL_QUADS);
 			if(i>=0)
-				glColor4f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z, 0.2f);
-            else
+				glColor4f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z,0.2f);
+			else 
 				glColor4f(0.05f, 0.6f, 0.2f, 0.2f);
-			gBase::drawSplatAt(cen,facing,size);
 	
-			/*
 			glVertex3f(cen.x - 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y - 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
@@ -469,18 +511,17 @@ void OcTree::draw(const TreeNode *node, const particleView *pview,XYZ facing)
 			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z - 0.8*size);
 			glVertex3f(cen.x + 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
 			glVertex3f(cen.x - 0.8*size, cen.y + 0.8*size, cen.z + 0.8*size);
-			*/
-		
+			glEnd();	
 	}
 	else {
-		draw(node->child000,pview,facing);
-		draw(node->child001,pview,facing);
-		draw(node->child010,pview,facing);
-		draw(node->child011,pview,facing);
-		draw(node->child100,pview,facing);
-		draw(node->child101,pview,facing);
-		draw(node->child110,pview,facing);
-		draw(node->child111,pview,facing);
+		drawCube(node->child000,pview);
+		drawCube(node->child001,pview);
+		drawCube(node->child010,pview);
+		drawCube(node->child011,pview);
+		drawCube(node->child100,pview);
+		drawCube(node->child101,pview);
+		drawCube(node->child110,pview);
+		drawCube(node->child111,pview);
 	}
 }
 

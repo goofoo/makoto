@@ -159,7 +159,8 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	
 	particleView *pview = new particleView(); 
 	//double signal = 0.01;
-	pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez);  
+	pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez); 
+	//string drawType;
 	/*
 	glPointSize(3);
 	if(num_raw_data > 0 && raw_data) {
@@ -179,7 +180,7 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	    glDepthFunc(GL_LEQUAL);
 	    glShadeModel(GL_SMOOTH);
 	    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		tree->draw(pview,facing);
+		tree->draw(pview,facing,"disk");
 		//glEnd();
 	}
 	glPopAttrib();
