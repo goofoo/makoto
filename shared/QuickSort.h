@@ -17,6 +17,15 @@ struct PosAndId
 	unsigned idx;
 };
 
+struct DataAndId
+{
+	XYZ pos;
+	unsigned idx;
+	float val;
+	float size;
+	XYZ color;
+};
+
 class QuickSort
 {
 public:
@@ -27,4 +36,5 @@ public:
 	static void sortX(PosAndId *array,int first,int last);
 	static void sortY(PosAndId *array,int first,int last);
 	static void sortZ(PosAndId *array,int first,int last);
+	static void sortDeep(DataAndId *array,int first,int last);
 };

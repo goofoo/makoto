@@ -18,6 +18,12 @@ void particleView::set(double horizontalFieldOfView,double verticalFieldOfView,d
 	sigma = signal;
 }
 
+float particleView::deep(XYZ boxCenter) const
+{
+	 mat.transform(boxCenter);
+	 return boxCenter.z;
+}
+
 bool particleView::needSplit(const float boxSize,XYZ boxCenter) const
 {
 	/*

@@ -73,8 +73,9 @@ public:
 	unsigned getNumVoxel() const {return num_voxel;}
 	int hasColor() const;
 	
-	void draw(const particleView *pview,XYZ facing);
-	void draw(const TreeNode *node, const particleView *pview,XYZ facing);
+	void draw(const particleView *pview,XYZ facing,string drawType);
+	void drawCube(const TreeNode *node, const particleView *pview);
+	void getDrawList(const TreeNode *node, const particleView *pview,int &index,DataAndId* drawList);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
