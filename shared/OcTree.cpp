@@ -433,6 +433,8 @@ void OcTree::draw(const particleView *pview,XYZ facing,string drawType)
 			{
 				if(co>=0)
 					glColor4f(dThree[co]->data[drawList[i].idx].x, dThree[co]->data[drawList[i].idx].y, dThree[co]->data[drawList[i].idx].z, 0.2f);
+				else 
+				glColor4f(0.05f, 0.6f, 0.2f, 0.2f);
 				gBase::drawSplatAt(drawList[i].pos,facing,drawList[i].size);
 			}
 			delete[] drawList;
@@ -529,7 +531,7 @@ int OcTree::hasColor() const
 {
 	if(dThree.size()) 
 		for(unsigned int i = 0;i<dThree.size();i++)
-			if(dThree[i]->name=="rgbPP")
+			if(dThree[i]->name=="color")
 				return i;
 	return -1;
 }
