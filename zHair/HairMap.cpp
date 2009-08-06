@@ -334,6 +334,12 @@ void hairMap::drawUV()
 void hairMap::initGuide()
 {
 	if(!has_guide) return;
+	
+	if(guide_data) {
+		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
+		delete[] guide_data;
+	}
+	
 	MStatus status;
 	MFnMesh baseFn(obase, &status );
 	if(!status) return;
@@ -380,7 +386,6 @@ void hairMap::initGuide()
 		}
 	}
 	
-	if(guide_data) delete[] guide_data;
 	guide_data = new Dguide[num_guide];
 	
 	if(guide_spaceinv) delete[] guide_spaceinv;
@@ -847,6 +852,11 @@ int hairMap::saveStart(const char* filename)
 
 int hairMap::load(const char* filename)
 {
+	if(guide_data) {
+		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
+		delete[] guide_data;
+	}
+	
 	ifstream infile;
 	infile.open(filename, ios_base::in | ios_base::binary);
 	if(!infile.is_open()) 
@@ -857,7 +867,7 @@ int hairMap::load(const char* filename)
 	m_cachename = filename;
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
-	if(guide_data) delete[] guide_data;
+	//if(guide_data) delete[] guide_data;
     guide_data = new Dguide[num_guide];
 	for(unsigned i = 0;i<num_guide;i++)
 	{
@@ -939,6 +949,11 @@ int hairMap::load(const char* filename)
 
 int hairMap::loadStart(const char* filename)
 {
+	if(guide_data) {
+		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
+		delete[] guide_data;
+	}
+	
 	ifstream infile;
 	infile.open(filename, ios_base::in | ios_base::binary);
 	if(!infile.is_open()) 
@@ -948,7 +963,7 @@ int hairMap::loadStart(const char* filename)
 	}
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
-	if(guide_data) delete[] guide_data;
+	//if(guide_data) delete[] guide_data;
     guide_data = new Dguide[num_guide];
 	for(unsigned i = 0;i<num_guide;i++)
 	{

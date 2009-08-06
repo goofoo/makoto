@@ -133,7 +133,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		data.setClean(plug);
 		return MS::kSuccess;
 	}
-	
+
 	if( plug == aoutmesh )
 	{
 		double dtime = data.inputValue( aframe ).asDouble();
@@ -161,8 +161,8 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				
 				m_base->bind();
 			}
-			int iss = m_base->load(sbuf.c_str());
-			if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
+			//int iss = m_base->load(sbuf.c_str());
+			//if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
 			
 			m_base->setSnowSize(data.inputValue(asnowsize).asFloat());
 			m_base->setSnowRate(data.inputValue(asnowrate).asFloat());

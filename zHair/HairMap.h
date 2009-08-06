@@ -56,6 +56,15 @@ struct Dguide
 		v0 = v0 + (v1 - v0) * (fparam-iparam);
 		res.setTranslation(v0);
 	}
+	
+	void release() 
+	{
+		delete[] P;
+		delete[] N;
+		delete[] T;
+		delete[] dispv;
+		delete[] space;
+	}
 };
 
 class hairMap
