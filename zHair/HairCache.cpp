@@ -9,6 +9,7 @@
 #include "HairCache.h"
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
+#include "../shared/zFnEXR.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -17,13 +18,17 @@ HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_space
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
 nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
-rootColorArray(0), tipColorArray(0), opacities(0),pNSeg(0),kbald(0.f)
+rootColorArray(0), tipColorArray(0), opacities(0),pNSeg(0),kbald(0.f),pDensmap(0)
 {
+	m_densityname = "nil";
 }
 HairCache::~HairCache() 
 {
 	if(ddice) delete[] ddice;
-	if(guide_data) delete[] guide_data;
+	if(guide_data) {
+		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
+		delete[] guide_data;
+	}
 	if(bind_data) delete[] bind_data;
 	if(guide_spaceinv) delete[] guide_spaceinv;
 	if(parray) delete[] parray;
@@ -39,6 +44,7 @@ HairCache::~HairCache()
 	if(tipColorArray) delete[] tipColorArray;
 	if(opacities) delete[] opacities;
 	if(pNSeg) delete[] pNSeg;
+	if(pDensmap) delete[] pDensmap;
 }
 
 int HairCache::dice()
@@ -165,7 +171,10 @@ int HairCache::load(const char* filename)
 	m_cachename = filename;
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
-	if(guide_data) delete[] guide_data;
+	if(guide_data) {
+		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
+		delete[] guide_data;
+	}
     guide_data = new Dguide[num_guide];
 	for(unsigned i = 0;i<num_guide;i++)
 	{
@@ -227,7 +236,10 @@ int HairCache::loadStart(const char* filename)
 	}
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
-	if(guide_data) delete[] guide_data;
+	if(guide_data) {
+		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
+		delete[] guide_data;
+	}
     guide_data = new Dguide[num_guide];
 	for(unsigned i = 0;i<num_guide;i++)
 	{
@@ -300,6 +312,7 @@ void HairCache::create()
 	char* isoverbald = new char[n_samp];
 	for(unsigned i=0; i<n_samp; i++) {
 		noi = fnoi.randfint( g_seed ); g_seed++;
+		if(pDensmap) muliplyDensityMap(noi, ddice[i].coords, ddice[i].coordt);
 		if(noi > kbald) {
 			isoverbald[i] = 1;
 			realncurve++;
@@ -520,5 +533,35 @@ void HairCache::create()
 	
 	delete[] pbuf;
 	delete[] isoverbald;
+}
+
+void HairCache::setDensityMap(const char* filename)
+{
+	densmap_w =-1, densmap_h = -1;
+	if(pDensmap) {
+		delete[] pDensmap;
+		pDensmap = 0;
+		m_densityname = "nil";
+	}
+	try 
+	{
+		ZFnEXR::checkFile(filename, &densmap_w, &densmap_h);
+	}
+	catch (const std::exception &exc) 
+    { 
+		cout<<exc.what()<<endl; 
+	}
+	if(densmap_w > 16 && densmap_h > 16) {
+		pDensmap = new float[densmap_w*densmap_h];
+		ZFnEXR::readR(filename, densmap_w, densmap_h, pDensmap);
+		m_densityname = filename;
+	}
+}
+
+void HairCache::muliplyDensityMap(float& val, float& s, float& t) const
+{
+	int it = (densmap_h-1)*(1.f-t);
+	int is = (densmap_w-1)*s;
+	val *= pDensmap[it*densmap_w + is];
 }
 //~:

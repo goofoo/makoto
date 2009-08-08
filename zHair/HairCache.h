@@ -47,6 +47,15 @@ struct Dguide
 		v0 = v0 + (v1 - v0) * (fparam-iparam);
 		res.setTranslation(v0);
 	}
+	
+	void release() 
+	{
+		delete[] P;
+		delete[] N;
+		delete[] T;
+		delete[] dispv;
+		delete[] space;
+	}
 };
 
 class HairCache
@@ -91,6 +100,9 @@ public:
 	const XYZ* getOs() const {return opacities;}
 	int getNumPoints() const {return npoints;}
 	
+	void setDensityMap(const char* filename);
+	void muliplyDensityMap(float& val, float& s, float& t) const;
+	
 private:
 	float ndice, rootwidth, tipwidth;
 	DiceParam* ddice;
@@ -108,7 +120,7 @@ private:
 	triangle_bind_info* bind_data;
 	float clumping, fuzz, kink, mutant_scale, kbald;
 	MATRIX44F* guide_spaceinv;
-	std::string m_cachename;
+	std::string m_cachename, m_densityname;
 	int* nvertices;
 	XYZ* vertices;
 	float* widths;
@@ -117,5 +129,7 @@ private:
 	XYZ *rootColorArray, *tipColorArray, *opacities;
 	int isInterpolate;
 	int realncurve;
+	int densmap_w, densmap_h;
+	float* pDensmap;
 };
 #endif

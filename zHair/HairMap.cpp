@@ -32,7 +32,10 @@ draw_step(1),order(0),isInterpolate(0),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDen
 hairMap::~hairMap() 
 {
 	if(ddice) delete[] ddice;
-	if(guide_data) delete[] guide_data;
+	if(guide_data) {
+		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
+		delete[] guide_data;
+	}
 	if(bind_data) delete[] bind_data;
 	if(guide_spaceinv) delete[] guide_spaceinv;
 	if(parray) delete[] parray;

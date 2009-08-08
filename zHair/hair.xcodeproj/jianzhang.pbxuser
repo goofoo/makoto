@@ -69,12 +69,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 271183642;
-			PBXWorkspaceStateSaveDate = 271183642;
-		};
-		perUserProjectItems = {
-			7F692364102A1BA00065E2D6 /* PBXTextBookmark */ = 7F692364102A1BA00065E2D6 /* PBXTextBookmark */;
-			7F692365102A1BA00065E2D6 /* PBXTextBookmark */ = 7F692365102A1BA00065E2D6 /* PBXTextBookmark */;
+			PBXPerProjectTemplateStateSaveDate = 271267581;
+			PBXWorkspaceStateSaveDate = 271267581;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -103,26 +99,6 @@
 			sepNavVisRange = "{173, 1124}";
 			sepNavWindowFrame = "{{241, 87}, {559, 689}}";
 		};
-	};
-	7F692364102A1BA00065E2D6 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
-		name = "HairMap.cpp: 1079";
-		rLen = 4;
-		rLoc = 33278;
-		rType = 0;
-		vrLen = 1110;
-		vrLoc = 32432;
-	};
-	7F692365102A1BA00065E2D6 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FE58B9E0FB61F5800187112 /* HairMap.cpp */;
-		name = "HairMap.cpp: 30";
-		rLen = 0;
-		rLoc = 948;
-		rType = 0;
-		vrLen = 1302;
-		vrLoc = 0;
 	};
 	7F6F232D0FBA8F32003D0615 /* FNoise.cpp */ = {
 		uiCtxt = {
@@ -225,10 +201,10 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1292, 16968}}";
+			sepNavIntBoundsRect = "{{0, 0}, {956, 17388}}";
 			sepNavSelRange = "{948, 0}";
-			sepNavVisRange = "{0, 1302}";
-			sepNavWindowFrame = "{{663, 31}, {597, 719}}";
+			sepNavVisRange = "{36013, 950}";
+			sepNavWindowFrame = "{{663, 57}, {597, 719}}";
 		};
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
