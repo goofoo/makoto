@@ -136,15 +136,15 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 
 	if( plug == aoutmesh )
 	{
-		double dtime = data.inputValue( aframe ).asDouble();
-		MString sname = data.inputValue( acachename).asString();
-		string sbuf(sname.asChar());
-		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
-		int eta = data.inputValue(adice).asInt();
-		idraw = data.inputValue(adraw).asInt();
+		//double dtime = data.inputValue( aframe ).asDouble();
+		//MString sname = data.inputValue( acachename).asString();
+		//string sbuf(sname.asChar());
+		//zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
+		//int eta = data.inputValue(adice).asInt();
+		//idraw = data.inputValue(adraw).asInt();
 		if(m_base) 
 		{
-			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice)
+			/*if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice)
 			{
 				curname = sname;
 				string head = sbuf;
@@ -161,6 +161,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				
 				m_base->bind();
 			}
+			*/
 			//int iss = m_base->load(sbuf.c_str());
 			//if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
 			

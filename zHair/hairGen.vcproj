@@ -23,11 +23,11 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-DNT"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(MAYA_LOCATION_70)\include&quot;;D:\local\iconv\include;D:\local\libxml\include;D:\Pixar\devkit\examples\ribgen;D:\pixar\devkit\include"
+				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR;&quot;$(MAYA_LOCATION_70)\include&quot;;D:\local\iconv\include;D:\local\libxml\include;D:\Pixar\devkit\examples\ribgen;D:\pixar\devkit\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM;USE_MAYA2007"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
-				RuntimeLibrary="1"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\Debug/"
@@ -42,11 +42,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
-				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib opengl32.lib"
+				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib opengl32.lib half.lib ilmimf.lib zlib.lib"
 				OutputFile="..\module\ribgen\hairRibgen.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION_70)\lib&quot;"
+				AdditionalLibraryDirectories="D:\local\openexr\lib;D:\local\glut;&quot;$(MAYA_LOCATION_70)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/getArrayValue.pdb"
 				SubSystem="2"
@@ -226,6 +226,9 @@
 			</File>
 			<File
 				RelativePath="..\..\Pixar\devkit\examples\ribgen\RIBContextUtil.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\zFnEXR.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\zGlobal.cpp">

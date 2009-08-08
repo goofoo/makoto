@@ -27,7 +27,7 @@ draw_step(1),order(0),isInterpolate(0),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDen
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
 	mutant_color.x = mutant_color.y = mutant_color.z = 0.f;
-	m_densityname = "null";
+	m_densityname = "nil";
 }
 hairMap::~hairMap() 
 {
@@ -1203,7 +1203,7 @@ void hairMap::setDensityMap(const char* filename)
 	if(pDensmap) {
 		delete[] pDensmap;
 		pDensmap = 0;
-		m_densityname = "null";
+		m_densityname = "nil";
 	}
 	try 
 	{

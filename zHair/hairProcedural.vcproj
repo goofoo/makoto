@@ -23,11 +23,11 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-DNT"
 				Optimization="0"
-				AdditionalIncludeDirectories="D:\Pixar\devkit\include"
+				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR;D:\Pixar\devkit\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ZDSO_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=""
 				AssemblerListingLocation=".\Debug/"
@@ -41,11 +41,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="prman.lib"
+				AdditionalDependencies="prman.lib half.lib ilmimf.lib zlib.lib"
 				OutputFile="..\module\procedural\zhairProcedural.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\Pixar\devkit\lib;D:\local\glut"
+				AdditionalLibraryDirectories="D:\local\openexr\lib;D:\Pixar\devkit\lib;D:\local\glut"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -211,6 +211,9 @@
 			</File>
 			<File
 				RelativePath=".\RHair.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\zFnEXR.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\zGlobal.cpp">
