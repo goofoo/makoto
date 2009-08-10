@@ -18,7 +18,7 @@ HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_space
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
 nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
-rootColorArray(0), tipColorArray(0), opacities(0),pNSeg(0),kbald(0.f),pDensmap(0)
+rootColorArray(0), tipColorArray(0), pNSeg(0),kbald(0.f),pDensmap(0)
 {
 	m_densityname = "nil";
 }
@@ -42,7 +42,7 @@ HairCache::~HairCache()
 	if(coord_t) delete[] coord_t;
 	if(rootColorArray) delete[] rootColorArray;
 	if(tipColorArray) delete[] tipColorArray;
-	if(opacities) delete[] opacities;
+	//if(opacities) delete[] opacities;
 	if(pNSeg) delete[] pNSeg;
 	if(pDensmap) delete[] pDensmap;
 }
@@ -373,7 +373,7 @@ void HairCache::create()
 			acc++;
 		}
 	}
-	
+/*	
 // set opacities
 	if(opacities) delete[] opacities;
 	opacities = new XYZ[nwidths];
@@ -398,7 +398,7 @@ void HairCache::create()
 			acc++;
 		}
 	}
-	
+*/	
 // set texcoord
 	if(coord_s) delete[] coord_s;
 	if(coord_t) delete[] coord_t;
@@ -620,7 +620,7 @@ void HairCache::createSimple()
 			acc++;
 		}
 	}
-	
+/*	
 // set opacities
 	if(opacities) delete[] opacities;
 	opacities = new XYZ[nwidths];
@@ -640,7 +640,7 @@ void HairCache::createSimple()
 			acc++;
 		}
 	}
-/*	
+	
 // set texcoord
 	if(coord_s) delete[] coord_s;
 	if(coord_t) delete[] coord_t;

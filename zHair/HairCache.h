@@ -98,7 +98,7 @@ public:
 	const float* getT() const {return coord_t;}
 	const XYZ* getRootColors() const {return rootColorArray;}
 	const XYZ* getTipColors() const {return tipColorArray;}
-	const XYZ* getOs() const {return opacities;}
+	//const XYZ* getOs() const {return opacities;}
 	int getNumPoints() const {return npoints;}
 	
 	void setDensityMap(const char* filename);
@@ -127,7 +127,7 @@ private:
 	float* widths;
 	float *coord_s, *coord_t;
 	XYZ tip_color, root_color, mutant_color;
-	XYZ *rootColorArray, *tipColorArray, *opacities;
+	XYZ *rootColorArray, *tipColorArray;// *opacities;
 	int isInterpolate;
 	int realncurve;
 	int densmap_w, densmap_h;

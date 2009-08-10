@@ -341,7 +341,7 @@ template shadingmodel zhair {
 		Cspec = Cspec_key + Cspec_fill + Cspec_back;
 		Cdiff = Cdiff_key + Cdiff_fill + Cdiff_back;
 		
-		OI = Os;
+		OI = color(1-v*v);
 						    
 		extern color _color;
 		extern color _diffuse;
@@ -399,7 +399,8 @@ template shadingmodel zhairshd {
 		       output color CI;
 		       output color OI; )
 	   {
-		OI = Os;
+		extern float v;
+		OI = color(1-v*v);;
 		
 		CI = Os;
 		
