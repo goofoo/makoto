@@ -9,6 +9,7 @@
 ## Depth Range float
 ## fur.slim {
 ## 	{ zhang,zhair#0	shadingmodel {Hair}		/Surface }
+## 	{ zhang,zhairshd#0	shadingmodel {Hair In Shadow}		/Surface }
 ## 	{ zhang,Fur#0	shadingmodel {Fur}		/Surface }
 ## 	{ zhang,furDump#0	shadingmodel {Fur Dump}		/Surface }
 ## 	{ zhang,furDumpOcc#0	shadingmodel {Fur Dump Occlusion} /Surface }
@@ -375,6 +376,37 @@ template shadingmodel zhair {
    }
    
 
+template shadingmodel zhairshd {
+	description { Simple hair shader used in shadow pass }
+	
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslzhairshd(
+		       output color CI;
+		       output color OI; )
+	   {
+		OI = Os;
+		
+		CI = Os;
+		
+		
+	   }
+       }
+   }
 
 template shadingmodel Fur {
 

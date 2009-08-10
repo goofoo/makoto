@@ -21,5 +21,6 @@ private:
 	float m_mutant_colorR, m_mutant_colorG, m_mutant_colorB; 
 	float m_mutant_scale;
 	float m_bald;
-	int m_is_blur, m_isInterpolate;
+	int m_is_blur, m_isInterpolate, m_issimple;
+	float m_fract;
 };

@@ -61,7 +61,7 @@ MObject HairDguideNode::adensitymap;
 HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0),idice(0),idraw(0)
 {
 	m_base = new hairMap();
-	curname = dnmname = "null";
+	curname = dnmname = "nil";
 }
 HairDguideNode::~HairDguideNode() 
 {
@@ -195,8 +195,10 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 		if(idraw ==0) m_base->draw();
 		else if(idraw ==1) m_base->drawGuide();
 		else m_base->drawBind();
+		//zDisplayFloat(m_base->getBBoxFraction());
 	}
 	//glPopAttrib();
+	
 	view.endGL();
 }
 
@@ -210,8 +212,7 @@ MBoundingBox HairDguideNode::boundingBox() const
 	MPoint corner1( 0,0,0 );
 	MPoint corner2( 1,1,1 );
 	
-	if(m_base)
-	{
+	if(m_base) {
 		corner1.x = m_base->getBBox0X();
 		corner1.y = m_base->getBBox0Y();
 		corner1.z = m_base->getBBox0Z();

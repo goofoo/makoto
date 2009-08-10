@@ -64,13 +64,14 @@ public:
 	HairCache();
 	~HairCache();
 	
-	int dice();
+	int dice(float detail);
 	void bind();
 	
 	int load(const char* filename);
 	int loadStart(const char* filename);
 	
 	void create();
+	void createSimple();
 	
 	void setInterpolate(const int val) {isInterpolate = val;}
 	void setDiceNumber(const float val) {ndice = val;} 
@@ -131,5 +132,6 @@ private:
 	int realncurve;
 	int densmap_w, densmap_h;
 	float* pDensmap;
+	float factorwidth;
 };
 #endif

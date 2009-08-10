@@ -15,6 +15,7 @@
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
 #include "../shared/zFnEXR.h"
+#include "../shared/eigenSystem.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -209,7 +210,7 @@ void hairMap::draw()
 			float dparam = 1.f/num_seg;
 			XYZ dcolor = (ctip - croot)/(float)num_seg;
 			float param;
-			if(bind_data[i].wei[0] > .9f) {
+			if(bind_data[i].wei[0] > .8f) {
 				for(short j = 0; j< num_seg; j++) {
 					param = dparam*j;
 					
@@ -929,24 +930,61 @@ int hairMap::load(const char* filename)
 		guide_spaceinv[i] = guide_data[i].space[0];
 		guide_spaceinv[i].inverse();
 	}
-// calculate bbox	
+// calculate bbox
 	bbox_low = XYZ(10e6, 10e6, 10e6);
 	bbox_high = XYZ(-10e6, -10e6, -10e6);
-	for(unsigned i = 0;i<num_guide;i++)
-	{
-		for(unsigned j = 0;j<guide_data[i].num_seg;j++)
-		{
+	
+	for(unsigned i = 0;i<num_guide;i++) {
+		for(unsigned j = 0;j<guide_data[i].num_seg;j++) {
 			if(guide_data[i].P[j].x < bbox_low.x) bbox_low.x = guide_data[i].P[j].x;
 			if(guide_data[i].P[j].y < bbox_low.y) bbox_low.y = guide_data[i].P[j].y;
-			if(guide_data[i].P[j].x < bbox_low.z) bbox_low.z = guide_data[i].P[j].z;
+			if(guide_data[i].P[j].z < bbox_low.z) bbox_low.z = guide_data[i].P[j].z;
 			if(guide_data[i].P[j].x > bbox_high.x) bbox_high.x = guide_data[i].P[j].x;
 			if(guide_data[i].P[j].y > bbox_high.y) bbox_high.y = guide_data[i].P[j].y;
-			if(guide_data[i].P[j].x > bbox_high.z) bbox_high.z = guide_data[i].P[j].z;
+			if(guide_data[i].P[j].z > bbox_high.z) bbox_high.z = guide_data[i].P[j].z;
 		}
 	}
+	
 	XYZ bboxcen = (bbox_low + bbox_high)/2;
-	bbox_low -= bboxcen - bbox_low;
-	bbox_high -= bboxcen - bbox_high;
+	bbox_low -= (bboxcen - bbox_low)/10;
+	bbox_high -= (bboxcen - bbox_high)/10;
+	
+// calculate aligned volume
+	MATRIX44F objectSpace;
+	int numgudp = 0;
+	for(unsigned i = 0;i<num_guide;i++)
+		for(unsigned j = 0;j<guide_data[i].num_seg;j++) numgudp++;
+		
+	pcdSample* gudpdata = new pcdSample[numgudp];
+	int acc = 0;
+	for(unsigned i = 0;i<num_guide;i++)
+		for(unsigned j = 0;j<guide_data[i].num_seg;j++) {
+			gudpdata[acc].pos = guide_data[i].P[j];
+			acc++;
+		}
+	calculateObjectSpace(gudpdata, 0, numgudp-1, objectSpace);
+			
+	MATRIX44F objectSpaceInverse = objectSpace;
+	objectSpaceInverse.inverse();
+		
+	for(int i=0; i<=numgudp-1; i++) objectSpaceInverse.transform(gudpdata[i].pos);
+	
+	XYZ abbox_low(10e6, 10e6, 10e6);
+	XYZ abbox_high(-10e6, -10e6, -10e6);
+	
+	for(int i=0; i<=numgudp-1; i++) {
+		if(gudpdata[i].pos.x < abbox_low.x) abbox_low.x = gudpdata[i].pos.x;
+		if(gudpdata[i].pos.y < abbox_low.y) abbox_low.y = gudpdata[i].pos.y;
+		if(gudpdata[i].pos.z < abbox_low.z) abbox_low.z = gudpdata[i].pos.z;
+		if(gudpdata[i].pos.x > abbox_high.x) abbox_high.x = gudpdata[i].pos.x;
+		if(gudpdata[i].pos.y > abbox_high.y) abbox_high.y = gudpdata[i].pos.y;
+		if(gudpdata[i].pos.z > abbox_high.z) abbox_high.z = gudpdata[i].pos.z;
+	}
+	
+	bbox_fraction = (abbox_high.x - abbox_low.x)*(abbox_high.y - abbox_low.y)*(abbox_high.z - abbox_low.z)/((bbox_high.x - bbox_low.x)*(bbox_high.y - bbox_low.y)*(bbox_high.z - bbox_low.z));
+	if(bbox_fraction > 1.f) bbox_fraction = 1.f;
+	delete[] gudpdata;
+
 	return 1;
 }
 

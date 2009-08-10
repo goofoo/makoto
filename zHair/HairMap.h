@@ -134,6 +134,7 @@ public:
 	float getMutantColorScale() const {return mutant_scale;}
 	float getBald() const {return m_bald;}
 	const char* getDensityName() const {return m_densityname.c_str();}
+	float getBBoxFraction() const {return bbox_fraction;}
 	
 	void createSnow(MObject& meshData) const;
 	
@@ -169,5 +170,6 @@ private:
 	float m_offset, m_bald, m_snow_size, m_snow_rate;
 	int densmap_w, densmap_h;
 	float* pDensmap;
+	float bbox_fraction;
 };
 #endif

@@ -47,13 +47,25 @@ HairCache::~HairCache()
 	if(pDensmap) delete[] pDensmap;
 }
 
-int HairCache::dice()
+int HairCache::dice(float detail)
 {
 	if(!pconnection || !parray) return 0;
 		
 	float epsilon = sqrt(sum_area/n_tri/2/(ndice+2));
 
 	int estimate_ncell = n_tri*(ndice+2)*2;
+	//cout<<"estimate_nhair:"<<estimate_ncell <<endl;
+	factorwidth = 1.f;
+	if(detail < estimate_ncell) {
+		int old_ndice = ndice;
+		ndice = detail/n_tri/2;
+		if(ndice < 1) ndice = 1;
+		epsilon = sqrt(sum_area/n_tri/2/ndice);
+		//cout<<"real ndice: "<<ndice<<endl;
+		estimate_ncell = n_tri*ndice*2;
+		
+		factorwidth =(float)old_ndice/ndice;
+	}
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -343,15 +355,16 @@ void HairCache::create()
 	for(unsigned i=0; i<n_samp; i++) 
 	{
 		if(isoverbald[i]) {
-			widths[acc] = rootwidth;
+			widths[acc] = rootwidth * factorwidth;
 			acc++;
 			float dwidth = (tipwidth - rootwidth)/pNSeg[i] ;
 			for(short j = 0; j<= pNSeg[i]; j++) 
 			{
 				widths[acc] = rootwidth + dwidth*j;
+				widths[acc] *= factorwidth;
 				acc++;
 			}
-			widths[acc] = tipwidth;
+			widths[acc] = tipwidth * factorwidth;
 			acc++;
 		}
 	}
@@ -434,7 +447,243 @@ void HairCache::create()
 			int num_seg = pNSeg[i];
 			float dparam = 1.f/(float)num_seg;
 			float param;
-			if(bind_data[i].wei[0] > .9f) {
+			if(bind_data[i].wei[0] > .8f) {
+				for(int j = 0; j< num_seg; j++) {
+					param = dparam*j;
+					
+					guide_data[bind_data[i].idx[0]].getDvAtParam(dv, param, num_seg);
+					guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
+					
+					vertices[acc] = ppre;
+					acc++;
+					
+					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+					
+					keepx = pt[0].x;
+					pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+					pw[0] *= noi;
+					pw[0].x = keepx;
+					tspace.transform(pw[0]);
+					
+					pcur = pw[0];
+					
+					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+					dv *= noi;
+					pcur += dv;
+					
+					ddv = pcur - ppre;
+					ddv.normalize();
+					ddv *= dv.length();
+
+					ppre += ddv;
+				}
+			}
+			else {
+				for(int j = 0; j< num_seg; j++) {
+					param = dparam*j;
+					
+					guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
+					guide_data[bind_data[i].idx[1]].getDvAtParam(dv1, param, num_seg);
+					guide_data[bind_data[i].idx[2]].getDvAtParam(dv2, param, num_seg);
+						
+					guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
+					guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace1, param);
+					guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace2, param);
+					
+					vertices[acc] = ppre;
+					acc++;
+					
+					//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
+					dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
+					dv.setLength(dv0.length());
+					
+					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+
+					keepx = pt[0].x;
+					pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+					pw[0] *= noi;
+					pw[0].x = keepx;
+					//guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
+					tspace.transform(pw[0]);
+					
+					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+					keepx = pt[1].x;
+					pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
+					pw[1] *= noi;
+					pw[1].x = keepx;
+					//guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
+					tspace1.transform(pw[1]);
+					
+					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+					keepx = pt[2].x;
+					pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
+					pw[2] *= noi;
+					pw[2].x = keepx;
+					//guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
+					tspace2.transform(pw[2]);
+					
+					pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
+					
+					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+					dv *= noi;
+					pcur += dv;
+					
+					ddv = pcur - ppre;
+					ddv.normalize();
+					ddv *= dv.length();
+
+					ppre += ddv;
+				}
+			}
+			vertices[acc] = ppre;
+			acc++;
+			vertices[acc] = ppre;
+			acc++;
+			vertices[acc] = ppre;
+			acc++;
+		}
+	}
+	
+	delete[] pbuf;
+	delete[] isoverbald;
+}
+
+void HairCache::createSimple()
+{
+	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
+	
+	int g_seed = 13;
+	FNoise fnoi;
+	
+	float noi;
+	realncurve = 0;
+	char* isoverbald = new char[n_samp];
+	for(unsigned i=0; i<n_samp; i++) {
+		noi = fnoi.randfint( g_seed ); g_seed++;
+		if(pDensmap) muliplyDensityMap(noi, ddice[i].coords, ddice[i].coordt);
+		if(noi > kbald) {
+			isoverbald[i] = 1;
+			realncurve++;
+		}
+		else isoverbald[i] = 0;
+	}
+	
+// set nvertices
+	npoints = 0;
+	int nwidths = 0;
+	if(nvertices) delete[] nvertices;
+	nvertices = new int[realncurve];
+	unsigned acc=0;
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		if(isoverbald[i]) {
+			nvertices[acc] = pNSeg[i] + 5;
+			npoints += nvertices[acc];
+			nwidths += nvertices[acc]-2;
+			acc++;
+		}
+	}
+	
+// set widths
+	if(widths) delete[] widths;
+	widths = new float[nwidths];
+	acc=0;
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		if(isoverbald[i]) {
+			widths[acc] = rootwidth * factorwidth; 
+			acc++;
+			float dwidth = (tipwidth - rootwidth)/pNSeg[i] ;
+			for(short j = 0; j<= pNSeg[i]; j++) 
+			{
+				widths[acc] = rootwidth + dwidth*j;
+				widths[acc] *= factorwidth;
+				acc++;
+			}
+			widths[acc] = tipwidth * factorwidth;
+			acc++;
+		}
+	}
+	
+// set opacities
+	if(opacities) delete[] opacities;
+	opacities = new XYZ[nwidths];
+	acc=0;
+	for(unsigned i=0; i<n_samp; i++) 
+	{
+		if(isoverbald[i]) {
+			opacities[acc] = XYZ(1.f);
+			acc++;
+			float dos = 1.f/pNSeg[i];
+			for(short j = 0; j<= pNSeg[i]; j++) 
+			{
+				opacities[acc] = XYZ(1.f - dos*j);
+				acc++;
+			}
+			opacities[acc] = XYZ(0.f);
+			acc++;
+		}
+	}
+/*	
+// set texcoord
+	if(coord_s) delete[] coord_s;
+	if(coord_t) delete[] coord_t;
+	coord_s = new float[realncurve];
+	coord_t = new float[realncurve];
+	for(unsigned i=0; i<realncurve; i++) 
+	{
+		coord_s[i] = ddice[i].coords;
+		coord_t[i] = ddice[i].coordt;
+	}
+
+// set colors
+	if(rootColorArray) delete[] rootColorArray;
+	if(tipColorArray) delete[] tipColorArray;
+	rootColorArray = new XYZ[realncurve];
+	tipColorArray = new XYZ[realncurve];
+*/	
+	float keepx;
+	
+	for(unsigned i=0; i<realncurve; i++) 
+	{
+		noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
+		//rootColorArray[i] = root_color + (mutant_color - root_color)*noi;
+		//tipColorArray[i] = tip_color + (mutant_color - tip_color)*noi;
+	}
+	
+// set vertices
+	if(vertices) delete[] vertices;
+	vertices = new XYZ[npoints];
+	
+	XYZ* pbuf = new XYZ[n_samp];
+	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+	
+	MATRIX44F tspace, tspace1, tspace2;
+	XYZ ppre, pcur, dv, ddv, pobj, pt[3], pw[3], dv0, dv1, dv2;
+	acc=0;
+	for(unsigned i=0; i<n_samp; i++)
+	{
+		if(isoverbald[i]) {
+			ppre = pbuf[i];
+			
+			pobj = ppre;
+			pt[0] = pt[1] = pt[2] = ppre;
+			guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
+			
+			guide_spaceinv[bind_data[i].idx[0]].transform(pt[0]);
+			guide_spaceinv[bind_data[i].idx[1]].transform(pt[1]);
+			guide_spaceinv[bind_data[i].idx[2]].transform(pt[2]);
+			
+
+			vertices[acc] = ppre;
+			acc++;
+			vertices[acc] = ppre;
+			acc++;
+
+			int num_seg = pNSeg[i];
+			float dparam = 1.f/(float)num_seg;
+			float param;
+			if(bind_data[i].wei[0] > .8f) {
 				for(int j = 0; j< num_seg; j++) {
 					param = dparam*j;
 					
