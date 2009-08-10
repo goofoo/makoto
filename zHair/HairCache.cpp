@@ -341,7 +341,7 @@ void HairCache::create()
 	for(unsigned i=0; i<n_samp; i++) 
 	{
 		if(isoverbald[i]) {
-			nvertices[acc] = pNSeg[i] + 5;
+			nvertices[acc] = pNSeg[i] + 5 + pNSeg[i];
 			npoints += nvertices[acc];
 			nwidths += nvertices[acc]-2;
 			acc++;
@@ -360,9 +360,14 @@ void HairCache::create()
 			float dwidth = (tipwidth - rootwidth)/pNSeg[i] ;
 			for(short j = 0; j<= pNSeg[i]; j++) 
 			{
-				widths[acc] = rootwidth + dwidth*j;
-				widths[acc] *= factorwidth;
+				//widths[acc] = rootwidth + dwidth*j;
+				widths[acc] = (rootwidth + dwidth*j)*factorwidth;
 				acc++;
+				
+				if(j != pNSeg[i]) {
+					widths[acc] = widths[acc-1];
+					acc++;
+				}
 			}
 			widths[acc] = tipwidth * factorwidth;
 			acc++;
@@ -383,6 +388,11 @@ void HairCache::create()
 			{
 				opacities[acc] = XYZ(1.f - dos*j);
 				acc++;
+				
+				if(j != pNSeg[i]) {
+					opacities[acc] = opacities[acc-1];
+					acc++;
+				}
 			}
 			opacities[acc] = XYZ(0.f);
 			acc++;
@@ -423,16 +433,16 @@ void HairCache::create()
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
 	
 	MATRIX44F tspace, tspace1, tspace2;
-	XYZ ppre, pcur, dv, ddv, pobj, pt[3], pw[3], dv0, dv1, dv2;
+	XYZ ppre, pcur, dv, ddv, pt[3], pw[3], dv0, dv1, dv2;
 	acc=0;
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		if(isoverbald[i]) {
 			ppre = pbuf[i];
 			
-			pobj = ppre;
+			//pobj = ppre;
 			pt[0] = pt[1] = pt[2] = ppre;
-			guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
+			//guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
 			
 			guide_spaceinv[bind_data[i].idx[0]].transform(pt[0]);
 			guide_spaceinv[bind_data[i].idx[1]].transform(pt[1]);
@@ -474,6 +484,9 @@ void HairCache::create()
 					ddv = pcur - ppre;
 					ddv.normalize();
 					ddv *= dv.length();
+					
+					vertices[acc] = ppre + ddv*0.5f;
+					acc++;
 
 					ppre += ddv;
 				}
@@ -531,6 +544,9 @@ void HairCache::create()
 					ddv = pcur - ppre;
 					ddv.normalize();
 					ddv *= dv.length();
+					
+					vertices[acc] = ppre + ddv*0.5f;
+					acc++;
 
 					ppre += ddv;
 				}
@@ -659,16 +675,16 @@ void HairCache::createSimple()
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
 	
 	MATRIX44F tspace, tspace1, tspace2;
-	XYZ ppre, pcur, dv, ddv, pobj, pt[3], pw[3], dv0, dv1, dv2;
+	XYZ ppre, pcur, dv, ddv, pt[3], pw[3], dv0, dv1, dv2;
 	acc=0;
 	for(unsigned i=0; i<n_samp; i++)
 	{
 		if(isoverbald[i]) {
 			ppre = pbuf[i];
 			
-			pobj = ppre;
+			//pobj = ppre;
 			pt[0] = pt[1] = pt[2] = ppre;
-			guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
+			//guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
 			
 			guide_spaceinv[bind_data[i].idx[0]].transform(pt[0]);
 			guide_spaceinv[bind_data[i].idx[1]].transform(pt[1]);

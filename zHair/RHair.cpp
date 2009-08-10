@@ -61,10 +61,12 @@ void RHair::generateRIB(RtFloat detail)
 	if(strcmp(m_dens_name, "nil")!=0) pHair->setDensityMap(m_dens_name);
 	if(m_issimple == 0) {
 		pHair->create();
-		RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), 
+		RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), 
+		"width", (RtFloat*)pHair->getWidth(), 
 		"uniform float s", (RtFloat*)pHair->getS(), "uniform float t", (RtFloat*)pHair->getT(), 
 		"uniform color root_color", (RtColor*)pHair->getRootColors(), "uniform color tip_color", (RtColor*)pHair->getTipColors(), 
-		"Os", (RtColor*)pHair->getOs(), RI_NULL);
+		"Os", (RtColor*)pHair->getOs(), 
+		RI_NULL);
 	}
 	else {
 		pHair->createSimple(); 
