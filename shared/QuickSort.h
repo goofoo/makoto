@@ -23,7 +23,6 @@ struct DataAndId
 	unsigned idx;
 	float val;
 	float size;
-	XYZ color;
 };
 
 class QuickSort

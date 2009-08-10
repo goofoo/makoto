@@ -485,7 +485,7 @@ global proc int doAddAttr()
         return( 0 );
       for ($i = 0; $i < size( $itemAry ); $i++)
       {
-        textScrollList -e -removeItem `textScrollList -q -si attrLst` attrLst;
+        //textScrollList -e -removeItem `textScrollList -q -si attrLst` attrLst;
         checkBox -al "left" -l $itemAry[$i] -v 1 -p appendedAttriColumnLyt $itemAry[$i];
       }
     } break;
@@ -606,8 +606,7 @@ global proc int  findAttr( string $attr )
 
 
 	for ($i = 0; $i < size( $itemsAttrAry ); $i++)
-	{       print($itemsAttrAry[$i]);
-	print("\n");
+	{
 		if ($attr == $itemsAttrAry[$i])
 		{
 			return( 1 );

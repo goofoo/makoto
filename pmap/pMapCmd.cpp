@@ -168,7 +168,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 		maxlevel++;
 		cache_mindist*=2;
 	}
-	MGlobal::displayInfo(MString("  max leval: ")+ maxlevel);
+	//MGlobal::displayInfo(MString("  max leval: ")+ maxlevel);
 	
 	OcTree* tree = new OcTree();
 	tree->construct(buf, npt, rootCenter, rootSize, maxlevel);
@@ -226,7 +226,7 @@ MStatus pMapCmd::doIt( const MArgList& args)
 					    MDoubleArray attribute;
 					    ps.getPerParticleAttribute(tokenizeAttr[0],attribute);
 					    for(unsigned j=0; j<attribute.length(); j++,acc++ )
-							attr[j] = attribute[j]; 
+							attr[acc] = attribute[j]; 
 					}
 					tree->addSingle(attr,temp.asChar(),buf);
 					//MGlobal::displayInfo(MString("")+temp.asChar());
