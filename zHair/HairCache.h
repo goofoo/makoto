@@ -104,6 +104,9 @@ public:
 	void setDensityMap(const char* filename);
 	void muliplyDensityMap(float& val, float& s, float& t) const;
 	
+	void dump() const;
+	char lazi();
+	
 private:
 	float ndice, rootwidth, tipwidth;
 	DiceParam* ddice;

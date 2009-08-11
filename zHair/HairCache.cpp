@@ -10,6 +10,7 @@
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
 #include "../shared/zFnEXR.h"
+#include "../shared/zGlobal.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -18,7 +19,7 @@ HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_space
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),ndice(24),
 nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
-rootColorArray(0), tipColorArray(0), pNSeg(0),kbald(0.f),pDensmap(0)
+rootColorArray(0), tipColorArray(0), pNSeg(0),kbald(0.f),pDensmap(0),factorwidth(1.f)
 {
 	m_densityname = "nil";
 }
@@ -54,9 +55,9 @@ int HairCache::dice(float detail)
 	float epsilon = sqrt(sum_area/n_tri/2/(ndice+2));
 
 	int estimate_ncell = n_tri*(ndice+2)*2;
-	//cout<<"estimate_nhair:"<<estimate_ncell <<endl;
+	
 	factorwidth = 1.f;
-	if(detail < estimate_ncell) {
+	/*if(detail < estimate_ncell) {
 		int old_ndice = ndice;
 		ndice = detail/n_tri/2;
 		if(ndice < 1) ndice = 1;
@@ -65,7 +66,7 @@ int HairCache::dice(float detail)
 		estimate_ncell = n_tri*ndice*2;
 		
 		factorwidth =(float)old_ndice/ndice;
-	}
+	}*/
 	estimate_ncell += estimate_ncell/9;
 	
 	if(ddice) delete[] ddice;
@@ -246,6 +247,7 @@ int HairCache::loadStart(const char* filename)
 		cout<<"Cannot open file: "<<filename<<endl;
 		return 0;
 	}
+	m_cachename = filename;
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
 	if(guide_data) {
@@ -828,5 +830,65 @@ void HairCache::muliplyDensityMap(float& val, float& s, float& t) const
 	int it = (densmap_h-1)*(1.f-t);
 	int is = (densmap_w-1)*s;
 	val *= pDensmap[it*densmap_w + is];
+}
+
+void HairCache::dump() const
+{
+	std::string dumpname = m_cachename;
+	zGlobal::cutByFirstDot(dumpname);
+	dumpname += ".hairdump";
+	ofstream outfile;
+	outfile.open(dumpname.c_str(), ios_base::out | ios_base::binary);
+	if(!outfile.is_open()) 
+	{
+		cout<<"Cannot open file: "<<dumpname<<endl;
+		return;
+	}
+	
+	outfile.write((char*)&ndice,sizeof(float));
+	outfile.write((char*)&n_samp,sizeof(int));
+	outfile.write((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	outfile.write((char*)pNSeg,sizeof(unsigned)*n_samp);
+	outfile.write((char*)ddice,sizeof(DiceParam)*n_samp);
+	
+	outfile.close();
+	return;
+}
+
+char HairCache::lazi()
+{
+	std::string dumpname = m_cachename;
+	zGlobal::cutByFirstDot(dumpname);
+	dumpname += ".hairdump";
+	ifstream infile;
+	infile.open(dumpname.c_str(), ios_base::in | ios_base::binary);
+	if(!infile.is_open()) 
+	{
+		cout<<"Cannot open file: "<<dumpname<<endl;
+		return 0;
+	}
+	float todice;
+	infile.read((char*)&todice,sizeof(float));
+	if(todice != ndice) {
+		infile.close();
+		return 0;
+	}
+	infile.read((char*)&n_samp,sizeof(int));
+	
+	if(bind_data) delete[] bind_data;
+	bind_data = new triangle_bind_info[n_samp];
+	
+	if(pNSeg) delete[] pNSeg;
+	pNSeg = new unsigned[n_samp];
+	
+	if(ddice) delete[] ddice;
+	ddice = new DiceParam[n_samp];
+	
+	infile.read((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	infile.read((char*)pNSeg,sizeof(unsigned)*n_samp);
+	infile.read((char*)ddice,sizeof(DiceParam)*n_samp);
+	
+	infile.close();
+	return 1;
 }
 //~:

@@ -44,9 +44,12 @@ void RHair::generateRIB(RtFloat detail)
 	zGlobal::cutByFirstDot(head);
 	head += ".hairstart";
 	pHair->loadStart(head.c_str());
-	pHair->dice((float)detail*m_fract*0.5);
 	pHair->setInterpolate(m_isInterpolate);
-	pHair->bind();
+	if(!pHair->lazi()) {
+		pHair->dice((float)detail*m_fract*0.5);
+		pHair->bind();
+		pHair->dump();
+	}
 	pHair->load(m_cache_name);
 	
 	pHair->setClumping(m_clumping);
