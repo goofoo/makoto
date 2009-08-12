@@ -65,6 +65,7 @@ public:
 	~HairCache();
 	
 	int dice(float detail);
+	int pushFaceVertice();
 	void bind();
 	
 	int load(const char* filename);
@@ -107,6 +108,14 @@ public:
 	void dump() const;
 	char lazi();
 	
+	unsigned getNumTriangle() const {return n_tri;}
+	void lookupTriangle(unsigned idx, XYZ* points) const;
+	void lookupTriangleBind(unsigned idx, XYZ* points) const;
+	void lookupTriangleUV(unsigned idx, float* u, float* v) const;
+	void lookupGuiderNSeg(unsigned idx, unsigned* nsegs) const;
+	void lookupGuiderCVs(unsigned idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const;
+	float getEpsilon() const;
+	
 private:
 	float ndice, rootwidth, tipwidth;
 	DiceParam* ddice;
@@ -116,6 +125,7 @@ private:
 	float* uarray;
 	float* varray;
 	XYZ* parray;
+	XYZ* pBind;
 
 	Dguide* guide_data;
 	unsigned* pNSeg;

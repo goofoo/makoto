@@ -3,11 +3,20 @@
 #include <string>
 #include <ri.h>
 
+#include "HairCache.h"
+
 class RHair {
 public:
 	RHair(std::string& parameter);
     ~RHair();
 	void generateRIB(RtFloat detail);
+	
+	void init();
+	
+	float getEpislon() const {return m_epsilon;}
+	unsigned getNumTriangle() const;
+	
+	HairCache* pHair;
     
 private:
 	float m_ndice, m_width0, m_width1;
@@ -23,4 +32,5 @@ private:
 	float m_bald;
 	int m_is_blur, m_isInterpolate, m_issimple;
 	float m_fract;
+	float m_epsilon;
 };

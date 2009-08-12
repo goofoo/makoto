@@ -195,6 +195,12 @@
 				RelativePath=".\BindTriangle.cpp">
 			</File>
 			<File
+				RelativePath=".\BoundHair.cpp">
+			</File>
+			<File
+				RelativePath=".\BoundHair.h">
+			</File>
+			<File
 				RelativePath="..\shared\DiceTriangle.cpp">
 			</File>
 			<File

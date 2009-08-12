@@ -1,10 +1,9 @@
 #include "RHair.h"
-#include "HairCache.h"
 #include "../shared/zGlobal.h"
 using namespace std;
 
 RHair::RHair(std::string& parameter):
-m_ndice(24)
+m_ndice(24),pHair(0)
 {
 	m_cache_name = new char[256];
 	m_dens_name = new char[256];
@@ -34,11 +33,12 @@ RHair::~RHair()
 {
 	delete[] m_cache_name;
 	delete[] m_dens_name;
+	if(pHair) delete pHair;
 }
 
 void RHair::generateRIB(RtFloat detail)
 {
-	HairCache* pHair = new HairCache();
+	pHair = new HairCache();
 	pHair->setDiceNumber(m_ndice);
 	string head = m_cache_name;
 	zGlobal::cutByFirstDot(head);
@@ -86,4 +86,28 @@ void RHair::generateRIB(RtFloat detail)
 	
 	return;
 }
+
+void RHair::init()
+{
+	pHair = new HairCache();
+	
+	string head = m_cache_name;
+	zGlobal::cutByFirstDot(head);
+	head += ".hairstart";
+	pHair->loadStart(head.c_str());
+	
+	pHair->setDiceNumber(m_ndice);
+	m_epsilon = pHair->getEpsilon();
+	
+	pHair->pushFaceVertice();
+	pHair->bind();
+	
+	pHair->load(m_cache_name);
+}
+
+unsigned RHair::getNumTriangle() const
+{
+	return pHair->getNumTriangle();
+}
+
 //:~
