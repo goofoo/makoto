@@ -65,11 +65,15 @@ void BoundHair::emit(float detail) const
 	ftri.setT(vcoord[0], vcoord[1], vcoord[2]);
 	ftri.rasterize(epsilon, ddice, n_samp, seed+31);
 	
-	printf(" %d:%d ", estimate_ncell, n_samp);
+	//printf(" %d:%d ", estimate_ncell, n_samp);
 	
 	if(n_samp > 0) {
+		XYZ* pbuf = new XYZ[n_samp];
+		for(unsigned i=0; i<n_samp; i++) pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
 	
-	
+		float width = 0.1;
+		RiPoints(RtInt(n_samp), "P", (RtPoint*)pbuf, "constantwidth", (RtPointer)&width, RI_NULL);
+		delete[] pbuf;
 	}
 	
 	delete[] ddice;
@@ -138,7 +142,8 @@ void BoundHair::emitGuider() const
 	pcv[acc] = cvs_c[nsegs[2]];
 	acc++;
 	
-	RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)pcv, RI_NULL); 
+	float width = 0.05;
+	RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)pcv, "constantwidth", (RtPointer)&width, RI_NULL); 
 	
 	delete[] pcv;
 }
@@ -178,8 +183,8 @@ void BoundHair::emitBBox() const
 	
 	int ncurves = 12;
 	int nvertices[12]; for(unsigned i=0; i<12; i++) nvertices[i] = 2;
-	
-	RiCurves("linear", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)bpoints, RI_NULL); 
+	float width = 0.05;
+	RiCurves("linear", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)bpoints, "constantwidth", (RtPointer)&width, RI_NULL); 
 	delete[] bpoints;
 }
 

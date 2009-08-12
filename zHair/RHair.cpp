@@ -8,7 +8,7 @@ m_ndice(24),pHair(0)
 	m_cache_name = new char[256];
 	m_dens_name = new char[256];
 
-	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %s %f %f %f %f %d %f %f %f %f %d %d %f", 
+	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %s %f %f %f %f %f %f %f %f %d %d %f", 
 	&m_ndice,
 	&m_width0, &m_width1,
 	&m_root_colorR, &m_root_colorG, &m_root_colorB, 
@@ -21,7 +21,6 @@ m_ndice(24),pHair(0)
 	&m_fuzz, 
 	&m_kink,
 	&m_bald,
-	&m_isInterpolate,
 	&m_shutter_open, &m_shutter_close,
 	&m_hair_0, &m_hair_1,
 	&m_is_blur,
@@ -44,7 +43,7 @@ void RHair::generateRIB(RtFloat detail)
 	zGlobal::cutByFirstDot(head);
 	head += ".hairstart";
 	pHair->loadStart(head.c_str());
-	pHair->setInterpolate(m_isInterpolate);
+	//pHair->setInterpolate(m_isInterpolate);
 	if(!pHair->lazi()) {
 		pHair->dice((float)detail*m_fract*0.5);
 		pHair->bind();

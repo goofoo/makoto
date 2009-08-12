@@ -105,7 +105,8 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				head += ".hairstart";
 				m_base->loadStart(head.c_str());
 				idice = eta;
-				MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
+				//MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
+				m_base->pushFaceVertice();
 				isInterpolate = data.inputValue(ainterpolate).asInt();
 				m_base->setInterpolate(isInterpolate);
 				

@@ -165,6 +165,52 @@ int hairMap::dice(int eta)
 	return n_samp;	
 }
 
+int hairMap::pushFaceVertice()
+{
+	if(!pconnection || !parray) return 0;
+	
+	n_samp = n_tri*3;
+	
+	if(ddice) delete[] ddice;
+	ddice = new DiceParam[n_samp];
+	
+	int a, b, c;
+	for(unsigned i=0; i<n_tri; i++) {
+		a = pconnection[i*3];
+		b = pconnection[i*3+1];
+		c = pconnection[i*3+2];
+		
+		ddice[i*3].alpha = 1.f;
+		ddice[i*3].beta = 0.f;
+		ddice[i*3].gamma = 0.f;
+		ddice[i*3].id0 = a;
+		ddice[i*3].id1 = b;
+		ddice[i*3].id2 = c;
+		ddice[i*3].coords = uarray[i*3];
+		ddice[i*3].coordt = varray[i*3];
+		
+		ddice[i*3+1].alpha = 1.f;
+		ddice[i*3+1].beta = 0.f;
+		ddice[i*3+1].gamma = 0.f;
+		ddice[i*3+1].id0 = b;
+		ddice[i*3+1].id1 = c;
+		ddice[i*3+1].id2 = a;
+		ddice[i*3+1].coords = uarray[i*3+1];
+		ddice[i*3+1].coordt = varray[i*3+1];
+		
+		ddice[i*3+2].alpha = 1.f;
+		ddice[i*3+2].beta = 0.f;
+		ddice[i*3+2].gamma = 0.f;
+		ddice[i*3+2].id0 = c;
+		ddice[i*3+2].id1 = a;
+		ddice[i*3+2].id2 = b;
+		ddice[i*3+2].coords = uarray[i*3+2];
+		ddice[i*3+2].coordt = varray[i*3+2];
+	}
+	
+	return n_samp;
+}
+
 void hairMap::draw()
 {
 	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
@@ -210,7 +256,7 @@ void hairMap::draw()
 			float dparam = 1.f/num_seg;
 			XYZ dcolor = (ctip - croot)/(float)num_seg;
 			float param;
-			if(bind_data[i].wei[0] > .8f) {
+			if(bind_data[i].wei[0] > .91f) {
 				for(short j = 0; j< num_seg; j++) {
 					param = dparam*j;
 					

@@ -74,7 +74,7 @@ public:
 	void create();
 	void createSimple();
 	
-	void setInterpolate(const int val) {isInterpolate = val;}
+	//void setInterpolate(const int val) {isInterpolate = val;}
 	void setDiceNumber(const float val) {ndice = val;} 
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
@@ -141,7 +141,7 @@ private:
 	float *coord_s, *coord_t;
 	XYZ tip_color, root_color, mutant_color;
 	XYZ *rootColorArray, *tipColorArray;// *opacities;
-	int isInterpolate;
+	//int isInterpolate;
 	int realncurve;
 	int densmap_w, densmap_h;
 	float* pDensmap;

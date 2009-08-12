@@ -81,6 +81,7 @@ public:
 	void updateBase();
 	
 	int dice(int eta);
+	int pushFaceVertice();
 	void bind();
 	
 	void draw();
