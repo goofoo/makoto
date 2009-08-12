@@ -1,5 +1,6 @@
 #include "BoundHair.h"
 #include "../shared/DiceTriangle.h"
+#include "../shared/FNoise.h"
 #include "BindTriangle.h"
 
 BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0) 
@@ -8,6 +9,7 @@ BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0)
 	bindPoints = new XYZ[3];
 	ucoord = new float[3];
 	vcoord = new float[3];
+	attrib = new float[3];
 }
     
 
@@ -15,7 +17,8 @@ void BoundHair::calculateBBox(float *box) const
 {
 	box[0] = box[2] = box[4] = 10e6;
 	box[1] = box[3] = box[5] = -10e6;
-	
+	XYZ v;
+	float lv, mlv = -10e6;
 	for(unsigned i=0; i<=nsegs[0]; i++) {
 		if(cvs_a[i].x < box[0]) box[0] = cvs_a[i].x;
 		if(cvs_a[i].x > box[1]) box[1] = cvs_a[i].x;
@@ -23,6 +26,11 @@ void BoundHair::calculateBBox(float *box) const
 		if(cvs_a[i].y > box[3]) box[3] = cvs_a[i].y;
 		if(cvs_a[i].z < box[4]) box[4] = cvs_a[i].z;
 		if(cvs_a[i].z > box[5]) box[5] = cvs_a[i].z;
+		if(i>0) {
+			v = cvs_a[i] - cvs_a[i-1];
+			lv = v.length();
+			if(lv > mlv) mlv = lv;
+		}
 	}
 	
 	for(unsigned i=0; i<=nsegs[1]; i++) {
@@ -32,6 +40,11 @@ void BoundHair::calculateBBox(float *box) const
 		if(cvs_b[i].y > box[3]) box[3] = cvs_b[i].y;
 		if(cvs_b[i].z < box[4]) box[4] = cvs_b[i].z;
 		if(cvs_b[i].z > box[5]) box[5] = cvs_b[i].z;
+		if(i>0) {
+			v = cvs_b[i] - cvs_b[i-1];
+			lv = v.length();
+			if(lv > mlv) mlv = lv;
+		}
 	}
 	
 	for(unsigned i=0; i<=nsegs[2]; i++) {
@@ -41,11 +54,27 @@ void BoundHair::calculateBBox(float *box) const
 		if(cvs_c[i].y > box[3]) box[3] = cvs_c[i].y;
 		if(cvs_c[i].z < box[4]) box[4] = cvs_c[i].z;
 		if(cvs_c[i].z > box[5]) box[5] = cvs_c[i].z;
+		if(i>0) {
+			v = cvs_c[i] - cvs_c[i-1];
+			lv = v.length();
+			if(lv > mlv) mlv = lv;
+		}
 	}
+	mlv /= 2;
+	box[0] -= mlv;
+	box[1] += mlv;
+	box[2] -= mlv;
+	box[3] += mlv;
+	box[4] -= mlv;
+	box[5] += mlv;
 }
 
 void BoundHair::emit(float detail) const
 {
+	int g_seed;
+	FNoise fnoi;
+	float noi;
+	
 	DiceTriangle ftri;
 	ftri.create(bindPoints[0], bindPoints[1], bindPoints[2]);
 	
@@ -69,26 +98,133 @@ void BoundHair::emit(float detail) const
 	
 	if(n_samp > 0) {
 		XYZ* pbuf = new XYZ[n_samp];
-		for(unsigned i=0; i<n_samp; i++) pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
+		unsigned* nsegbuf = new unsigned[n_samp];
+		for(unsigned i=0; i<n_samp; i++) {
+			pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
+			nsegbuf[i] = nsegs[ddice[i].id0];
+		}
+		
+		int ncurves = n_samp;
+		int* nvertices = new int[ncurves];
+		
+		int npoints = 0;
+		int nwidths = 0;
+		for(unsigned i=0; i<n_samp; i++) {
+			nvertices[i] = nsegbuf[i]*2 + 5;
+			npoints += nvertices[i];
+			nwidths += nvertices[i]-2;
+		}
+		
+		float* widths = new float[nwidths];
+		int acc = 0;
+		float rootWidth = 0.03;
+		float tipWidth = 0.01;
+		float widthScale = 1.0;
+		for(unsigned i=0; i<n_samp; i++) {
+			widths[acc] = rootWidth * widthScale;
+			acc++;
+			float dwidth = (tipWidth - rootWidth)/nsegbuf[i] ;
+			for(unsigned j = 0; j<= nsegbuf[i]; j++) {
+				widths[acc] = (rootWidth + dwidth*j)*widthScale;
+				acc++;
+				
+				if(j != nsegbuf[i]) {
+					widths[acc] = widths[acc-1];
+					acc++;
+				}
+			}
+			widths[acc] = tipWidth * widthScale;
+			acc++;
+		}
+		
+		XYZ* vertices = new XYZ[npoints];
+		
+		XYZ ppre, pcur, pt[3], q, dv[3], dmean, ddv, pcen, sidewind;
+		acc = 0;
+		for(unsigned i=0; i<n_samp; i++) {
+			g_seed  = seed*19 + i*67;
+			ppre = pbuf[i];
+			
+			vertices[acc] = ppre;
+			acc++;
+			vertices[acc] = ppre;
+			acc++;
+			
+			int num_seg = nsegbuf[i];
+			float dparam = 1.f/(float)num_seg;
+			float param;
+			for(int j = 0; j< num_seg; j++) {
+				param = dparam*j;
+				getPatParam(pt[0], param, nsegs[0], cvs_a);
+				getPatParam(pt[1], param, nsegs[1], cvs_b);
+				getPatParam(pt[2], param, nsegs[2], cvs_c);
+				param += dparam;
+				getPatParam(q, param, nsegs[0], cvs_a);
+				dv[0] = q - pt[0];
+				pcen = q;
+				getPatParam(q, param, nsegs[1], cvs_b);
+				dv[1] = q - pt[1];
+				pcen += q;
+				getPatParam(q, param, nsegs[2], cvs_c);
+				dv[2] = q - pt[2];
+				pcen += q;
+				pcen /= 3.f;
+				
+				vertices[acc] = ppre;
+				acc++;
+				
+				pcur = pt[0] * ddice[i].alpha + pt[1] * ddice[i].beta + pt[2] * ddice[i].gamma;
+				
+				dmean = dv[0] * ddice[i].alpha + dv[1] * ddice[i].beta + dv[2] * ddice[i].gamma;
+				dmean.setLength(dv[0].length());
+				
+				
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*attrib[0]; g_seed++;
+				dmean *= noi;
+				pcur += dmean;
+				
+				pcur += (pcen - pcur)*attrib[2];
+				
+				noi = fnoi.randfint( g_seed ); g_seed++;
+				if(noi<0.33) sidewind = pt[0] - pt[1];
+				else if(noi<0.66) sidewind = pt[1] - pt[2];
+				else sidewind = pt[2] - pt[0];
+				sidewind.setLength(dv[0].length());
+				
+				noi = (fnoi.randfint( g_seed )-0.5)*2*attrib[1]; g_seed++;
+
+				pcur += sidewind*noi*(1 - attrib[2]*j/num_seg);
+				
+				ddv = pcur - ppre;
+				ddv.normalize();
+				ddv *= dmean.length();
+				
+				vertices[acc] = ppre + ddv*0.5f;
+				acc++;
+
+				ppre += ddv;
+			}
+			vertices[acc] = ppre;
+			acc++;
+			vertices[acc] = ppre;
+			acc++;
+			vertices[acc] = ppre;
+			acc++;
+		}
 	
-		float width = 0.1;
-		RiPoints(RtInt(n_samp), "P", (RtPoint*)pbuf, "constantwidth", (RtPointer)&width, RI_NULL);
+		delete[] nsegbuf;
+		//float width = 0.02;
+		//RiPoints(RtInt(n_samp), "P", (RtPoint*)pbuf, "constantwidth", (RtPointer)&width, RI_NULL);
 		delete[] pbuf;
+		
+		RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, RI_NULL); 
+
+		delete[] nvertices;
+		delete[] vertices;
+		delete[] widths;
 	}
 	
 	delete[] ddice;
-	//int npolys = 1;
-	//int nvertices[3]; nvertices[0] = 3;
-	//int vertices[3] = {0, 1, 2};
-	//XYZ pp[3];
-	//pp[0] = cvs_a[0];
-	//pp[1] = cvs_b[0];
-	//pp[2] = cvs_c[0];
-	
-	//printf("%d %d %d  ", nsegs[0], nsegs[1], nsegs[2]);
-	
-	//RiPointsPolygons( (RtInt)npolys, (RtInt*)nvertices, (RtInt*)vertices,
-	//"P", (RtPoint*)pp, RI_NULL);
 }
 
 void BoundHair::emitGuider() const
@@ -190,12 +326,21 @@ void BoundHair::emitBBox() const
 
 void BoundHair::release()
 {
-	if(cvs_a) delete[] cvs_a;
-	if(cvs_b) delete[] cvs_b;
-	if(cvs_c) delete[] cvs_c;
-	if(points) delete[] points;
-	if(bindPoints) delete[] bindPoints;
+	delete[] cvs_a;
+	delete[] cvs_b;
+	delete[] cvs_c;
+	delete[] points;
+	delete[] bindPoints;
 	delete[] ucoord;
 	delete[] vcoord;
+	delete[] attrib;
+}
+
+void BoundHair::getPatParam(XYZ& p, float param, unsigned nseg, const XYZ* cvs) const
+{
+	float fparam = param * nseg;
+	int iparam = fparam - 0.000001;
+	int iparam1 = iparam+1;
+	p = cvs[iparam] + (cvs[iparam1] - cvs[iparam]) * (fparam-iparam);
 }
 //:~

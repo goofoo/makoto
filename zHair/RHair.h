@@ -15,6 +15,7 @@ public:
 	
 	float getEpislon() const {return m_epsilon;}
 	unsigned getNumTriangle() const;
+	void setAttrib(float* attrib) const;
 	
 	HairCache* pHair;
     

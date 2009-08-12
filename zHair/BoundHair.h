@@ -26,4 +26,8 @@ public:
 	float epsilon;
 	float* ucoord;
 	float* vcoord;
+	float* attrib;
+
+private:
+	void getPatParam(XYZ& p, float param, unsigned nseg, const XYZ* cvs) const;
 };

@@ -62,6 +62,8 @@ Subdivide(RtPointer data, RtFloat detail)
 		bound[4] = box[4];
 		bound[5] = box[5];
 		
+		pdata->setAttrib(param->attrib);
+		
 		RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
 	}
 }
@@ -77,7 +79,8 @@ export RtVoid
 SubdivideReal(RtPointer data, RtFloat detail)
 {
 	BoundHair* param = static_cast<BoundHair*>(data);
-	param->emitGuider();
+	//param->emitBBox();
+	//param->emitGuider();
 	param->emit((float)detail);
 	//printf(" dtl: %f",(float)detail);
 }

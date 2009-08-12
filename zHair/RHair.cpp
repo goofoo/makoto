@@ -109,4 +109,11 @@ unsigned RHair::getNumTriangle() const
 	return pHair->getNumTriangle();
 }
 
+void RHair::setAttrib(float* attrib) const
+{
+	attrib[0] = m_fuzz;
+	attrib[1] = m_kink;
+	attrib[2] = m_clumping;
+}
+
 //:~
