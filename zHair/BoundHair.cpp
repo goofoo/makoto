@@ -18,7 +18,7 @@ void BoundHair::calculateBBox(float *box) const
 	box[0] = box[2] = box[4] = 10e6;
 	box[1] = box[3] = box[5] = -10e6;
 	XYZ v;
-	float lv, mlv = -10e6;
+	float lv, mlv = 0;
 	for(unsigned i=0; i<=nsegs[0]; i++) {
 		if(cvs_a[i].x < box[0]) box[0] = cvs_a[i].x;
 		if(cvs_a[i].x > box[1]) box[1] = cvs_a[i].x;
@@ -60,7 +60,7 @@ void BoundHair::calculateBBox(float *box) const
 			if(lv > mlv) mlv = lv;
 		}
 	}
-	mlv /= 2;
+	mlv /= 4;
 	box[0] -= mlv;
 	box[1] += mlv;
 	box[2] -= mlv;
