@@ -16,6 +16,8 @@ public:
 	float getEpislon() const {return m_epsilon;}
 	unsigned getNumTriangle() const;
 	void setAttrib(float* attrib) const;
+	char needMBlur() const {if(m_is_blur==1) return 1; else return 0;}
+	void setMBlur(unsigned& idx, XYZ* velocities, float* shutters) const;
 	
 	HairCache* pHair;
     

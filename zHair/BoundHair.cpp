@@ -3,7 +3,7 @@
 #include "../shared/FNoise.h"
 #include "BindTriangle.h"
 
-BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0) 
+BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0),velocities(0), shutters(0)
 {
 	points = new XYZ[3]; 
 	bindPoints = new XYZ[3];
@@ -59,6 +59,16 @@ void BoundHair::calculateBBox(float *box) const
 			if(lv > mlv) mlv = lv;
 		}
 	}
+	
+	if(velocities) {
+		lv = velocities[0].length();
+		if(lv > mlv) mlv = lv;
+		lv = velocities[1].length();
+		if(lv > mlv) mlv = lv;
+		lv = velocities[2].length();
+		if(lv > mlv) mlv = lv;
+	}
+	
 	mlv /= 4;
 	box[0] -= mlv;
 	box[1] += mlv;
@@ -172,9 +182,25 @@ void BoundHair::emit(float detail) const
 				}
 			}
 			
+			float* coord_s = new float[ncurves];
+			float* coord_t = new float[ncurves];
+			float* mutant = new float[ncurves];
+			acc = 0;
+			for(unsigned i=0; i<n_samp; i++) {
+				if(isurvive[i]) {
+					coord_s[acc] = ddice[i].coords;
+					coord_t[acc] = ddice[i].coordt;
+					
+					g_seed  = seed*53 + i*5;
+					mutant[acc] = fnoi.randfint( g_seed );
+					acc++;
+				}
+			}
+			
 			XYZ* vertices = new XYZ[npoints];
 			
 			XYZ ppre, pcur, pt[3], q, dv[3], dmean, ddv, pcen, sidewind;
+			int num_seg;
 			acc = 0;
 			for(unsigned i=0; i<n_samp; i++) {
 				if(isurvive[i]) {
@@ -186,7 +212,7 @@ void BoundHair::emit(float detail) const
 					vertices[acc] = ppre;
 					acc++;
 					
-					int num_seg = nsegbuf[i];
+					num_seg = nsegbuf[i];
 					float dparam = 1.f/(float)num_seg;
 					float param;
 					for(int j = 0; j< num_seg; j++) {
@@ -248,17 +274,55 @@ void BoundHair::emit(float detail) const
 					acc++;
 				}
 			}
-		
-			delete[] nsegbuf;
 			//float width = 0.02;
 			//RiPoints(RtInt(n_samp), "P", (RtPoint*)pbuf, "constantwidth", (RtPointer)&width, RI_NULL);
 			delete[] pbuf;
 			
-			RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, RI_NULL); 
-
+			if(shutters) RiMotionBegin(2, (RtFloat)shutters[0], (RtFloat)shutters[1]);
+			
+			RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, 
+			"uniform float s", (RtFloat*)coord_s, "uniform float t", (RtFloat*)coord_t, "uniform float mutant", (RtFloat*)mutant,
+			RI_NULL); 
+			
+			if(shutters) {
+				acc = 0;
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						ddv = velocities[0] * ddice[i].alpha + velocities[1] * ddice[i].beta + velocities[2] * ddice[i].gamma;
+						
+						vertices[acc] += ddv;
+						acc++;
+						vertices[acc] += ddv;
+						acc++;
+						num_seg = nsegbuf[i];
+						for(int j = 0; j< num_seg; j++) {
+							vertices[acc] += ddv;
+							acc++;
+							vertices[acc] += ddv;
+							acc++;
+						}
+						vertices[acc] += ddv;
+						acc++;
+						vertices[acc] += ddv;
+						acc++;
+						vertices[acc] += ddv;
+						acc++;
+					}
+				}
+				
+				RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, 
+				"uniform float s", (RtFloat*)coord_s, "uniform float t", (RtFloat*)coord_t, "uniform float mutant", (RtFloat*)mutant,
+				RI_NULL);
+				
+				RiMotionEnd();
+			}
+			delete[] nsegbuf;
 			delete[] nvertices;
 			delete[] vertices;
 			delete[] widths;
+			delete[] coord_s;
+			delete[] coord_t;
+			delete[] mutant;
 		}
 		delete[] isurvive;
 	}
@@ -373,9 +437,11 @@ void BoundHair::release()
 	delete[] ucoord;
 	delete[] vcoord;
 	delete[] attrib;
+	if(velocities) delete[] velocities;
+	if(shutters) delete[] shutters;
 }
 
-void BoundHair::getPatParam(XYZ& p, float param, unsigned nseg, const XYZ* cvs) const
+void BoundHair::getPatParam(XYZ& p, const float& param, const unsigned& nseg, const XYZ* cvs) const
 {
 	float fparam = param * nseg;
 	int iparam = fparam - 0.000001;
