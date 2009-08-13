@@ -847,7 +847,6 @@ int hairMap::save(const char* filename)
 	for(unsigned i = 0;i<num_guide;i++)
 	{
 		outfile.write((char*)&guide_data[i].num_seg,sizeof(guide_data[i].num_seg));
-		//outfile.write((char*)&guide_data[i].dsp_col,sizeof(XYZ));
 		outfile.write((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
@@ -855,11 +854,7 @@ int hairMap::save(const char* filename)
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
 		outfile.write((char*)&guide_data[i].v, sizeof(float));
 		outfile.write((char*)&guide_data[i].radius, sizeof(float));
-		//outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
-	outfile.write((char*)&sum_area, sizeof(float));
-	//outfile.write((char*)&n_tri, sizeof(unsigned));
-	//outfile.write((char*)pconnection, sizeof(int)*n_tri*3);
 	outfile.write((char*)&n_vert, sizeof(unsigned));
 	outfile.write((char*)parray, sizeof(XYZ)*n_vert);
 	outfile.close();
@@ -896,6 +891,10 @@ int hairMap::saveStart(const char* filename)
 	outfile.write((char*)parray, sizeof(XYZ)*n_vert);
 	outfile.write((char*)uarray, sizeof(float)*n_tri*3);
 	outfile.write((char*)varray, sizeof(float)*n_tri*3);
+	outfile.write((char*)&n_samp,sizeof(int));
+	outfile.write((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	outfile.write((char*)pNSeg,sizeof(unsigned)*n_samp);
+	outfile.write((char*)ddice,sizeof(DiceParam)*n_samp);
 	outfile.close();
 	return 1;
 }
@@ -938,7 +937,7 @@ int hairMap::load(const char* filename)
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
 		//infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
-	infile.read((char*)&sum_area,sizeof(float));
+	//infile.read((char*)&sum_area,sizeof(float));
 	//infile.read((char*)&n_tri,sizeof(unsigned));
 	
 	//if(pconnection) delete[] pconnection;
@@ -1091,6 +1090,21 @@ int hairMap::loadStart(const char* filename)
 	if(varray) delete[] varray;
 	varray = new float[n_tri*3];
 	infile.read((char*)varray, sizeof(float)*n_tri*3);
+	
+	infile.read((char*)&n_samp,sizeof(int));
+	
+	if(bind_data) delete[] bind_data;
+	bind_data = new triangle_bind_info[n_samp];
+	
+	if(pNSeg) delete[] pNSeg;
+	pNSeg = new unsigned[n_samp];
+	
+	if(ddice) delete[] ddice;
+	ddice = new DiceParam[n_samp];
+	
+	infile.read((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	infile.read((char*)pNSeg,sizeof(unsigned)*n_samp);
+	infile.read((char*)ddice,sizeof(DiceParam)*n_samp);
 	
 	infile.close();	
 	

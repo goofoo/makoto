@@ -81,7 +81,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		if(startFrame == frame)
 		{
-			int npt = m_base->dice(0);
+			int npt = m_base->pushFaceVertice();
 			MGlobal::displayInfo(MString("ZHair diced ") + npt + " samples");
 			m_base->initGuide();
 			
