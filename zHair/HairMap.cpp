@@ -23,7 +23,7 @@ using namespace std;
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
 parray(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),order(0),isInterpolate(0),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0)
+draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
@@ -130,39 +130,6 @@ void hairMap::updateBase()
 			acc += 3;
 		}
 	}
-}
-
-int hairMap::dice(int eta)
-{
-	if(!pconnection || !parray) return 0;
-		
-	float epsilon = sqrt(sum_area/n_tri/(2 + eta)/2);
-
-	int estimate_ncell = n_tri*(2 + eta)*2;
-	estimate_ncell += estimate_ncell/9;
-	
-	if(ddice) delete[] ddice;
-	ddice = new DiceParam[estimate_ncell];
-	n_samp = 0;
-
-	DiceTriangle ftri;
-	int a, b, c;
-	
-	int seed = 12;
-	for(unsigned i=0; i<n_tri; i++) 
-	{
-		a = pconnection[i*3];
-		b = pconnection[i*3+1];
-		c = pconnection[i*3+2];
-		
-		ftri.create(parray[a], parray[b], parray[c]);
-		ftri.setId(a, b, c);
-		ftri.setS(uarray[i*3], uarray[i*3+1], uarray[i*3+2]);
-		ftri.setT(varray[i*3], varray[i*3+1], varray[i*3+2]);
-		ftri.rasterize(epsilon, ddice, n_samp, seed);seed++;
-	}
-	
-	return n_samp;	
 }
 
 int hairMap::pushFaceVertice()
@@ -731,7 +698,7 @@ void hairMap::bind()
 		
 		bind_data[i].idx[0] = bind_data[i].idx[1] = bind_data[i].idx[2] = idx[validid].idx;
 		
-		if(isInterpolate==1 && validid < num_guide-6) {
+		if(validid < num_guide-6) {
 			XY corner[3]; XYZ pw[3]; float dist[3];
 
 			for(unsigned hdl=0; hdl<3; hdl++) {
@@ -1134,16 +1101,15 @@ void hairMap::drawBind()
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step) {
 		p0 = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-		
-		
+
 		p1 = guide_data[bind_data[i].idx[0]].P[0];
-		eta = ddice[i].alpha;
+		eta = bind_data[i].wei[0];
 		glColor3f(eta,eta,eta);
 		glVertex3f(p0.x, p0.y, p0.z);
 		glColor3f(eta, 0, 0);
 		glVertex3f(p1.x, p1.y, p1.z);
 		
-		eta = ddice[i].beta;
+		eta = bind_data[i].wei[1];
 		if(eta>0) {
 			p1 = guide_data[bind_data[i].idx[1]].P[0];
 			
@@ -1153,7 +1119,7 @@ void hairMap::drawBind()
 			glVertex3f(p1.x, p1.y, p1.z);
 		}
 		
-		eta = ddice[i].gamma;
+		eta = bind_data[i].wei[2];
 		if(eta > 0) {
 			p1 = guide_data[bind_data[i].idx[2]].P[0];
 			

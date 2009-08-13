@@ -15,9 +15,6 @@ MObject HairNode::agrowth;
 MObject HairNode::aguide;
 MObject HairNode::alengthnoise;
 MObject HairNode::asavemap;
-MObject HairNode::astep;
-MObject HairNode::aalternativepatch;
-MObject HairNode::ainterpolate;
 MObject HairNode::adraw;
 MObject HairNode::aoffset;
 MObject HairNode::adensitymap;
@@ -76,9 +73,6 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		int isave = data.inputValue(asavemap, &status).asInt();
 		
-		m_base->setPatchOrder(data.inputValue(aalternativepatch).asInt());
-		m_base->setInterpolate(data.inputValue(ainterpolate).asInt());
-		
 		if(startFrame == frame)
 		{
 			int npt = m_base->pushFaceVertice();
@@ -110,7 +104,6 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 		m_base->setClumping(data.inputValue(aSize).asFloat());
 		m_base->setFuzz(data.inputValue(afuzz).asFloat());
 		m_base->setKink(data.inputValue(alengthnoise).asFloat());
-		m_base->setDrawAccuracy(data.inputValue(astep).asInt());
 		
 		idraw = data.inputValue(adraw).asInt();
 	    
@@ -192,11 +185,6 @@ MStatus HairNode::initialize()
 	numAttr.setCached( true );
 	addAttribute(aoffset);
 	
-	astep = numAttr.create( "drawStep", "dsp", MFnNumericData::kInt, 1 );
-	numAttr.setStorable(true);
-	numAttr.setKeyable(true);
-	addAttribute(astep);
-	
 	aHDRName = tAttr.create("cachePath", "cp",
 	MFnData::kString, MObject::kNullObj, &status);
     CHECK_MSTATUS( status );
@@ -226,20 +214,10 @@ MStatus HairNode::initialize()
 	zWorks::createTimeAttr(acurrenttime, MString("currentTime"), MString("ct"), 1.0);
 	zCheckStatus(addAttribute(acurrenttime), "ERROR adding time");
 	
-	ainterpolate = numAttr.create( "interpolate", "ipl", MFnNumericData::kInt, 0);
-	numAttr.setStorable(true);
-	numAttr.setKeyable(true);
-	addAttribute(ainterpolate);
-	
 	asavemap = numAttr.create( "saveMap", "sm", MFnNumericData::kInt, 0);
 	numAttr.setStorable(false);
 	numAttr.setKeyable(true);
 	addAttribute(asavemap);
-	
-	aalternativepatch = numAttr.create( "patchOrder", "pod", MFnNumericData::kInt, 0);
-	numAttr.setStorable(true);
-	numAttr.setKeyable(true);
-	addAttribute(aalternativepatch);
 	
 	adraw = numAttr.create( "drawType", "drt", MFnNumericData::kInt, 0);
 	numAttr.setStorable(true);
@@ -260,9 +238,6 @@ MStatus HairNode::initialize()
 	attributeAffects( acurrenttime, aoutput );
 	attributeAffects( asavemap, aoutput );
 	attributeAffects( afuzz, aoutput );
-	attributeAffects( astep, aoutput );
-	attributeAffects( aalternativepatch, aoutput );
-	attributeAffects( ainterpolate, aoutput );
 	attributeAffects( adraw, aoutput );
 	attributeAffects( aoffset, aoutput );
 	attributeAffects( adensitymap, aoutput );

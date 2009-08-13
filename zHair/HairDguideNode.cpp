@@ -50,15 +50,13 @@ MObject HairDguideNode::amutantcolorr;
 MObject HairDguideNode::amutantcolorg;
 MObject HairDguideNode::amutantcolorb;  
 MObject HairDguideNode::amutantcolorscale;
-MObject HairDguideNode::adice;
 MObject HairDguideNode::adraw;
-MObject HairDguideNode::ainterpolate;
 MObject HairDguideNode::abald;
 MObject HairDguideNode::asnowsize;
 MObject HairDguideNode::asnowrate;
 MObject HairDguideNode::adensitymap;
 
-HairDguideNode::HairDguideNode() : m_base(0),isInterpolate(0),idice(0),idraw(0)
+HairDguideNode::HairDguideNode() : m_base(0),idraw(0)
 {
 	m_base = new hairMap();
 	curname = dnmname = "nil";
@@ -92,11 +90,10 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		MString dnmpath = data.inputValue(adensitymap).asString();
 		string sbuf(sname.asChar());
 		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
-		int eta = data.inputValue(adice).asInt();
 		idraw = data.inputValue(adraw).asInt();
 		if(m_base) 
 		{
-			if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice || dnmname != dnmpath)
+			if(curname != sname || dnmname != dnmpath)
 			{
 				curname = sname;
 				dnmname = dnmpath;
@@ -104,12 +101,6 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				zGlobal::cutByFirstDot(head);
 				head += ".hairstart";
 				m_base->loadStart(head.c_str());
-				idice = eta;
-				//MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
-				//m_base->pushFaceVertice();
-				isInterpolate = data.inputValue(ainterpolate).asInt();
-				m_base->setInterpolate(isInterpolate);
-				
 				
 				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
 			
@@ -333,17 +324,6 @@ MStatus HairDguideNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(adraw);
 	
-	adice = numAttr.create( "dice", "dc", MFnNumericData::kInt, 0);
-	numAttr.setStorable(true);
-	numAttr.setMin(0);
-	numAttr.setKeyable(true);
-	addAttribute(adice);
-	
-	ainterpolate = numAttr.create( "interpolate", "ipl", MFnNumericData::kInt, 0);
-	numAttr.setStorable(true);
-	numAttr.setKeyable(true);
-	addAttribute(ainterpolate);
-	
 	zCheckStatus(zWorks::createTypedAttr(aoutmesh, MString("outMesh"), MString("om"), MFnData::kMesh), "ERROR creating out mesh");
 	zCheckStatus(addAttribute(aoutmesh), "ERROR adding out mesh");
 	
@@ -376,11 +356,8 @@ MStatus HairDguideNode::initialize()
 	attributeAffects( amutantcolorg, output );
 	attributeAffects( amutantcolorb, output );
 	attributeAffects( amutantcolorscale, output );
-	attributeAffects( ainterpolate, output );
-	attributeAffects( adice, output );
 	attributeAffects( adraw, output );
 	attributeAffects( abald, output );
-	attributeAffects( adice, aoutmesh );
 	attributeAffects( asnowsize, aoutmesh );
 	attributeAffects( asnowrate, aoutmesh );
 	attributeAffects( abald, aoutmesh );

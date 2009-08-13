@@ -80,7 +80,6 @@ public:
 	
 	void updateBase();
 	
-	int dice(int eta);
 	int pushFaceVertice();
 	void bind();
 	
@@ -97,7 +96,6 @@ public:
 	int load(const char* filename);
 	int loadStart(const char* filename);
 	
-	void setPatchOrder(const int val) {order = val;}
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
 	void setKink(const float val) {kink = val;}
@@ -106,7 +104,6 @@ public:
 	void setTipColor(const float r, const float g, const float b) {tip_color.x = r; tip_color.y = g; tip_color.z = b;}
 	void setMutantColor(const float r, const float g, const float b) {mutant_color.x = r; mutant_color.y = g; mutant_color.z = b;}
 	void setMutantColorScale(const float v) {mutant_scale = v;}
-	void setInterpolate(const int val) {isInterpolate = val;}
 	void setOffset(const float val) {m_offset = val;}
 	void setBald(const float val) {m_bald = val;}
 	void setSnowSize(const float val) {m_snow_size = val;}
@@ -122,7 +119,6 @@ public:
 	float getClumping() const {return clumping;}
 	float getFuzz() const {return fuzz;}
 	float getKink() const {return kink;}
-	int getInterpolate() const {return isInterpolate;}
 	float getRootColorR() const {return root_color.x;}
 	float getRootColorG() const {return root_color.y;}
 	float getRootColorB() const {return root_color.z;}
@@ -165,9 +161,7 @@ private:
 	XYZ bbox_low, bbox_high;
 	std::string m_cachename, m_densityname;
 	XYZ tip_color, root_color, mutant_color;
-	int order, isInterpolate;
 	int* nsegbuf;
-
 	float m_offset, m_bald, m_snow_size, m_snow_rate;
 	int densmap_w, densmap_h;
 	float* pDensmap;
