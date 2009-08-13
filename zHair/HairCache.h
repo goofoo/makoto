@@ -70,6 +70,7 @@ public:
 	
 	int load(const char* filename);
 	int loadStart(const char* filename);
+	int loadNext();
 	
 	void create();
 	void createSimple();
@@ -109,11 +110,12 @@ public:
 	char lazi();
 	
 	unsigned getNumTriangle() const {return n_tri;}
-	void lookupTriangle(unsigned idx, XYZ* points) const;
-	void lookupTriangleBind(unsigned idx, XYZ* points) const;
-	void lookupTriangleUV(unsigned idx, float* u, float* v) const;
-	void lookupGuiderNSeg(unsigned idx, unsigned* nsegs) const;
-	void lookupGuiderCVs(unsigned idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const;
+	void lookupTriangle(unsigned& idx, XYZ* points) const;
+	void lookupTriangleBind(unsigned& idx, XYZ* points) const;
+	void lookupTriangleUV(unsigned& idx, float* u, float* v) const;
+	void lookupGuiderNSeg(unsigned& idx, unsigned* nsegs) const;
+	void lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const;
+	void lookupVelocity(unsigned& idx, float& fract, XYZ* velocities) const;
 	float getEpsilon() const;
 	
 private:
@@ -126,6 +128,7 @@ private:
 	float* varray;
 	XYZ* parray;
 	XYZ* pBind;
+	XYZ* pframe1;
 
 	Dguide* guide_data;
 	unsigned* pNSeg;

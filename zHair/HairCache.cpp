@@ -19,7 +19,7 @@ HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_space
 parray(0),pconnection(0),uarray(0),varray(0),pBind(0),
 sum_area(0.f),ndice(24),
 nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
-rootColorArray(0), tipColorArray(0), pNSeg(0),kbald(0.f),pDensmap(0),factorwidth(1.f)
+rootColorArray(0), tipColorArray(0), pNSeg(0),kbald(0.f),pDensmap(0),factorwidth(1.f),pframe1(0)
 {
 	m_densityname = "nil";
 }
@@ -46,6 +46,7 @@ HairCache::~HairCache()
 	if(pBind) delete[] pBind;
 	if(pNSeg) delete[] pNSeg;
 	if(pDensmap) delete[] pDensmap;
+	if(pframe1) delete[] pframe1;
 }
 
 float HairCache::getEpsilon() const
@@ -273,7 +274,12 @@ int HairCache::load(const char* filename)
 	parray = new XYZ[n_vert];
 	infile.read((char*)parray, sizeof(XYZ)*n_vert);
 	
-	infile.close();	
+	infile.close();
+	
+	if(pframe1) delete[] pframe1;
+	pframe1 = new XYZ[n_vert];
+	
+	for(unsigned i=0; i<n_vert; i++) pframe1[i] = parray[i];
 	
 	for(unsigned i = 0;i<num_guide;i++)
 	{
@@ -364,6 +370,64 @@ int HairCache::loadStart(const char* filename)
 		guide_spaceinv[i] = guide_data[i].space[0];
 		guide_spaceinv[i].inverse();
 	}
+	return 1;
+}
+
+int HairCache::loadNext()
+{
+	std::string filename = m_cachename;
+	int frm = zGlobal::getFrameNumber(filename);
+	frm++;
+	zGlobal::setFrameNumberAndExtension(filename, frm, "hair");
+	
+	ifstream infile;
+	infile.open(filename.c_str(), ios_base::in | ios_base::binary);
+	if(!infile.is_open()) 
+	{
+		cout<<"Cannot open file: "<<filename<<endl;
+		return 0;
+	}
+	
+	int offs = sizeof(unsigned);
+	
+	//infile.read((char*)&num_guide,sizeof(unsigned));
+	
+	for(unsigned i = 0;i<num_guide;i++)
+	{
+		//infile.read((char*)&guide_data[i].num_seg, sizeof(guide_data[i].num_seg));
+		offs += sizeof(short);
+		//guide_data[i].P = new XYZ[guide_data[i].num_seg];
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		//guide_data[i].N = new XYZ[guide_data[i].num_seg];
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		//guide_data[i].T = new XYZ[guide_data[i].num_seg];
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		//guide_data[i].dispv = new XYZ[guide_data[i].num_seg];
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		//guide_data[i].space = new MATRIX44F[guide_data[i].num_seg];
+		offs += sizeof(float)*3;
+
+		//infile.read((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
+		//infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
+		//infile.read((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
+		//infile.read((char*)guide_data[i].dispv, guide_data[i].num_seg*sizeof(XYZ));
+		//infile.read((char*)&guide_data[i].u, sizeof(float));
+		//infile.read((char*)&guide_data[i].v, sizeof(float));
+		//infile.read((char*)&guide_data[i].radius, sizeof(float));
+	}
+	//infile.read((char*)&sum_area,sizeof(float));
+	offs += sizeof(float);
+	
+	//infile.read((char*)&n_vert, sizeof(unsigned));
+	offs += sizeof(unsigned);
+	
+	infile.seekg(offs, ios::beg);
+	if(pframe1) delete[] pframe1;
+	pframe1 = new XYZ[n_vert];
+	infile.read((char*)pframe1, sizeof(XYZ)*n_vert);
+	
+	infile.close();
+	
 	return 1;
 }
 
@@ -945,21 +1009,21 @@ char HairCache::lazi()
 	return 1;
 }
 
-void HairCache::lookupTriangle(unsigned idx, XYZ* points) const
+void HairCache::lookupTriangle(unsigned& idx, XYZ* points) const
 {
 	points[0] = parray[pconnection[idx*3]];
 	points[1] = parray[pconnection[idx*3+1]];
 	points[2] = parray[pconnection[idx*3+2]];
 }
 
-void HairCache::lookupTriangleBind(unsigned idx, XYZ* points) const
+void HairCache::lookupTriangleBind(unsigned& idx, XYZ* points) const
 {
 	points[0] = pBind[pconnection[idx*3]];
 	points[1] = pBind[pconnection[idx*3+1]];
 	points[2] = pBind[pconnection[idx*3+2]];
 }
 
-void HairCache::lookupTriangleUV(unsigned idx, float* u, float* v) const
+void HairCache::lookupTriangleUV(unsigned& idx, float* u, float* v) const
 {
 	u[0] = uarray[pconnection[idx*3]];
 	u[1] = uarray[pconnection[idx*3+1]];
@@ -969,14 +1033,14 @@ void HairCache::lookupTriangleUV(unsigned idx, float* u, float* v) const
 	v[2] = varray[pconnection[idx*3+2]];
 }
 
-void HairCache::lookupGuiderNSeg(unsigned idx, unsigned* nsegs) const
+void HairCache::lookupGuiderNSeg(unsigned& idx, unsigned* nsegs) const
 {
 	nsegs[0] = pNSeg[idx*3];
 	nsegs[1] = pNSeg[idx*3+1];
 	nsegs[2] = pNSeg[idx*3+2];
 }
 
-void HairCache::lookupGuiderCVs(unsigned idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const
+void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const
 {
 	for(unsigned i=0; i<3; i++) {
 		unsigned isamp = idx*3 + i;
@@ -1064,5 +1128,15 @@ void HairCache::lookupGuiderCVs(unsigned idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c
 			}
 		}
 	}
+}
+
+void HairCache::lookupVelocity(unsigned& idx, float& fract, XYZ* velocities) const
+{
+	velocities[0] = pframe1[pconnection[idx*3]] - parray[pconnection[idx*3]];
+	velocities[1] = pframe1[pconnection[idx*3+1]] - parray[pconnection[idx*3+1]];
+	velocities[2] = pframe1[pconnection[idx*3+2]] - parray[pconnection[idx*3+2]];
+	velocities[0] *= fract;
+	velocities[1] *= fract;
+	velocities[2] *= fract;
 }
 //~:

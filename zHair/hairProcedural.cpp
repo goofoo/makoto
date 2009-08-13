@@ -64,6 +64,12 @@ Subdivide(RtPointer data, RtFloat detail)
 		
 		pdata->setAttrib(param->attrib);
 		
+		if(pdata->needMBlur()) {
+			param->velocities = new XYZ[3];
+			param->shutters = new float[2];
+			pdata->setMBlur(i, param->velocities, param->shutters);
+		}
+		
 		RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
 	}
 }

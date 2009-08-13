@@ -100,6 +100,7 @@ void RHair::init()
 	pHair->bind();
 	
 	pHair->load(m_cache_name);
+	if(m_is_blur==1) pHair->loadNext();
 }
 
 unsigned RHair::getNumTriangle() const
@@ -116,4 +117,11 @@ void RHair::setAttrib(float* attrib) const
 	attrib[4] = m_width1;
 }
 
+void RHair::setMBlur(unsigned& idx, XYZ* velocities, float* shutters) const
+{
+	shutters[0] = m_shutter_open;
+	shutters[1] = m_shutter_close;
+	float fract = m_hair_1 - m_hair_0;
+	pHair->lookupVelocity(idx, fract, velocities);
+}
 //:~

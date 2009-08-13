@@ -16,6 +16,7 @@ public:
     void emit(float detail) const;
 	void emitGuider() const;
 	void emitBBox() const;
+	
 	XYZ* points;
 	XYZ* bindPoints;
 	int seed;
@@ -27,7 +28,10 @@ public:
 	float* ucoord;
 	float* vcoord;
 	float* attrib;
+	
+	XYZ* velocities;
+	float* shutters;
 
 private:
-	void getPatParam(XYZ& p, float param, unsigned nseg, const XYZ* cvs) const;
+	void getPatParam(XYZ& p, const float& param, const unsigned& nseg, const XYZ* cvs) const;
 };
