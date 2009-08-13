@@ -11,7 +11,6 @@ BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0)
 	vcoord = new float[3];
 	attrib = new float[5];
 }
-    
 
 void BoundHair::calculateBBox(float *box) const
 {
@@ -71,6 +70,20 @@ void BoundHair::calculateBBox(float *box) const
 
 void BoundHair::emit(float detail) const
 {
+	float widthScale = 1.0, kill = 1.0;
+	if(detail < 3000) {
+		kill = 0.9;
+		widthScale = 1.1;
+		if(detail < 1800) {
+			kill = 0.5;
+			widthScale = 2.0;
+			if(detail < 800) {
+				kill = 0.25;
+				widthScale = 4.0;
+			}
+		}
+	}
+	
 	int g_seed;
 	FNoise fnoi;
 	float noi;
@@ -97,131 +110,157 @@ void BoundHair::emit(float detail) const
 	//printf(" %d:%d ", estimate_ncell, n_samp);
 	
 	if(n_samp > 0) {
-		XYZ* pbuf = new XYZ[n_samp];
-		unsigned* nsegbuf = new unsigned[n_samp];
+// prune by threashold
+		char* isurvive = new char[n_samp];
+		int n_survive = 0;
 		for(unsigned i=0; i<n_samp; i++) {
-			pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
-			nsegbuf[i] = nsegs[ddice[i].id0];
+			g_seed  = seed*29 + i*17;
+			noi = fnoi.randfint( g_seed );
+			
+			if(noi < kill) {
+				isurvive[i] = 1;
+				n_survive++;
+			}
+			else isurvive[i] = 0;
 		}
 		
-		int ncurves = n_samp;
-		int* nvertices = new int[ncurves];
+		if(n_survive > 0) {
 		
-		int npoints = 0;
-		int nwidths = 0;
-		for(unsigned i=0; i<n_samp; i++) {
-			nvertices[i] = nsegbuf[i]*2 + 5;
-			npoints += nvertices[i];
-			nwidths += nvertices[i]-2;
-		}
-		
-		float* widths = new float[nwidths];
-		int acc = 0;
-		float rootWidth = attrib[3];
-		float tipWidth = attrib[4];
-		float widthScale = 1.0;
-		for(unsigned i=0; i<n_samp; i++) {
-			widths[acc] = rootWidth * widthScale;
-			acc++;
-			float dwidth = (tipWidth - rootWidth)/nsegbuf[i] ;
-			for(unsigned j = 0; j<= nsegbuf[i]; j++) {
-				widths[acc] = (rootWidth + dwidth*j)*widthScale;
-				acc++;
-				
-				if(j != nsegbuf[i]) {
-					widths[acc] = widths[acc-1];
+			XYZ* pbuf = new XYZ[n_samp];
+			unsigned* nsegbuf = new unsigned[n_samp];
+			for(unsigned i=0; i<n_samp; i++) {
+				pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
+				nsegbuf[i] = nsegs[ddice[i].id0];
+			}
+			
+			int ncurves = n_survive;
+			int* nvertices = new int[ncurves];
+			
+			int npoints = 0;
+			int nwidths = 0;
+			int acc = 0;
+			for(unsigned i=0; i<n_samp; i++) {
+				if(isurvive[i]) {
+					nvertices[acc] = nsegbuf[i]*2 + 5;
+					npoints += nvertices[acc];
+					nwidths += nvertices[acc]-2;
 					acc++;
 				}
 			}
-			widths[acc] = tipWidth * widthScale;
-			acc++;
-		}
-		
-		XYZ* vertices = new XYZ[npoints];
-		
-		XYZ ppre, pcur, pt[3], q, dv[3], dmean, ddv, pcen, sidewind;
-		acc = 0;
-		for(unsigned i=0; i<n_samp; i++) {
-			g_seed  = seed*19 + i*67;
-			ppre = pbuf[i];
 			
-			vertices[acc] = ppre;
-			acc++;
-			vertices[acc] = ppre;
-			acc++;
+			float* widths = new float[nwidths];
+			acc = 0;
+			float rootWidth = attrib[3];
+			float tipWidth = attrib[4];
 			
-			int num_seg = nsegbuf[i];
-			float dparam = 1.f/(float)num_seg;
-			float param;
-			for(int j = 0; j< num_seg; j++) {
-				param = dparam*j;
-				getPatParam(pt[0], param, nsegs[0], cvs_a);
-				getPatParam(pt[1], param, nsegs[1], cvs_b);
-				getPatParam(pt[2], param, nsegs[2], cvs_c);
-				param += dparam;
-				getPatParam(q, param, nsegs[0], cvs_a);
-				dv[0] = q - pt[0];
-				pcen = q;
-				getPatParam(q, param, nsegs[1], cvs_b);
-				dv[1] = q - pt[1];
-				pcen += q;
-				getPatParam(q, param, nsegs[2], cvs_c);
-				dv[2] = q - pt[2];
-				pcen += q;
-				pcen /= 3.f;
-				
-				vertices[acc] = ppre;
-				acc++;
-				
-				pcur = pt[0] * ddice[i].alpha + pt[1] * ddice[i].beta + pt[2] * ddice[i].gamma;
-				
-				dmean = dv[0] * ddice[i].alpha + dv[1] * ddice[i].beta + dv[2] * ddice[i].gamma;
-				dmean.setLength(dv[0].length());
-				
-				
-				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*attrib[0]; g_seed++;
-				dmean *= noi;
-				pcur += dmean;
-				
-				pcur += (pcen - pcur)*attrib[2];
-				
-				noi = fnoi.randfint( g_seed ); g_seed++;
-				if(noi<0.33) sidewind = pt[0] - pt[1];
-				else if(noi<0.66) sidewind = pt[1] - pt[2];
-				else sidewind = pt[2] - pt[0];
-				sidewind.setLength(dv[0].length());
-				
-				noi = (fnoi.randfint( g_seed )-0.5)*2*attrib[1]; g_seed++;
-
-				pcur += sidewind*noi*(1 - attrib[2]*j/num_seg);
-				
-				ddv = pcur - ppre;
-				ddv.normalize();
-				ddv *= dmean.length();
-				
-				vertices[acc] = ppre + ddv*0.5f;
-				acc++;
-
-				ppre += ddv;
+			for(unsigned i=0; i<n_samp; i++) {
+				if(isurvive[i]) {
+					widths[acc] = rootWidth * widthScale;
+					acc++;
+					float dwidth = (tipWidth - rootWidth)/nsegbuf[i] ;
+					for(unsigned j = 0; j<= nsegbuf[i]; j++) {
+						widths[acc] = (rootWidth + dwidth*j)*widthScale;
+						acc++;
+						
+						if(j != nsegbuf[i]) {
+							widths[acc] = widths[acc-1];
+							acc++;
+						}
+					}
+					widths[acc] = tipWidth * widthScale;
+					acc++;
+				}
 			}
-			vertices[acc] = ppre;
-			acc++;
-			vertices[acc] = ppre;
-			acc++;
-			vertices[acc] = ppre;
-			acc++;
-		}
-	
-		delete[] nsegbuf;
-		//float width = 0.02;
-		//RiPoints(RtInt(n_samp), "P", (RtPoint*)pbuf, "constantwidth", (RtPointer)&width, RI_NULL);
-		delete[] pbuf;
-		
-		RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, RI_NULL); 
+			
+			XYZ* vertices = new XYZ[npoints];
+			
+			XYZ ppre, pcur, pt[3], q, dv[3], dmean, ddv, pcen, sidewind;
+			acc = 0;
+			for(unsigned i=0; i<n_samp; i++) {
+				if(isurvive[i]) {
+					g_seed  = seed*19 + i*67;
+					ppre = pbuf[i];
+					
+					vertices[acc] = ppre;
+					acc++;
+					vertices[acc] = ppre;
+					acc++;
+					
+					int num_seg = nsegbuf[i];
+					float dparam = 1.f/(float)num_seg;
+					float param;
+					for(int j = 0; j< num_seg; j++) {
+						param = dparam*j;
+						getPatParam(pt[0], param, nsegs[0], cvs_a);
+						getPatParam(pt[1], param, nsegs[1], cvs_b);
+						getPatParam(pt[2], param, nsegs[2], cvs_c);
+						param += dparam;
+						getPatParam(q, param, nsegs[0], cvs_a);
+						dv[0] = q - pt[0];
+						pcen = q;
+						getPatParam(q, param, nsegs[1], cvs_b);
+						dv[1] = q - pt[1];
+						pcen += q;
+						getPatParam(q, param, nsegs[2], cvs_c);
+						dv[2] = q - pt[2];
+						pcen += q;
+						pcen /= 3.f;
+						
+						vertices[acc] = ppre;
+						acc++;
+						
+						pcur = pt[0] * ddice[i].alpha + pt[1] * ddice[i].beta + pt[2] * ddice[i].gamma;
+						
+						dmean = dv[0] * ddice[i].alpha + dv[1] * ddice[i].beta + dv[2] * ddice[i].gamma;
+						dmean.setLength(dv[0].length());
+						
+						
+						noi = 1.f + (fnoi.randfint( g_seed )-0.5)*attrib[0]; g_seed++;
+						dmean *= noi;
+						pcur += dmean;
+						
+						pcur += (pcen - pcur)*attrib[2];
+						
+						noi = fnoi.randfint( g_seed ); g_seed++;
+						if(noi<0.33) sidewind = pt[0] - pt[1];
+						else if(noi<0.66) sidewind = pt[1] - pt[2];
+						else sidewind = pt[2] - pt[0];
+						sidewind.setLength(dv[0].length());
+						
+						noi = (fnoi.randfint( g_seed )-0.5)*2*attrib[1]; g_seed++;
 
-		delete[] nvertices;
-		delete[] vertices;
-		delete[] widths;
+						pcur += sidewind*noi*(1 - attrib[2]*j/num_seg);
+						
+						ddv = pcur - ppre;
+						ddv.normalize();
+						ddv *= dmean.length();
+						
+						vertices[acc] = ppre + ddv*0.5f;
+						acc++;
+
+						ppre += ddv;
+					}
+					vertices[acc] = ppre;
+					acc++;
+					vertices[acc] = ppre;
+					acc++;
+					vertices[acc] = ppre;
+					acc++;
+				}
+			}
+		
+			delete[] nsegbuf;
+			//float width = 0.02;
+			//RiPoints(RtInt(n_samp), "P", (RtPoint*)pbuf, "constantwidth", (RtPointer)&width, RI_NULL);
+			delete[] pbuf;
+			
+			RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, RI_NULL); 
+
+			delete[] nvertices;
+			delete[] vertices;
+			delete[] widths;
+		}
+		delete[] isurvive;
 	}
 	
 	delete[] ddice;
