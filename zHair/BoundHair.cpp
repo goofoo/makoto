@@ -9,7 +9,7 @@ BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0)
 	bindPoints = new XYZ[3];
 	ucoord = new float[3];
 	vcoord = new float[3];
-	attrib = new float[3];
+	attrib = new float[5];
 }
     
 
@@ -117,8 +117,8 @@ void BoundHair::emit(float detail) const
 		
 		float* widths = new float[nwidths];
 		int acc = 0;
-		float rootWidth = 0.03;
-		float tipWidth = 0.01;
+		float rootWidth = attrib[3];
+		float tipWidth = attrib[4];
 		float widthScale = 1.0;
 		for(unsigned i=0; i<n_samp; i++) {
 			widths[acc] = rootWidth * widthScale;
