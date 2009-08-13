@@ -95,6 +95,7 @@ public:
 	int saveStart(const char* filename);
 	int load(const char* filename);
 	int loadStart(const char* filename);
+	int loadNext();
 	
 	void setClumping(const float val) {clumping = val;}
 	void setFuzz(const float val) {fuzz = val;}
@@ -131,9 +132,8 @@ public:
 	float getMutantColorScale() const {return mutant_scale;}
 	float getBald() const {return m_bald;}
 	const char* getDensityName() const {return m_densityname.c_str();}
-	float getBBoxFraction() const {return bbox_fraction;}
 	
-	void createSnow(MObject& meshData) const;
+	void createSnow(double& time, MObject& meshData) const;
 	
 	void setDensityMap(const char* filename);
 	void muliplyDensityMap(float& val, float& s, float& t) const;
@@ -149,6 +149,7 @@ private:
 	float* uarray;
 	float* varray;
 	XYZ* parray;
+	XYZ* pframe1;
 
 	Dguide* guide_data;
 	unsigned* pNSeg;
@@ -165,6 +166,5 @@ private:
 	float m_offset, m_bald, m_snow_size, m_snow_rate;
 	int densmap_w, densmap_h;
 	float* pDensmap;
-	float bbox_fraction;
 };
 #endif

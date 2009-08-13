@@ -67,34 +67,18 @@ HairDguideNode::~HairDguideNode()
 }
 
 MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
-//
-//	Description:
-//		This method computes the value of the given output plug based
-//		on the values of the input attributes.
-//
-//	Arguments:
-//		plug - the plug to compute
-//		data - object that provides access to the attributes for this node
-//
 {   
 	MStatus returnStatus;
- 
-	// Check which output attribute we have been asked to compute.  If this 
-	// node doesn't know how to compute it, we must return 
-	// MS::kUnknownParameter.
-	// 
-	if( plug == output )
-	{
+  
+	if( plug == output ) {
 		double dtime = data.inputValue( aframe ).asDouble();
 		MString sname = data.inputValue( acachename).asString();
 		MString dnmpath = data.inputValue(adensitymap).asString();
 		string sbuf(sname.asChar());
 		zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
 		idraw = data.inputValue(adraw).asInt();
-		if(m_base) 
-		{
-			if(curname != sname || dnmname != dnmpath)
-			{
+		if(m_base) {
+			if(curname != sname || dnmname != dnmpath) {
 				curname = sname;
 				dnmname = dnmpath;
 				string head = sbuf;
@@ -103,8 +87,6 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				m_base->loadStart(head.c_str());
 				
 				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
-			
-				//m_base->bind();
 			}
 			int iss = m_base->load(sbuf.c_str());
 			if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
@@ -126,45 +108,16 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		return MS::kSuccess;
 	}
 
-	if( plug == aoutmesh )
-	{
-		//double dtime = data.inputValue( aframe ).asDouble();
-		//MString sname = data.inputValue( acachename).asString();
-		//string sbuf(sname.asChar());
-		//zGlobal::changeFrameNumber(sbuf, zGlobal::safeConvertToInt(dtime));
-		//int eta = data.inputValue(adice).asInt();
-		//idraw = data.inputValue(adraw).asInt();
-		if(m_base) 
-		{
-			/*if(curname != sname || isInterpolate !=data.inputValue(ainterpolate).asInt() || eta != idice)
-			{
-				curname = sname;
-				string head = sbuf;
-				zGlobal::cutByFirstDot(head);
-				head += ".hairstart";
-				m_base->loadStart(head.c_str());
-				idice = eta;
-				MGlobal::displayInfo(MString("nsamp ")+m_base->dice(eta));
-				isInterpolate = data.inputValue(ainterpolate).asInt();
-				m_base->setInterpolate(isInterpolate);
-				
-				MString dnmpath = data.inputValue(adensitymap, &returnStatus).asString();
-				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
-				
-				m_base->bind();
-			}
-			*/
-			//int iss = m_base->load(sbuf.c_str());
-			//if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
-			
+	if( plug == aoutmesh ) {
+		double dtime = data.inputValue( aframe ).asDouble();
+		if(m_base) {
 			m_base->setSnowSize(data.inputValue(asnowsize).asFloat());
 			m_base->setSnowRate(data.inputValue(asnowrate).asFloat());
-			//m_base->setKink(data.inputValue(akink).asFloat());
-
+			m_base->loadNext();
 			MFnMeshData dataCreator;
 			MObject outMeshData = dataCreator.create(&returnStatus);
 			
-			m_base->createSnow(outMeshData);
+			m_base->createSnow(dtime, outMeshData);
 			
 			MDataHandle meshh = data.outputValue(aoutmesh, &returnStatus);
 			meshh.set(outMeshData);
@@ -332,7 +285,7 @@ MStatus HairDguideNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(asnowsize);
 	
-	asnowrate = numAttr.create( "snowRate", "snr", MFnNumericData::kFloat, 0.2 );
+	asnowrate = numAttr.create( "snowRate", "snr", MFnNumericData::kFloat, 0.5 );
 	numAttr.setStorable(true);
 	numAttr.setKeyable(true);
 	addAttribute(asnowrate);
