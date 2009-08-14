@@ -89,7 +89,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
 			}
 			int iss = m_base->load(sbuf.c_str());
-			if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
+			//if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
 			
 			m_base->setClumping(data.inputValue(aclump).asFloat());
 			m_base->setFuzz(data.inputValue(afuzz).asFloat());
@@ -107,6 +107,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		data.setClean(plug);
 		return MS::kSuccess;
 	}
+
 
 	if( plug == aoutmesh ) {
 		double dtime = data.inputValue( aframe ).asDouble();

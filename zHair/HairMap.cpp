@@ -197,7 +197,7 @@ void hairMap::draw()
 	
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-
+	
 	float keepx;
 	MATRIX44F tspace, tspace1, tspace2;
 	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3], dv0, dv1, dv2;
@@ -814,7 +814,7 @@ int hairMap::save(const char* filename)
 	outfile.write((char*)&num_guide,sizeof(unsigned));
 	for(unsigned i = 0;i<num_guide;i++)
 	{
-		outfile.write((char*)&guide_data[i].num_seg,sizeof(guide_data[i].num_seg));
+		outfile.write((char*)&guide_data[i].num_seg,sizeof(short));
 		outfile.write((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
@@ -841,8 +841,7 @@ int hairMap::saveStart(const char* filename)
 	outfile.write((char*)&num_guide,sizeof(unsigned));
 	for(unsigned i = 0;i<num_guide;i++)
 	{
-		outfile.write((char*)&guide_data[i].num_seg,sizeof(guide_data[i].num_seg));
-		//outfile.write((char*)&guide_data[i].dsp_col,sizeof(XYZ));
+		outfile.write((char*)&guide_data[i].num_seg,sizeof(short));
 		outfile.write((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
@@ -850,7 +849,6 @@ int hairMap::saveStart(const char* filename)
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
 		outfile.write((char*)&guide_data[i].v, sizeof(float));
 		outfile.write((char*)&guide_data[i].radius, sizeof(float));
-		//outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	outfile.write((char*)&sum_area, sizeof(float));
 	outfile.write((char*)&n_tri, sizeof(unsigned));
@@ -869,33 +867,17 @@ int hairMap::saveStart(const char* filename)
 
 int hairMap::load(const char* filename)
 {
-	if(guide_data) {
-		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
-		delete[] guide_data;
-	}
-	
 	ifstream infile;
 	infile.open(filename, ios_base::in | ios_base::binary);
-	if(!infile.is_open()) 
-	{
+	if(!infile.is_open()) {
 		MGlobal::displayWarning(MString("Cannot open file: ")+filename);
 		return 0;
 	}
 	m_cachename = filename;
 	infile.read((char*)&num_guide,sizeof(unsigned));
-	
-	if(guide_data) delete[] guide_data;
-    guide_data = new Dguide[num_guide];
-	for(unsigned i = 0;i<num_guide;i++)
-	{
-		infile.read((char*)&guide_data[i].num_seg, sizeof(guide_data[i].num_seg));
 
-		guide_data[i].P = new XYZ[guide_data[i].num_seg];
-		guide_data[i].N = new XYZ[guide_data[i].num_seg];
-		guide_data[i].T = new XYZ[guide_data[i].num_seg];
-		guide_data[i].dispv = new XYZ[guide_data[i].num_seg];
-		guide_data[i].space = new MATRIX44F[guide_data[i].num_seg];
-
+	for(unsigned i = 0;i<num_guide;i++) {
+		infile.read((char*)&guide_data[i].num_seg, sizeof(short));
 		infile.read((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		infile.read((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
@@ -907,11 +889,9 @@ int hairMap::load(const char* filename)
 	
 	infile.read((char*)&n_vert, sizeof(unsigned));
 	
-	if(parray) delete[] parray;
-	parray = new XYZ[n_vert];
 	infile.read((char*)parray, sizeof(XYZ)*n_vert);
 	
-	infile.close();	
+	infile.close();
 	
 	if(pframe1) delete[] pframe1;
 	pframe1 = new XYZ[n_vert];
@@ -969,11 +949,10 @@ int hairMap::loadStart(const char* filename)
 	}
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
-	if(guide_data) delete[] guide_data;
     guide_data = new Dguide[num_guide];
 	for(unsigned i = 0;i<num_guide;i++)
 	{
-		infile.read((char*)&guide_data[i].num_seg, sizeof(guide_data[i].num_seg));
+		infile.read((char*)&guide_data[i].num_seg, sizeof(short));
 
 		guide_data[i].P = new XYZ[guide_data[i].num_seg];
 		guide_data[i].N = new XYZ[guide_data[i].num_seg];
@@ -1030,10 +1009,8 @@ int hairMap::loadStart(const char* filename)
 	if(guide_spaceinv) delete[] guide_spaceinv;
 	guide_spaceinv = new MATRIX44F[num_guide];
 	
-	for(unsigned i = 0;i<num_guide;i++)
-	{
-		for(unsigned j=0; j<guide_data[i].num_seg; j++)
-		{
+	for(unsigned i = 0;i<num_guide;i++) {
+		for(unsigned j=0; j<guide_data[i].num_seg; j++) {
 			guide_data[i].space[j].setIdentity();
 			XYZ binor = guide_data[i].N[j].cross(guide_data[i].T[j]);
 			guide_data[i].space[j].setOrientations(guide_data[i].T[j], binor, guide_data[i].N[j]);
@@ -1042,6 +1019,7 @@ int hairMap::loadStart(const char* filename)
 		guide_spaceinv[i] = guide_data[i].space[0];
 		guide_spaceinv[i].inverse();
 	}
+	
 	return 1;
 }
 
