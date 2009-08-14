@@ -73,6 +73,8 @@ public:
 	hairMap();
 	~hairMap();
 	
+	char isNil() const {return is_nil;}
+	
 	void setBase(const MObject& mesh);
 	void setGuide(const MObjectArray& meshes);
 	char hasBase() const {return has_base;}
@@ -167,5 +169,6 @@ private:
 	float m_offset, m_bald, m_snow_size, m_snow_rate;
 	int densmap_w, densmap_h;
 	float* pDensmap;
+	char is_nil;
 };
 #endif

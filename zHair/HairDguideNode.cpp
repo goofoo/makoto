@@ -88,7 +88,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				
 				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
 			}
-			int iss = m_base->load(sbuf.c_str());
+			if(!m_base->isNil()) m_base->load(sbuf.c_str());
 			//if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());
 			
 			m_base->setClumping(data.inputValue(aclump).asFloat());
@@ -111,7 +111,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 
 	if( plug == aoutmesh ) {
 		double dtime = data.inputValue( aframe ).asDouble();
-		if(m_base) {
+		if(!m_base->isNil()) {
 			m_base->setSnowSize(data.inputValue(asnowsize).asFloat());
 			m_base->setSnowRate(data.inputValue(asnowrate).asFloat());
 			m_base->loadNext();
@@ -136,7 +136,7 @@ void HairDguideNode::draw( M3dView & view, const MDagPath & path,
 {
 	view.beginGL(); 
 	
-	if(m_base) {
+	if(!m_base->isNil()) {
 		glPushAttrib(GL_ALL_ATTRIB_BITS);
 		glShadeModel(GL_SMOOTH);
 		if(idraw ==0) m_base->draw();

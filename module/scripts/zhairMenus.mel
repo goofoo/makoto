@@ -82,6 +82,7 @@ global proc zhairCreateMenus()
 			menuItem -l "Load Cache" -c "openLoadHairMapWin";
             menuItem -divider true;
 			menuItem -l "Set Density Map" -c "zhair_do_set_densityMap";
+			menuItem -l "Change Data Path To" -c "fileBrowser \"set_zhairCacheDataPath\" \"Set Path\" \"\" 4";
 			menuItem -divider true;
 			menuItem -l "Existing Hairs" -subMenu true -postMenuCommand zhair_findexisting zhair_existinghairs;
 			setParent -menu ..;
@@ -349,7 +350,7 @@ columnLayout -adjustableColumn true;
 	checkBox -l "Create Snow as Well" -v 0 loadzhairCreateSnowGrp;
     
 //row begin
-button -l "Save" -c "doloadzhair;deleteUI loadzhairWin"-p $row;
+button -l "Load" -c "doloadzhair;deleteUI loadzhairWin"-p $row;
 button -l "Apply" -c "doloadzhair" -p $row;
 button -l "Close" -c "deleteUI loadzhairWin" -p $row;
 
@@ -812,4 +813,29 @@ global proc zhair_do_set_densityMap()
 		
 	$node = `ls -type ZHairCache`;
 	for($an in $node) setAttr -type "string" ($an + ".dnm") $path;
+}
+
+global proc int set_zhairCacheDataPath(string $path, string $type)
+{
+	string $node[] = `ls -type ZHairCache`;
+	string $an;
+	for($an in $node) {
+		string $oname = `getAttr ($an+".cachePath")`;
+		
+		string $buffer[];
+		$numTokens = `tokenize $oname "/" $buffer`;
+		
+		string $nname = $path + "/" + $buffer[$numTokens-1];
+		setAttr -type "string" ($an + ".cachePath") $nname;
+		
+		$oname = `getAttr ($an+".densityMap")`;
+		
+		if($oname != "" && $oname != "nil") {
+			$numTokens = `tokenize $oname "/" $buffer`;
+		
+			$nname = $path + "/" + $buffer[$numTokens-1];
+			setAttr -type "string" ($an + ".densityMap") $nname;
+		}
+	}
+	return true;
 }

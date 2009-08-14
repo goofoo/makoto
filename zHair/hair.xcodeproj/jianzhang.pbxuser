@@ -69,8 +69,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 271873258;
-			PBXWorkspaceStateSaveDate = 271873258;
+			PBXPerProjectTemplateStateSaveDate = 271958816;
+			PBXWorkspaceStateSaveDate = 271958816;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -118,9 +118,9 @@
 	};
 	7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {992, 4522}}";
-			sepNavSelRange = "{3884, 0}";
-			sepNavVisRange = "{2689, 1584}";
+			sepNavIntBoundsRect = "{{0, 0}, {992, 4536}}";
+			sepNavSelRange = "{2567, 0}";
+			sepNavVisRange = "{2271, 527}";
 			sepNavWindowFrame = "{{472, 55}, {562, 674}}";
 		};
 	};
@@ -209,7 +209,7 @@
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {733, 1876}}";
+			sepNavIntBoundsRect = "{{0, 0}, {733, 1834}}";
 			sepNavSelRange = "{639, 0}";
 			sepNavVisRange = "{22, 1183}";
 			sepNavWindowFrame = "{{462, 55}, {792, 705}}";
