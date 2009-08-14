@@ -31,6 +31,7 @@ public:
 	
 	XYZ* velocities;
 	float* shutters;
+	float* densities;
 
 private:
 	void getPatParam(XYZ& p, const float& param, const unsigned& nseg, const XYZ* cvs) const;

@@ -73,7 +73,7 @@ public:
 	
 	const char* getCacheName() const {return m_cachename.c_str();}
 	
-	void setDensityMap(const char* filename);
+	char setDensityMap(const char* filename);
 	void muliplyDensityMap(float& val, float& s, float& t) const;
 	
 	void dump() const;
@@ -84,8 +84,9 @@ public:
 	void lookupTriangleBind(unsigned& idx, XYZ* points) const;
 	void lookupTriangleUV(unsigned& idx, float* u, float* v) const;
 	void lookupGuiderNSeg(unsigned& idx, unsigned* nsegs) const;
-	void lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const;
+	void lookupGuiderCVs(unsigned& idx, float& k, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const;
 	void lookupVelocity(unsigned& idx, float& fract, XYZ* velocities) const;
+	void lookupDensity(unsigned& idx, float* densities) const;
 	float getEpsilon(float& ndice) const;
 	
 private:

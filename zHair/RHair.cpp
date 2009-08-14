@@ -3,7 +3,7 @@
 using namespace std;
 
 RHair::RHair(std::string& parameter):
-m_ndice(24),pHair(0)
+m_ndice(24),pHair(0),has_densmap(0)
 {
 	m_cache_name = new char[256];
 	m_dens_name = new char[256];
@@ -33,57 +33,6 @@ RHair::~RHair()
 	if(pHair) delete pHair;
 }
 
-void RHair::generateRIB(RtFloat detail)
-{/*
-	pHair = new HairCache();
-	pHair->setDiceNumber(m_ndice);
-	string head = m_cache_name;
-	zGlobal::cutByFirstDot(head);
-	head += ".hairstart";
-	pHair->loadStart(head.c_str());
-	//pHair->setInterpolate(m_isInterpolate);
-	if(!pHair->lazi()) {
-		pHair->dice((float)detail*m_fract*0.5);
-		pHair->bind();
-		pHair->dump();
-	}
-	pHair->load(m_cache_name);
-	
-	pHair->setClumping(m_clumping);
-	pHair->setFuzz(m_fuzz);
-	pHair->setKink(m_kink);
-	pHair->setWidth(m_width0, m_width1);
-	pHair->setRootColor(m_root_colorR, m_root_colorG, m_root_colorB);
-	pHair->setTipColor(m_tip_colorR, m_tip_colorG, m_tip_colorB);
-	pHair->setMutantColor(m_mutant_colorR, m_mutant_colorG, m_mutant_colorB);
-	pHair->setMutantColorScale(m_mutant_scale);
-	pHair->setBald(m_bald);
-	if(strcmp(m_dens_name, "nil")!=0) pHair->setDensityMap(m_dens_name);
-	if(m_issimple == 0) {
-		pHair->create();
-		RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), 
-		"width", (RtFloat*)pHair->getWidth(), 
-		"uniform float s", (RtFloat*)pHair->getS(), "uniform float t", (RtFloat*)pHair->getT(), 
-		"uniform color root_color", (RtColor*)pHair->getRootColors(), "uniform color tip_color", (RtColor*)pHair->getTipColors(), 
-		//"Os", (RtColor*)pHair->getOs(), 
-		RI_NULL);
-	}
-	else {
-		pHair->createSimple(); 
-		RiCurves("cubic", (RtInt)pHair->getNumCurves(), (RtInt*)pHair->getNumVertices(), "nonperiodic", "P", (RtPoint*)pHair->points(), "width", (RtFloat*)pHair->getWidth(), 
-		//"Os", (RtColor*)pHair->getOs(), 
-		RI_NULL);
-	}
-
-	
-	//float cw = 0.1;
-	//RiPoints((RtInt)pHair->getNumPoints(), "P", (RtPoint*)pHair->points(), "constantwidth", &cw, RI_NULL);
-	
-	delete pHair;
-	
-	return;*/
-}
-
 void RHair::init()
 {
 	pHair = new HairCache();
@@ -95,11 +44,10 @@ void RHair::init()
 	
 	m_epsilon = pHair->getEpsilon(m_ndice);
 	
-	//pHair->pushFaceVertice();
-	//pHair->bind();
-	
 	pHair->load(m_cache_name);
 	if(m_is_blur==1) pHair->loadNext();
+	
+	if(strcmp(m_dens_name, "nil")!=0) has_densmap = pHair->setDensityMap(m_dens_name);
 }
 
 unsigned RHair::getNumTriangle() const

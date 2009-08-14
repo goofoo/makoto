@@ -36,6 +36,7 @@ Subdivide(RtPointer data, RtFloat detail)
 	unsigned numtri = pdata->getNumTriangle();
 	float box[6];
 	RtBound bound = {-1, 1, -1, 1, -1, 1};
+	float kink = pdata->getKink();
 
 	for(unsigned i=0; i<numtri; i++) {
 		BoundHair* param = new BoundHair();
@@ -51,7 +52,7 @@ Subdivide(RtPointer data, RtFloat detail)
 		param->cvs_b = new XYZ[param->nsegs[1]+1];
 		param->cvs_c = new XYZ[param->nsegs[2]+1];
 		
-		pdata->pHair->lookupGuiderCVs(i, param->cvs_a, param->cvs_b, param->cvs_c);
+		pdata->pHair->lookupGuiderCVs(i, kink, param->cvs_a, param->cvs_b, param->cvs_c);
 		
 		param->calculateBBox(box);
 		
@@ -68,6 +69,11 @@ Subdivide(RtPointer data, RtFloat detail)
 			param->velocities = new XYZ[3];
 			param->shutters = new float[2];
 			pdata->setMBlur(i, param->velocities, param->shutters);
+		}
+		
+		if(pdata->has_densmap) {
+			param->densities = new float[3];
+			pdata->pHair->lookupDensity(i, param->densities);
 		}
 		
 		RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);

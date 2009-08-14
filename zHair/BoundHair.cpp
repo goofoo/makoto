@@ -3,7 +3,7 @@
 #include "../shared/FNoise.h"
 #include "BindTriangle.h"
 
-BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0),velocities(0), shutters(0)
+BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0),velocities(0), shutters(0),densities(0)
 {
 	points = new XYZ[3]; 
 	bindPoints = new XYZ[3];
@@ -80,7 +80,7 @@ void BoundHair::calculateBBox(float *box) const
 
 void BoundHair::emit(float detail) const
 {
-	float widthScale = 1.0, kill = 1.0;
+	float widthScale = 1.0, kill = 1.0, realkill;
 	if(detail < 5000) {
 		kill = 0.9;
 		widthScale = 1.1;
@@ -126,7 +126,10 @@ void BoundHair::emit(float detail) const
 			g_seed  = seed*29 + i*17;
 			noi = fnoi.randfint( g_seed );
 			
-			if(noi < kill) {
+			realkill = kill;
+			if(densities) realkill *= densities[ddice[i].id0]*ddice[i].alpha +  densities[ddice[i].id1]*ddice[i].beta + densities[ddice[i].id2]*ddice[i].gamma;
+			
+			if(noi < realkill) {
 				isurvive[i] = 1;
 				n_survive++;
 			}
@@ -438,6 +441,7 @@ void BoundHair::release()
 	delete[] attrib;
 	if(velocities) delete[] velocities;
 	if(shutters) delete[] shutters;
+	if(densities) delete[] densities;
 }
 
 void BoundHair::getPatParam(XYZ& p, const float& param, const unsigned& nseg, const XYZ* cvs) const

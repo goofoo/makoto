@@ -9,7 +9,7 @@
 #include "HairCache.h"
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
-//#include "../shared/zFnEXR.h"
+#include "../shared/zFnEXR.h"
 #include "../shared/zGlobal.h"
 #include <iostream>
 #include <fstream>
@@ -372,8 +372,8 @@ int HairCache::loadNext()
 	return 1;
 }
 
-void HairCache::setDensityMap(const char* filename)
-{/*
+char HairCache::setDensityMap(const char* filename)
+{
 	densmap_w =-1, densmap_h = -1;
 	if(pDensmap) {
 		delete[] pDensmap;
@@ -392,7 +392,9 @@ void HairCache::setDensityMap(const char* filename)
 		pDensmap = new float[densmap_w*densmap_h];
 		ZFnEXR::readR(filename, densmap_w, densmap_h, pDensmap);
 		m_densityname = filename;
-	}*/
+		return 1;
+	}
+	return 0;
 }
 
 void HairCache::muliplyDensityMap(float& val, float& s, float& t) const
@@ -493,7 +495,7 @@ void HairCache::lookupGuiderNSeg(unsigned& idx, unsigned* nsegs) const
 	nsegs[2] = pNSeg[idx*3+2];
 }
 
-void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const
+void HairCache::lookupGuiderCVs(unsigned& idx, float& k, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const
 {
 	int g_seed = idx*91;
 	FNoise fnoi;
@@ -530,7 +532,7 @@ void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_
 				pw[0] = pt[0];
 				
 				keepx = pw[0].x;
-				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
 				pw[0] *= noi;
 				pw[0].x = keepx;
 				tspace[0].transform(pw[0]);
@@ -568,7 +570,7 @@ void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_
 				pw[0] = pt[0];
 				
 				keepx = pw[0].x;
-				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
 				pw[0] *= noi;
 				pw[0].x = keepx;
 				tspace[0].transform(pw[0]);
@@ -576,7 +578,7 @@ void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_
 				pw[1] = pt[1];
 				
 				keepx = pw[1].x;
-				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
 				pw[1] *= noi;
 				pw[1].x = keepx;
 				tspace[1].transform(pw[1]);
@@ -584,7 +586,7 @@ void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_
 				pw[2] = pt[2];
 				
 				keepx = pw[2].x;
-				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
 				pw[2] *= noi;
 				pw[2].x = keepx;
 				tspace[2].transform(pw[2]);
@@ -615,5 +617,34 @@ void HairCache::lookupVelocity(unsigned& idx, float& fract, XYZ* velocities) con
 	velocities[0] *= fract;
 	velocities[1] *= fract;
 	velocities[2] *= fract;
+}
+
+void HairCache::lookupDensity(unsigned& idx, float* densities) const
+{
+	if(!pDensmap) {
+		densities[0] = densities[1] = densities[2] = 1.f;
+		return;
+	}
+	
+	float u = uarray[pconnection[idx*3]];
+	float v = varray[pconnection[idx*3]];
+	
+	int it = (densmap_h-1)*(1.f-v);
+	int is = (densmap_w-1)*u;
+	densities[0] = pDensmap[it*densmap_w + is];
+	
+	u = uarray[pconnection[idx*3+1]];
+	v = varray[pconnection[idx*3+1]];
+	
+	it = (densmap_h-1)*(1.f-v);
+	is = (densmap_w-1)*u;
+	densities[1] = pDensmap[it*densmap_w + is];
+	
+	u = uarray[pconnection[idx*3+2]];
+	v = varray[pconnection[idx*3+2]];
+	
+	it = (densmap_h-1)*(1.f-v);
+	is = (densmap_w-1)*u;
+	densities[2] = pDensmap[it*densmap_w + is];
 }
 //~:
