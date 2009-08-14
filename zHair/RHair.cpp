@@ -93,11 +93,10 @@ void RHair::init()
 	head += ".hairstart";
 	pHair->loadStart(head.c_str());
 	
-	pHair->setDiceNumber(m_ndice);
-	m_epsilon = pHair->getEpsilon();
+	m_epsilon = pHair->getEpsilon(m_ndice);
 	
-	pHair->pushFaceVertice();
-	pHair->bind();
+	//pHair->pushFaceVertice();
+	//pHair->bind();
 	
 	pHair->load(m_cache_name);
 	if(m_is_blur==1) pHair->loadNext();

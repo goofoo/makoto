@@ -51,9 +51,6 @@ public:
 	static MObject aguide;
 	static MObject alengthnoise;
 	static MObject asavemap;
-	static MObject astep;
-	static MObject aalternativepatch;
-	static MObject ainterpolate;
 	static MObject adraw;
 	static MObject aoffset;
 	static MObject adensitymap;

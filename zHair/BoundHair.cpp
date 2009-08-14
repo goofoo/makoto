@@ -118,7 +118,6 @@ void BoundHair::emit(float detail) const
 	ftri.rasterize(epsilon, ddice, n_samp, seed+31);
 	
 	//printf(" %d:%d ", estimate_ncell, n_samp);
-	
 	if(n_samp > 0) {
 // prune by threashold
 		char* isurvive = new char[n_samp];

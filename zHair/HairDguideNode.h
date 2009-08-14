@@ -63,9 +63,7 @@ public:
 	static MObject amutantcolorg;
 	static MObject amutantcolorb;
 	static MObject amutantcolorscale;
-	static MObject adice;
 	static MObject adraw;
-	static MObject ainterpolate;
 	static MObject abald;
 	static MObject asnowsize;
 	static MObject asnowrate;
@@ -77,7 +75,7 @@ public:
 private:
 	hairMap* m_base;
 	MString curname, dnmname;
-	int isInterpolate, idice, idraw;
+	int idraw;
 };
 
 #endif

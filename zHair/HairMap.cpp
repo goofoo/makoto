@@ -15,15 +15,15 @@
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
 #include "../shared/zFnEXR.h"
-#include "../shared/eigenSystem.h"
+#include "../shared/zGlobal.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
 
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
-parray(0),pconnection(0),uarray(0),varray(0),
+parray(0),pframe1(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),order(0),isInterpolate(0),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0)
+draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
@@ -40,6 +40,7 @@ hairMap::~hairMap()
 	if(bind_data) delete[] bind_data;
 	if(guide_spaceinv) delete[] guide_spaceinv;
 	if(parray) delete[] parray;
+	if(pframe1) delete[] pframe1;
 	if(pconnection) delete[] pconnection;
 	if(uarray) delete[] uarray;
 	if(varray) delete[] varray;
@@ -130,39 +131,6 @@ void hairMap::updateBase()
 			acc += 3;
 		}
 	}
-}
-
-int hairMap::dice(int eta)
-{
-	if(!pconnection || !parray) return 0;
-		
-	float epsilon = sqrt(sum_area/n_tri/(2 + eta)/2);
-
-	int estimate_ncell = n_tri*(2 + eta)*2;
-	estimate_ncell += estimate_ncell/9;
-	
-	if(ddice) delete[] ddice;
-	ddice = new DiceParam[estimate_ncell];
-	n_samp = 0;
-
-	DiceTriangle ftri;
-	int a, b, c;
-	
-	int seed = 12;
-	for(unsigned i=0; i<n_tri; i++) 
-	{
-		a = pconnection[i*3];
-		b = pconnection[i*3+1];
-		c = pconnection[i*3+2];
-		
-		ftri.create(parray[a], parray[b], parray[c]);
-		ftri.setId(a, b, c);
-		ftri.setS(uarray[i*3], uarray[i*3+1], uarray[i*3+2]);
-		ftri.setT(varray[i*3], varray[i*3+1], varray[i*3+2]);
-		ftri.rasterize(epsilon, ddice, n_samp, seed);seed++;
-	}
-	
-	return n_samp;	
 }
 
 int hairMap::pushFaceVertice()
@@ -731,7 +699,7 @@ void hairMap::bind()
 		
 		bind_data[i].idx[0] = bind_data[i].idx[1] = bind_data[i].idx[2] = idx[validid].idx;
 		
-		if(isInterpolate==1 && validid < num_guide-6) {
+		if(validid < num_guide-6) {
 			XY corner[3]; XYZ pw[3]; float dist[3];
 
 			for(unsigned hdl=0; hdl<3; hdl++) {
@@ -847,7 +815,6 @@ int hairMap::save(const char* filename)
 	for(unsigned i = 0;i<num_guide;i++)
 	{
 		outfile.write((char*)&guide_data[i].num_seg,sizeof(guide_data[i].num_seg));
-		//outfile.write((char*)&guide_data[i].dsp_col,sizeof(XYZ));
 		outfile.write((char*)guide_data[i].P, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].N, guide_data[i].num_seg*sizeof(XYZ));
 		outfile.write((char*)guide_data[i].T, guide_data[i].num_seg*sizeof(XYZ));
@@ -855,11 +822,7 @@ int hairMap::save(const char* filename)
 		outfile.write((char*)&guide_data[i].u, sizeof(float));
 		outfile.write((char*)&guide_data[i].v, sizeof(float));
 		outfile.write((char*)&guide_data[i].radius, sizeof(float));
-		//outfile.write((char*)&guide_data[i].root, sizeof(XYZ));
 	}
-	outfile.write((char*)&sum_area, sizeof(float));
-	//outfile.write((char*)&n_tri, sizeof(unsigned));
-	//outfile.write((char*)pconnection, sizeof(int)*n_tri*3);
 	outfile.write((char*)&n_vert, sizeof(unsigned));
 	outfile.write((char*)parray, sizeof(XYZ)*n_vert);
 	outfile.close();
@@ -896,6 +859,10 @@ int hairMap::saveStart(const char* filename)
 	outfile.write((char*)parray, sizeof(XYZ)*n_vert);
 	outfile.write((char*)uarray, sizeof(float)*n_tri*3);
 	outfile.write((char*)varray, sizeof(float)*n_tri*3);
+	outfile.write((char*)&n_samp,sizeof(int));
+	outfile.write((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	outfile.write((char*)pNSeg,sizeof(unsigned)*n_samp);
+	outfile.write((char*)ddice,sizeof(DiceParam)*n_samp);
 	outfile.close();
 	return 1;
 }
@@ -917,7 +884,7 @@ int hairMap::load(const char* filename)
 	m_cachename = filename;
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
-	//if(guide_data) delete[] guide_data;
+	if(guide_data) delete[] guide_data;
     guide_data = new Dguide[num_guide];
 	for(unsigned i = 0;i<num_guide;i++)
 	{
@@ -936,14 +903,7 @@ int hairMap::load(const char* filename)
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
-		//infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
-	infile.read((char*)&sum_area,sizeof(float));
-	//infile.read((char*)&n_tri,sizeof(unsigned));
-	
-	//if(pconnection) delete[] pconnection;
-	//pconnection = new int[n_tri*3];
-	//infile.read((char*)pconnection, sizeof(int)*n_tri*3);
 	
 	infile.read((char*)&n_vert, sizeof(unsigned));
 	
@@ -953,21 +913,15 @@ int hairMap::load(const char* filename)
 	
 	infile.close();	
 	
+	if(pframe1) delete[] pframe1;
+	pframe1 = new XYZ[n_vert];
+	
+	for(unsigned i=0; i<n_vert; i++) pframe1[i] = parray[i];
+	
 	if(guide_spaceinv) delete[] guide_spaceinv;
 	guide_spaceinv = new MATRIX44F[num_guide];
-	/*
-	for(unsigned i = 0;i<num_guide;i++)
-	{
-		guide_spaceinv[i].setIdentity();
-		XYZ binor = guide_data[i].N[0].cross(guide_data[i].T[0]);
-		guide_spaceinv[i].setOrientations(guide_data[i].T[0], binor, guide_data[i].N[0]);
-		guide_spaceinv[i].inverse();
-	}
-	*/
-	for(unsigned i = 0;i<num_guide;i++)
-	{
-		for(unsigned j=0; j<guide_data[i].num_seg; j++)
-		{
+	for(unsigned i = 0;i<num_guide;i++) {
+		for(unsigned j=0; j<guide_data[i].num_seg; j++) {
 			guide_data[i].space[j].setIdentity();
 			XYZ binor = guide_data[i].N[j].cross(guide_data[i].T[j]);
 			guide_data[i].space[j].setOrientations(guide_data[i].T[j], binor, guide_data[i].N[j]);
@@ -976,6 +930,7 @@ int hairMap::load(const char* filename)
 		guide_spaceinv[i] = guide_data[i].space[0];
 		guide_spaceinv[i].inverse();
 	}
+	
 // calculate bbox
 	bbox_low = XYZ(10e6, 10e6, 10e6);
 	bbox_high = XYZ(-10e6, -10e6, -10e6);
@@ -994,42 +949,6 @@ int hairMap::load(const char* filename)
 	XYZ bboxcen = (bbox_low + bbox_high)/2;
 	bbox_low -= (bboxcen - bbox_low)/10;
 	bbox_high -= (bboxcen - bbox_high)/10;
-	
-// calculate aligned volume
-	MATRIX44F objectSpace;
-	int numgudp = 0;
-	for(unsigned i = 0;i<num_guide;i++)
-		for(unsigned j = 0;j<guide_data[i].num_seg;j++) numgudp++;
-		
-	pcdSample* gudpdata = new pcdSample[numgudp];
-	int acc = 0;
-	for(unsigned i = 0;i<num_guide;i++)
-		for(unsigned j = 0;j<guide_data[i].num_seg;j++) {
-			gudpdata[acc].pos = guide_data[i].P[j];
-			acc++;
-		}
-	calculateObjectSpace(gudpdata, 0, numgudp-1, objectSpace);
-			
-	MATRIX44F objectSpaceInverse = objectSpace;
-	objectSpaceInverse.inverse();
-		
-	for(int i=0; i<=numgudp-1; i++) objectSpaceInverse.transform(gudpdata[i].pos);
-	
-	XYZ abbox_low(10e6, 10e6, 10e6);
-	XYZ abbox_high(-10e6, -10e6, -10e6);
-	
-	for(int i=0; i<=numgudp-1; i++) {
-		if(gudpdata[i].pos.x < abbox_low.x) abbox_low.x = gudpdata[i].pos.x;
-		if(gudpdata[i].pos.y < abbox_low.y) abbox_low.y = gudpdata[i].pos.y;
-		if(gudpdata[i].pos.z < abbox_low.z) abbox_low.z = gudpdata[i].pos.z;
-		if(gudpdata[i].pos.x > abbox_high.x) abbox_high.x = gudpdata[i].pos.x;
-		if(gudpdata[i].pos.y > abbox_high.y) abbox_high.y = gudpdata[i].pos.y;
-		if(gudpdata[i].pos.z > abbox_high.z) abbox_high.z = gudpdata[i].pos.z;
-	}
-	
-	bbox_fraction = (abbox_high.x - abbox_low.x)*(abbox_high.y - abbox_low.y)*(abbox_high.z - abbox_low.z)/((bbox_high.x - bbox_low.x)*(bbox_high.y - bbox_low.y)*(bbox_high.z - bbox_low.z));
-	if(bbox_fraction > 1.f) bbox_fraction = 1.f;
-	delete[] gudpdata;
 
 	return 1;
 }
@@ -1050,7 +969,7 @@ int hairMap::loadStart(const char* filename)
 	}
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
-	//if(guide_data) delete[] guide_data;
+	if(guide_data) delete[] guide_data;
     guide_data = new Dguide[num_guide];
 	for(unsigned i = 0;i<num_guide;i++)
 	{
@@ -1069,7 +988,6 @@ int hairMap::loadStart(const char* filename)
 		infile.read((char*)&guide_data[i].u, sizeof(float));
 		infile.read((char*)&guide_data[i].v, sizeof(float));
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
-		//infile.read((char*)&guide_data[i].root, sizeof(XYZ));
 	}
 	infile.read((char*)&sum_area,sizeof(float));
 	infile.read((char*)&n_tri,sizeof(unsigned));
@@ -1092,6 +1010,21 @@ int hairMap::loadStart(const char* filename)
 	varray = new float[n_tri*3];
 	infile.read((char*)varray, sizeof(float)*n_tri*3);
 	
+	infile.read((char*)&n_samp,sizeof(int));
+	
+	if(bind_data) delete[] bind_data;
+	bind_data = new triangle_bind_info[n_samp];
+	
+	if(pNSeg) delete[] pNSeg;
+	pNSeg = new unsigned[n_samp];
+	
+	if(ddice) delete[] ddice;
+	ddice = new DiceParam[n_samp];
+	
+	infile.read((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	infile.read((char*)pNSeg,sizeof(unsigned)*n_samp);
+	infile.read((char*)ddice,sizeof(DiceParam)*n_samp);
+	
 	infile.close();	
 	
 	if(guide_spaceinv) delete[] guide_spaceinv;
@@ -1112,6 +1045,44 @@ int hairMap::loadStart(const char* filename)
 	return 1;
 }
 
+int hairMap::loadNext()
+{
+	std::string filename = m_cachename;
+	int frm = zGlobal::getFrameNumber(filename);
+	frm++;
+	zGlobal::setFrameNumberAndExtension(filename, frm, "hair");
+	ifstream infile;
+	infile.open(filename.c_str(), ios_base::in | ios_base::binary);
+	if(!infile.is_open()) 
+	{
+		cout<<"Cannot open file: "<<filename<<endl;
+		return 0;
+	}
+	
+	int offs = sizeof(unsigned);
+	
+	for(unsigned i = 0;i<num_guide;i++)
+	{
+		offs += sizeof(short);
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(float)*3;
+	}
+	
+	offs += sizeof(unsigned);
+	
+	infile.seekg(offs, ios::beg);
+	if(pframe1) delete[] pframe1;
+	pframe1 = new XYZ[n_vert];
+	infile.read((char*)pframe1, sizeof(XYZ)*n_vert);
+	
+	infile.close();
+	
+	return 1;
+}
+
 void hairMap::drawBind()
 {
 	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
@@ -1120,16 +1091,15 @@ void hairMap::drawBind()
 	glBegin(GL_LINES);
 	for(unsigned i=0; i<n_samp; i += draw_step) {
 		p0 = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-		
-		
+
 		p1 = guide_data[bind_data[i].idx[0]].P[0];
-		eta = ddice[i].alpha;
+		eta = bind_data[i].wei[0];
 		glColor3f(eta,eta,eta);
 		glVertex3f(p0.x, p0.y, p0.z);
 		glColor3f(eta, 0, 0);
 		glVertex3f(p1.x, p1.y, p1.z);
 		
-		eta = ddice[i].beta;
+		eta = bind_data[i].wei[1];
 		if(eta>0) {
 			p1 = guide_data[bind_data[i].idx[1]].P[0];
 			
@@ -1139,7 +1109,7 @@ void hairMap::drawBind()
 			glVertex3f(p1.x, p1.y, p1.z);
 		}
 		
-		eta = ddice[i].gamma;
+		eta = bind_data[i].wei[2];
 		if(eta > 0) {
 			p1 = guide_data[bind_data[i].idx[2]].P[0];
 			
@@ -1153,127 +1123,141 @@ void hairMap::drawBind()
 	glEnd();
 }
 
-void hairMap::createSnow(MObject& meshData) const
+void hairMap::createSnow(double& time, MObject& meshData) const
 {
 	MPointArray vertexArray;
 	MIntArray polygonCounts;
 	MIntArray polygonConnects;
 	MFloatArray uarray, varray;
 	
-	XYZ* pbuf = new XYZ[n_samp];
-	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-	
-	int g_seed = 13;
+	int g_seed;
 	FNoise fnoi;
 	float noi, size;
-	
-	char* isoverbald = new char[n_samp];
-	for(unsigned i=0; i<n_samp; i++) {
-		noi = fnoi.randfint( g_seed ); g_seed++;
-		if(pDensmap) muliplyDensityMap(noi, ddice[i].coords, ddice[i].coordt);
-		if(noi > m_bald) isoverbald[i] = 1;
-		else isoverbald[i] = 0;
-	}
+	float kvel = time - (int)time;
 	
 	int acc = 0;
-	XYZ pobj, a, b, c, d; MATRIX44F tspace;
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		if(isoverbald[i]) {
+	XYZ a[3], b[3], c[3], d[3], dv, ma, mb, mc, md; 
+	MATRIX44F tspace[3];
+	for(unsigned i=0; i<n_samp; i++) {
+		noi  = fnoi.randfint( g_seed ); g_seed++;
+		if(noi<m_snow_rate) {
+			
 			noi  = fnoi.randfint( g_seed ); g_seed++;
 			
-			if(noi<m_snow_rate) {
-				
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				
-				pobj = pbuf[i];
-				guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
-				guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, noi*0.29);
-				
-				a = pobj;
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				noi -= .5f;
-				
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				size = (1.f+(noi-0.5)*0.5)*m_snow_size;
-				
-				b = pobj + XYZ(noi* size,0, size);
-				
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				noi -= .5f;
-				c = pobj + XYZ(noi* size, size,0);
-				
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				size = (1.f+(noi-0.5)*0.5)*m_snow_size;
-				
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				noi -= .5f;
-				d = pobj + XYZ(noi* size, size, size);
-				tspace.transform(a);
-				tspace.transform(b);
-				tspace.transform(c);
-				tspace.transform(d);
-				
-				vertexArray.append(MPoint(a.x, a.y, a.z));
-				vertexArray.append(MPoint(b.x, b.y, b.z));
-				vertexArray.append(MPoint(c.x, c.y, c.z));
-				vertexArray.append(MPoint(d.x, d.y, d.z));
-				
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				noi /= 4;
-				uarray.append(noi);
-				//noi  = fnoi.randfint( g_seed ); g_seed++;
-				//noi /= 4;
-				uarray.append(1.0-noi);
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				noi /= 4;
-				uarray.append(noi);
-				//noi  = fnoi.randfint( g_seed ); g_seed++;
-				//noi /= 4;
-				uarray.append(1.0-noi);
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				noi /= 4;
-				varray.append(1.0-noi);
-				//noi  = fnoi.randfint( g_seed ); g_seed++;
-				//noi /= 4;
-				varray.append(1.0-noi);
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				noi /= 4;
-				varray.append(noi);
-				//noi  = fnoi.randfint( g_seed ); g_seed++;
-				//noi /= 4;
-				varray.append(noi);
-				
-				polygonCounts.append(3);
-				polygonCounts.append(3);
-				
-				noi  = fnoi.randfint( g_seed ); g_seed++;
-				if(noi>.5f) {
-					polygonConnects.append(acc);
-					polygonConnects.append(acc+2);
-					polygonConnects.append(acc+1);
-					
-					polygonConnects.append(acc+3);
-					polygonConnects.append(acc+1);
-					polygonConnects.append(acc+2);
-				}
-				else {
-					polygonConnects.append(acc+1);
-					polygonConnects.append(acc);
-					polygonConnects.append(acc+3);
-					
-					polygonConnects.append(acc+2);
-					polygonConnects.append(acc+3);
-					polygonConnects.append(acc);
-				}
-				
-				acc += 4;
+			guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace[0], noi*0.5);
+			guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace[1], noi*0.5);
+			guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace[2], noi*0.5);
+
+			a[0] = a[1] = a[2] = XYZ(0.f);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi -= .5f;
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			size = (1.f+(noi-0.5)*0.5)*m_snow_size;
+			
+			b[0] = b[1] = b[2] = XYZ(noi* size,0, size);
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi -= .5f;
+			c[0] = c[1] = c[2] = XYZ(noi* size, size,0);
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			size = (1.f+(noi-0.5)*0.5)*m_snow_size;
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi -= .5f;
+			d[0] = d[1] = d[2] = XYZ(noi* size, size, size);
+			
+			tspace[0].transform(a[0]);
+			tspace[0].transform(b[0]);
+			tspace[0].transform(c[0]);
+			tspace[0].transform(d[0]);
+			tspace[1].transform(a[1]);
+			tspace[1].transform(b[1]);
+			tspace[1].transform(c[1]);
+			tspace[1].transform(d[1]);
+			tspace[2].transform(a[2]);
+			tspace[2].transform(b[2]);
+			tspace[2].transform(c[2]);
+			tspace[2].transform(d[2]);
+			
+			noi = fnoi.randfint( g_seed ); g_seed++;
+			
+			size = (1.f - noi)*fnoi.randfint( g_seed ); g_seed++;
+			
+			ma = a[0]*noi;
+			ma += a[1]*size;
+			ma += a[2]*(1.f-noi-size);
+			
+			mb = b[0]*noi;
+			mb += b[1]*size;
+			mb += b[2]*(1.f-noi-size);
+			
+			mc = c[0]*noi;
+			mc += c[1]*size;
+			mc += c[2]*(1.f-noi-size);
+			
+			md = d[0]*noi;
+			md += d[1]*size;
+			md += d[2]*(1.f-noi-size);
+			
+			if(kvel>0) {
+				dv = (pframe1[ddice[i].id0] - parray[ddice[i].id0])*kvel;
+				ma += dv;
+				mb += dv;
+				mc += dv;
+				md += dv;
 			}
+			
+			vertexArray.append(MPoint(ma.x, ma.y, ma.z));
+			vertexArray.append(MPoint(mb.x, mb.y, mb.z));
+			vertexArray.append(MPoint(mc.x, mc.y, mc.z));
+			vertexArray.append(MPoint(md.x, md.y, md.z));
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			uarray.append(noi);
+			uarray.append(1.0-noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			uarray.append(noi);
+			uarray.append(1.0-noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			varray.append(1.0-noi);
+			varray.append(1.0-noi);
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			noi /= 4;
+			varray.append(noi);
+			varray.append(noi);
+			
+			polygonCounts.append(3);
+			polygonCounts.append(3);
+			
+			noi  = fnoi.randfint( g_seed ); g_seed++;
+			if(noi>.5f) {
+				polygonConnects.append(acc);
+				polygonConnects.append(acc+2);
+				polygonConnects.append(acc+1);
+				
+				polygonConnects.append(acc+3);
+				polygonConnects.append(acc+1);
+				polygonConnects.append(acc+2);
+			}
+			else {
+				polygonConnects.append(acc+1);
+				polygonConnects.append(acc);
+				polygonConnects.append(acc+3);
+				
+				polygonConnects.append(acc+2);
+				polygonConnects.append(acc+3);
+				polygonConnects.append(acc);
+			}
+			
+			acc += 4;
 		}
+
 	}
-	
-	delete[] pbuf;
-	delete[] isoverbald;
 		
 	MFnMesh meshFn;
 	meshFn.create(vertexArray.length(), polygonCounts.length(), vertexArray, polygonCounts, polygonConnects, meshData );
