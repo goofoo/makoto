@@ -90,6 +90,7 @@ public:
 	void drawGuide();
 	void drawGuideUV();
 	void drawBind();
+	void drawBBox();
 
 	int save(const char* filename);
 	int saveStart(const char* filename);

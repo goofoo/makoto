@@ -1272,4 +1272,36 @@ void hairMap::muliplyDensityMap(float& val, float& s, float& t) const
 	int is = (densmap_w-1)*s;
 	val *= pDensmap[it*densmap_w + is];
 }
+
+void hairMap::drawBBox()
+{
+	glBegin(GL_LINES);
+		glVertex3f(bbox_low.x, bbox_low.y, bbox_low.z);
+		glVertex3f(bbox_high.x, bbox_low.y, bbox_low.z);
+		glVertex3f(bbox_low.x, bbox_high.y, bbox_low.z);
+		glVertex3f(bbox_high.x, bbox_high.y, bbox_low.z);
+		glVertex3f(bbox_low.x, bbox_low.y, bbox_high.z);
+		glVertex3f(bbox_high.x, bbox_low.y, bbox_high.z);
+		glVertex3f(bbox_low.x, bbox_high.y, bbox_high.z);
+		glVertex3f(bbox_high.x, bbox_high.y, bbox_high.z);
+		
+		glVertex3f(bbox_low.x, bbox_low.y, bbox_low.z);
+		glVertex3f(bbox_low.x, bbox_high.y, bbox_low.z);
+		glVertex3f(bbox_high.x, bbox_low.y, bbox_low.z);
+		glVertex3f(bbox_high.x, bbox_high.y, bbox_low.z);
+		glVertex3f(bbox_low.x, bbox_low.y, bbox_high.z);
+		glVertex3f(bbox_low.x, bbox_high.y, bbox_high.z);
+		glVertex3f(bbox_high.x, bbox_low.y, bbox_high.z);
+		glVertex3f(bbox_high.x, bbox_high.y, bbox_high.z);
+		
+		glVertex3f(bbox_low.x, bbox_low.y, bbox_low.z);
+		glVertex3f(bbox_low.x, bbox_low.y, bbox_high.z);
+		glVertex3f(bbox_high.x, bbox_low.y, bbox_low.z);
+		glVertex3f(bbox_high.x, bbox_low.y, bbox_high.z);
+		glVertex3f(bbox_low.x, bbox_high.y, bbox_low.z);
+		glVertex3f(bbox_low.x, bbox_high.y, bbox_high.z);
+		glVertex3f(bbox_high.x, bbox_high.y, bbox_low.z);
+		glVertex3f(bbox_high.x, bbox_high.y, bbox_high.z);
+	glEnd();
+}
 //~:
