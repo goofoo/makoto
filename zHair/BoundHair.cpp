@@ -87,9 +87,9 @@ void BoundHair::emit(float detail) const
 		if(detail < 2000) {
 			kill = 0.5;
 			widthScale = 2.0;
-			if(detail < 800) {
-				kill = 0.25;
-				widthScale = 4.0;
+			if(detail < 500) {
+				kill = 0.3;
+				widthScale = 3.3;
 			}
 		}
 	}
