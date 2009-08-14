@@ -10,15 +10,15 @@
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
 #include "../shared/zFnEXR.h"
+#include "../shared/zGlobal.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
 
 HairCache::HairCache():ddice(0),n_samp(0),guide_data(0),bind_data(0),guide_spaceinv(0),
-parray(0),pconnection(0),uarray(0),varray(0),
-sum_area(0.f),ndice(24),
-nvertices(0),vertices(0),widths(0),coord_s(0),coord_t(0),
-rootColorArray(0), tipColorArray(0), opacities(0),pNSeg(0),kbald(0.f),pDensmap(0)
+parray(0),pframe1(0),pconnection(0),uarray(0),varray(0),pBind(0),
+sum_area(0.f),
+pNSeg(0),pDensmap(0)
 {
 	m_densityname = "nil";
 }
@@ -35,46 +35,56 @@ HairCache::~HairCache()
 	if(pconnection) delete[] pconnection;
 	if(uarray) delete[] uarray;
 	if(varray) delete[] varray;
-	if(nvertices) delete[] nvertices;
-	if(vertices) delete[] vertices;
-	if(widths) delete[] widths;
-	if(coord_s) delete[] coord_s;
-	if(coord_t) delete[] coord_t;
-	if(rootColorArray) delete[] rootColorArray;
-	if(tipColorArray) delete[] tipColorArray;
-	if(opacities) delete[] opacities;
+	if(pBind) delete[] pBind;
 	if(pNSeg) delete[] pNSeg;
 	if(pDensmap) delete[] pDensmap;
+	if(pframe1) delete[] pframe1;
 }
 
-int HairCache::dice()
+float HairCache::getEpsilon(float& ndice) const
 {
-	if(!pconnection || !parray) return 0;
-		
-	float epsilon = sqrt(sum_area/n_tri/2/(ndice+2));
+	return sqrt(sum_area/n_tri/2/(ndice+2));
+}
 
-	int estimate_ncell = n_tri*(ndice+2)*2;
-	estimate_ncell += estimate_ncell/9;
+int HairCache::pushFaceVertice()
+{
+	if(!pconnection) return 0;
+	
+	n_samp = n_tri*3;
 	
 	if(ddice) delete[] ddice;
-	ddice = new DiceParam[estimate_ncell];
-	n_samp = 0;
+	ddice = new DiceParam[n_samp];
 
-	DiceTriangle ftri;
 	int a, b, c;
 	
-	int seed = 12;
-	for(unsigned i=0; i<n_tri; i++) 
-	{
+	for(unsigned i=0; i<n_tri; i++) {
 		a = pconnection[i*3];
 		b = pconnection[i*3+1];
 		c = pconnection[i*3+2];
 		
-		ftri.create(parray[a], parray[b], parray[c]);
-		ftri.setId(a, b, c);
-		ftri.setS(uarray[i*3], uarray[i*3+1], uarray[i*3+2]);
-		ftri.setT(varray[i*3], varray[i*3+1], varray[i*3+2]);
-		ftri.rasterize(epsilon, ddice, n_samp, seed);seed++;
+		ddice[i*3].alpha = 1.f;
+		ddice[i*3].beta = ddice[i*3].gamma = 0.f;
+		ddice[i*3].id0 = a;
+		ddice[i*3].id1 = b;
+		ddice[i*3].id2 = c;
+		ddice[i*3].coords = uarray[i*3];
+		ddice[i*3].coordt = varray[i*3];
+		
+		ddice[i*3+1].alpha = 1.f;
+		ddice[i*3+1].beta = ddice[i*3+1].gamma = 0.f;
+		ddice[i*3+1].id0 = b;
+		ddice[i*3+1].id1 = c;
+		ddice[i*3+1].id2 = a;
+		ddice[i*3+1].coords = uarray[i*3+1];
+		ddice[i*3+1].coordt = varray[i*3+1];
+		
+		ddice[i*3+2].alpha = 1.f;
+		ddice[i*3+2].beta = ddice[i*3+2].gamma = 0.f;
+		ddice[i*3+2].id0 = c;
+		ddice[i*3+2].id1 = a;
+		ddice[i*3+2].id2 = b;
+		ddice[i*3+2].coords = uarray[i*3+2];
+		ddice[i*3+2].coordt = varray[i*3+2];
 	}
 	
 	return n_samp;	
@@ -92,6 +102,11 @@ void HairCache::bind()
 	
 	for(unsigned i=0; i<n_samp; i++)
 	{
+// restrict st between 0 - 1
+		if(ddice[i].coords < 0) ddice[i].coords = 0;
+		if(ddice[i].coords > 1) ddice[i].coords = 1;
+		if(ddice[i].coordt < 0) ddice[i].coordt = 0;
+		if(ddice[i].coordt > 1) ddice[i].coordt = 1;
 // find the nearest guide
 		XY from(ddice[i].coords, ddice[i].coordt);
 		ValueAndId* idx = new ValueAndId[num_guide];
@@ -106,7 +121,7 @@ void HairCache::bind()
 		QuickSort::sort(idx, 0, num_guide-1);
 // find closest guider valid in 3D
 		unsigned validid = 0;
-		XYZ pto = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+		XYZ pto = pBind[ddice[i].id0]*ddice[i].alpha + pBind[ddice[i].id1]*ddice[i].beta + pBind[ddice[i].id2]*ddice[i].gamma;
 		XYZ dto = pto - guide_data[idx[validid].idx].P[0];
 		float dist2valid = dto.length();
 		
@@ -118,8 +133,10 @@ void HairCache::bind()
 		
 		bind_data[i].wei[0] = 1.f;
 		bind_data[i].wei[1] = bind_data[i].wei[2] = 0.f;
+		
+		bind_data[i].idx[0] = bind_data[i].idx[1] = bind_data[i].idx[2] = idx[validid].idx;
 
-		if(isInterpolate==1 && validid < num_guide-6) {
+		if(validid < num_guide-6) {
 			XY corner[3];XYZ pw[3]; float dist[3];
 			
 			for(unsigned hdl=0; hdl<3; hdl++) {
@@ -146,11 +163,6 @@ void HairCache::bind()
 				if( BindTriangle::set(corner, from, pw, pto, dist, bind_data[i]) ) hdl = 4;
 				else bind_data[i].idx[0] = bind_data[i].idx[1] = bind_data[i].idx[2] = idx[validid].idx;
 			}
-		}
-		else {
-			bind_data[i].idx[0] = idx[validid].idx;
-			bind_data[i].idx[1] = idx[validid].idx;
-			bind_data[i].idx[2] = idx[validid].idx;
 		}
 		
 		pNSeg[i] = guide_data[bind_data[i].idx[0]].num_seg;// * bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].num_seg * bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].num_seg * bind_data[i].wei[2];
@@ -194,7 +206,7 @@ int HairCache::load(const char* filename)
 		infile.read((char*)&guide_data[i].v, sizeof(float));
 		infile.read((char*)&guide_data[i].radius, sizeof(float));
 	}
-	infile.read((char*)&sum_area,sizeof(float));
+	//infile.read((char*)&sum_area,sizeof(float));
 	//infile.read((char*)&n_tri,sizeof(unsigned));
 	
 	//if(pconnection) delete[] pconnection;
@@ -207,7 +219,12 @@ int HairCache::load(const char* filename)
 	parray = new XYZ[n_vert];
 	infile.read((char*)parray, sizeof(XYZ)*n_vert);
 	
-	infile.close();	
+	infile.close();
+	
+	if(pframe1) delete[] pframe1;
+	pframe1 = new XYZ[n_vert];
+	
+	for(unsigned i=0; i<n_vert; i++) pframe1[i] = parray[i];
 	
 	for(unsigned i = 0;i<num_guide;i++)
 	{
@@ -234,6 +251,7 @@ int HairCache::loadStart(const char* filename)
 		cout<<"Cannot open file: "<<filename<<endl;
 		return 0;
 	}
+	m_cachename = filename;
 	infile.read((char*)&num_guide,sizeof(unsigned));
 	
 	if(guide_data) {
@@ -268,9 +286,9 @@ int HairCache::loadStart(const char* filename)
 	
 	infile.read((char*)&n_vert, sizeof(unsigned));
 	
-	if(parray) delete[] parray;
-	parray = new XYZ[n_vert];
-	infile.read((char*)parray, sizeof(XYZ)*n_vert);
+	if(pBind) delete[] pBind;
+	pBind = new XYZ[n_vert];
+	infile.read((char*)pBind, sizeof(XYZ)*n_vert);
 	
 	if(uarray) delete[] uarray;
 	uarray = new float[n_tri*3];
@@ -279,6 +297,21 @@ int HairCache::loadStart(const char* filename)
 	if(varray) delete[] varray;
 	varray = new float[n_tri*3];
 	infile.read((char*)varray, sizeof(float)*n_tri*3);
+	
+	infile.read((char*)&n_samp,sizeof(int));
+	
+	if(bind_data) delete[] bind_data;
+	bind_data = new triangle_bind_info[n_samp];
+	
+	if(pNSeg) delete[] pNSeg;
+	pNSeg = new unsigned[n_samp];
+	
+	if(ddice) delete[] ddice;
+	ddice = new DiceParam[n_samp];
+	
+	infile.read((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	infile.read((char*)pNSeg,sizeof(unsigned)*n_samp);
+	infile.read((char*)ddice,sizeof(DiceParam)*n_samp);
 	
 	infile.close();	
 	
@@ -300,242 +333,46 @@ int HairCache::loadStart(const char* filename)
 	return 1;
 }
 
-void HairCache::create()
+int HairCache::loadNext()
 {
-	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
+	std::string filename = m_cachename;
+	int frm = zGlobal::getFrameNumber(filename);
+	frm++;
+	zGlobal::setFrameNumberAndExtension(filename, frm, "hair");
 	
-	int g_seed = 13;
-	FNoise fnoi;
-	
-	float noi;
-	realncurve = 0;
-	char* isoverbald = new char[n_samp];
-	for(unsigned i=0; i<n_samp; i++) {
-		noi = fnoi.randfint( g_seed ); g_seed++;
-		if(pDensmap) muliplyDensityMap(noi, ddice[i].coords, ddice[i].coordt);
-		if(noi > kbald) {
-			isoverbald[i] = 1;
-			realncurve++;
-		}
-		else isoverbald[i] = 0;
-	}
-	
-// set nvertices
-	npoints = 0;
-	int nwidths = 0;
-	if(nvertices) delete[] nvertices;
-	nvertices = new int[realncurve];
-	unsigned acc=0;
-	for(unsigned i=0; i<n_samp; i++) 
+	ifstream infile;
+	infile.open(filename.c_str(), ios_base::in | ios_base::binary);
+	if(!infile.is_open()) 
 	{
-		if(isoverbald[i]) {
-			nvertices[acc] = pNSeg[i] + 5;
-			npoints += nvertices[acc];
-			nwidths += nvertices[acc]-2;
-			acc++;
-		}
+		cout<<"Cannot open file: "<<filename<<endl;
+		return 0;
 	}
 	
-// set widths
-	if(widths) delete[] widths;
-	widths = new float[nwidths];
-	acc=0;
-	for(unsigned i=0; i<n_samp; i++) 
+	int offs = sizeof(unsigned);
+	
+	for(unsigned i = 0;i<num_guide;i++)
 	{
-		if(isoverbald[i]) {
-			widths[acc] = rootwidth;
-			acc++;
-			float dwidth = (tipwidth - rootwidth)/pNSeg[i] ;
-			for(short j = 0; j<= pNSeg[i]; j++) 
-			{
-				widths[acc] = rootwidth + dwidth*j;
-				acc++;
-			}
-			widths[acc] = tipwidth;
-			acc++;
-		}
+		offs += sizeof(short);
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(XYZ)*guide_data[i].num_seg;
+		offs += sizeof(float)*3;
 	}
 	
-// set opacities
-	if(opacities) delete[] opacities;
-	opacities = new XYZ[nwidths];
-	acc=0;
-	for(unsigned i=0; i<n_samp; i++) 
-	{
-		if(isoverbald[i]) {
-			opacities[acc] = XYZ(1.f);
-			acc++;
-			float dos = 1.f/pNSeg[i];
-			for(short j = 0; j<= pNSeg[i]; j++) 
-			{
-				opacities[acc] = XYZ(1.f - dos*j);
-				acc++;
-			}
-			opacities[acc] = XYZ(0.f);
-			acc++;
-		}
-	}
+	offs += sizeof(unsigned);
 	
-// set texcoord
-	if(coord_s) delete[] coord_s;
-	if(coord_t) delete[] coord_t;
-	coord_s = new float[realncurve];
-	coord_t = new float[realncurve];
-	for(unsigned i=0; i<realncurve; i++) 
-	{
-		coord_s[i] = ddice[i].coords;
-		coord_t[i] = ddice[i].coordt;
-	}
-
-// set colors
-	if(rootColorArray) delete[] rootColorArray;
-	if(tipColorArray) delete[] tipColorArray;
-	rootColorArray = new XYZ[realncurve];
-	tipColorArray = new XYZ[realncurve];
+	infile.seekg(offs, ios::beg);
+	if(pframe1) delete[] pframe1;
+	pframe1 = new XYZ[n_vert];
+	infile.read((char*)pframe1, sizeof(XYZ)*n_vert);
 	
-	float keepx;
+	infile.close();
 	
-	for(unsigned i=0; i<realncurve; i++) 
-	{
-		noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
-		rootColorArray[i] = root_color + (mutant_color - root_color)*noi;
-		tipColorArray[i] = tip_color + (mutant_color - tip_color)*noi;
-	}
-	
-// set vertices
-	if(vertices) delete[] vertices;
-	vertices = new XYZ[npoints];
-	
-	XYZ* pbuf = new XYZ[n_samp];
-	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
-	
-	MATRIX44F tspace, tspace1, tspace2;
-	XYZ ppre, pcur, dv, ddv, pobj, pt[3], pw[3], dv0, dv1, dv2;
-	acc=0;
-	for(unsigned i=0; i<n_samp; i++)
-	{
-		if(isoverbald[i]) {
-			ppre = pbuf[i];
-			
-			pobj = ppre;
-			pt[0] = pt[1] = pt[2] = ppre;
-			guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
-			
-			guide_spaceinv[bind_data[i].idx[0]].transform(pt[0]);
-			guide_spaceinv[bind_data[i].idx[1]].transform(pt[1]);
-			guide_spaceinv[bind_data[i].idx[2]].transform(pt[2]);
-			
-
-			vertices[acc] = ppre;
-			acc++;
-			vertices[acc] = ppre;
-			acc++;
-
-			int num_seg = pNSeg[i];
-			float dparam = 1.f/(float)num_seg;
-			float param;
-			if(bind_data[i].wei[0] > .9f) {
-				for(int j = 0; j< num_seg; j++) {
-					param = dparam*j;
-					
-					guide_data[bind_data[i].idx[0]].getDvAtParam(dv, param, num_seg);
-					guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
-					
-					vertices[acc] = ppre;
-					acc++;
-					
-					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-					
-					keepx = pt[0].x;
-					pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
-					pw[0] *= noi;
-					pw[0].x = keepx;
-					tspace.transform(pw[0]);
-					
-					pcur = pw[0];
-					
-					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
-					dv *= noi;
-					pcur += dv;
-					
-					ddv = pcur - ppre;
-					ddv.normalize();
-					ddv *= dv.length();
-
-					ppre += ddv;
-				}
-			}
-			else {
-				for(int j = 0; j< num_seg; j++) {
-					param = dparam*j;
-					
-					guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
-					guide_data[bind_data[i].idx[1]].getDvAtParam(dv1, param, num_seg);
-					guide_data[bind_data[i].idx[2]].getDvAtParam(dv2, param, num_seg);
-						
-					guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
-					guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace1, param);
-					guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace2, param);
-					
-					vertices[acc] = ppre;
-					acc++;
-					
-					//dv = guide_data[bind_data[i].idx[0]].dispv[j]*bind_data[i].wei[0] + guide_data[bind_data[i].idx[1]].dispv[j]*bind_data[i].wei[1] + guide_data[bind_data[i].idx[2]].dispv[j]*bind_data[i].wei[2];
-					dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
-					dv.setLength(dv0.length());
-					
-					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-
-					keepx = pt[0].x;
-					pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
-					pw[0] *= noi;
-					pw[0].x = keepx;
-					//guide_data[bind_data[i].idx[0]].space[j].transform(pw[0]);
-					tspace.transform(pw[0]);
-					
-					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-					keepx = pt[1].x;
-					pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
-					pw[1] *= noi;
-					pw[1].x = keepx;
-					//guide_data[bind_data[i].idx[1]].space[j].transform(pw[1]);
-					tspace1.transform(pw[1]);
-					
-					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
-					keepx = pt[2].x;
-					pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
-					pw[2] *= noi;
-					pw[2].x = keepx;
-					//guide_data[bind_data[i].idx[2]].space[j].transform(pw[2]);
-					tspace2.transform(pw[2]);
-					
-					pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
-					
-					noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
-					dv *= noi;
-					pcur += dv;
-					
-					ddv = pcur - ppre;
-					ddv.normalize();
-					ddv *= dv.length();
-
-					ppre += ddv;
-				}
-			}
-			vertices[acc] = ppre;
-			acc++;
-			vertices[acc] = ppre;
-			acc++;
-			vertices[acc] = ppre;
-			acc++;
-		}
-	}
-	
-	delete[] pbuf;
-	delete[] isoverbald;
+	return 1;
 }
 
-void HairCache::setDensityMap(const char* filename)
+char HairCache::setDensityMap(const char* filename)
 {
 	densmap_w =-1, densmap_h = -1;
 	if(pDensmap) {
@@ -555,7 +392,9 @@ void HairCache::setDensityMap(const char* filename)
 		pDensmap = new float[densmap_w*densmap_h];
 		ZFnEXR::readR(filename, densmap_w, densmap_h, pDensmap);
 		m_densityname = filename;
+		return 1;
 	}
+	return 0;
 }
 
 void HairCache::muliplyDensityMap(float& val, float& s, float& t) const
@@ -563,5 +402,249 @@ void HairCache::muliplyDensityMap(float& val, float& s, float& t) const
 	int it = (densmap_h-1)*(1.f-t);
 	int is = (densmap_w-1)*s;
 	val *= pDensmap[it*densmap_w + is];
+}
+
+void HairCache::dump() const
+{
+	std::string dumpname = m_cachename;
+	zGlobal::cutByFirstDot(dumpname);
+	dumpname += ".hairdump";
+	ofstream outfile;
+	outfile.open(dumpname.c_str(), ios_base::out | ios_base::binary);
+	if(!outfile.is_open()) 
+	{
+		cout<<"Cannot open file: "<<dumpname<<endl;
+		return;
+	}
+	
+	//outfile.write((char*)&ndice,sizeof(float));
+	outfile.write((char*)&n_samp,sizeof(int));
+	outfile.write((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	outfile.write((char*)pNSeg,sizeof(unsigned)*n_samp);
+	outfile.write((char*)ddice,sizeof(DiceParam)*n_samp);
+	
+	outfile.close();
+	return;
+}
+
+char HairCache::lazi()
+{
+	std::string dumpname = m_cachename;
+	zGlobal::cutByFirstDot(dumpname);
+	dumpname += ".hairdump";
+	ifstream infile;
+	infile.open(dumpname.c_str(), ios_base::in | ios_base::binary);
+	if(!infile.is_open()) 
+	{
+		cout<<"Cannot open file: "<<dumpname<<endl;
+		return 0;
+	}
+	float todice;
+	infile.read((char*)&todice,sizeof(float));
+	//if(todice != ndice) {
+	//	infile.close();
+	//	return 0;
+	//}
+	infile.read((char*)&n_samp,sizeof(int));
+	
+	if(bind_data) delete[] bind_data;
+	bind_data = new triangle_bind_info[n_samp];
+	
+	if(pNSeg) delete[] pNSeg;
+	pNSeg = new unsigned[n_samp];
+	
+	if(ddice) delete[] ddice;
+	ddice = new DiceParam[n_samp];
+	
+	infile.read((char*)bind_data,sizeof(triangle_bind_info)*n_samp);
+	infile.read((char*)pNSeg,sizeof(unsigned)*n_samp);
+	infile.read((char*)ddice,sizeof(DiceParam)*n_samp);
+	
+	infile.close();
+	return 1;
+}
+
+void HairCache::lookupTriangle(unsigned& idx, XYZ* points) const
+{
+	points[0] = parray[pconnection[idx*3]];
+	points[1] = parray[pconnection[idx*3+1]];
+	points[2] = parray[pconnection[idx*3+2]];
+}
+
+void HairCache::lookupTriangleBind(unsigned& idx, XYZ* points) const
+{
+	points[0] = pBind[pconnection[idx*3]];
+	points[1] = pBind[pconnection[idx*3+1]];
+	points[2] = pBind[pconnection[idx*3+2]];
+}
+
+void HairCache::lookupTriangleUV(unsigned& idx, float* u, float* v) const
+{
+	u[0] = uarray[pconnection[idx*3]];
+	u[1] = uarray[pconnection[idx*3+1]];
+	u[2] = uarray[pconnection[idx*3+2]];
+	v[0] = varray[pconnection[idx*3]];
+	v[1] = varray[pconnection[idx*3+1]];
+	v[2] = varray[pconnection[idx*3+2]];
+}
+
+void HairCache::lookupGuiderNSeg(unsigned& idx, unsigned* nsegs) const
+{
+	nsegs[0] = pNSeg[idx*3];
+	nsegs[1] = pNSeg[idx*3+1];
+	nsegs[2] = pNSeg[idx*3+2];
+}
+
+void HairCache::lookupGuiderCVs(unsigned& idx, float& k, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const
+{
+	int g_seed = idx*91;
+	FNoise fnoi;
+	float noi, keepx;
+	
+	for(unsigned i=0; i<3; i++) {
+		unsigned isamp = idx*3 + i;
+		
+		if(i==0) cvs_a[0] = parray[ddice[isamp].id0];
+		else if(i==1) cvs_b[0] = parray[ddice[isamp].id0];
+		else cvs_c[0] = parray[ddice[isamp].id0];
+		
+		XYZ pt[3];
+		MATRIX44F tspace[3];
+		XYZ ppre, pcur, dv[3], pw[3], dmean, ddv;
+		if(i==0) ppre = pt[0] = pt[1] = pt[2] = cvs_a[0];
+		else if(i==1) ppre = pt[0] = pt[1] = pt[2] = cvs_b[0];
+		else ppre = pt[0] = pt[1] = pt[2] = cvs_c[0];
+		
+		guide_spaceinv[bind_data[isamp].idx[0]].transform(pt[0]);
+		guide_spaceinv[bind_data[isamp].idx[1]].transform(pt[1]);
+		guide_spaceinv[bind_data[isamp].idx[2]].transform(pt[2]);
+		
+		int num_seg = pNSeg[isamp];
+		float dparam = 1.f/(float)num_seg;
+		float param;
+		if(bind_data[isamp].wei[0] > .91f) {
+			for(int j = 0; j< num_seg; j++) {
+				param = dparam*j;
+				
+				guide_data[bind_data[isamp].idx[0]].getDvAtParam(dv[0], param, num_seg);
+				guide_data[bind_data[isamp].idx[0]].getSpaceAtParam(tspace[0], param);
+				
+				pw[0] = pt[0];
+				
+				keepx = pw[0].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
+				pw[0] *= noi;
+				pw[0].x = keepx;
+				tspace[0].transform(pw[0]);
+				
+				pcur = pw[0];
+				
+				pcur += dv[0];
+				
+				ddv = pcur - ppre;
+				ddv.normalize();
+				ddv *= dv[0].length();
+				
+				ppre += ddv;
+				
+				if(i==0) cvs_a[j+1] = ppre;
+				else if(i==1) cvs_b[j+1] = ppre;
+				else cvs_c[j+1] = ppre;
+			}
+		}
+		else {
+			for(int j = 0; j< num_seg; j++) {
+				param = dparam*j;
+				
+				guide_data[bind_data[isamp].idx[0]].getDvAtParam(dv[0], param, num_seg);
+				guide_data[bind_data[isamp].idx[1]].getDvAtParam(dv[1], param, num_seg);
+				guide_data[bind_data[isamp].idx[2]].getDvAtParam(dv[2], param, num_seg);
+					
+				guide_data[bind_data[isamp].idx[0]].getSpaceAtParam(tspace[0], param);
+				guide_data[bind_data[isamp].idx[1]].getSpaceAtParam(tspace[1], param);
+				guide_data[bind_data[isamp].idx[2]].getSpaceAtParam(tspace[2], param);
+				
+				dmean = dv[0] * bind_data[i].wei[0] + dv[1] * bind_data[i].wei[1] + dv[2] * bind_data[i].wei[2];
+				dmean.setLength(dv[0].length());
+				
+				pw[0] = pt[0];
+				
+				keepx = pw[0].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
+				pw[0] *= noi;
+				pw[0].x = keepx;
+				tspace[0].transform(pw[0]);
+				
+				pw[1] = pt[1];
+				
+				keepx = pw[1].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
+				pw[1] *= noi;
+				pw[1].x = keepx;
+				tspace[1].transform(pw[1]);
+				
+				pw[2] = pt[2];
+				
+				keepx = pw[2].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5)*k; g_seed++;
+				pw[2] *= noi;
+				pw[2].x = keepx;
+				tspace[2].transform(pw[2]);
+				
+				pcur = pw[0]*bind_data[isamp].wei[0] + pw[1]*bind_data[isamp].wei[1] + pw[2]*bind_data[isamp].wei[2];
+				
+				pcur += dmean;
+				
+				ddv = pcur - ppre;
+				ddv.normalize();
+				ddv *= dmean.length();
+
+				ppre += ddv;
+				
+				if(i==0) cvs_a[j+1] = ppre;
+				else if(i==1) cvs_b[j+1] = ppre;
+				else cvs_c[j+1] = ppre;
+			}
+		}
+	}
+}
+
+void HairCache::lookupVelocity(unsigned& idx, float& fract, XYZ* velocities) const
+{
+	velocities[0] = pframe1[pconnection[idx*3]] - parray[pconnection[idx*3]];
+	velocities[1] = pframe1[pconnection[idx*3+1]] - parray[pconnection[idx*3+1]];
+	velocities[2] = pframe1[pconnection[idx*3+2]] - parray[pconnection[idx*3+2]];
+	velocities[0] *= fract;
+	velocities[1] *= fract;
+	velocities[2] *= fract;
+}
+
+void HairCache::lookupDensity(unsigned& idx, float* densities) const
+{
+	if(!pDensmap) {
+		densities[0] = densities[1] = densities[2] = 1.f;
+		return;
+	}
+	
+	float u = uarray[pconnection[idx*3]];
+	float v = varray[pconnection[idx*3]];
+	
+	int it = (densmap_h-1)*(1.f-v);
+	int is = (densmap_w-1)*u;
+	densities[0] = pDensmap[it*densmap_w + is];
+	
+	u = uarray[pconnection[idx*3+1]];
+	v = varray[pconnection[idx*3+1]];
+	
+	it = (densmap_h-1)*(1.f-v);
+	is = (densmap_w-1)*u;
+	densities[1] = pDensmap[it*densmap_w + is];
+	
+	u = uarray[pconnection[idx*3+2]];
+	v = varray[pconnection[idx*3+2]];
+	
+	it = (densmap_h-1)*(1.f-v);
+	is = (densmap_w-1)*u;
+	densities[2] = pDensmap[it*densmap_w + is];
 }
 //~:

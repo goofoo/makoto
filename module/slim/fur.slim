@@ -9,6 +9,7 @@
 ## Depth Range float
 ## fur.slim {
 ## 	{ zhang,zhair#0	shadingmodel {Hair}		/Surface }
+## 	{ zhang,zhairshd#0	shadingmodel {Hair In Shadow}		/Surface }
 ## 	{ zhang,Fur#0	shadingmodel {Fur}		/Surface }
 ## 	{ zhang,furDump#0	shadingmodel {Fur Dump}		/Surface }
 ## 	{ zhang,furDumpOcc#0	shadingmodel {Fur Dump Occlusion} /Surface }
@@ -20,7 +21,7 @@ slim 1 extensions zhangdb {
 extensions zhang pxsl {
 
 template shadingmodel zhair {
-
+	description { master shader for fur rendering, receive keylight filllight backlight for aov.}
 	parameter string sdisplay {
  		label "Display"
 	    description {
@@ -56,6 +57,26 @@ template shadingmodel zhair {
 		range {0.001 0.1 0.001}
 	}
 	
+	parameter color croot {
+		label "Root Color"
+		default {0.2 0.1 0.05}
+	}
+	
+	parameter color ctip {
+		label "Root Color"
+		default {0.4 0.3 0.2}
+	}
+	
+	parameter color cmutantroot {
+		label "Root Color"
+		default {0.1 0.1 0.1}
+	}
+	
+	parameter color cmutanttip {
+		label "Root Color"
+		default {0.16 0.14 0.1}
+	}
+	
 	parameter color cspec {
 		label "Specular Color"
 		default {1 1 1}
@@ -87,18 +108,10 @@ template shadingmodel zhair {
 		detail mustvary "zhang,depthRange"
 	}
 	
-	parameter color root_color {
+	parameter float mutant {
 	       detail varying
 	       provider primitive
-	       default {0 0 0}
-	       access input
-	       display hidden
-	}
-	
-	parameter color tip_color {
-	       detail varying
-	       provider primitive
-	       default {0 0 0}
+	       default 0
 	       access input
 	       display hidden
 	}
@@ -184,24 +197,23 @@ template shadingmodel zhair {
        RSLFunction {
 	   void
 	   pxslzhair(uniform string mode;
-				float Kd, Ks, roughness; color specflt;
+				float Kd, Ks, roughness; color Croot, Ctip, mutantrootflt, mutanttipflt, Cspecular;
 				uniform string rootmap, tipmap, specmap; 
 				float depth;
 		       output color CI;
 		       output color OI; )
 	   {
 	   	extern point P;
-	   	extern float s, t, v;
+	   	extern float s, t, v, mutant;
 		extern vector I, dPdv;
-		extern color root_color, tip_color;
 		
-		color rootColor = root_color;
-		color tipColor = tip_color;
-		color speColor = specflt;
+		color rootflt = Croot;
+		color tipflt = Ctip;
+		color specflt = Cspecular;
 		
 		if(rootmap != "")
 		{
-			rootColor *= color texture(rootmap,
+			rootflt *= color texture(rootmap,
 			    	     s,
 				     1-t, 
 				    "swidth", 1,
@@ -212,7 +224,7 @@ template shadingmodel zhair {
 		
 		if(tipmap != "")
 		{
-			tipColor *= color texture(tipmap,
+			tipflt *= color texture(tipmap,
 			    	     s,
 				     1-t, 
 				    "swidth", 1,
@@ -223,7 +235,7 @@ template shadingmodel zhair {
 		
 		if(specmap != "")
 		{
-			speColor *= color texture(specmap,
+			specflt *= color texture(specmap,
 			    	     s,
 				     1-t, 
 				    "swidth", 1,
@@ -334,13 +346,42 @@ template shadingmodel zhair {
 			Cspec_back += Cl2*pow( rawspec, 1.0 / ( 3.0 * ( .101 - roughness ) ) )*.5 * (1 - contribspec);
 			Cdiff_back += Cl2*diffterm * (1 - contribdiff);
 		}
+		
+		mixed = mix( Croot, mutantrootflt, v );
+		mixed = mix( mixed, mix( Ctip, mutanttipflt, v ), v );
+		
+		illuminance (P) 
+		{
+			float sq2;
+			df2=(T.normalize(L));  
+			df2*=df2;
+			df2=1.0-df2;
+			if (df2<0) df2=0;
+			else df2=sqrt(df2); 
 			
-		mixed = mix( rootColor, tipColor, v );
+			diffterm=df2;
+
+			vt =  V.T ;
+			sq2=1.0-vt*vt;
+			if (sq2<0) sq2=0;
+			else sq2=sqrt(sq2);
+			
+			rawspec = df2* sqrt( 1.0- vt * vt ) -  (normalize(L). T ) * vt;
+			if (rawspec<0) rawspec=0; 
+
+			Cl2=Cl;
+			
+			contribspec = 0;
+			lightsource("__nonspecular", contribspec);
+			
+			contribdiff = 0;
+			lightsource("__nondiffuse", contribdiff);
+			
+			Cspec += Cl2*pow( rawspec, 1.0 / ( 3.0 * ( .101 - roughness ) ) )*.5 * (1 - contribspec);
+			Cdiff += Cl2*diffterm * (1 - contribdiff);
+		}
 		
-		Cspec = Cspec_key + Cspec_fill + Cspec_back;
-		Cdiff = Cdiff_key + Cdiff_fill + Cdiff_back;
-		
-		OI = Os;
+		OI = color(1-v*v);
 						    
 		extern color _color;
 		extern color _diffuse;
@@ -353,11 +394,11 @@ template shadingmodel zhair {
 							
 		_color = mixed * Os;
 		_diffuse = Cdiff_key * Os;
-		_specular = Cspec_key * speColor;
+		_specular = Cspec_key * specflt;
 		_diffuse_fill = Cdiff_fill * Os;
 		_diffuse_back = Cdiff_back * Os;
-		_specular_fill = Cspec_fill * speColor;
-		_specular_back = Cspec_back * speColor;
+		_specular_fill = Cspec_fill * specflt;
+		_specular_back = Cspec_back * specflt;
 		_depth = depth;
 		
 		if(mode == "_color") CI = _color;
@@ -368,13 +409,44 @@ template shadingmodel zhair {
 		else if(mode == "_specular_fill") CI = _specular_fill;
 		else if(mode == "_specular_back") CI = _specular_back;
 		else if(mode == "_depth") CI = _depth;
-		else CI = OI * mixed * Cdiff * Kd + Cspec * speColor * Ks;
-		
+		else CI = OI * mixed * Cdiff * Kd + Cspec * specflt * Ks;
 	   }
        }
    }
    
 
+template shadingmodel zhairshd {
+	description { Simple hair shader used in shadow pass }
+	
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+       }
+       RSLFunction {
+	   void
+	   pxslzhairshd(
+		       output color CI;
+		       output color OI; )
+	   {
+		extern float v;
+		OI = color(1-v*v);;
+		
+		CI = Os;
+		
+		
+	   }
+       }
+   }
 
 template shadingmodel Fur {
 

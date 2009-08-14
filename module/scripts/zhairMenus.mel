@@ -172,6 +172,13 @@ global proc zhair_findexisting()
 		if(`menuItem -exists $mnu` ) deleteUI $mnu;
 		menuItem -l $an -c ("select -tgl "+$an) -p zhair_existinghairs $mnu;
 	}
+	$existing = `ls -type ZHairCache`;
+	for($an in $existing) 
+	{
+		string $mnu = $an+"_mnu";
+		if(`menuItem -exists $mnu` ) deleteUI $mnu;
+		menuItem -l $an -c ("select -tgl "+$an) -p zhair_existinghairs $mnu;
+	}
 }
 
 global proc zhair_do_create_guider()

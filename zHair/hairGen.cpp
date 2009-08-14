@@ -142,32 +142,37 @@ hairGen::GenRIB( RIBContext *c )
 	zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
 	
 	int iblur = 0;
+	int ishd = 0;
+	if(pass == RIBContext::rpShadow) ishd = 1;
 	if(usingMotionBlur && pass != RIBContext::rpShadow) iblur = 1;
 	
 	char sbuf[1024];
-	sprintf( sbuf, "%f %f %f %f %f %f %f %f %f %f %f %f %f %s %s %f %f %f %f %d %f %f %f %f %d", 
+	sprintf( sbuf, "%f %f %f %s %s %f %f %f %f %f %f %f %f %d", 
 	ndice,
 	rootwidth, tipwidth,
-	base->getRootColorR(),
-	base->getRootColorG(),
-	base->getRootColorB(),
-	base->getTipColorR(),
-	base->getTipColorG(),
-	base->getTipColorB(),
-	base->getMutantColorR(),
-	base->getMutantColorG(),
-	base->getMutantColorB(),
-	base->getMutantColorScale(),
+	//base->getRootColorR(),
+	//base->getRootColorG(),
+	//base->getRootColorB(),
+	//base->getTipColorR(),
+	//base->getTipColorG(),
+	//base->getTipColorB(),
+	//base->getMutantColorR(),
+	//base->getMutantColorG(),
+	//base->getMutantColorB(),
+	//base->getMutantColorScale(),
 	base->getCacheName(), 
 	base->getDensityName(), 
-	base->getClumping(),
 	base->getFuzz(),
 	base->getKink(),
+	base->getClumping(),
 	base->getBald(),
-	base->getInterpolate(),
+	//base->getInterpolate(),
 	shutterOpen, shutterClose,
 	(float)dtime0, (float)dtime1,
 	iblur);
+	//ishd, 
+	//base->getBBoxFraction()
+	//);
 	
 	RtString args[] = { "plugins/zhairProcedural.dll", sbuf};
 	

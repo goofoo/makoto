@@ -69,8 +69,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 271267581;
-			PBXWorkspaceStateSaveDate = 271267581;
+			PBXPerProjectTemplateStateSaveDate = 271873258;
+			PBXWorkspaceStateSaveDate = 271873258;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -118,10 +118,10 @@
 	};
 	7F6F241B0FBBFF5F003D0615 /* HairDguideNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {992, 5530}}";
-			sepNavSelRange = "{6319, 0}";
-			sepNavVisRange = "{5482, 1100}";
-			sepNavWindowFrame = "{{680, 63}, {530, 715}}";
+			sepNavIntBoundsRect = "{{0, 0}, {992, 4522}}";
+			sepNavSelRange = "{3884, 0}";
+			sepNavVisRange = "{2689, 1584}";
+			sepNavWindowFrame = "{{472, 55}, {562, 674}}";
 		};
 	};
 	7F7473F50FF253AF00132DED /* QuickSort.cpp */ = {
@@ -201,34 +201,34 @@
 	};
 	7FE58B9E0FB61F5800187112 /* HairMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {956, 17388}}";
-			sepNavSelRange = "{948, 0}";
-			sepNavVisRange = "{36013, 950}";
-			sepNavWindowFrame = "{{663, 57}, {597, 719}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1292, 18130}}";
+			sepNavSelRange = "{34389, 0}";
+			sepNavVisRange = "{33701, 1049}";
+			sepNavWindowFrame = "{{451, 59}, {760, 714}}";
 		};
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {733, 1876}}";
-			sepNavSelRange = "{896, 10}";
-			sepNavVisRange = "{2561, 864}";
+			sepNavSelRange = "{639, 0}";
+			sepNavVisRange = "{22, 1183}";
 			sepNavWindowFrame = "{{462, 55}, {792, 705}}";
 		};
 	};
 	7FE58BA20FB61F7300187112 /* zHairNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {656, 4102}}";
-			sepNavSelRange = "{3587, 24}";
-			sepNavVisRange = "{0, 922}";
-			sepNavWindowFrame = "{{46, 81}, {636, 697}}";
+			sepNavIntBoundsRect = "{{0, 0}, {656, 3486}}";
+			sepNavSelRange = "{2997, 0}";
+			sepNavVisRange = "{782, 383}";
+			sepNavWindowFrame = "{{354, 77}, {636, 697}}";
 		};
 	};
 	7FE58BA70FB61F9E00187112 /* DiceTriangle.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {722, 4648}}";
-			sepNavSelRange = "{6252, 0}";
-			sepNavVisRange = "{0, 926}";
-			sepNavWindowFrame = "{{622, 81}, {590, 694}}";
+			sepNavIntBoundsRect = "{{0, 0}, {722, 4550}}";
+			sepNavSelRange = "{3064, 70}";
+			sepNavVisRange = "{4385, 1205}";
+			sepNavWindowFrame = "{{378, 47}, {590, 694}}";
 		};
 	};
 	7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {
@@ -249,10 +249,10 @@
 	};
 	7FE735AB0FD1890600718607 /* FeatherMap.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {968, 9212}}";
-			sepNavSelRange = "{17401, 0}";
-			sepNavVisRange = "{17893, 1143}";
-			sepNavWindowFrame = "{{60, 71}, {542, 688}}";
+			sepNavIntBoundsRect = "{{0, 0}, {692, 8974}}";
+			sepNavSelRange = "{18213, 0}";
+			sepNavVisRange = "{17001, 1349}";
+			sepNavWindowFrame = "{{408, 64}, {663, 685}}";
 		};
 	};
 	7FE735E40FD4FB2000718607 /* curvePatchNode.cpp */ = {
