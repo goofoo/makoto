@@ -495,6 +495,10 @@ void HairCache::lookupGuiderNSeg(unsigned& idx, unsigned* nsegs) const
 
 void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_c) const
 {
+	int g_seed = idx*91;
+	FNoise fnoi;
+	float noi, keepx;
+	
 	for(unsigned i=0; i<3; i++) {
 		unsigned isamp = idx*3 + i;
 		
@@ -524,6 +528,11 @@ void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_
 				guide_data[bind_data[isamp].idx[0]].getSpaceAtParam(tspace[0], param);
 				
 				pw[0] = pt[0];
+				
+				keepx = pw[0].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				pw[0] *= noi;
+				pw[0].x = keepx;
 				tspace[0].transform(pw[0]);
 				
 				pcur = pw[0];
@@ -557,12 +566,27 @@ void HairCache::lookupGuiderCVs(unsigned& idx, XYZ* cvs_a, XYZ* cvs_b, XYZ* cvs_
 				dmean.setLength(dv[0].length());
 				
 				pw[0] = pt[0];
+				
+				keepx = pw[0].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				pw[0] *= noi;
+				pw[0].x = keepx;
 				tspace[0].transform(pw[0]);
 				
 				pw[1] = pt[1];
+				
+				keepx = pw[1].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				pw[1] *= noi;
+				pw[1].x = keepx;
 				tspace[1].transform(pw[1]);
 				
 				pw[2] = pt[2];
+				
+				keepx = pw[2].x;
+				noi = 1.f + (fnoi.randfint( g_seed )-0.5); g_seed++;
+				pw[2] *= noi;
+				pw[2].x = keepx;
 				tspace[2].transform(pw[2]);
 				
 				pcur = pw[0]*bind_data[isamp].wei[0] + pw[1]*bind_data[isamp].wei[1] + pw[2]*bind_data[isamp].wei[2];

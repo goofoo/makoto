@@ -81,13 +81,13 @@ void BoundHair::calculateBBox(float *box) const
 void BoundHair::emit(float detail) const
 {
 	float widthScale = 1.0, kill = 1.0;
-	if(detail < 4000) {
+	if(detail < 5000) {
 		kill = 0.9;
 		widthScale = 1.1;
 		if(detail < 2000) {
 			kill = 0.5;
 			widthScale = 2.0;
-			if(detail < 500) {
+			if(detail < 1000) {
 				kill = 0.3;
 				widthScale = 3.3;
 			}
