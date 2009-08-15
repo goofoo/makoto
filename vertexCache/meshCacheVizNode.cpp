@@ -74,13 +74,12 @@ void meshCacheVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 { 
 	view.beginGL(); 
 
-	glPushAttrib( GL_POLYGON_BIT );
-	if(m_mode<0) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	glFrontFace(GL_CW);
-	glShadeModel(GL_SMOOTH);
-
 	if(m_pMesh) 
 	{
+		glPushAttrib( GL_ALL_ATTRIB_BITS );
+		if(m_mode<0) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		glFrontFace(GL_CW);
+		glShadeModel(GL_SMOOTH);
 		if(m_mode<-2) m_pMesh->drawUV(-3-m_mode);
 		else if(m_mode<-1) 
 		{
@@ -96,11 +95,10 @@ void meshCacheVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 			glDisable(GL_CULL_FACE);
 		}
 		else m_pMesh->draw();
+		glPopAttrib();
 		m_pMesh->drawBBox();
 	}
 
-	glPopAttrib();
-	
 	view.endGL();
 }
 
