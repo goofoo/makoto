@@ -89,7 +89,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(CG_INC_PATH)&quot;;D:\local\libtiff\include;D:\maya7.0\include"
+				AdditionalIncludeDirectories="&quot;$(CG_INC_PATH)&quot;;D:\local\libtiff\include;&quot;$(MAYA_LOCATION70)\include&quot;;D:\local\libxml\include;D:\local\iconv\include"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile=".\Debug/shellNode.pch"
@@ -105,11 +105,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
-				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaFX.lib Foundation.lib libtiff.lib opengl32.lib glu32.lib cg.lib cggl.lib"
+				AdditionalDependencies="OpenMaya.lib OpenMayaUI.lib OpenMayaFX.lib OpenMayaAnim.lib Foundation.lib libtiff.lib opengl32.lib glu32.lib cg.lib cggl.lib libxml2.lib"
 				OutputFile="..\..\module\plug-ins\PRT.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(CG_LIB_PATH)&quot;;D:\local\libtiff\lib;D:\Maya7.0\lib"
+				AdditionalLibraryDirectories="&quot;$(CG_LIB_PATH)&quot;;D:\local\libtiff\lib;&quot;$(MAYA_LOCATION70)\lib&quot;;D:\local\iconv\lib;D:\local\libxml\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/shellNode.pdb"
 				SubSystem="2"

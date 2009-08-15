@@ -633,6 +633,40 @@ void FXMLMesh::draw() const
 	}
 }
 
+void FXMLMesh::drawBBox() const
+{
+	glBegin(GL_LINES);
+
+	glVertex3f(m_bbox0.x,m_bbox0.y,m_bbox0.z);
+	glVertex3f(m_bbox1.x,m_bbox0.y,m_bbox0.z);
+	glVertex3f(m_bbox1.x,m_bbox0.y,m_bbox0.z);
+	glVertex3f(m_bbox1.x,m_bbox1.y,m_bbox0.z);
+	glVertex3f(m_bbox1.x,m_bbox1.y,m_bbox0.z);
+	glVertex3f(m_bbox0.x,m_bbox1.y,m_bbox0.z);
+	glVertex3f(m_bbox0.x,m_bbox1.y,m_bbox0.z);
+	glVertex3f(m_bbox0.x,m_bbox0.y,m_bbox0.z);
+
+	glVertex3f(m_bbox0.x,m_bbox0.y,m_bbox1.z);
+	glVertex3f(m_bbox1.x,m_bbox0.y,m_bbox1.z);
+	glVertex3f(m_bbox1.x,m_bbox0.y,m_bbox1.z);
+	glVertex3f(m_bbox1.x,m_bbox1.y,m_bbox1.z);
+	glVertex3f(m_bbox1.x,m_bbox1.y,m_bbox1.z);
+	glVertex3f(m_bbox0.x,m_bbox1.y,m_bbox1.z);
+	glVertex3f(m_bbox0.x,m_bbox1.y,m_bbox1.z);
+	glVertex3f(m_bbox0.x,m_bbox0.y,m_bbox1.z);
+
+	glVertex3f(m_bbox1.x,m_bbox0.y,m_bbox1.z);
+	glVertex3f(m_bbox1.x,m_bbox0.y,m_bbox0.z);
+	glVertex3f(m_bbox1.x,m_bbox1.y,m_bbox1.z);
+	glVertex3f(m_bbox1.x,m_bbox1.y,m_bbox0.z);
+	glVertex3f(m_bbox0.x,m_bbox0.y,m_bbox1.z);
+	glVertex3f(m_bbox0.x,m_bbox0.y,m_bbox0.z);
+	glVertex3f(m_bbox0.x,m_bbox1.y,m_bbox1.z);
+	glVertex3f(m_bbox0.x,m_bbox1.y,m_bbox0.z);
+
+	glEnd();
+}
+
 void FXMLMesh::drawNoColor() const
 {
 	int acc=0;

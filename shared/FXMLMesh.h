@@ -77,6 +77,7 @@ public:
 	float getBBox1Z() const {return m_bbox1.z;}
 	
 	void draw() const;
+	void drawBBox() const;
 	void drawNoColor() const;
 	void drawNormal() const;
 	void drawTangent() const;
