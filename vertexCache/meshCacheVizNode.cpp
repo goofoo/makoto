@@ -95,10 +95,8 @@ void meshCacheVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 			m_pMesh->drawNoColor();
 			glDisable(GL_CULL_FACE);
 		}
-		else{
-			m_pMesh->draw();
-			m_pMesh->drawBBox();
-		}
+		else m_pMesh->draw();
+		m_pMesh->drawBBox();
 	}
 
 	glPopAttrib();
