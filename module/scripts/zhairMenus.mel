@@ -105,19 +105,25 @@ global proc zhair_do_mesh_guider()
 	string $map, $cub[];
 	
 	int $i;
+	int $acc=0;
 	for($i=0; $i<$numsel-1; $i++)
 	{
-		$map =`createNode Curve2Patch`;
-		connectAttr -f ($mesh[0]+".outMesh") ($map+".growMesh");
+		if($acc == 0) {
+			$map =`createNode Curve2Patch`;
+			connectAttr -f ($mesh[0]+".outMesh") ($map+".growMesh");
 			
-		$cub = `polyCube -ch 0`;
-		select -r $cub[0];
-		$cub = `pickWalk -d down`;
-		connectAttr -f ($map+".outMesh") ($cub[0] + ".inMesh");
+			$cub = `polyCube -ch 0`;
+			select -r $cub[0];
+			$cub = `pickWalk -d down`;
+			connectAttr -f ($map+".outMesh") ($cub[0] + ".inMesh");
+		}
 		
 		select -r $sel[$i];
 		string $curve[] = `pickWalk -d down`;
-		connectAttr -f ($curve[0]+".worldSpace[0]") ($map+".guideMesh[0]");
+		connectAttr -f ($curve[0]+".worldSpace[0]") ($map+".guideMesh["+$acc+"]");
+		
+		$acc++;
+		if($acc==64) $acc=0;
 	}
 }
 

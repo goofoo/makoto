@@ -30,7 +30,7 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		float width = data.inputValue(aSize).asFloat();
 		float twist = data.inputValue(atwist).asFloat();
-		float rotate = data.inputValue(arotate).asFloat();
+		float zig = data.inputValue(arotate).asFloat();
 		
 		MFnMesh fbase(ogrow, &status);
 		if(!status)
@@ -109,7 +109,7 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 			MVector tup = tangent^cdir;
 			tangent = cdir^tup;
 			tangent.normalize();
-			
+			/*
 			if(rotate != 0) {
 				//MVector nn;
 				//fbase.getPolygonNormal (closestPolygonID, nn, MSpace::kObject );
@@ -121,7 +121,7 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 				tangent.y = vt.y;
 				tangent.z = vt.z;
 			}
-			
+			*/
 			XYZ side(tangent.x, tangent.y, tangent.z);
 			for(unsigned j = 0;j <= num_seg;j++)
 			{
@@ -138,11 +138,16 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 				tangent.x = side.x*width;
 				tangent.y = side.y*width;
 				tangent.z = side.z*width;
+				
+				tup = tangent^cdir;
+				tup.normalize();
 				 
 				vert = cent - tangent;
+				if(j%2==1) vert += tup*zig*width;
 				vertexArray.append(vert);
 				
 				vert = cent + tangent;
+				if(j%2==1) vert += tup*zig*width;
 				vertexArray.append(vert);
 				
 				uarray.append(0);
@@ -186,7 +191,7 @@ MStatus curvePatchNode::initialize()
     CHECK_MSTATUS( numAttr.setMin(0.01f));
 	addAttribute(aSize);
 	
-	arotate = numAttr.create("rotate", "rot",
+	arotate = numAttr.create("zigzag", "zg",
 						  MFnNumericData::kFloat, 0, &status);
     CHECK_MSTATUS( status );
     CHECK_MSTATUS( numAttr.setStorable(true));
