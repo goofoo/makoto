@@ -202,7 +202,7 @@ void hairMap::draw()
 	MATRIX44F tspace, tspace1, tspace2;
 	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3], dv0, dv1, dv2;
 	glBegin(GL_LINES);
-	for(unsigned i=0; i<n_samp; i += draw_step)
+	for(unsigned i=0; i<n_samp; i += 3)
 	{
 		if(isoverbald[i]) {
 			noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;

@@ -59,16 +59,7 @@ void BoundHair::calculateBBox(float *box) const
 			if(lv > mlv) mlv = lv;
 		}
 	}
-	
-	if(velocities) {
-		lv = velocities[0].length();
-		if(lv > mlv) mlv = lv;
-		lv = velocities[1].length();
-		if(lv > mlv) mlv = lv;
-		lv = velocities[2].length();
-		if(lv > mlv) mlv = lv;
-	}
-	
+
 	mlv /= 4;
 	box[0] -= mlv;
 	box[1] += mlv;
@@ -76,6 +67,53 @@ void BoundHair::calculateBBox(float *box) const
 	box[3] += mlv;
 	box[4] -= mlv;
 	box[5] += mlv;
+	
+	if(velocities) {
+		v.x = box[0] + velocities[0].x;
+		if(v.x < box[0]) box[0] = v.x;
+		v.x = box[1] + velocities[0].x;
+		if(v.x > box[1]) box[1] = v.x;
+		
+		v.y = box[2] + velocities[0].y;
+		if(v.y < box[2]) box[2] = v.y;
+		v.y = box[3] + velocities[0].y;
+		if(v.y > box[3]) box[3] = v.y;
+
+		v.z = box[4] + velocities[0].z;
+		if(v.z < box[4]) box[4] = v.z;
+		v.z = box[5] + velocities[0].z;
+		if(v.z > box[5]) box[5] = v.z;
+
+		v.x = box[0] + velocities[1].x;
+		if(v.x < box[0]) box[0] = v.x;
+		v.x = box[1] + velocities[1].x;
+		if(v.x > box[1]) box[1] = v.x;
+		
+		v.y = box[2] + velocities[1].y;
+		if(v.y < box[2]) box[2] = v.y;
+		v.y = box[3] + velocities[1].y;
+		if(v.y > box[3]) box[3] = v.y;
+
+		v.z = box[4] + velocities[1].z;
+		if(v.z < box[4]) box[4] = v.z;
+		v.z = box[5] + velocities[1].z;
+		if(v.z > box[5]) box[5] = v.z;
+
+		v.x = box[0] + velocities[2].x;
+		if(v.x < box[0]) box[0] = v.x;
+		v.x = box[1] + velocities[2].x;
+		if(v.x > box[1]) box[1] = v.x;
+		
+		v.y = box[2] + velocities[2].y;
+		if(v.y < box[2]) box[2] = v.y;
+		v.y = box[3] + velocities[2].y;
+		if(v.y > box[3]) box[3] = v.y;
+
+		v.z = box[4] + velocities[2].z;
+		if(v.z < box[4]) box[4] = v.z;
+		v.z = box[5] + velocities[2].z;
+		if(v.z > box[5]) box[5] = v.z;
+	}
 }
 
 void BoundHair::emit(float detail) const
@@ -247,7 +285,7 @@ void BoundHair::emit(float detail) const
 						dmean *= noi;
 						pcur += dmean;
 						
-						pcur += (pcen - pcur)*attrib[2];
+						pcur += (pcen - pcur)*attrib[2]*j/num_seg;
 						
 						noi = fnoi.randfint( g_seed ); g_seed++;
 						if(noi<0.33) sidewind = pt[0] - pt[1];
