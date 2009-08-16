@@ -23,7 +23,7 @@ using namespace std;
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
 parray(0),pframe1(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0)
+draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0),is_nil(1)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
@@ -867,6 +867,7 @@ int hairMap::saveStart(const char* filename)
 
 int hairMap::load(const char* filename)
 {
+	is_nil = 1;
 	ifstream infile;
 	infile.open(filename, ios_base::in | ios_base::binary);
 	if(!infile.is_open()) {
@@ -930,11 +931,13 @@ int hairMap::load(const char* filename)
 	bbox_low -= (bboxcen - bbox_low)/10;
 	bbox_high -= (bboxcen - bbox_high)/10;
 
+	is_nil = 0;
 	return 1;
 }
 
 int hairMap::loadStart(const char* filename)
 {
+	is_nil = 1;
 	if(guide_data) {
 		for(unsigned i=0; i<num_guide; i++) guide_data[i].release();
 		delete[] guide_data;
@@ -1020,6 +1023,7 @@ int hairMap::loadStart(const char* filename)
 		guide_spaceinv[i].inverse();
 	}
 	
+	is_nil = 0;
 	return 1;
 }
 

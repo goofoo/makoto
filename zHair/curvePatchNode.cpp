@@ -84,20 +84,37 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 			MVector closestn;
 			int closestPolygonID;
 			MIntArray vertexList;
-			MVector tangent;
+			MVector tangent, binormal, cdir;
          
 			MPoint cent;
 			fcurve.getPointAtParam(minparam, cent, MSpace::kObject );
 			fbase.getClosestPointAndNormal (cent, closestp, closestn, MSpace::kObject, &closestPolygonID );
 			fbase.getPolygonVertices(closestPolygonID,vertexList);
 			fbase.getFaceVertexTangent(closestPolygonID,vertexList[0],tangent,MSpace::kObject,NULL);
+			fbase.getFaceVertexBinormal (closestPolygonID,vertexList[0], binormal, MSpace::kObject , NULL);
+			tangent.normalize();
+			binormal.normalize();
+			
+			MPoint vert, vert1;
+			fcurve.getPointAtParam( 0, vert, MSpace::kObject );
+			fcurve.getPointAtParam( 1, vert1, MSpace::kObject );
+			//cdir = fcurve.tangent(0, MSpace::kObject);
+			cdir = vert1 - vert;
+			cdir.normalize();
+			
+			if(abs(cdir*binormal) < abs(cdir*tangent)) tangent = binormal;
+			
+			if(cdir*tangent<0) tangent *= -1;
+			
+			MVector tup = tangent^cdir;
+			tangent = cdir^tup;
 			tangent.normalize();
 			
 			if(rotate != 0) {
-				MVector nn;
-				fbase.getPolygonNormal (closestPolygonID, nn, MSpace::kObject );
-				nn.normalize();
-				XYZ ax(nn.x, nn.y, nn.z);
+				//MVector nn;
+				//fbase.getPolygonNormal (closestPolygonID, nn, MSpace::kObject );
+				//nn.normalize();
+				XYZ ax(cdir.x, cdir.y, cdir.z);
 				XYZ vt(tangent.x, tangent.y, tangent.z);
 				vt.rotateAroundAxis(ax, rotate);
 				tangent.x = vt.x;
@@ -112,10 +129,9 @@ MStatus curvePatchNode::compute( const MPlug& plug, MDataBlock& data )
 				
 				fcurve.getPointAtParam( param, cent, MSpace::kObject );
 				
-				MPoint vert;
-				
-				MVector cdir = fcurve.tangent(param, MSpace::kObject);
+				cdir = fcurve.tangent(param, MSpace::kObject);
 				XYZ axis(cdir.x, cdir.y, cdir.z);
+				
 				
 				side.rotateAroundAxis(axis, twist/num_seg*j);
 				
