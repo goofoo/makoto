@@ -337,12 +337,13 @@ void hairMap::drawUV()
 	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
 	glPointSize(3);
 	glBegin(GL_POINTS);
-	for(unsigned i=0; i<n_samp; i += draw_step) {
-		XYZ cc = guide_data[bind_data[i].idx[0]].dsp_col * ddice[i].alpha + guide_data[bind_data[i].idx[1]].dsp_col * ddice[i].beta + guide_data[bind_data[i].idx[2]].dsp_col * ddice[i].gamma;
-		glColor3f(cc.x, cc.y, cc.z);
+	for(unsigned i=0; i<n_samp; i++) {
+		//XYZ cc = guide_data[bind_data[i].idx[0]].dsp_col * ddice[i].alpha + guide_data[bind_data[i].idx[1]].dsp_col * ddice[i].beta + guide_data[bind_data[i].idx[2]].dsp_col * ddice[i].gamma;
+		//glColor3f(cc.x, cc.y, cc.z);
 		
-		float u = guide_data[bind_data[i].idx[0]].u * ddice[i].alpha + guide_data[bind_data[i].idx[1]].u * ddice[i].beta + guide_data[bind_data[i].idx[2]].u * ddice[i].gamma;
-		float v = guide_data[bind_data[i].idx[0]].v * ddice[i].alpha + guide_data[bind_data[i].idx[1]].v * ddice[i].beta + guide_data[bind_data[i].idx[2]].v * ddice[i].gamma;
+		float u = ddice[i].coords;
+		float v = ddice[i].coordt;
+		glColor3f(u, v, 0);
 		glVertex3f(u, v, 0);
 		//glVertex3f(ddice[i].coords, ddice[i].coordt, 0);
 	}

@@ -121,13 +121,13 @@ void BoundHair::emit(float detail) const
 	float widthScale = 1.0, kill = 1.0, realkill;
 	if(detail < 5000) {
 		kill = 0.9;
-		widthScale = 1.1;
+		widthScale = 1.11;
 		if(detail < 2000) {
 			kill = 0.5;
 			widthScale = 2.0;
 			if(detail < 1000) {
-				kill = 0.3;
-				widthScale = 3.3;
+				kill = 0.33;
+				widthScale = 3.33;
 			}
 		}
 	}
@@ -233,6 +233,7 @@ void BoundHair::emit(float detail) const
 					
 					g_seed  = seed*53 + i*5;
 					mutant[acc] = fnoi.randfint( g_seed );
+					
 					acc++;
 				}
 			}

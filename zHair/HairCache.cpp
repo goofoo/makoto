@@ -480,12 +480,12 @@ void HairCache::lookupTriangleBind(unsigned& idx, XYZ* points) const
 
 void HairCache::lookupTriangleUV(unsigned& idx, float* u, float* v) const
 {
-	u[0] = uarray[pconnection[idx*3]];
-	u[1] = uarray[pconnection[idx*3+1]];
-	u[2] = uarray[pconnection[idx*3+2]];
-	v[0] = varray[pconnection[idx*3]];
-	v[1] = varray[pconnection[idx*3+1]];
-	v[2] = varray[pconnection[idx*3+2]];
+	u[0] = uarray[idx*3];
+	u[1] = uarray[idx*3+1];
+	u[2] = uarray[idx*3+2];
+	v[0] = varray[idx*3];
+	v[1] = varray[idx*3+1];
+	v[2] = varray[idx*3+2];
 }
 
 void HairCache::lookupGuiderNSeg(unsigned& idx, unsigned* nsegs) const
@@ -626,22 +626,22 @@ void HairCache::lookupDensity(unsigned& idx, float* densities) const
 		return;
 	}
 	
-	float u = uarray[pconnection[idx*3]];
-	float v = varray[pconnection[idx*3]];
+	float u = uarray[idx*3];
+	float v = varray[idx*3];
 	
 	int it = (densmap_h-1)*(1.f-v);
 	int is = (densmap_w-1)*u;
 	densities[0] = pDensmap[it*densmap_w + is];
 	
-	u = uarray[pconnection[idx*3+1]];
-	v = varray[pconnection[idx*3+1]];
+	u = uarray[idx*3+1];
+	v = varray[idx*3+1];
 	
 	it = (densmap_h-1)*(1.f-v);
 	is = (densmap_w-1)*u;
 	densities[1] = pDensmap[it*densmap_w + is];
 	
-	u = uarray[pconnection[idx*3+2]];
-	v = varray[pconnection[idx*3+2]];
+	u = uarray[idx*3+2];
+	v = varray[idx*3+2];
 	
 	it = (densmap_h-1)*(1.f-v);
 	is = (densmap_w-1)*u;

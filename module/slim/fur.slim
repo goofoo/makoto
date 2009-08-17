@@ -347,8 +347,8 @@ template shadingmodel zhair {
 			Cdiff_back += Cl2*diffterm * (1 - contribdiff);
 		}
 		
-		mixed = mix( Croot, mutantrootflt, v );
-		mixed = mix( mixed, mix( Ctip, mutanttipflt, v ), v );
+		mixed = mix( rootflt, mutantrootflt, v );
+		mixed = mix( mixed, mix( tipflt, mutanttipflt, v ), v );
 		
 		illuminance (P) 
 		{
@@ -410,6 +410,7 @@ template shadingmodel zhair {
 		else if(mode == "_specular_back") CI = _specular_back;
 		else if(mode == "_depth") CI = _depth;
 		else CI = OI * mixed * Cdiff * Kd + Cspec * specflt * Ks;
+		
 	   }
        }
    }
