@@ -84,6 +84,9 @@ global proc zhairCreateMenus()
 			menuItem -l "Set Density Map" -c "zhair_do_set_densityMap";
 			menuItem -l "Change Data Path To" -c "fileBrowser \"set_zhairCacheDataPath\" \"Set Path\" \"\" 4";
 			menuItem -divider true;
+			menuItem -l "Enable All" -c "zhair_do_enable(1)";
+			menuItem -l "Disable All" -c "zhair_do_enable(0)";
+			menuItem -divider true;
 			menuItem -l "Existing Hairs" -subMenu true -postMenuCommand zhair_findexisting zhair_existinghairs;
 			setParent -menu ..;
 		setParent -menu ..;
@@ -836,4 +839,11 @@ global proc int set_zhairCacheDataPath(string $path, string $type)
 		}
 	}
 	return true;
+}
+
+global proc zhair_do_enable(int $val)
+{
+	string $existing[] = `ls -type ZHairViz`;
+	string $an;
+	for($an in $existing) setAttr ($an+".enable") $val;
 }

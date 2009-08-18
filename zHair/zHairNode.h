@@ -54,10 +54,11 @@ public:
 	static MObject adraw;
 	static MObject aoffset;
 	static MObject adensitymap;
+	static MObject aenable;
 	static	MTypeId		id;
 
 private :
 	hairMap* m_base;
 	bool	mAttributesChanged;
-	int idraw;
+	int idraw, ienable;
 };

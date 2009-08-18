@@ -18,8 +18,9 @@ MObject HairNode::asavemap;
 MObject HairNode::adraw;
 MObject HairNode::aoffset;
 MObject HairNode::adensitymap;
+MObject HairNode::aenable;
 
-HairNode::HairNode(): idraw(0)
+HairNode::HairNode(): idraw(0), ienable(1)
 {
 	m_base = new hairMap();
 }
@@ -34,6 +35,8 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 	MStatus status;
 	if(plug == aoutput)
 	{
+		ienable = data.inputValue(aenable, &status).asInt();
+		if(ienable == 0) return MS::kUnknownParameter;
 		MObject ogrow = data.inputValue(agrowth).asMesh();
 		if(!ogrow.isNull()) m_base->setBase(ogrow);
 		
@@ -116,6 +119,7 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 							 M3dView::DisplayStyle style,
 							 M3dView::DisplayStatus status )
 {
+	if(ienable == 0) return;
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
@@ -227,6 +231,11 @@ MStatus HairNode::initialize()
 	zWorks::createStringAttr(adensitymap, "densityMap", "dnm");
 	addAttribute(adensitymap);
 	
+	aenable = numAttr.create( "enable", "en", MFnNumericData::kInt, 1);
+	numAttr.setStorable(false);
+	numAttr.setKeyable(true);
+	addAttribute(aenable);
+	
 	CHECK_MSTATUS( addAttribute(aHDRName));
 	addAttribute(aworldSpace);
 	attributeAffects( alengthnoise, aoutput );
@@ -241,6 +250,7 @@ MStatus HairNode::initialize()
 	attributeAffects( adraw, aoutput );
 	attributeAffects( aoffset, aoutput );
 	attributeAffects( adensitymap, aoutput );
+	attributeAffects( aenable, aoutput );
 	
 	return MS::kSuccess;
 }
