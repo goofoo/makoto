@@ -760,12 +760,16 @@ showWindow deformzhairWin;
 global proc dodeformzhair()
 {
 	string $sel[] = `ls -sl`;
-	if(size($sel) < 2) {
+	if(size($sel) < 3) {
 		print("Select hair patch(s) and body mesh to add deformer.");
 		return;
 	}
 	
 	int $last = size($sel)-1;
+	select -r $sel[$last];
+	string $mbind[] = `pickWalk -d down`;
+	
+	$last = size($sel)-2;
 	select -r $sel[$last];
 	string $mbase[] = `pickWalk -d down`;
 	
@@ -776,6 +780,7 @@ global proc dodeformzhair()
 		setAttr ($node[0] + ".startFrame") `intFieldGrp -q -v1 zhair_def_guider_sf_grp`;
 		connectAttr -f time1.outTime ($node[0] + ".currentTime");
 		connectAttr -f ($mbase[0] +".outMesh") ($node[0] + ".growMesh");
+		connectAttr -f ($mbind[0] +".outMesh") ($node[0] + ".bindMesh");
 		
 		string $dd[] = `duplicate -rr -name ($sel[$i]+"Base") $sel[$i]`;
 		select -r $dd[0];

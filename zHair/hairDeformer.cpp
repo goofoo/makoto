@@ -25,7 +25,7 @@ MObject     hairDeformer::frame;
 MObject  hairDeformer::agrowth;
 MObject     hairDeformer::abase;
 MObject     hairDeformer::aframestep;
-
+MObject     hairDeformer::abindbase;
 
 
 hairDeformer::hairDeformer():faceId(0),pobj(0),nsegbuf(0)
@@ -65,9 +65,13 @@ MStatus hairDeformer::initialize()
 	zWorks::createTypedAttr(abase, MString("baseMesh"), MString("bm"), MFnData::kMesh);
 	zCheckStatus(addAttribute(abase), "ERROR adding base mesh");
 	
+	zWorks::createTypedAttr(abindbase, MString("bindMesh"), MString("bnd"), MFnData::kMesh);
+	zCheckStatus(addAttribute(abindbase), "ERROR adding bind mesh");
+	
 	attributeAffects( frame, hairDeformer::outputGeom );
 	attributeAffects( agrowth, hairDeformer::outputGeom );
 	attributeAffects( abase, hairDeformer::outputGeom );
+	attributeAffects( abindbase, hairDeformer::outputGeom );
 	attributeAffects( aframestep, hairDeformer::outputGeom );
 
 	return MStatus::kSuccess;
@@ -86,6 +90,7 @@ MStatus hairDeformer::deform( MDataBlock& block,
 	if(env == 0) return status;
 	
 	MObject ogrow = block.inputValue(agrowth).asMesh();
+	MObject obind = block.inputValue(abindbase).asMesh();
 	MObject obase = block.inputValue(abase).asMesh();
 	
 	MFnMesh fbase(ogrow, &status);
@@ -96,11 +101,19 @@ MStatus hairDeformer::deform( MDataBlock& block,
 		return MS::kUnknownParameter;
 	}
 	
+	MFnMesh fbind(obind, &status);
+	MItMeshPolygon itbind(obind, &status);
+	if(!status)
+	{
+		MGlobal::displayWarning("no base mesh connected, do nothing");
+		return MS::kUnknownParameter;
+	}
+	
 	MFnMesh fori(obase, &status);
 	MItMeshPolygon itori(obase, &status);
 	if(!status)
 	{
-		MGlobal::displayWarning("no base mesh connected, do nothing");
+		MGlobal::displayWarning("no bind mesh connected, do nothing");
 		return MS::kUnknownParameter;
 	}
 
@@ -197,7 +210,7 @@ MStatus hairDeformer::deform( MDataBlock& block,
 			spaceinv.transform(pobj[iter.index()]);
 		}
 	}
-	else {
+	iter.reset();
 		if(faceId && pobj && nsegbuf) {
 			
 			MATRIX44F* space = new MATRIX44F[num_hair];
@@ -207,15 +220,15 @@ MStatus hairDeformer::deform( MDataBlock& block,
 				MIntArray vertexList;
 				MVector tangent;
          
-				fbase.getPolygonVertices(faceId[i], vertexList);
-				fbase.getFaceVertexTangent(faceId[i], vertexList[0], tangent, MSpace::kObject, NULL);
+				fbind.getPolygonVertices(faceId[i], vertexList);
+				fbind.getFaceVertexTangent(faceId[i], vertexList[0], tangent, MSpace::kObject, NULL);
 				
 				int preid;
-				itbase.setIndex (faceId[i], preid);
+				itbind.setIndex (faceId[i], preid);
 				
 				MVector facen;
-				itbase.getNormal(facen, MSpace::kObject );
-				MPoint cc = itbase.center ( MSpace::kObject );
+				itbind.getNormal(facen, MSpace::kObject );
+				MPoint cc = itbind.center ( MSpace::kObject );
 				
 				tangent = facen^tangent;
 				tangent.normalize();
@@ -248,6 +261,6 @@ MStatus hairDeformer::deform( MDataBlock& block,
 			
 			delete[] space;
 		}
-	}
+
 	return status;
 }

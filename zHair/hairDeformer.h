@@ -30,6 +30,7 @@ public:
 
 	// local node attributes
 	static  	MObject		abase;
+	static  	MObject		abindbase;
 	static  	MObject		frame;
 	static MObject agrowth;
 	static  	MObject 	aframestep;
