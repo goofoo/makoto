@@ -187,13 +187,13 @@ void hairMap::draw()
 	FNoise fnoi;
 	float noi;
 	
-	char* isoverbald = new char[n_samp];
+	/*char* isoverbald = new char[n_samp];
 	for(unsigned i=0; i<n_samp; i++) {
 		noi = fnoi.randfint( g_seed ); g_seed++;
 		if(pDensmap) muliplyDensityMap(noi, ddice[i].coords, ddice[i].coordt);
 		if(noi > m_bald) isoverbald[i] = 1;
 		else isoverbald[i] = 0;
-	}
+	}*/
 	
 	XYZ* pbuf = new XYZ[n_samp];
 	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
@@ -202,9 +202,9 @@ void hairMap::draw()
 	MATRIX44F tspace, tspace1, tspace2;
 	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3], dv0, dv1, dv2;
 	glBegin(GL_LINES);
-	for(unsigned i=0; i<n_samp; i += 3)
+	for(unsigned i=0; i<n_samp; i++)
 	{
-		if(isoverbald[i]) {
+		//if(isoverbald[i]) {
 			noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
 			XYZ croot = root_color + (mutant_color - root_color)*noi;
 			XYZ ctip = tip_color + (mutant_color - tip_color)*noi;
@@ -324,12 +324,12 @@ void hairMap::draw()
 					glVertex3f(ppre.x, ppre.y, ppre.z);
 				}
 			}
-		}
+		//}
 	}
 	glEnd();
 	
 	delete[] pbuf;
-	delete[] isoverbald;
+	//delete[] isoverbald;
 }
 
 void hairMap::drawUV()
@@ -1104,148 +1104,6 @@ void hairMap::drawBind()
 		
 	}
 	glEnd();
-}
-
-void hairMap::createSnow(double& time, MObject& meshData) const
-{
-	MPointArray vertexArray;
-	MIntArray polygonCounts;
-	MIntArray polygonConnects;
-	MFloatArray uarray, varray;
-	
-	int g_seed;
-	FNoise fnoi;
-	float noi, size;
-	float kvel = time - (int)time;
-	
-	int acc = 0;
-	XYZ a[3], b[3], c[3], d[3], dv, ma, mb, mc, md; 
-	MATRIX44F tspace[3];
-	for(unsigned i=0; i<n_samp; i++) {
-		noi  = fnoi.randfint( g_seed ); g_seed++;
-		if(noi<m_snow_rate) {
-			
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			
-			guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace[0], noi*0.5);
-			guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace[1], noi*0.5);
-			guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace[2], noi*0.5);
-
-			a[0] = a[1] = a[2] = XYZ(0.f);
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			noi -= .5f;
-			
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			size = (1.f+(noi-0.5)*0.5)*m_snow_size;
-			
-			b[0] = b[1] = b[2] = XYZ(noi* size,0, size);
-			
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			noi -= .5f;
-			c[0] = c[1] = c[2] = XYZ(noi* size, size,0);
-			
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			size = (1.f+(noi-0.5)*0.5)*m_snow_size;
-			
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			noi -= .5f;
-			d[0] = d[1] = d[2] = XYZ(noi* size, size, size);
-			
-			tspace[0].transform(a[0]);
-			tspace[0].transform(b[0]);
-			tspace[0].transform(c[0]);
-			tspace[0].transform(d[0]);
-			tspace[1].transform(a[1]);
-			tspace[1].transform(b[1]);
-			tspace[1].transform(c[1]);
-			tspace[1].transform(d[1]);
-			tspace[2].transform(a[2]);
-			tspace[2].transform(b[2]);
-			tspace[2].transform(c[2]);
-			tspace[2].transform(d[2]);
-			
-			noi = fnoi.randfint( g_seed ); g_seed++;
-			
-			size = (1.f - noi)*fnoi.randfint( g_seed ); g_seed++;
-			
-			ma = a[0]*noi;
-			ma += a[1]*size;
-			ma += a[2]*(1.f-noi-size);
-			
-			mb = b[0]*noi;
-			mb += b[1]*size;
-			mb += b[2]*(1.f-noi-size);
-			
-			mc = c[0]*noi;
-			mc += c[1]*size;
-			mc += c[2]*(1.f-noi-size);
-			
-			md = d[0]*noi;
-			md += d[1]*size;
-			md += d[2]*(1.f-noi-size);
-			
-			if(kvel>0) {
-				dv = (pframe1[ddice[i].id0] - parray[ddice[i].id0])*kvel;
-				ma += dv;
-				mb += dv;
-				mc += dv;
-				md += dv;
-			}
-			
-			vertexArray.append(MPoint(ma.x, ma.y, ma.z));
-			vertexArray.append(MPoint(mb.x, mb.y, mb.z));
-			vertexArray.append(MPoint(mc.x, mc.y, mc.z));
-			vertexArray.append(MPoint(md.x, md.y, md.z));
-			
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			noi /= 4;
-			uarray.append(noi);
-			uarray.append(1.0-noi);
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			noi /= 4;
-			uarray.append(noi);
-			uarray.append(1.0-noi);
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			noi /= 4;
-			varray.append(1.0-noi);
-			varray.append(1.0-noi);
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			noi /= 4;
-			varray.append(noi);
-			varray.append(noi);
-			
-			polygonCounts.append(3);
-			polygonCounts.append(3);
-			
-			noi  = fnoi.randfint( g_seed ); g_seed++;
-			if(noi>.5f) {
-				polygonConnects.append(acc);
-				polygonConnects.append(acc+2);
-				polygonConnects.append(acc+1);
-				
-				polygonConnects.append(acc+3);
-				polygonConnects.append(acc+1);
-				polygonConnects.append(acc+2);
-			}
-			else {
-				polygonConnects.append(acc+1);
-				polygonConnects.append(acc);
-				polygonConnects.append(acc+3);
-				
-				polygonConnects.append(acc+2);
-				polygonConnects.append(acc+3);
-				polygonConnects.append(acc);
-			}
-			
-			acc += 4;
-		}
-
-	}
-		
-	MFnMesh meshFn;
-	meshFn.create(vertexArray.length(), polygonCounts.length(), vertexArray, polygonCounts, polygonConnects, meshData );
-	meshFn.setUVs ( uarray, varray );
-	meshFn.assignUVs ( polygonCounts, polygonConnects );
 }
 
 void hairMap::setDensityMap(const char* filename)

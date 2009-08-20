@@ -135,9 +135,7 @@ public:
 	float getMutantColorScale() const {return mutant_scale;}
 	float getBald() const {return m_bald;}
 	const char* getDensityName() const {return m_densityname.c_str();}
-	
-	void createSnow(double& time, MObject& meshData) const;
-	
+
 	void setDensityMap(const char* filename);
 	void muliplyDensityMap(float& val, float& s, float& t) const;
 	

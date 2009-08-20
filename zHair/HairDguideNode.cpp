@@ -107,25 +107,6 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 		data.setClean(plug);
 		return MS::kSuccess;
 	}
-
-
-	if( plug == aoutmesh ) {
-		double dtime = data.inputValue( aframe ).asDouble();
-		if(!m_base->isNil()) {
-			m_base->setSnowSize(data.inputValue(asnowsize).asFloat());
-			m_base->setSnowRate(data.inputValue(asnowrate).asFloat());
-			m_base->loadNext();
-			MFnMeshData dataCreator;
-			MObject outMeshData = dataCreator.create(&returnStatus);
-			
-			m_base->createSnow(dtime, outMeshData);
-			
-			MDataHandle meshh = data.outputValue(aoutmesh, &returnStatus);
-			meshh.set(outMeshData);
-			data.setClean(plug);
-		}
-		return MS::kSuccess;
-	}
 	return MS::kUnknownParameter;
 }
 
