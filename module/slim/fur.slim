@@ -11,8 +11,6 @@
 ## 	{ zhang,zhair#0	shadingmodel {Hair}		/Surface }
 ## 	{ zhang,zhairshd#0	shadingmodel {Hair In Shadow}		/Surface }
 ## 	{ zhang,Fur#0	shadingmodel {Fur}		/Surface }
-## 	{ zhang,furDump#0	shadingmodel {Fur Dump}		/Surface }
-## 	{ zhang,furDumpOcc#0	shadingmodel {Fur Dump Occlusion} /Surface }
 ## 	{ zhang,furBeneath#0	shadingmodel {Fur Beneath} /Surface }
 ## 	{ zhang,depthRange#0	float {Depth Range} /Float }
 ## }
@@ -36,6 +34,7 @@ template shadingmodel zhair {
 				specular_fill _specular_fill
 				specular_back _specular_back
 				depth _depth
+				shadow _shadow
 				flattened _flattened
 		  }
 	    default _flattened
@@ -103,9 +102,20 @@ template shadingmodel zhair {
 	    default ""
 	}
 	
-	parameter float depth {
-		detail varying
-		detail mustvary "zhang,depthRange"
+	parameter float clipnear {
+ 		label "Near Clipping"
+	    	default {0.1}
+	    	range {0 1 0.001}
+	    	subtype {slider}
+	    	detail uniform
+	}
+	
+	parameter float clipfar {
+ 		label "Far Clipping"
+	    	default {0.9}
+	    	range {0 1 0.001}
+	    	subtype {slider}
+	    	detail uniform
 	}
 	
 	parameter float mutant {
@@ -180,6 +190,14 @@ template shadingmodel zhair {
 	       display hidden
 	}
 	
+	parameter color _shadow {
+	       detail varying
+	       provider primitive
+	       default "1 1 1"
+	       access output
+	       display hidden
+	}
+	
        collection shadingmodel shadingmodel {
 	   access output
 	   display hidden
@@ -199,7 +217,7 @@ template shadingmodel zhair {
 	   pxslzhair(uniform string mode;
 				float Kd, Ks, roughness; color Croot, Ctip, mutantrootflt, mutanttipflt, Cspecular;
 				uniform string rootmap, tipmap, specmap; 
-				float depth;
+				float clipnear, clipfar;
 		       output color CI;
 		       output color OI; )
 	   {
@@ -391,15 +409,26 @@ template shadingmodel zhair {
 		extern color _specular_fill;
 		extern color _specular_back;
 		extern color _depth;
+		extern color _shadow;
 							
-		_color = mixed * Os;
-		_diffuse = Cdiff_key * Os;
+		_color = mixed;
+		_diffuse = Cdiff_key;
 		_specular = Cspec_key * specflt;
-		_diffuse_fill = Cdiff_fill * Os;
-		_diffuse_back = Cdiff_back * Os;
+		_diffuse_fill = Cdiff_fill;
+		_diffuse_back = Cdiff_back;
 		_specular_fill = Cspec_fill * specflt;
 		_specular_back = Cspec_back * specflt;
-		_depth = depth;
+		float dep = pow(smoothstep( clipnear, clipfar, depth(P)), 0.67);
+		_depth = color(dep,1-dep,0);
+		
+		color Cshd = 0;
+		illuminance("-environment", P)
+		{
+			color inshdC = 0;
+			lightsource("__inShadowC", inshdC);
+	    	Cshd += inshdC*0.33;
+		}
+		_shadow = Cshd;
 		
 		if(mode == "_color") CI = _color;
 		else if(mode == "_diffuse") CI = _diffuse;
@@ -409,6 +438,7 @@ template shadingmodel zhair {
 		else if(mode == "_specular_fill") CI = _specular_fill;
 		else if(mode == "_specular_back") CI = _specular_back;
 		else if(mode == "_depth") CI = _depth;
+		else if(mode == "_shadow") CI = _shadow;
 		else CI = OI * mixed * Cdiff * Kd + Cspec * specflt * Ks;
 		
 	   }
@@ -442,7 +472,7 @@ template shadingmodel zhairshd {
 		extern float v;
 		OI = color(1-v*v);;
 		
-		CI = Os;
+		CI = OI;
 		
 		
 	   }
@@ -937,159 +967,22 @@ parameter string sdisplay {
 	   }
        }
    }
-   
-   template shadingmodel furDump {
-	parameter string outfile {
-		    label "Cache File"
-		    description {Saves the sample points to a .pcf file for further usage.}
-		    provider variable
-		    subtype environment
-		    default {//D/data/$JOBNAME.$F.pcf}
-		}
-		parameter float width {
-			 detail varying
-	       provider primitive
-	       default 0
-	       access input
-	       display hidden
-		}
-		parameter normal N_Srf {
-	       detail varying
-	       provider primitive
-	       default {0 0 0}
-	       access input
-	       display hidden
-	}
-       collection shadingmodel shadingmodel {
-	   access output
-	   display hidden
-	   parameter color CI {
-	       detail varying
-	       default "0 .25 1"
-	       access output
-	   }
-	   parameter color OI {
-	       detail varying
-	       default "1 1 1"
-	       access output
-	   }
-       }
-       RSLFunction {
-	   void
-	   pxslfurDump(string filename;
-		       output color CI;
-		       output color OI; )
-	   {
-	   	extern point P;
-	   	extern float s, t, v, width;
-		extern vector dPdv;
-		extern normal N_Srf;
-		
-		vector T = normalize (dPdv);
-		T= normalize (vtransform("world",T));
-		
-		vector nSN = N_Srf;
-		nSN = normalize(vtransform("world",nSN));
-		
-		vector S = normalize(nSN^T);
-		S = normalize(T^S);
-		float  l = clamp(nSN.T,0,1);
-		l *= l;
-		vector norm_hair = (l * nSN) + ( (1-l) * S);
-		norm_hair = normalize(norm_hair);
-
-	   	point Pw = transform("world", P);
-		normal Nw = norm_hair;
-		
-		
-		color Col = color(s,t,v);
-
-	   	dumpGrid(filename, Pw, Nw, Col, width*width*PI);
-	   	
-	      CI = 1.;
-	      OI = 0.5; 
-	   }
-       }
-   }
-   
-   template shadingmodel furDumpOcc {
-	parameter string outfile {
-		    label "PCF File"
-		    description {Point cloud file saved by dupGrid. Tiff images will be saved in same directory.}
-		    provider variable
-		    subtype environment
-		    default {//D/data/$JOBNAME.$F.pcf}
-		}
-		parameter float width {
-			 detail varying
-	       provider primitive
-	       default 0
-	       access input
-	       display hidden
-		}
-		parameter normal N_Srf {
-	       detail varying
-	       provider primitive
-	       default {0 0 0}
-	       access input
-	       display hidden
-	}
-       collection shadingmodel shadingmodel {
-	   access output
-	   display hidden
-	   parameter color CI {
-	       detail varying
-	       default "0 .25 1"
-	       access output
-	   }
-	   parameter color OI {
-	       detail varying
-	       default "1 1 1"
-	       access output
-	   }
-       }
-       RSLFunction {
-	   void
-	   pxslfurDumpOcc(string filename;
-		       output color CI;
-		       output color OI; )
-	   {
-	   	extern point P;
-	   	extern float s, t, v, width;
-		extern vector dPdv;
-		extern normal N_Srf;
-		
-		vector T = normalize (dPdv);
-		T= normalize (vtransform("world",T));
-		
-		vector nSN = N_Srf;
-		nSN = normalize(vtransform("world",nSN));
-		
-		vector S = normalize(nSN^T);
-		S = normalize(T^S);
-		float  l = clamp(nSN.T,0,1);
-		l *= l;
-		vector norm_hair = (l * nSN) + ( (1-l) * S);
-		norm_hair = normalize(norm_hair);
-
-	   	point Pw = transform("world", P);
-		normal Nw = norm_hair;
-		
-		
-		color Col = color(s,t,v);
-
-	   	dumpOccFur(filename, Pw, Nw, Col, width*width*PI);
-	   	
-	      CI = 1.;
-	      OI = 0.5; 
-	   }
-       }
-   }
 
 template shadingmodel furBeneath {
-	parameter float depth {
-		detail varying
-		detail mustvary
+	parameter float clipnear {
+ 		label "Near Clipping"
+	    	default {0.1}
+	    	range {0 1 0.001}
+	    	subtype {slider}
+	    	detail uniform
+	}
+	
+	parameter float clipfar {
+ 		label "Far Clipping"
+	    	default {0.9}
+	    	range {0 1 0.001}
+	    	subtype {slider}
+	    	detail uniform
 	}
 	parameter color _shadow {
 	       detail varying
@@ -1098,20 +991,6 @@ template shadingmodel furBeneath {
 	       access output
 	       display hidden
 	}
-		parameter color _colorB {
-	       detail varying
-	       provider primitive
-	       default "0 0 0"
-	       access output
-	       display hidden
-	} 
-	parameter color _colorC {
-	       detail varying
-	       provider primitive
-	       default "0 0 0"
-	       access output
-	       display hidden
-	} 
 	parameter color _depth {
 	       detail varying
 	       provider primitive
@@ -1136,26 +1015,25 @@ template shadingmodel furBeneath {
        RSLFunction {
 	   void
 	   pxslfurBeneath(
-			float depth;
+			float clipnear, clipfar;
 		       output color CI;
 		       output color OI; )
 	   {
 	   	extern color _shadow;
-		extern color _colorB;
-		extern color _colorC;
 		extern color _depth;
-		_colorB = 1;
-		_colorC = 0;
-		_shadow = 1;
-		_depth = depth;
-
 		extern point P;
-		illuminance("keylight", P)
+		
+		float dep = pow(smoothstep( clipnear, clipfar, depth(P)), 0.67);
+		_depth = color(dep,1-dep,0);
+
+		color Cshd = 0;
+		illuminance("-environment", P)
 		{
 			color inshdC = 0;
 			lightsource("__inShadowC", inshdC);
-			_shadow -= inshdC;
-	    	}
+	    	Cshd += inshdC*0.33;
+		}
+		_shadow = Cshd;
 		
 	      CI = 0;
 	      OI = 1; 
