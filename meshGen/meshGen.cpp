@@ -137,7 +137,6 @@ quadrics::GenRIB( RIBContext *c )
 		m_i_lightsrc_shadowed = 0;
 	}
 	
-	
 	RtBoolean usingMotionBlur = c->GetMotionBlur();
 	// Query motion related settings
 	RtFloat shutterOpen, shutterClose;
@@ -176,31 +175,40 @@ quadrics::GenRIB( RIBContext *c )
 	sprt += ".1.prt";
 	
 	
-	double dtime0, dtime1, t0;//t1;
-	t0 = (double)frame;
+	//float dtime0 = shutterOpen * fps;
+	//float dtime1 = shutterClose * fps;
+	//t0 = (double)frame;
 	
-	MTime mt0;
-	if(fps == 24) mt0 = MTime(t0, MTime::Unit::kFilm);
-	else if(fps == 25) mt0 = MTime(t0, MTime::Unit::kPALFrame);
-	else mt0 = MTime(t0, MTime::Unit::kNTSCFrame);
+	//MTime mt0;
+	//if(fps == 24) mt0 = MTime(t0, MTime::Unit::kFilm);
+	//else if(fps == 25) mt0 = MTime(t0, MTime::Unit::kPALFrame);
+	//else mt0 = MTime(t0, MTime::Unit::kNTSCFrame);
 	
-	MDGContext ctx0(mt0);
-	zWorks::getDoubleAttributeByNameAndTime(fnode, "currentTime", ctx0, dtime0);
+	//MDGContext ctx0(mt0);
+	//zWorks::getDoubleAttributeByNameAndTime(fnode, "currentTime", ctx0, dtime0);
 	
 	//t1 = (double)frame + ((float)shutterClose - (float)shutterOpen)*(float)fps;
 	
-	zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
+	//zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
 	
 //	c->ReportError( RIBContext::reInfo, "quadrics get motion: %f %f", (float)dtime0, (float)dtime1);
-	int iframe = zGlobal::safeConvertToInt(dtime0);
-	zGlobal::changeFrameNumber(sname, iframe);
-	zGlobal::changeFrameNumber(sprt, iframe);
-	
-	MGlobal::displayInfo(MString("MeshRIBGen emits ") + MString(vizname) + " linked to " + sname.c_str());
+	//int iframe = zGlobal::safeConvertToInt(dtime0);
+	//int iframe = zGlobal::safeConvertToInt(shutterOpen*fps);
+	float fframe0 = frame;
+	float fframe1 = frame + (shutterClose - shutterOpen)*fps;
+	zGlobal::changeFrameNumber(sname, frame);
+	zGlobal::changeFrameNumber(sprt, frame);
 	
 	int iblur = 0;
 	if(usingMotionBlur) iblur = 1;
 	if(pass == RIBContext::rpShadow) iblur = 0;
+	
+	float mso = int(shutterOpen * 1000000 + 0.5)/1000000.f;
+	float msc = int(shutterClose * 1000000 + 0.5)/1000000.f;
+	
+	MGlobal::displayInfo(MString("MeshRIBGen emits ") + MString(vizname) + " linked to " + sname.c_str());
+	if(iblur == 1) MGlobal::displayInfo(MString(" motion blur between ") + fframe0 + " and " + fframe1);
+	
 	char sbuf[4096];
 	sprintf( sbuf, "%s %s %s %d %d %d %d %d %f %f %f %f %d %d %d", 
 	sname.c_str(), 
@@ -211,8 +219,8 @@ quadrics::GenRIB( RIBContext *c )
 	(int)m_i_hdr_subsurfacescat,
 	(int)m_i_hdr_backscat,
 	(int)m_i_lightsrc_shadowed,
-	shutterOpen, shutterClose,
-	(float)dtime0, (float)dtime1,
+	mso, msc,
+	(float)fframe0, (float)fframe1,
 	iblur, (int)m_i_double_sided, (int)m_has_tangentSpace);
 	
 	RtString args[] = { "plugins/meshCacheProcedural.dll", sbuf};
