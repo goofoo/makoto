@@ -565,7 +565,7 @@ void HairCache::lookupGuiderCVs(unsigned& idx, float& k, XYZ* cvs_a, XYZ* cvs_b,
 				guide_data[bind_data[isamp].idx[2]].getSpaceAtParam(tspace[2], param);
 				
 				dmean = dv[0] * bind_data[i].wei[0] + dv[1] * bind_data[i].wei[1] + dv[2] * bind_data[i].wei[2];
-				dmean.setLength(dv[0].length());
+				dmean.setLength(dv[0].length()* bind_data[i].wei[0] + dv[1].length()* bind_data[i].wei[1] + dv[2].length()* bind_data[i].wei[2]);
 				
 				pw[0] = pt[0];
 				
