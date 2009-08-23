@@ -1,0 +1,97 @@
+global proc ptcwrapRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the zhair menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if ptcwrap menu exists, delete it first.
+        else {
+            if(`menuItem -exists ptcwrapItems` ) deleteUI ptcwrapItems;
+        }
+    }
+}
+
+global proc ptcwrapCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the zhair menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if ptcwrap menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists ptcwrapItems` ) deleteUI ptcwrapItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "Particle Wrap" -subMenu true ptcwrapItems;
+			menuItem -l "Wrap Paricle to Mesh" -c "ptcwrap_do_create";
+		setParent -menu ..;
+    }
+}
+
+global proc ptcwrap_do_create()
+{
+	string $sel[] = `ls -sl`;
+	if(size($sel) < 3) {
+		print("Select particle system(s) and base mesh to wrap.");
+		return;
+	}
+	
+	int $last = size($sel)-1;
+	select -r $sel[$last];
+	string $mbind[] = `pickWalk -d down`;
+	
+	$last = size($sel)-2;
+	select -r $sel[$last];
+	string $mbase[] = `pickWalk -d down`;
+	
+	int $i;
+	for($i=0; $i<$last; $i++) {
+		select -r $sel[$i];
+		string $ptc[] = `pickWalk -d down`;
+		string $node = `createNode particleWrap`;
+		
+		connectAttr -f time1.outTime ($node + ".currentTime");
+		connectAttr -f ($mbase[0] +".outMesh") ($node + ".baseMesh");
+		connectAttr -f ($mbind[0] +".outMesh") ($node + ".bindMesh");
+		
+		string $nil = `createNode -n null transform`;
+		connectAttr -f ($node + ".outval") ($nil +".translateX");
+		
+		connectAttr -f ($ptc[0]+".position") ($node + ".position");
+	}
+}
