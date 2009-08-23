@@ -24,6 +24,8 @@ copy .\plug-ins\HDREnvironmentViewer2008.mll D:\wamp\www\ztools\plug-ins
 copy .\plug-ins\fishViz.mll D:\wamp\www\ztools\plug-ins
 copy .\plug-ins\ZHair2008.mll D:\wamp\www\ztools\plug-ins
 copy .\plug-ins\ZHair70.mll D:\wamp\www\ztools\plug-ins
+copy .\plug-ins\particleWrap2008.mll D:\wamp\www\ztools\plug-ins
+copy .\plug-ins\particleWrap70.mll D:\wamp\www\ztools\plug-ins
 copy .\plug-ins\cameraFrustum70.mll D:\wamp\www\ztools\plug-ins
 copy ..\cameraFrustum\cameraFrustumNode.py D:\wamp\www\ztools\plug-ins
 copy TOR.ini D:\wamp\www\ztools
