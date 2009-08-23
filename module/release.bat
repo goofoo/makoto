@@ -7,6 +7,7 @@ copy .\ribgen\hairRibgen.slim D:\wamp\www\ztools\ribgen
 copy .\procedural\meshCacheProcedural.dll D:\wamp\www\ztools\procedural
 copy .\procedural\fishProcedural.dll D:\wamp\www\ztools\procedural
 copy .\procedural\zhairProcedural.dll D:\wamp\www\ztools\procedural
+copy .\slim\snow.slim D:\wamp\www\ztools\slim
 copy .\slim\ace.slim D:\wamp\www\ztools\slim
 copy .\slim\displacement_z.slim D:\wamp\www\ztools\slim
 copy .\slim\eye.slim D:\wamp\www\ztools\slim

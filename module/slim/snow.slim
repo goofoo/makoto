@@ -1,0 +1,95 @@
+## snow.slim
+## zhangmdev@gmail.com
+## 21/08/09
+## slim template for snow shaders
+## snow.slim {
+##	{ zhang,Snow#0	shadingmodel {Snow}		/Surface }
+## }
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+	
+	template shadingmodel Snow {
+    	description {Snow shader outputs 3 channels: scatter high, scatter low, and back light.}
+	
+	parameter float depth {
+		detail varying
+		detail mustvary "zhang,depthRange"
+	}
+	
+	parameter color _depth {
+	       detail varying
+	       provider primitive
+	       default "1 1 1"
+	       access output
+	       display hidden
+	   }
+	
+	parameter color _normal {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
+       collection shadingmodel shadingmodel {
+	   access output
+	   display hidden
+	   parameter color CI {
+	       detail varying
+	       default "0 .25 1"
+	       access output
+	   }
+	   parameter color OI {
+	       detail varying
+	       default "1 1 1"
+	       access output
+	   }
+	   
+       }
+       RSLFunction {
+	   void
+	   pxslSnow(float depth;
+		       output color CI;
+		       output color OI;
+		        )
+	   {
+	   	extern normal N;
+    	extern vector I;
+	   	extern point P;
+		
+		normal Nn = normalize(N);
+		
+		color Cfirst = 0;
+		color Csecond = 0;
+		illuminance ("keylight", P, Nn, PI) 
+		{
+			extern vector L;  extern color Cl; 
+			vector Ln = normalize(L);
+			float wrapdot = smoothstep(-0.5, 1.0, Ln.Nn);
+			Cfirst += Cl*wrapdot*wrapdot;
+			wrapdot = smoothstep(-0.1, 0.9, Ln.Nn);
+			Csecond += Cl*wrapdot*wrapdot*wrapdot;
+		}
+		
+		color Cthird = 0;
+		illuminance ("backlight", P, Nn, PI) 
+		{
+			extern vector L;  extern color Cl; 
+			vector Ln = normalize(L);
+			float wrapdot = smoothstep(-0.9, 1.0, Ln.Nn);
+			Cthird += Cl*wrapdot;
+		}
+		
+		CI = color(comp(Cfirst,0), comp(Csecond,0), comp(Cthird,0));
+	      OI = color(1);
+
+	      extern color _depth;
+			_depth = depth;
+
+	   }
+       }
+   }
+}
+}

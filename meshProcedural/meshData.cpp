@@ -137,7 +137,7 @@ void meshData::generateRIB(RtFloat detail)
 			else 
 			{
 				pMesh->setMotion(m_mesh_0, m_mesh_1);
-				RiMotionBegin(2, m_shutter_open, m_shutter_close);
+				RiMotionBegin(2, (RtFloat)m_shutter_open, (RtFloat)m_shutter_close);
 				
 				paramvalue[0] =(RtPoint*)pMesh->pointsOpen();
 					RiHierarchicalSubdivisionMeshV("catmull-clark", (RtInt)pMesh->nfaces(),  (RtInt*)pMesh->nverts(), (RtInt*)pMesh->verts(), (RtInt)2, tags, nargs, intargs, floatargs, stringargs, (RtInt)nparam, paramname, paramvalue );
