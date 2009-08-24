@@ -194,10 +194,30 @@ quadrics::GenRIB( RIBContext *c )
 //	c->ReportError( RIBContext::reInfo, "quadrics get motion: %f %f", (float)dtime0, (float)dtime1);
 	//int iframe = zGlobal::safeConvertToInt(dtime0);
 	//int iframe = zGlobal::safeConvertToInt(shutterOpen*fps);
-	float fframe0 = frame;
-	float fframe1 = frame + (shutterClose - shutterOpen)*fps;
-	zGlobal::changeFrameNumber(sname, frame);
-	zGlobal::changeFrameNumber(sprt, frame);
+	
+	MGlobal::displayInfo(MString("frame ")+frame);
+	
+	double dtime0 = frame;
+	MTime mt0;
+	if(fps == 24) mt0 = MTime(dtime0, MTime::Unit::kFilm);
+	else if(fps == 25) mt0 = MTime(dtime0, MTime::Unit::kPALFrame);
+	else mt0 = MTime(dtime0, MTime::Unit::kNTSCFrame);
+	
+	MDGContext ctx0(mt0);
+	
+	zWorks::getDoubleAttributeByNameAndTime(fnode, "currentTime", ctx0, dtime0);
+	
+	double dtime1;
+	
+	zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
+	
+	float fframe0 = dtime0;
+	float fframe1 = dtime1;
+	
+	int iframe0 = zGlobal::safeConvertToInt(dtime0);
+	
+	zGlobal::changeFrameNumber(sname, iframe0);
+	zGlobal::changeFrameNumber(sprt, iframe0);
 	
 	int iblur = 0;
 	if(usingMotionBlur) iblur = 1;

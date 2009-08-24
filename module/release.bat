@@ -31,6 +31,7 @@ copy ..\cameraFrustum\cameraFrustumNode.py D:\wamp\www\ztools\plug-ins
 copy TOR.ini D:\wamp\www\ztools
 copy slim.ini D:\wamp\www\ztools
 copy rat_install.bat D:\wamp\www\ztools
+copy .\scripts\particleWrapMenus.mel D:\wamp\www\ztools\scripts
 copy .\scripts\hdrviewerMenus.mel D:\wamp\www\ztools\scripts
 copy .\scripts\vertexCacheMenus.mel D:\wamp\www\ztools\scripts
 copy .\scripts\slimcontrolMenus.mel D:\wamp\www\ztools\scripts
