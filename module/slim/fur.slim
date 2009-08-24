@@ -35,6 +35,7 @@ template shadingmodel zhair {
 				specular_back _specular_back
 				depth _depth
 				shadow _shadow
+				colorA(opacity) _colorA
 				flattened _flattened
 		  }
 	    default _flattened
@@ -194,6 +195,14 @@ template shadingmodel zhair {
 	       detail varying
 	       provider primitive
 	       default "1 1 1"
+	       access output
+	       display hidden
+	}
+	
+	parameter color _colorA {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
 	       access output
 	       display hidden
 	}
@@ -410,25 +419,27 @@ template shadingmodel zhair {
 		extern color _specular_back;
 		extern color _depth;
 		extern color _shadow;
-							
-		_color = mixed;
-		_diffuse = Cdiff_key;
-		_specular = Cspec_key * specflt;
-		_diffuse_fill = Cdiff_fill;
-		_diffuse_back = Cdiff_back;
-		_specular_fill = Cspec_fill * specflt;
-		_specular_back = Cspec_back * specflt;
+		extern color _colorA;
+		
+		_colorA = OI;
+		_color = mixed * OI;
+		_diffuse = Cdiff_key * OI;
+		_specular = Cspec_key * specflt * OI;
+		_diffuse_fill = Cdiff_fill * OI;
+		_diffuse_back = Cdiff_back * OI;
+		_specular_fill = Cspec_fill * specflt * OI;
+		_specular_back = Cspec_back * specflt * OI;
 		float dep = pow(smoothstep( clipnear, clipfar, depth(P)), 0.67);
-		_depth = color(dep,1-dep,0);
+		_depth = color(dep,1-dep,0) * OI;
 		
 		color Cshd = 0;
-		illuminance("-environment", P)
+		illuminance("keylight", P)
 		{
 			color inshdC = 0;
 			lightsource("__inShadowC", inshdC);
 	    	Cshd += inshdC*0.33;
 		}
-		_shadow = Cshd;
+		_shadow = Cshd * OI;
 		
 		if(mode == "_color") CI = _color;
 		else if(mode == "_diffuse") CI = _diffuse;
@@ -439,6 +450,7 @@ template shadingmodel zhair {
 		else if(mode == "_specular_back") CI = _specular_back;
 		else if(mode == "_depth") CI = _depth;
 		else if(mode == "_shadow") CI = _shadow;
+		else if(mode == "_colorA") CI = _colorA;
 		else CI = OI * mixed * Cdiff * Kd + Cspec * specflt * Ks;
 		
 	   }
@@ -998,6 +1010,15 @@ template shadingmodel furBeneath {
 	       access output
 	       display hidden
 	   }
+	   
+		parameter color _colorA {
+	       detail varying
+	       provider primitive
+	       default "0.0 0.0 0.0"
+	       access output
+	       display hidden
+	}
+	
        collection shadingmodel shadingmodel {
 	   access output
 	   display hidden
@@ -1021,19 +1042,22 @@ template shadingmodel furBeneath {
 	   {
 	   	extern color _shadow;
 		extern color _depth;
+		extern color _colorA;
 		extern point P;
 		
 		float dep = pow(smoothstep( clipnear, clipfar, depth(P)), 0.67);
 		_depth = color(dep,1-dep,0);
 
 		color Cshd = 0;
-		illuminance("-environment", P)
+		illuminance("keylight", P)
 		{
 			color inshdC = 0;
 			lightsource("__inShadowC", inshdC);
 	    	Cshd += inshdC*0.33;
 		}
 		_shadow = Cshd;
+		
+		_colorA = 0;
 		
 	      CI = 0;
 	      OI = 1; 
