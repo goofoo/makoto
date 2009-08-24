@@ -1,3 +1,7 @@
+24/08/09
+
+Mesh and hair ribgen with timed attrib.
+
 23/08/09
 
 Add particleWrap plug-in and script

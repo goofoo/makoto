@@ -87,6 +87,7 @@ global proc zhairCreateMenus()
 			menuItem -l "Enable All" -c "zhair_do_enable(1)";
 			menuItem -l "Disable All" -c "zhair_do_enable(0)";
 			menuItem -divider true;
+			menuItem -l "Select All" -c "zhair_sel_all";
 			menuItem -l "Existing Hairs" -subMenu true -postMenuCommand zhair_findexisting zhair_existinghairs;
 			setParent -menu ..;
 		setParent -menu ..;
@@ -843,4 +844,17 @@ global proc zhair_do_enable(int $val)
 	string $existing[] = `ls -type ZHairViz`;
 	string $an;
 	for($an in $existing) setAttr ($an+".enable") $val;
+}
+
+global proc zhair_sel_all()
+{
+	select -cl;
+	string $node[] = `ls -type ZHairViz`;
+	string $an;
+	for($an in $node) select -tgl $an;
+		
+	$node = `ls -type ZHairCache`;
+	for($an in $node) select -tgl $an;
+	
+	pickWalk -d up;
 }
