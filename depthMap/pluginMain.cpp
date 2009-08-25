@@ -26,7 +26,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 
-	//MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
+	MGlobal::executeCommand("source exrdepthMapMenus.mel; exrdepthmapCreateMenus;");
 
 	return status;
 }
@@ -46,7 +46,7 @@ MStatus uninitializePlugin( MObject obj )
 		return status;
 	}
 	
-	//MGlobal::executeCommand("zhairRemoveMenus;");
+	MGlobal::executeCommand("exrdepthmapRemoveMenus;");
 
 	return status;
 }

@@ -1,0 +1,147 @@
+global proc exrdepthmapRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the zhair menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if exrdepthmap menu exists, delete it first.
+        else {
+            if(`menuItem -exists exrdepthmapItems` ) deleteUI exrdepthmapItems;
+        }
+    }
+}
+
+global proc exrdepthmapCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the zhair menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if exrdepthmap menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists exrdepthmapItems` ) deleteUI exrdepthmapItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "EXR Depth Map" -subMenu true exrdepthmapItems;
+			menuItem -l "Save" -c "exrdepthmap_openoptwin";
+		setParent -menu ..;
+    }
+}
+
+global proc exrdepthmap_openoptwin()
+{
+//If such a window already exists, destory it.
+ if ( (`window -exists exrdepthmapWin`) == true ) deleteUI exrdepthmapWin;
+
+//Create the window.
+ window -title "EXR Depth Map 0.1 - Save Map Options" -wh 400 300  -mb false exrdepthmapWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+text -al left -l "\nSelect scene file and camera to save depth values as OpenEXR images.";
+	 
+textFieldButtonGrp
+     -cw 1 110 -label "Scene Path" -buttonLabel "Browse.."
+     -bc "textFieldButtonGrp -e -text `fileDialog -dm (\"*.scene\")` exrdepthmapPath;"
+     exrdepthmapPath;
+	intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exrdepthmapRange;
+
+	optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 80 exrdepthmapOptEye;
+		string $cams[] = `ls -ca`;
+		string $ac;
+		for($ac in $cams) menuItem -label `listRelatives -p $ac`;
+	setParent..;
+	
+
+//row begin
+button -l "Export" -c "dosaveexrdepthmap;deleteUI exrdepthmapWin" -p $row;
+button -l "Apply" -c "dosaveexrdepthmap" -p $row;
+button -l "Close" -c "deleteUI exrdepthmapWin" -p $row;
+
+formLayout -edit
+        -attachNone     $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm	$row     "bottom" 2
+        -attachForm 	$row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm	$scroll "left"   2
+        -attachControl	$scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow exrdepthmapWin;
+}
+
+global proc dosaveexrdepthmap()
+{
+	int $ieye = `optionMenuGrp -q -select exrdepthmapOptEye`;
+	string $cams[] = `ls -ca`;
+	
+	int $amount = 0;
+	progressWindow -title "Writing Depth Map" -progress $amount -status "Completed: 0%" -isInterruptable true;
+
+	int $s = `intFieldGrp -q -v1 exrdepthmapRange`;
+	int $e = `intFieldGrp -q -v2 exrdepthmapRange`;
+	int $step = 1;
+
+	int $i;
+	for( $i = $s; $i <= $e; $i++ ) 
+	{
+		currentTime $i;
+		
+		EXRZDepth -ca `listRelatives -p $cams[$ieye-1]` -sc `textFieldButtonGrp -q -text exrdepthmapPath`;
+		
+		$amount = ($i+1-$s)/(1.0*($e+1-$s))*100;
+
+		// Check if the dialog has been cancelled
+		if ( `progressWindow -query -isCancelled` ) break; 
+		// Check if end condition has been reached
+		if ( `progressWindow -query -progress` > 100 ) break;
+
+		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
+	}
+	
+	progressWindow -endProgress;
+}

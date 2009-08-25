@@ -1,6 +1,10 @@
+25/08/09
+
+Save real depth value to EXR images
+
 24/08/09
 
-Mesh and hair ribgen with timed attrib.
+Mesh and hair ribgen with timed attrib. Hair plugin fixed get point by uv error. Slim add colorA output for hair opacity. Select all in hair script.
 
 23/08/09
 
