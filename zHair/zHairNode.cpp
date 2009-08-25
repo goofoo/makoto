@@ -123,26 +123,36 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
-	if(idraw ==0) m_base->draw();
-	else if(idraw ==1) m_base->drawGuide();
+	if(idraw ==1) m_base->draw();
+	else if(idraw ==0) m_base->drawGuide();
 	else if(idraw == 2){
 		m_base->drawUV();
 		m_base->drawGuideUV();
 	}
 	else m_base->drawBind();
 	glPopAttrib();
+	m_base->drawBBox();
 	view.endGL();
 }
 
 bool HairNode::isBounded() const
 { 
-	return false;
+	return true;
 }
 
 MBoundingBox HairNode::boundingBox() const
 { 
 	MPoint corner1( -1,-1,-1 );
 	MPoint corner2( 1,1,1 );
+
+	if(m_base) {
+		corner1.x = m_base->getBBox0X();
+		corner1.y = m_base->getBBox0Y();
+		corner1.z = m_base->getBBox0Z();
+		corner2.x = m_base->getBBox1X();
+		corner2.y = m_base->getBBox1Y();
+		corner2.z = m_base->getBBox1Z();
+	}
 
 	return MBoundingBox( corner1, corner2 );
 }

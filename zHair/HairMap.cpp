@@ -630,7 +630,7 @@ void hairMap::updateGuide()
 				uv[0] = guide_data[patch_id].u;
 				uv[1] = guide_data[patch_id].v;
 				MString smap("map1");
-				baseFn.getPointAtUV (iface, pom, uv, MSpace::kObject, &smap, 1.0);
+				baseFn.getPointAtUV (iface, pom, uv, MSpace::kObject, &smap, 2.0);
 				guide_data[patch_id].P[iseg] = XYZ(pom.x, pom.y, pom.z);
 			}
 #endif			
@@ -651,6 +651,25 @@ void hairMap::updateGuide()
 			}
 		}
 	}
+	
+	// calculate bbox
+	bbox_low = XYZ(10e6, 10e6, 10e6);
+	bbox_high = XYZ(-10e6, -10e6, -10e6);
+	
+	for(unsigned i = 0;i<num_guide;i++) {
+		for(unsigned j = 0;j<guide_data[i].num_seg;j++) {
+			if(guide_data[i].P[j].x < bbox_low.x) bbox_low.x = guide_data[i].P[j].x;
+			if(guide_data[i].P[j].y < bbox_low.y) bbox_low.y = guide_data[i].P[j].y;
+			if(guide_data[i].P[j].z < bbox_low.z) bbox_low.z = guide_data[i].P[j].z;
+			if(guide_data[i].P[j].x > bbox_high.x) bbox_high.x = guide_data[i].P[j].x;
+			if(guide_data[i].P[j].y > bbox_high.y) bbox_high.y = guide_data[i].P[j].y;
+			if(guide_data[i].P[j].z > bbox_high.z) bbox_high.z = guide_data[i].P[j].z;
+		}
+	}
+	
+	XYZ bboxcen = (bbox_low + bbox_high)/2;
+	bbox_low -= (bboxcen - bbox_low)/10;
+	bbox_high -= (bboxcen - bbox_high)/10;
 }
 
 void hairMap::bind()

@@ -128,6 +128,25 @@ hairGen::GenRIB( RIBContext *c )
 	mybound[4] = base->getBBox0Z();
 	mybound[5] = base->getBBox1Z();
 	
+	MGlobal::displayInfo(MString("frame ")+frame);
+	
+	double dtime0 = frame;
+	MTime mt0;
+	if(fps == 24) mt0 = MTime(dtime0, MTime::Unit::kFilm);
+	else if(fps == 25) mt0 = MTime(dtime0, MTime::Unit::kPALFrame);
+	else mt0 = MTime(dtime0, MTime::Unit::kNTSCFrame);
+	
+	MDGContext ctx0(mt0);
+	
+	zWorks::getDoubleAttributeByNameAndTime(fnode, "currentTime", ctx0, dtime0);
+	
+	double dtime1;
+	
+	zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
+	
+	float fframe0 = dtime0;
+	float fframe1 = dtime1;
+	
 	//double dtime0, dtime1, t0;
 	//t0 = (double)frame;
 	
@@ -146,8 +165,12 @@ hairGen::GenRIB( RIBContext *c )
 	//if(pass == RIBContext::rpShadow) ishd = 1;
 	if(usingMotionBlur && pass != RIBContext::rpShadow) iblur = 1;
 	
-	float fframe0 = frame;
-	float fframe1 = frame + (shutterClose - shutterOpen)*fps;
+	//float fframe0 = frame;
+	//float fframe1 = frame + (shutterClose - shutterOpen)*fps;
+	
+	MGlobal::displayInfo(MString("HairRIBGen emits ") + MString(vizname));
+	if(iblur == 1) MGlobal::displayInfo(MString(" motion blur between ") + fframe0 + " and " + fframe1);
+	
 	
 	char sbuf[1024];
 	sprintf( sbuf, "%f %f %f %s %s %f %f %f %f %f %f %f %f %d", 
