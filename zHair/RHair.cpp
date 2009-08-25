@@ -184,4 +184,54 @@ char RHair::cullPoint(XYZ& Q) const
 	
 	return 1;
 }
+
+float RHair::clostestDistance(const XYZ* pos) const
+{
+	XYZ Q = pos[0];
+	cameraspaceinv.transform(Q);
+	float dist = Q.z;
+	
+	Q = pos[1];
+	cameraspaceinv.transform(Q);
+	
+	if(Q.z < dist) dist = Q.z;
+	
+	Q = pos[2];
+	cameraspaceinv.transform(Q);
+	
+	if(Q.z < dist) dist = Q.z;
+	
+	return dist;
+}
+
+void RHair::meanDisplace(unsigned& idx, XYZ& disp) const
+{
+	float fract = m_hair_1 - m_hair_0;
+	pHair->lookupMeanDisplace(idx, fract, disp);
+}
+
+void RHair::simplifyMotion(unsigned& idx, float& val) const
+{
+	float fract = m_hair_1 - m_hair_0;
+	XYZ p0, p1;
+	pHair->lookupMeanPos(idx, fract, p0, p1);
+	
+	cameraspaceinv.transform(p0);
+	cameraspaceinv.transform(p1);
+	
+	double a = p0.z*tanhfov;
+	p0.x /= a;
+	p0.y /= a;
+	
+	a = p1.z*tanhfov;
+	p1.x /= a;
+	p1.y /= a;
+	
+	float dpix = sqrt((p0.x - p1.x)*(p0.x - p1.x) + (p0.y - p1.y)*(p0.y - p1.y))*2000;
+	if(dpix>2) {
+		fract = (a-2)/16;
+		if(fract > 1) fract = 1;
+		val -= val*0.5*fract*fract;
+	}
+}
 //:~

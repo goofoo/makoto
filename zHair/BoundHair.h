@@ -13,6 +13,7 @@ public:
 	void release();
 	
 	void calculateBBox(float *box) const;
+	void emit() const;
     void emit(float detail) const;
 	void emitGuider() const;
 	void emitBBox() const;
@@ -32,6 +33,7 @@ public:
 	XYZ* velocities;
 	float* shutters;
 	float* densities;
+	float distantSimp;
 
 private:
 	void getPatParam(XYZ& p, const float& param, const unsigned& nseg, const XYZ* cvs) const;

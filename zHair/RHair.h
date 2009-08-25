@@ -22,6 +22,11 @@ public:
 	char setDepth();
 	char cullBBox(float *box) const;
 	char cullPoint(XYZ& Q) const;
+	float clostestDistance(const XYZ* pos) const;
+	float getShutterOpen() const {return m_shutter_open;}
+	float getShutterClose() const {return m_shutter_close;}
+	void meanDisplace(unsigned& idx, XYZ& disp) const;
+	void simplifyMotion(unsigned& idx, float& val) const;
 	
 	HairCache* pHair;
 	char has_densmap;

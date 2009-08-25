@@ -619,6 +619,29 @@ void HairCache::lookupVelocity(unsigned& idx, float& fract, XYZ* velocities) con
 	velocities[2] *= fract;
 }
 
+void HairCache::lookupMeanDisplace(unsigned& idx, float& fract, XYZ& disp) const
+{
+	disp = pframe1[pconnection[idx*3]] - parray[pconnection[idx*3]];
+	disp += pframe1[pconnection[idx*3+1]] - parray[pconnection[idx*3+1]];
+	disp += pframe1[pconnection[idx*3+2]] - parray[pconnection[idx*3+2]];
+	disp *= fract/3.f;
+}
+
+void HairCache::lookupMeanPos(unsigned& idx, float& fract, XYZ& p0, XYZ& p1) const
+{
+	p0 = parray[pconnection[idx*3]];
+	p0 += parray[pconnection[idx*3+1]];
+	p0 += parray[pconnection[idx*3+2]];
+	p0 /= 3.f;
+	
+	p1 = pframe1[pconnection[idx*3]];
+	p1 += pframe1[pconnection[idx*3+1]];
+	p1 += pframe1[pconnection[idx*3+2]];
+	p1 /= 3.f;
+	
+	p1 = p0 + (p1-p0)*fract;
+}
+
 void HairCache::lookupDensity(unsigned& idx, float* densities) const
 {
 	if(!pDensmap) {

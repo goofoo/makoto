@@ -88,6 +88,8 @@ public:
 	void lookupVelocity(unsigned& idx, float& fract, XYZ* velocities) const;
 	void lookupDensity(unsigned& idx, float* densities) const;
 	float getEpsilon(float& ndice) const;
+	void lookupMeanDisplace(unsigned& idx, float& fract, XYZ& disp) const;
+	void lookupMeanPos(unsigned& idx, float& fract, XYZ& p0, XYZ& p1) const;
 	
 private:
 	DiceParam* ddice;
