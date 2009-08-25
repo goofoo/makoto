@@ -22,6 +22,7 @@ public:
 	char setDepth();
 	char cullBBox(float *box) const;
 	char cullPoint(XYZ& Q) const;
+	float clostestDistance(const XYZ* pos) const;
 	
 	HairCache* pHair;
 	char has_densmap;

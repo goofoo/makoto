@@ -184,4 +184,23 @@ char RHair::cullPoint(XYZ& Q) const
 	
 	return 1;
 }
+
+float RHair::clostestDistance(const XYZ* pos) const
+{
+	XYZ Q = pos[0];
+	cameraspaceinv.transform(Q);
+	float dist = Q.z;
+	
+	Q = pos[1];
+	cameraspaceinv.transform(Q);
+	
+	if(Q.z < dist) dist = Q.z;
+	
+	Q = pos[2];
+	cameraspaceinv.transform(Q);
+	
+	if(Q.z < dist) dist = Q.z;
+	
+	return dist;
+}
 //:~

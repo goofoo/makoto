@@ -16,6 +16,7 @@ extern "C" {
     export RtVoid Subdivide(RtPointer data, RtFloat detail);
     export RtVoid Free(RtPointer data);
 	export RtVoid SubdivideReal(RtPointer data, RtFloat detail);
+	export RtVoid SubdivideReal1(RtPointer data, RtFloat detail);
 	export RtVoid FreeReal(RtPointer data);
 }
 
@@ -82,7 +83,14 @@ Subdivide(RtPointer data, RtFloat detail)
 		
 		if(pdata->isShadow() == 1) RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
 		else {
-			RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
+			float dist = pdata->clostestDistance(param->points);
+			
+			param->distantSimp = 1.f;
+			if(dist > 2000) {
+				if(dist > 5000) param->distantSimp = 0.25;
+				else param->distantSimp = 1.f - 0.75f*(dist-2000)/3000;
+			}
+			RiProcedural((RtPointer)param, bound, SubdivideReal1, FreeReal);
 		}
 	}
 }
@@ -102,6 +110,13 @@ SubdivideReal(RtPointer data, RtFloat detail)
 	//param->emitGuider();
 	param->emit((float)detail);
 	//printf(" dtl: %f",(float)detail);
+}
+
+export RtVoid
+SubdivideReal1(RtPointer data, RtFloat detail)
+{
+	BoundHair* param = static_cast<BoundHair*>(data);
+	param->emit();
 }
 
 export RtVoid
