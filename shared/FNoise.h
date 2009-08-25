@@ -16,7 +16,7 @@ public:
 	FNoise() {}
 	~FNoise() {}
 	
-	float randfint( int i );
+	float randfint( int& i );
 	
 private:
 	static unsigned int xRand, yRand, zRand;     /* seed */

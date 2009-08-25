@@ -119,14 +119,14 @@ void BoundHair::calculateBBox(float *box) const
 void BoundHair::emit(float detail) const
 {
 	float widthScale = 1.0, kill = 1.0, realkill;
-	if(detail < 5000) {
-		kill = 0.9;
-		widthScale = 1.11;
-		if(detail < 2000) {
-			kill = 0.5;
-			widthScale = 2.0;
+	if(detail < 10000) {
+		kill = 0.8;
+		widthScale = 1.25;
+		if(detail < 3000) {
+			kill = 0.4;
+			widthScale = 2.5;
 			if(detail < 1000) {
-				kill = 0.33;
+				kill = 0.3;
 				widthScale = 3.33;
 			}
 		}
@@ -144,7 +144,7 @@ void BoundHair::emit(float detail) const
 	if(delta < epsilon*epsilon) delta *= 4.f;
 	
 	int estimate_ncell = delta/epsilon/epsilon*1.3f;
-	if(estimate_ncell < 16) estimate_ncell = 16;
+	if(estimate_ncell < 15) estimate_ncell = 15;
 	
 	DiceParam* ddice = new DiceParam[estimate_ncell];
 	
@@ -175,7 +175,7 @@ void BoundHair::emit(float detail) const
 		}
 		
 		if(n_survive > 0) {
-		
+			
 			XYZ* pbuf = new XYZ[n_samp];
 			unsigned* nsegbuf = new unsigned[n_samp];
 			for(unsigned i=0; i<n_samp; i++) {
@@ -315,16 +315,15 @@ void BoundHair::emit(float detail) const
 					acc++;
 				}
 			}
-			//float width = 0.02;
-			//RiPoints(RtInt(n_samp), "P", (RtPoint*)pbuf, "constantwidth", (RtPointer)&width, RI_NULL);
+			
 			delete[] pbuf;
 			
-			if(shutters) RiMotionBegin(2, (RtFloat)shutters[0], (RtFloat)shutters[1]);
+			//if(shutters) RiMotionBegin(2, (RtFloat)shutters[0], (RtFloat)shutters[1]);
 			
 			RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, 
 			"uniform float s", (RtFloat*)coord_s, "uniform float t", (RtFloat*)coord_t, "uniform float mutant", (RtFloat*)mutant,
 			RI_NULL); 
-			
+			/*
 			if(shutters) {
 				acc = 0;
 				for(unsigned i=0; i<n_samp; i++) {
@@ -357,6 +356,7 @@ void BoundHair::emit(float detail) const
 				
 				RiMotionEnd();
 			}
+			*/
 			delete[] nsegbuf;
 			delete[] nvertices;
 			delete[] vertices;
@@ -364,6 +364,7 @@ void BoundHair::emit(float detail) const
 			delete[] coord_s;
 			delete[] coord_t;
 			delete[] mutant;
+
 		}
 		delete[] isurvive;
 	}
@@ -487,7 +488,6 @@ void BoundHair::getPatParam(XYZ& p, const float& param, const unsigned& nseg, co
 {
 	float fparam = param * nseg;
 	int iparam = fparam - 0.000001;
-	int iparam1 = iparam+1;
-	p = cvs[iparam] + (cvs[iparam1] - cvs[iparam]) * (fparam-iparam);
+	p = cvs[iparam] + (cvs[iparam+1] - cvs[iparam]) * (fparam-iparam);
 }
 //:~

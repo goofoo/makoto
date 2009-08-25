@@ -564,7 +564,7 @@ void FXMLScene::removeRTTree()
 	}
 }
 
-void FXMLScene::depthMap(float* data, int map_w, int map_h, double fov, float cameramatrix[4][4]) const
+void FXMLScene::depthMap(float* data, int map_w, int map_h, double fov, const float cameramatrix[4][4]) const
 {
 	MATRIX44F cameraspaceinv(cameramatrix);
 	cameraspaceinv.inverse();

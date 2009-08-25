@@ -39,7 +39,7 @@ void FNoise::seedd(unsigned char nx, unsigned char ny, unsigned char nz)
     //randomd();
 }
 
-float FNoise::randfint( int i )
+float FNoise::randfint( int& i )
 {
 	int atoi = i;
 	

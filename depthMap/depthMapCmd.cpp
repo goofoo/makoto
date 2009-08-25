@@ -103,6 +103,7 @@ MStatus depthMap::doIt( const MArgList& args )
 			m_eye[3][0], m_eye[3][1], m_eye[3][2], m_eye[3][3] );
 	ZFnEXR::saveCameraNZ(data, amat, fov, sscene.c_str(), map_w, map_h);
 	delete[] data;
+	delete fscene;
 
  return MS::kSuccess;
  }

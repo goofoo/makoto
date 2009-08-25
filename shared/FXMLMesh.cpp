@@ -1352,7 +1352,7 @@ void FXMLMesh::interpolateRT(int lo, int hi, int frame, float weight, const char
 	delete[] vex_coe;	
 }
 
-void FXMLMesh::depthMap(float* data, int map_w, int map_h, MATRIX44F& space, double fov) const
+void FXMLMesh::depthMap(float* data, int map_w, int map_h, MATRIX44F& space, double& fov) const
 {
 	XYZ pa, pb, pc;
 	FTriangle ftri;
@@ -1365,7 +1365,7 @@ void FXMLMesh::depthMap(float* data, int map_w, int map_h, MATRIX44F& space, dou
 		space.transform(pb);
 		space.transform(pc);
 		
-		if(pa.z < 0.1 && pb.z < 0.1 && pc.z < 0.1) continue;
+		if(pa.z < 0.1 || pb.z < 0.1 || pc.z < 0.1) continue;
 		
 		ftri.createSimple(pa, pb, pc);
 		ftri.project(fov);
