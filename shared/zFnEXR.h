@@ -35,5 +35,6 @@ public:
 	static void readR(const char* filename, int width, int height, float* data);
 	static void save(float* data, const char* filename, int width, int height);
 	static void saveCameraNZ(float* data, M44f mat, float fov, const char* filename, int width, int height);
+	static void readCameraNZ(const char* filename, int width, int height, float* data, M44f& mat, float& fov);
 };
 #endif

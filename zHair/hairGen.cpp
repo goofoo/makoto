@@ -37,10 +37,12 @@ RIBGenDestroy( RIBGen *g )
 hairGen::hairGen() :
 ndice(24),rootwidth(0.034f), tipwidth(0.0f)
 {   
+	m_depth_file = new char[256];
 }
 
 hairGen::~hairGen()
 {
+	delete[] m_depth_file;
 }
 
 int
@@ -64,10 +66,10 @@ hairGen::SetArgs(RIBContext *c,
 		{
 			RIBContextUtil::GetFloatValue(vals[i], &tipwidth);
 		}
-		//else if(!strcmp(args[i], "string imagefile1"))
-		//{
-		//	RIBContextUtil::GetStringValue(vals[i], &m_image_file1);
-		//}
+		else if(!strcmp(args[i], "string sdepth"))
+		{
+			RIBContextUtil::GetStringValue(vals[i], &m_depth_file);
+		}
 		else
 		{
 		   c->ReportError( RIBContext::reInfo, 
@@ -161,8 +163,8 @@ hairGen::GenRIB( RIBContext *c )
 	//zWorks::getDoubleAttributeByName(fnode, "currentTime", dtime1);
 	
 	int iblur = 0;
-	//int ishd = 0;
-	//if(pass == RIBContext::rpShadow) ishd = 1;
+	int ishd = 0;
+	if(pass == RIBContext::rpShadow) ishd = 1;
 	if(usingMotionBlur && pass != RIBContext::rpShadow) iblur = 1;
 	
 	//float fframe0 = frame;
@@ -173,7 +175,7 @@ hairGen::GenRIB( RIBContext *c )
 	
 	
 	char sbuf[1024];
-	sprintf( sbuf, "%f %f %f %s %s %f %f %f %f %f %f %f %f %d", 
+	sprintf( sbuf, "%f %f %f %s %s %s %f %f %f %f %f %f %f %f %d %d", 
 	ndice,
 	rootwidth, tipwidth,
 	//base->getRootColorR(),
@@ -188,6 +190,7 @@ hairGen::GenRIB( RIBContext *c )
 	//base->getMutantColorScale(),
 	base->getCacheName(), 
 	base->getDensityName(), 
+	m_depth_file,
 	base->getFuzz(),
 	base->getKink(),
 	base->getClumping(),
@@ -195,10 +198,10 @@ hairGen::GenRIB( RIBContext *c )
 	//base->getInterpolate(),
 	shutterOpen, shutterClose,
 	(float)fframe0, (float)fframe1,
-	iblur);
-	//ishd, 
+	iblur,
+	ishd
 	//base->getBBoxFraction()
-	//);
+	);
 	
 	RtString args[] = { "plugins/zhairProcedural.dll", sbuf};
 	

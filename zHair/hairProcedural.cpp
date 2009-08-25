@@ -32,6 +32,8 @@ Subdivide(RtPointer data, RtFloat detail)
 {
 	RHair* pdata = static_cast<RHair*>(data);
 	pdata->init();
+	
+	if(pdata->isShadow() != 1) pdata->setDepth();
 
 	unsigned numtri = pdata->getNumTriangle();
 	float box[6];
@@ -56,6 +58,8 @@ Subdivide(RtPointer data, RtFloat detail)
 		
 		param->calculateBBox(box);
 		
+		if(pdata->isShadow() != 1) if(pdata->cullBBox(box)) continue;
+		
 		bound[0] = box[0];
 		bound[1] = box[1];
 		bound[2] = box[2];
@@ -76,7 +80,10 @@ Subdivide(RtPointer data, RtFloat detail)
 			pdata->pHair->lookupDensity(i, param->densities);
 		}
 		
-		RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
+		if(pdata->isShadow() == 1) RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
+		else {
+			RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
+		}
 	}
 }
 

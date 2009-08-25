@@ -82,3 +82,30 @@ void ZFnEXR::saveCameraNZ(float* data, M44f mat, float fov, const char* filename
 	file.setFrameBuffer (frameBuffer);              
 	file.writePixels (height);
 }
+
+void ZFnEXR::readCameraNZ(const char* filename, int width, int height, float* data, M44f& mat, float& fov)
+{
+	InputFile file(filename); 
+	
+	const DoubleAttribute *fovattr = file.header().findTypedAttribute <DoubleAttribute> ("fov");
+	fov = fovattr->value();
+	
+	const M44fAttribute *matattr = file.header().findTypedAttribute <M44fAttribute> ("cameraTransform");
+	mat = matattr->value();
+	
+	Box2i dw = file.header().dataWindow();
+	
+	int size = (width)*(height);
+	
+	FrameBuffer frameBuffer; 
+	frameBuffer.insert ("R",                                  
+						Slice (FLOAT,                         
+							   (char *) data, 
+							   sizeof (*data) * 1,    
+							   sizeof (*data) * (width),
+							   1, 1,                          
+							   0.0));                        
+							   
+	file.setFrameBuffer (frameBuffer); 
+	file.readPixels (dw.min.y, dw.max.y); 
+}

@@ -48,6 +48,7 @@ public:
 
 private:
 	float ndice, rootwidth, tipwidth;
+	char* m_depth_file;
 };
 
 
