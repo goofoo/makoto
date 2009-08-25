@@ -6,7 +6,10 @@ public:
 	FTriangle();
 	~FTriangle(void);
 
+	void createSimple(const XYZ& p0, const XYZ& p1, const XYZ& p2);
+	void project(double& fov);
 	void create(const XYZ& p0, const XYZ& p1, const XYZ& p2);
+	void onScreen(float* data, int map_w, int map_h);
 
 	void getP0(XYZ& in) const { in = p_obj[0]; }
 	void getP1(XYZ& in) const { in = p_obj[1]; }

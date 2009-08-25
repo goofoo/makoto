@@ -150,6 +150,8 @@ public:
 	int hasAttrib(const char* attribname) const;
 	
 	void interpolateRT(int lo, int hi, int frame, float weight, const char* extension, int fpv);
+/*save depth*/
+	void depthMap(float* data, int map_w, int map_h, MATRIX44F& space, double fov) const;
 private:
 	ZXMLDoc doc;
 	int pos_s, pos_d;

@@ -63,3 +63,22 @@ void ZFnEXR::save(float* data, const char* filename, int width, int height)
     file.setFrameBuffer (&px[0][0], 1, width);
     file.writePixels (height);
 }
+
+void ZFnEXR::saveCameraNZ(float* data, M44f mat, float fov, const char* filename, int width, int height)
+{
+	Header header (width, height); 
+	header.insert ("fov", DoubleAttribute (fov)); 
+	header.insert ("cameraTransform", M44fAttribute (mat));
+	header.channels().insert ("R", Channel (FLOAT));
+	
+	OutputFile file (filename, header); 
+	FrameBuffer frameBuffer;
+
+	frameBuffer.insert ("R", 
+						Slice (FLOAT, 
+							   (char *) data, 
+							   sizeof (*data) * 1, 
+							   sizeof (*data) * width)); 
+	file.setFrameBuffer (frameBuffer);              
+	file.writePixels (height);
+}

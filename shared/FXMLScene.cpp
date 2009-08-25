@@ -563,4 +563,12 @@ void FXMLScene::removeRTTree()
 		m_rt_tree = NULL;
 	}
 }
+
+void FXMLScene::depthMap(float* data, int map_w, int map_h, double fov, float cameramatrix[4][4]) const
+{
+	MATRIX44F cameraspaceinv(cameramatrix);
+	cameraspaceinv.inverse();
+	
+	for(unsigned i=0; i<m_mesh.size(); i++) m_mesh[i]->depthMap(data, map_w, map_h, cameraspaceinv, fov);
+}
 //:~

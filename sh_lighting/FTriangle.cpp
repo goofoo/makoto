@@ -6,6 +6,88 @@ FTriangle::FTriangle()
 	
 FTriangle::~FTriangle(void)
 {}
+
+void FTriangle::createSimple(const XYZ& p0, const XYZ& p1, const XYZ& p2)
+{
+	P[0] = p0;
+	P[1] = p1;
+	P[2] = p2;
+}
+
+void FTriangle::project(double& fov)
+{
+	double tanhfov = tan(fov*0.5);
+	
+	double a = P[0].z*tanhfov;
+	P[0].x /= a;
+	P[0].y /= a;
+	
+	a = P[1].z*tanhfov;
+	P[1].x /= a;
+	P[1].y /= a;
+	
+	a = P[2].z*tanhfov;
+	P[2].x /= a;
+	P[2].y /= a;
+	
+	p_obj[0] = P[0];
+	p_obj[1] = P[1];
+	p_obj[2] = P[2];
+	
+	f120 = barycentric_coord(p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y);
+	f201 = barycentric_coord(p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y);
+	f012 = barycentric_coord(p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y);
+}
+
+void FTriangle::onScreen(float* data, int map_w, int map_h)
+{
+	float x_max = -1, y_max = -1, x_min = 1, y_min = 1;
+	for(int i=0; i<3; i++) {
+		if(p_obj[i].x > x_max) x_max = p_obj[i].x;
+		if(p_obj[i].y > y_max) y_max = p_obj[i].y;
+		if(p_obj[i].x < x_min) x_min = p_obj[i].x;
+		if(p_obj[i].y < y_min) y_min = p_obj[i].y;
+	}
+	
+	if(x_max > 1) x_max = 1;
+	if(y_max > 1) y_max = 1;
+	if(x_min < -1) x_min = -1;
+	if(y_min < -1) y_min = -1;
+	
+	if(x_min > x_max || y_min > y_max) return;
+	
+	float delta = 1.f/map_w;
+	
+	int grid_x = (x_max - x_min)/delta + 1;
+	int grid_y = (y_max - y_min)/delta + 1;
+	
+	float alpha, beta, gamma, x, y, z_interp;
+	int loc_x, loc_y;
+	
+	for(int j=0; j<grid_y; j++) {
+		for(int i=0; i<grid_x; i++) {
+			x = x_min + delta*(i+0.5);
+			y = y_min + delta*(j+0.5);
+			
+			alpha = barycentric_coord(p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y, x, y)/f120;
+			if(alpha<0 || alpha>1) continue;
+			beta = barycentric_coord(p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y, x, y)/f201;
+			if(beta<0 || beta>1) continue;
+			gamma = barycentric_coord(p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y, x, y)/f012;
+			if(gamma<0 || gamma>1) continue;
+			
+			z_interp = P[0].z*alpha + P[1].z*beta + P[2].z*gamma;
+			
+			if(z_interp > 0.1) {
+			
+				loc_x = (x + 1.0)/2.0*(map_w-1);
+				loc_y = (y + 1.0)/2.0*(map_h-1);
+			
+				if(z_interp < data[loc_y*map_w + loc_x] ) data[loc_y*map_w + loc_x] = z_interp;
+			}
+		}
+	}
+}
 	
 float FTriangle::calculate_area(const XYZ& p0, const XYZ& p1, const XYZ& p2)
 {
