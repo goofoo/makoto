@@ -32,6 +32,7 @@ MSyntax depthMap::newSyntax()
 {
 	MSyntax syntax;
 
+	syntax.addFlag("-n", "-name", MSyntax::kString);
 	syntax.addFlag("-sc", "-scenepath", MSyntax::kString);
 	syntax.addFlag("-ca", "-camera", MSyntax::kString);
 	
@@ -54,7 +55,9 @@ MStatus depthMap::doIt( const MArgList& args )
 	MTime time = timeControl.currentTime();
 	int frame =int(time.value());
 	
-	MString scene_name, camera_name;
+	MString scene_name, camera_name, title;
+	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, title);
+	else return MS::kFailure;
 	if (argData.isFlagSet("-sc")) argData.getFlagArgument("-sc", 0, scene_name);
 	else return MS::kFailure;
 	if (argData.isFlagSet("-ca")) argData.getFlagArgument("-ca", 0, camera_name);
@@ -94,7 +97,10 @@ MStatus depthMap::doIt( const MArgList& args )
 	
 	fscene->depthMap(data, map_w, map_h, fov, m_eye);
 	
-	zGlobal::changeFilenameExtension(sscene, "exr");
+	zGlobal::cutByLastSlash(sscene);
+	sscene = sscene + "/" + title.asChar() + ".1.exr";
+	zGlobal::changeFrameNumber(sscene, frame);
+	//zGlobal::changeFilenameExtension(sscene, "exr");
 	MGlobal::displayInfo ( MString(" saving ") + sscene.c_str());
 	
 	M44f amat(m_eye[0][0], m_eye[0][1], m_eye[0][2], m_eye[0][3],

@@ -81,6 +81,7 @@ columnLayout -adjustableColumn true;
 //column begin
 text -al left -l "\nSelect scene file and camera to save depth values as OpenEXR images.";
 	 
+	 textFieldGrp -label "Title" -text "untitled" exrdepthmapTitle;
 textFieldButtonGrp
      -cw 1 110 -label "Scene Path" -buttonLabel "Browse.."
      -bc "textFieldButtonGrp -e -text `fileDialog -dm (\"*.scene\")` exrdepthmapPath;"
@@ -131,7 +132,7 @@ global proc dosaveexrdepthmap()
 	{
 		currentTime $i;
 		
-		EXRZDepth -ca `listRelatives -p $cams[$ieye-1]` -sc `textFieldButtonGrp -q -text exrdepthmapPath`;
+		EXRZDepth -n `textFieldGrp -q -text exrdepthmapTitle` -ca `listRelatives -p $cams[$ieye-1]` -sc `textFieldButtonGrp -q -text exrdepthmapPath`;
 		
 		$amount = ($i+1-$s)/(1.0*($e+1-$s))*100;
 
