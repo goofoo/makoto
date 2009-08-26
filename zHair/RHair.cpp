@@ -10,9 +10,10 @@ m_ndice(24),pHair(0),has_densmap(0),pDepthMap(0)
 	m_dens_name = new char[256];
 	m_depth_name = new char[256];
 
-	int n = sscanf(parameter.c_str(), "%f %f %f %s %s %s %f %f %f %f %f %f %f %f %d %d", 
+	int n = sscanf(parameter.c_str(), "%f %f %f %f %f %s %s %s %f %f %f %f %f %f %f %f %d %d", 
 	&m_ndice,
 	&m_width0, &m_width1,
+	&dof_min, &dof_max,
 	m_cache_name, 
 	m_dens_name, 
 	m_depth_name,
@@ -208,6 +209,14 @@ void RHair::meanDisplace(unsigned& idx, XYZ& disp) const
 {
 	float fract = m_hair_1 - m_hair_0;
 	pHair->lookupMeanDisplace(idx, fract, disp);
+}
+
+void RHair::simplifyDOF(unsigned& idx, float& depth, float& val) const
+{
+	if(depth > dof_min) {
+		if(depth > dof_max) val = 0.25;
+		else val = 1.f - 0.75f*sqrt((depth-dof_min)/(dof_max - dof_min));
+	}
 }
 
 void RHair::simplifyMotion(unsigned& idx, float& val) const

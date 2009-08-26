@@ -26,6 +26,7 @@ public:
 	float getShutterOpen() const {return m_shutter_open;}
 	float getShutterClose() const {return m_shutter_close;}
 	void meanDisplace(unsigned& idx, XYZ& disp) const;
+	void simplifyDOF(unsigned& idx, float& depth, float& val) const;
 	void simplifyMotion(unsigned& idx, float& val) const;
 	
 	HairCache* pHair;
@@ -36,7 +37,7 @@ private:
 	char* m_cache_name;
 	char* m_dens_name;
 	char* m_depth_name;
-	float m_fuzz, m_kink, m_clumping, m_bald; 
+	float m_fuzz, m_kink, m_clumping, m_bald, dof_min, dof_max; 
 	float m_shutter_open, m_shutter_close;
 	float m_hair_0, m_hair_1;
 	int m_is_blur, m_is_shd;

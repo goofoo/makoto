@@ -421,14 +421,18 @@ template shadingmodel zhair {
 		extern color _shadow;
 		extern color _colorA;
 		
+		Cspec_key *= specflt;
+		Cspec_fill *= specflt;
+		Cspec_back *= specflt;
+		
 		_colorA = OI;
 		_color = mixed * OI;
-		_diffuse = Cdiff_key * OI;
-		_specular = Cspec_key * specflt * OI;
+		_diffuse = color(comp(Cdiff_key,0), comp(Cdiff_fill,0), comp(Cdiff_back,0)) * OI;
+		_specular = color(comp(Cspec_key,0), comp(Cspec_fill,0), comp(Cspec_back,0)) * OI;
 		_diffuse_fill = Cdiff_fill * OI;
 		_diffuse_back = Cdiff_back * OI;
-		_specular_fill = Cspec_fill * specflt * OI;
-		_specular_back = Cspec_back * specflt * OI;
+		_specular_fill = Cspec_fill * OI;
+		_specular_back = Cspec_back * OI;
 		float dep = pow(smoothstep( clipnear, clipfar, depth(P)), 0.67);
 		_depth = color(dep,1-dep,0) * OI;
 		

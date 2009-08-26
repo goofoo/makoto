@@ -3,7 +3,7 @@
 #include "../shared/FNoise.h"
 #include "BindTriangle.h"
 
-BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0),velocities(0), shutters(0),densities(0)
+BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0),/*velocities(0), shutters(0),*/densities(0)
 {
 	points = new XYZ[3]; 
 	bindPoints = new XYZ[3];
@@ -67,7 +67,7 @@ void BoundHair::calculateBBox(float *box) const
 	box[3] += mlv;
 	box[4] -= mlv;
 	box[5] += mlv;
-	
+	/*
 	if(velocities) {
 		v.x = box[0] + velocities[0].x;
 		if(v.x < box[0]) box[0] = v.x;
@@ -113,7 +113,7 @@ void BoundHair::calculateBBox(float *box) const
 		if(v.z < box[4]) box[4] = v.z;
 		v.z = box[5] + velocities[2].z;
 		if(v.z > box[5]) box[5] = v.z;
-	}
+	}*/
 }
 
 void BoundHair::emit() const
@@ -732,8 +732,8 @@ void BoundHair::release()
 	delete[] ucoord;
 	delete[] vcoord;
 	delete[] attrib;
-	if(velocities) delete[] velocities;
-	if(shutters) delete[] shutters;
+	//if(velocities) delete[] velocities;
+	//if(shutters) delete[] shutters;
 	if(densities) delete[] densities;
 }
 

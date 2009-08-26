@@ -47,7 +47,7 @@ public:
     virtual int	    GenRIB( RIBContext *c );
 
 private:
-	float ndice, rootwidth, tipwidth;
+	float ndice, rootwidth, tipwidth, dof_min, dof_max;
 	char* m_depth_file;
 };
 

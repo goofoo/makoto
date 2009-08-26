@@ -66,6 +66,14 @@ hairGen::SetArgs(RIBContext *c,
 		{
 			RIBContextUtil::GetFloatValue(vals[i], &tipwidth);
 		}
+		else if(!strcmp(args[i], "float dofmn"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &dof_min);
+		}
+		else if(!strcmp(args[i], "float dofmx"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &dof_max);
+		}
 		else if(!strcmp(args[i], "string sdepth"))
 		{
 			RIBContextUtil::GetStringValue(vals[i], &m_depth_file);
@@ -175,9 +183,10 @@ hairGen::GenRIB( RIBContext *c )
 	
 	
 	char sbuf[1024];
-	sprintf( sbuf, "%f %f %f %s %s %s %f %f %f %f %f %f %f %f %d %d", 
+	sprintf( sbuf, "%f %f %f %f %f %s %s %s %f %f %f %f %f %f %f %f %d %d", 
 	ndice,
 	rootwidth, tipwidth,
+	dof_min, dof_max,
 	//base->getRootColorR(),
 	//base->getRootColorG(),
 	//base->getRootColorB(),

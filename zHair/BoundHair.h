@@ -30,8 +30,8 @@ public:
 	float* vcoord;
 	float* attrib;
 	
-	XYZ* velocities;
-	float* shutters;
+	//XYZ* velocities;
+	//float* shutters;
 	float* densities;
 	float distantSimp;
 

@@ -37,7 +37,7 @@ Subdivide(RtPointer data, RtFloat detail)
 	if(pdata->isShadow() != 1) pdata->setDepth();
 
 	unsigned numtri = pdata->getNumTriangle();
-	float box[6];
+	float box[6], dist;
 	RtBound bound = {-1, 1, -1, 1, -1, 1};
 	float kink = pdata->getKink();
 	XYZ disp;
@@ -84,13 +84,12 @@ Subdivide(RtPointer data, RtFloat detail)
 		
 		if(pdata->isShadow() == 1) RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
 		else {
-			float dist = pdata->clostestDistance(param->points);
+			dist = pdata->clostestDistance(param->points);
 			
 			param->distantSimp = 1.f;
-			if(dist > 1000) {
-				if(dist > 5000) param->distantSimp = 0.25;
-				else param->distantSimp = 1.f - 0.75f*sqrt((dist-1000)/4000);
-			}
+			
+// depth of field simplification
+				pdata->simplifyDOF(i, dist, param->distantSimp);
 			
 			RiTransformBegin();
 			if(pdata->needMBlur()) {
