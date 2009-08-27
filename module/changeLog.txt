@@ -1,3 +1,7 @@
+27/08/09
+
+Hair rigen and procedural calculate hidden hair based on camera matrix got from RIBContext. No need save depth map any more.
+
 26/08/09
 
 Hair DSO simplified by depth of field and motion.
