@@ -571,4 +571,18 @@ void FXMLScene::depthMap(float* data, int map_w, int map_h, double fov, const fl
 	
 	for(unsigned i=0; i<m_mesh.size(); i++) m_mesh[i]->depthMap(data, map_w, map_h, cameraspaceinv, fov);
 }
+
+void FXMLScene::depthMapPersp(float* data, int map_w, int map_h, const float cameramatrix[4][4], float& fov) const
+{
+	MATRIX44F cameraspaceinv(cameramatrix);
+	
+	for(unsigned i=0; i<m_mesh.size(); i++) m_mesh[i]->depthMapPersp(data, map_w, map_h, cameraspaceinv, fov);
+}
+
+void FXMLScene::depthMapOrtho(float* data, int map_w, int map_h, const float cameramatrix[4][4], float& orthow) const
+{
+	MATRIX44F cameraspaceinv(cameramatrix);
+	
+	for(unsigned i=0; i<m_mesh.size(); i++) m_mesh[i]->depthMapOrtho(data, map_w, map_h, cameraspaceinv, orthow);
+}
 //:~

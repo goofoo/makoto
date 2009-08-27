@@ -19,9 +19,10 @@ public:
 	char needMBlur() const {if(m_is_blur==1) return 1; else return 0;}
 	void setMBlur(unsigned& idx, XYZ* velocities, float* shutters) const;
 	int isShadow() const {return m_is_shd;}
-	char setDepth();
-	char cullBBox(float *box) const;
-	char cullPoint(XYZ& Q) const;
+	char setDepthPersp();
+	char setDepthOrtho();
+	char cullBBox(float *box, char isPersp) const;
+	char cullPoint(XYZ& Q, char isPersp) const;
 	float clostestDistance(const XYZ* pos) const;
 	float getShutterOpen() const {return m_shutter_open;}
 	float getShutterClose() const {return m_shutter_close;}
@@ -42,8 +43,9 @@ private:
 	float m_hair_0, m_hair_1;
 	int m_is_blur, m_is_shd;
 	float m_epsilon;
-	int depthmap_w, depthmap_h;
 	float* pDepthMap;
 	MATRIX44F cameraspaceinv;
+	float ffov, forthow;
 	double tanhfov;
+	float m[4][4];
 };

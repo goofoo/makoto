@@ -39,6 +39,27 @@ void FTriangle::project(double& fov)
 	f012 = barycentric_coord(p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y);
 }
 
+void FTriangle::projectOrtho(float& orthow)
+{
+	double a = orthow*0.5;
+	P[0].x /= a;
+	P[0].y /= a;
+	
+	P[1].x /= a;
+	P[1].y /= a;
+	
+	P[2].x /= a;
+	P[2].y /= a;
+	
+	p_obj[0] = P[0];
+	p_obj[1] = P[1];
+	p_obj[2] = P[2];
+	
+	f120 = barycentric_coord(p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y);
+	f201 = barycentric_coord(p_obj[2].x, p_obj[2].y, p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y);
+	f012 = barycentric_coord(p_obj[0].x, p_obj[0].y, p_obj[1].x, p_obj[1].y, p_obj[2].x, p_obj[2].y);
+}
+
 void FTriangle::onScreen(float* data, int map_w, int map_h)
 {
 	float x_max = -1, y_max = -1, x_min = 1, y_min = 1;

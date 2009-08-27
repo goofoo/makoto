@@ -8,6 +8,7 @@ public:
 
 	void createSimple(const XYZ& p0, const XYZ& p1, const XYZ& p2);
 	void project(double& fov);
+	void projectOrtho(float& orthow);
 	void create(const XYZ& p0, const XYZ& p1, const XYZ& p2);
 	void onScreen(float* data, int map_w, int map_h);
 

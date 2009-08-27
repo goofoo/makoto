@@ -85,6 +85,8 @@ public:
 	void removeRTTree();
 /*draw depth*/
 	void depthMap(float* data, int map_w, int map_h, double fov, const float cameramatrix[4][4]) const;
+	void depthMapPersp(float* data, int map_w, int map_h, const float cameramatrix[4][4], float& fov) const;
+	void depthMapOrtho(float* data, int map_w, int map_h, const float cameramatrix[4][4], float& orthow) const;
 private:
 	ZXMLDoc doc;
 	string m_xml_name;

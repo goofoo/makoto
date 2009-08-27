@@ -61,9 +61,20 @@ slim 1 appearance zhangdb {
 	}
 	
 	parameter string sdepth {
-		label {Depth Map}
+		label {Scene File (per frame)}
+		description {use .scene file to block hidden hair strand. Use .$F. to load every frame.}
 		subtype file
-		default {D:/data/mammoth/base.$F.exr}
+		default {D:/data/mammoth/base.$F.scene}
+	}
+	
+	parameter float fov {
+		label {Angel of View (primary)}
+	    default 70
+	}
+	
+	parameter float orthow {
+		label {Orthographic Width (shadow)}
+	    default 2800
 	}
   }
 }

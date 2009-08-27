@@ -1372,5 +1372,48 @@ void FXMLMesh::depthMap(float* data, int map_w, int map_h, MATRIX44F& space, dou
 		ftri.onScreen(data, map_w, map_h);
 	}
 }
+
+void FXMLMesh::depthMapPersp(float* data, int map_w, int map_h, MATRIX44F& space, float& fov) const
+{
+	XYZ pa, pb, pc;
+	FTriangle ftri;
+	for(int i=0; i<m_numTriangle; i++) {
+		pa = m_cvs[m_triangleConn[i*3]];
+		pb = m_cvs[m_triangleConn[i*3+1]];
+		pc = m_cvs[m_triangleConn[i*3+2]];
+		
+		space.transform(pa);
+		space.transform(pb);
+		space.transform(pc);
+		
+		if(pa.z < 0.1 || pb.z < 0.1 || pc.z < 0.1) continue;
+		
+		ftri.createSimple(pa, pb, pc);
+		double dfov = fov/180*3.1415927;
+		ftri.project(dfov);
+		ftri.onScreen(data, map_w, map_h);
+	}
+}
+
+void FXMLMesh::depthMapOrtho(float* data, int map_w, int map_h, MATRIX44F& space, float& orthow) const
+{
+	XYZ pa, pb, pc;
+	FTriangle ftri;
+	for(int i=0; i<m_numTriangle; i++) {
+		pa = m_cvs[m_triangleConn[i*3]];
+		pb = m_cvs[m_triangleConn[i*3+1]];
+		pc = m_cvs[m_triangleConn[i*3+2]];
+		
+		space.transform(pa);
+		space.transform(pb);
+		space.transform(pc);
+		
+		if(pa.z < 0.1 || pb.z < 0.1 || pc.z < 0.1) continue;
+		
+		ftri.createSimple(pa, pb, pc);
+		ftri.projectOrtho(orthow);
+		ftri.onScreen(data, map_w, map_h);
+	}
+}
 //~:
 

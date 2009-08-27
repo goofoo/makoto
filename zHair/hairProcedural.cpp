@@ -34,7 +34,8 @@ Subdivide(RtPointer data, RtFloat detail)
 	RHair* pdata = static_cast<RHair*>(data);
 	pdata->init();
 	
-	if(pdata->isShadow() != 1) pdata->setDepth();
+	if(pdata->isShadow() ==0) pdata->setDepthPersp();
+	else pdata->setDepthOrtho();
 
 	unsigned numtri = pdata->getNumTriangle();
 	float box[6], dist;
@@ -60,7 +61,8 @@ Subdivide(RtPointer data, RtFloat detail)
 		
 		param->calculateBBox(box);
 		
-		if(pdata->isShadow() != 1) if(pdata->cullBBox(box)) continue;
+		if(pdata->isShadow() == 0) if(pdata->cullBBox(box, 1)) continue;
+		else if(pdata->cullBBox(box, 0)) continue;
 		
 		bound[0] = box[0];
 		bound[1] = box[1];

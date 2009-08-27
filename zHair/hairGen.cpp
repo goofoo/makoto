@@ -74,6 +74,14 @@ hairGen::SetArgs(RIBContext *c,
 		{
 			RIBContextUtil::GetFloatValue(vals[i], &dof_max);
 		}
+		else if(!strcmp(args[i], "float fov"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &fov);
+		}
+		else if(!strcmp(args[i], "float orthow"))
+		{
+			RIBContextUtil::GetFloatValue(vals[i], &orthow);
+		}
 		else if(!strcmp(args[i], "string sdepth"))
 		{
 			RIBContextUtil::GetStringValue(vals[i], &m_depth_file);
@@ -104,6 +112,8 @@ hairGen::GenRIB( RIBContext *c )
 	//if(pass == RIBContext::rpFinal) c->ReportError( RIBContext::reInfo, "pass is final");
 	//else if(pass == RIBContext::rpShadow) c->ReportError( RIBContext::reInfo, "pass is shadow");
 	//else  c->ReportError( RIBContext::reInfo, "other pass");
+	RtMatrix mat;
+	c->GetCamBasis(mat, 0);
 	
 	RtBoolean usingMotionBlur = c->GetMotionBlur();
 	// Query motion related settings
@@ -181,35 +191,33 @@ hairGen::GenRIB( RIBContext *c )
 	MGlobal::displayInfo(MString("HairRIBGen emits ") + MString(vizname));
 	if(iblur == 1) MGlobal::displayInfo(MString(" motion blur between ") + fframe0 + " and " + fframe1);
 	
+	string shairname = base->getCacheName();
+	zGlobal::changeFrameNumber(shairname, int(fframe0));
 	
-	char sbuf[1024];
-	sprintf( sbuf, "%f %f %f %f %f %s %s %s %f %f %f %f %f %f %f %f %d %d", 
+	float val = fov;
+	if(ishd == 1) val = orthow;
+	
+	char sbuf[1600];
+	sprintf( sbuf, "%f %f %f %f %f %s %s %s %f %f %f %f %f %f %f %f %d %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f", 
 	ndice,
 	rootwidth, tipwidth,
 	dof_min, dof_max,
-	//base->getRootColorR(),
-	//base->getRootColorG(),
-	//base->getRootColorB(),
-	//base->getTipColorR(),
-	//base->getTipColorG(),
-	//base->getTipColorB(),
-	//base->getMutantColorR(),
-	//base->getMutantColorG(),
-	//base->getMutantColorB(),
-	//base->getMutantColorScale(),
-	base->getCacheName(), 
+	shairname.c_str(), 
 	base->getDensityName(), 
 	m_depth_file,
 	base->getFuzz(),
 	base->getKink(),
 	base->getClumping(),
 	base->getBald(),
-	//base->getInterpolate(),
 	shutterOpen, shutterClose,
 	(float)fframe0, (float)fframe1,
 	iblur,
-	ishd
-	//base->getBBoxFraction()
+	ishd,
+	val,
+	mat[0][0], mat[0][1], mat[0][2], mat[0][3], 
+	mat[1][0], mat[1][1], mat[1][2], mat[1][3], 
+	mat[2][0], mat[2][1], mat[2][2], mat[2][3], 
+	mat[3][0], mat[3][1], mat[3][2], mat[3][3]
 	);
 	
 	RtString args[] = { "plugins/zhairProcedural.dll", sbuf};

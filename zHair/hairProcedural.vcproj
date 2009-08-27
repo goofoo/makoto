@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-DNT"
 				Optimization="0"
-				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR;D:\Pixar\devkit\include"
+				AdditionalIncludeDirectories="D:\local\libxml\include;D:\local\iconv\include;D:\local\openexr\include\OpenEXR;D:\Pixar\devkit\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ZDSO_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -41,11 +41,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="prman.lib half.lib ilmimf.lib zlib.lib"
+				AdditionalDependencies="prman.lib half.lib ilmimf.lib zlib.lib libxml2.lib"
 				OutputFile="..\module\procedural\zhairProcedural.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="D:\local\openexr\lib;D:\Pixar\devkit\lib;D:\local\glut"
+				AdditionalLibraryDirectories="D:\local\libxml\lib;D:\local\openexr\lib;D:\Pixar\devkit\lib;D:\local\glut"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=""
 				SubSystem="2"
@@ -204,7 +204,31 @@
 				RelativePath="..\shared\DiceTriangle.cpp">
 			</File>
 			<File
+				RelativePath="..\shared\FColorSet.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\FFloatSet.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\FNoise.cpp">
+			</File>
+			<File
+				RelativePath="..\sh_lighting\FQSPLAT.cpp">
+			</File>
+			<File
+				RelativePath="..\sh_lighting\FTriangle.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\FUVSet.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\FXMLMesh.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\FXMLScene.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\gBase.cpp">
 			</File>
 			<File
 				RelativePath=".\HairCache.cpp">
@@ -219,10 +243,19 @@
 				RelativePath=".\RHair.cpp">
 			</File>
 			<File
+				RelativePath="..\sh_lighting\VisibilityBuffer.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\XMLUtil.cpp">
+			</File>
+			<File
 				RelativePath="..\shared\zFnEXR.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\zGlobal.cpp">
+			</File>
+			<File
+				RelativePath="..\shared\zXMLDoc.cpp">
 			</File>
 		</Filter>
 	</Files>
