@@ -286,7 +286,7 @@ void BoundHair::emit() const
 						else sidewind = pt[2] - pt[0];
 						sidewind.setLength(dv[0].length());
 						
-						noi = (fnoi.randfint( g_seed )-0.5)*2*attrib[1]; g_seed++;
+						noi = (fnoi.randfint( g_seed )-0.5)*2*attrib[1]*param; g_seed++;
 
 						pcur += sidewind*noi*(1 - attrib[2]*j/num_seg);
 						
