@@ -14,7 +14,6 @@ public:
 	
 	void calculateBBox(float *box) const;
 	void emit() const;
-    void emit(float detail) const;
 	void emitGuider() const;
 	void emitBBox() const;
 	
