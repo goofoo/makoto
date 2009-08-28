@@ -4,8 +4,8 @@
 #include "../shared/zFnEXR.h"
 using namespace std;
 
-#define DEPTHMAP_W 1600
-#define DEPTHMAP_H 1600
+#define DEPTHMAP_W 1024
+#define DEPTHMAP_H 1024
 
 RHair::RHair(std::string& parameter):
 m_ndice(24),pHair(0),has_densmap(0),pDepthMap(0)
@@ -154,56 +154,50 @@ char RHair::setDepthOrtho()
 	return 0;
 }
 
-char RHair::cullBBox(float *box, char isPersp) const
-{
-	XYZ Q(box[0], box[2], box[4]);
+char RHair::isVisible(const float *box, char isPersp) const
+{	
+	XYZ Q;
+	
+	Q = XYZ(box[0], box[2], box[4]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
 	Q = XYZ(box[1], box[2], box[4]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
 	Q = XYZ(box[0], box[3], box[4]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
 	Q = XYZ(box[1], box[3], box[4]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
 	Q = XYZ(box[0], box[2], box[5]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
 	Q = XYZ(box[1], box[2], box[5]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
 	Q = XYZ(box[0], box[3], box[5]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
 	Q = XYZ(box[1], box[3], box[5]);
 	cameraspaceinv.transform(Q);
-	if(Q.z < 0.1) return 1;
-	if(!cullPoint(Q, isPersp)) return 0;
+	if(isPointVisible(Q, isPersp)) return 1;
 	
-	return 1;
+	return 0;
 }
 
-char RHair::cullPoint(XYZ& Q, char isPersp) const
+char RHair::isPointVisible(XYZ& Q, char isPersp) const
 {
 	double a;
 
-	if(isPersp == 1) a = Q.z*tanhfov;
+	if(isPersp) a = Q.z*tanhfov;
 	else a = forthow/2;
 	
 	Q.x /= a;
@@ -215,7 +209,7 @@ char RHair::cullPoint(XYZ& Q, char isPersp) const
 		loc_y = (Q.y + 1.0)/2.0*(DEPTHMAP_H-1);
 		
 		
-		if(Q.z < pDepthMap[loc_y*DEPTHMAP_W + loc_x] ) return 0;
+		if(Q.z > pDepthMap[loc_y*DEPTHMAP_W + loc_x] ) return 0;
 	}
 	
 	return 1;

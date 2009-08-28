@@ -21,8 +21,8 @@ public:
 	int isShadow() const {return m_is_shd;}
 	char setDepthPersp();
 	char setDepthOrtho();
-	char cullBBox(float *box, char isPersp) const;
-	char cullPoint(XYZ& Q, char isPersp) const;
+	char isVisible(const float *box, char isPersp) const;
+	char isPointVisible(XYZ& Q, char isPersp) const;
 	float clostestDistance(const XYZ* pos) const;
 	float getShutterOpen() const {return m_shutter_open;}
 	float getShutterClose() const {return m_shutter_close;}

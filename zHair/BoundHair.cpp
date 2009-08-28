@@ -376,7 +376,7 @@ void BoundHair::emitBBox() const
 	
 	int ncurves = 12;
 	int nvertices[12]; for(unsigned i=0; i<12; i++) nvertices[i] = 2;
-	float width = 0.05;
+	float width = 0.5;
 	RiCurves("linear", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)bpoints, "constantwidth", (RtPointer)&width, RI_NULL); 
 	delete[] bpoints;
 }

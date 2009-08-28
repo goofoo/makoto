@@ -61,8 +61,8 @@ Subdivide(RtPointer data, RtFloat detail)
 		
 		param->calculateBBox(box);
 		
-		if(pdata->isShadow() == 0) if(pdata->cullBBox(box, 1)) continue;
-		else if(pdata->cullBBox(box, 0)) continue;
+		if(pdata->isShadow() != 1) { if(!pdata->isVisible(box, 1)) continue; }
+		else { if(!pdata->isVisible(box, 0)) continue; }
 		
 		bound[0] = box[0];
 		bound[1] = box[1];
@@ -72,13 +72,7 @@ Subdivide(RtPointer data, RtFloat detail)
 		bound[5] = box[5];
 		
 		pdata->setAttrib(param->attrib);
-		/*
-		if(pdata->needMBlur()) {
-			param->velocities = new XYZ[3];
-			param->shutters = new float[2];
-			pdata->setMBlur(i, param->velocities, param->shutters);
-		}
-		*/
+
 		if(pdata->has_densmap) {
 			param->densities = new float[3];
 			pdata->pHair->lookupDensity(i, param->densities);
