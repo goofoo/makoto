@@ -78,7 +78,6 @@ Subdivide(RtPointer data, RtFloat detail)
 		bound[4] = box[4];
 		bound[5] = box[5];
 		
-		//pdata->setAttrib(param->attrib);
 		pdata->setAttrib(glb_attrib);
 /*
 		if(pdata->has_densmap) {
@@ -134,16 +133,14 @@ SubdivideReal(RtPointer data, RtFloat detail)
 		if(detail <1000) param->distantSimp = 0.2;
 		else param->distantSimp = 1.0 - 0.8*(9000 - detail)/8000;
 	}
-	param->emit(glb_attrib);
-	//printf(" dtl: %f",(float)detail);
+	param->emit(glb_attrib, (float)detail);
 }
 
 export RtVoid
 SubdivideReal1(RtPointer data, RtFloat detail)
 {
-	//printf("a0: %f ", glb_attrib[0]);
 	BoundHair* param = static_cast<BoundHair*>(data);
-	param->emit(glb_attrib);
+	param->emit(glb_attrib, (float)detail);
 }
 
 export RtVoid

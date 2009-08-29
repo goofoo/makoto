@@ -60,7 +60,7 @@ void BoundHair::calculateBBox(float *box) const
 		}
 	}
 
-	mlv /= 4;
+	mlv /= 8;
 	box[0] -= mlv;
 	box[1] += mlv;
 	box[2] -= mlv;
@@ -69,7 +69,7 @@ void BoundHair::calculateBBox(float *box) const
 	box[5] += mlv;
 }
 
-void BoundHair::emit(const float* g_attrib) const
+void BoundHair::emit(const float* g_attrib, float detail) const
 {
 	float widthScale = 1.0, threshold = 1.0, realthreshold;
 	threshold = distantSimp;
@@ -126,163 +126,302 @@ void BoundHair::emit(const float* g_attrib) const
 		
 		if(n_survive > 0) {
 			
-			XYZ* pbuf = new XYZ[n_samp];
-			unsigned* nsegbuf = new unsigned[n_samp];
-			for(unsigned i=0; i<n_samp; i++) {
-				pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
-				nsegbuf[i] = nsegs[ddice[i].id0];
-			}
-			
-			int ncurves = n_survive;
-			int* nvertices = new int[ncurves];
-			
-			int npoints = 0;
-			int nwidths = 0;
-			int acc = 0;
-			for(unsigned i=0; i<n_samp; i++) {
-				if(isurvive[i]) {
-					nvertices[acc] = nsegbuf[i] + 5;
-					if(threshold > 0.5) nvertices[acc] += nsegbuf[i];
-					npoints += nvertices[acc];
-					nwidths += nvertices[acc]-2;
-					acc++;
+			if(detail > 1000) {
+				XYZ* pbuf = new XYZ[n_samp];
+				unsigned* nsegbuf = new unsigned[n_samp];
+				for(unsigned i=0; i<n_samp; i++) {
+					pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
+					nsegbuf[i] = nsegs[ddice[i].id0];
 				}
-			}
-			
-			float* widths = new float[nwidths];
-			acc = 0;
-			float rootWidth = g_attrib[3];
-			float tipWidth = g_attrib[4];
-			
-			for(unsigned i=0; i<n_samp; i++) {
-				if(isurvive[i]) {
-					widths[acc] = rootWidth * widthScale;
-					acc++;
-					float dwidth = (tipWidth - rootWidth)/nsegbuf[i] ;
-					for(unsigned j = 0; j<= nsegbuf[i]; j++) {
-						widths[acc] = (rootWidth + dwidth*j)*widthScale;
+				
+				int ncurves = n_survive;
+				int* nvertices = new int[ncurves];
+				
+				int npoints = 0;
+				int nwidths = 0;
+				int acc = 0;
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						nvertices[acc] = nsegbuf[i] + 5;
+						if(threshold > 0.5) nvertices[acc] += nsegbuf[i];
+						npoints += nvertices[acc];
+						nwidths += nvertices[acc]-2;
 						acc++;
-						if(threshold > 0.5) {
-							if(j != nsegbuf[i]) {
-								widths[acc] = widths[acc-1];
-								acc++;
+					}
+				}
+				
+				float* widths = new float[nwidths];
+				acc = 0;
+				float rootWidth = g_attrib[3];
+				float tipWidth = g_attrib[4];
+				
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						widths[acc] = rootWidth * widthScale;
+						acc++;
+						float dwidth = (tipWidth - rootWidth)/nsegbuf[i] ;
+						for(unsigned j = 0; j<= nsegbuf[i]; j++) {
+							widths[acc] = (rootWidth + dwidth*j)*widthScale;
+							acc++;
+							if(threshold > 0.5) {
+								if(j != nsegbuf[i]) {
+									widths[acc] = widths[acc-1];
+									acc++;
+								}
 							}
 						}
+						widths[acc] = tipWidth * widthScale;
+						acc++;
 					}
-					widths[acc] = tipWidth * widthScale;
-					acc++;
 				}
-			}
-			
-			float* coord_s = new float[ncurves];
-			float* coord_t = new float[ncurves];
-			float* mutant = new float[ncurves];
-			acc = 0;
-			for(unsigned i=0; i<n_samp; i++) {
-				if(isurvive[i]) {
-					coord_s[acc] = ddice[i].coords;
-					coord_t[acc] = ddice[i].coordt;
-					
-					g_seed  = seed*53 + i*5;
-					mutant[acc] = fnoi.randfint( g_seed );
-					
-					acc++;
+				
+				float* coord_s = new float[ncurves];
+				float* coord_t = new float[ncurves];
+				float* mutant = new float[ncurves];
+				acc = 0;
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						coord_s[acc] = ddice[i].coords;
+						coord_t[acc] = ddice[i].coordt;
+						
+						g_seed  = seed*53 + i*5;
+						mutant[acc] = fnoi.randfint( g_seed );
+						
+						acc++;
+					}
 				}
-			}
-			
-			XYZ* vertices = new XYZ[npoints];
-			
-			XYZ ppre, pcur, pt[3], q, dv[3], dmean, ddv, pcen, sidewind;
-			int num_seg;
-			acc = 0;
-			for(unsigned i=0; i<n_samp; i++) {
-				if(isurvive[i]) {
-					g_seed  = seed*19 + i*67;
-					ppre = pbuf[i];
-					
-					vertices[acc] = ppre;
-					acc++;
-					vertices[acc] = ppre;
-					acc++;
-					
-					num_seg = nsegbuf[i];
-					float dparam = 1.f/(float)num_seg;
-					float param;
-					for(int j = 0; j< num_seg; j++) {
-						param = dparam*j;
-						getPatParam(pt[0], param, nsegs[0], cvs_a);
-						getPatParam(pt[1], param, nsegs[1], cvs_b);
-						getPatParam(pt[2], param, nsegs[2], cvs_c);
-						param += dparam;
-						getPatParam(q, param, nsegs[0], cvs_a);
-						dv[0] = q - pt[0];
-						pcen = q;
-						getPatParam(q, param, nsegs[1], cvs_b);
-						dv[1] = q - pt[1];
-						pcen += q;
-						getPatParam(q, param, nsegs[2], cvs_c);
-						dv[2] = q - pt[2];
-						pcen += q;
-						pcen /= 3.f;
+				
+				XYZ* vertices = new XYZ[npoints];
+				
+				XYZ ppre, pcur, pt[3], q, dv[3], dmean, ddv, pcen, sidewind;
+				int num_seg;
+				acc = 0;
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						g_seed  = seed*19 + i*67;
+						ppre = pbuf[i];
 						
 						vertices[acc] = ppre;
 						acc++;
+						vertices[acc] = ppre;
+						acc++;
 						
-						pcur = pt[0] * ddice[i].alpha + pt[1] * ddice[i].beta + pt[2] * ddice[i].gamma;
-						
-						dmean = dv[0] * ddice[i].alpha + dv[1] * ddice[i].beta + dv[2] * ddice[i].gamma;
-						dmean.setLength(dv[0].length());
-						
-						
-						noi = 1.f + (fnoi.randfint( g_seed )-0.5)*g_attrib[0]; g_seed++;
-						dmean *= noi;
-						pcur += dmean;
-						
-						pcur += (pcen - pcur)*g_attrib[2]*j/num_seg;
-						
-						noi = fnoi.randfint( g_seed ); g_seed++;
-						if(noi<0.33) sidewind = pt[0] - pt[1];
-						else if(noi<0.66) sidewind = pt[1] - pt[2];
-						else sidewind = pt[2] - pt[0];
-						sidewind.setLength(dv[0].length());
-						
-						noi = (fnoi.randfint( g_seed )-0.5)*2*g_attrib[1]*param; g_seed++;
+						num_seg = nsegbuf[i];
+						float dparam = 1.f/(float)num_seg;
+						float param;
+						for(int j = 0; j< num_seg; j++) {
+							param = dparam*j;
+							getPatParam(pt[0], param, nsegs[0], cvs_a);
+							getPatParam(pt[1], param, nsegs[1], cvs_b);
+							getPatParam(pt[2], param, nsegs[2], cvs_c);
+							param += dparam;
+							getPatParam(q, param, nsegs[0], cvs_a);
+							dv[0] = q - pt[0];
+							pcen = q;
+							getPatParam(q, param, nsegs[1], cvs_b);
+							dv[1] = q - pt[1];
+							pcen += q;
+							getPatParam(q, param, nsegs[2], cvs_c);
+							dv[2] = q - pt[2];
+							pcen += q;
+							pcen /= 3.f;
+							
+							vertices[acc] = ppre;
+							acc++;
+							
+							pcur = pt[0] * ddice[i].alpha + pt[1] * ddice[i].beta + pt[2] * ddice[i].gamma;
+							
+							dmean = dv[0] * ddice[i].alpha + dv[1] * ddice[i].beta + dv[2] * ddice[i].gamma;
+							dmean.setLength(dv[0].length());
+							
+							
+							noi = 1.f + (fnoi.randfint( g_seed )-0.5)*g_attrib[0]; g_seed++;
+							dmean *= noi;
+							pcur += dmean;
+							
+							pcur += (pcen - pcur)*g_attrib[2]*j/num_seg;
+							
+							noi = fnoi.randfint( g_seed ); g_seed++;
+							if(noi<0.33) sidewind = pt[0] - pt[1];
+							else if(noi<0.66) sidewind = pt[1] - pt[2];
+							else sidewind = pt[2] - pt[0];
+							sidewind.setLength(dv[0].length());
+							
+							noi = (fnoi.randfint( g_seed )-0.5)*2*g_attrib[1]*param; g_seed++;
 
-						pcur += sidewind*noi*(1 - g_attrib[2]*j/num_seg);
+							pcur += sidewind*noi*(1 - g_attrib[2]*j/num_seg);
+							
+							ddv = pcur - ppre;
+							ddv.normalize();
+							ddv *= dmean.length();
+							
+							if(threshold > 0.5) {
+								vertices[acc] = ppre + ddv*0.5f;
+								acc++;
+							}
+
+							ppre += ddv;
+						}
+						vertices[acc] = ppre;
+						acc++;
+						vertices[acc] = ppre;
+						acc++;
+						vertices[acc] = ppre;
+						acc++;
+					}
+				}
+				
+				delete[] pbuf;
+				
+				RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, 
+				"uniform float s", (RtFloat*)coord_s, "uniform float t", (RtFloat*)coord_t, "uniform float mutant", (RtFloat*)mutant,
+				RI_NULL); 
+				
+				delete[] nsegbuf;
+				delete[] nvertices;
+				delete[] vertices;
+				delete[] widths;
+				delete[] coord_s;
+				delete[] coord_t;
+				delete[] mutant;
+			
+			}
+			else {
+				XYZ* pbuf = new XYZ[n_samp];
+				unsigned* nsegbuf = new unsigned[n_samp];
+				for(unsigned i=0; i<n_samp; i++) {
+					pbuf[i] = points[ddice[i].id0]*ddice[i].alpha + points[ddice[i].id1]*ddice[i].beta + points[ddice[i].id2]*ddice[i].gamma;
+					nsegbuf[i] = nsegs[ddice[i].id0];
+				}
+				
+				int ncurves = n_survive;
+				int* nvertices = new int[ncurves];
+				
+				int npoints = 0;
+				int nwidths = 0;
+				int acc = 0;
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						nvertices[acc] = nsegbuf[i] + 1;
+						npoints += nvertices[acc];
+						nwidths += nvertices[acc];
+						acc++;
+					}
+				}
+				
+				float* widths = new float[nwidths];
+				acc = 0;
+				float rootWidth = g_attrib[3];
+				float tipWidth = g_attrib[4];
+				
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
 						
-						ddv = pcur - ppre;
-						ddv.normalize();
-						ddv *= dmean.length();
-						
-						if(threshold > 0.5) {
-							vertices[acc] = ppre + ddv*0.5f;
+						float dwidth = (tipWidth - rootWidth)/nsegbuf[i] ;
+						for(unsigned j = 0; j<= nsegbuf[i]; j++) {
+							widths[acc] = (rootWidth + dwidth*j)*widthScale;
 							acc++;
 						}
-
-						ppre += ddv;
+						
 					}
-					vertices[acc] = ppre;
-					acc++;
-					vertices[acc] = ppre;
-					acc++;
-					vertices[acc] = ppre;
-					acc++;
 				}
+				
+				float* coord_s = new float[ncurves];
+				float* coord_t = new float[ncurves];
+				float* mutant = new float[ncurves];
+				acc = 0;
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						coord_s[acc] = ddice[i].coords;
+						coord_t[acc] = ddice[i].coordt;
+						
+						g_seed  = seed*53 + i*5;
+						mutant[acc] = fnoi.randfint( g_seed );
+						
+						acc++;
+					}
+				}
+				
+				XYZ* vertices = new XYZ[npoints];
+				
+				XYZ ppre, pcur, pt[3], q, dv[3], dmean, ddv, pcen, sidewind;
+				int num_seg;
+				acc = 0;
+				for(unsigned i=0; i<n_samp; i++) {
+					if(isurvive[i]) {
+						g_seed  = seed*19 + i*67;
+						ppre = pbuf[i];
+						
+						num_seg = nsegbuf[i];
+						float dparam = 1.f/(float)num_seg;
+						float param;
+						for(int j = 0; j< num_seg; j++) {
+							param = dparam*j;
+							getPatParam(pt[0], param, nsegs[0], cvs_a);
+							getPatParam(pt[1], param, nsegs[1], cvs_b);
+							getPatParam(pt[2], param, nsegs[2], cvs_c);
+							param += dparam;
+							getPatParam(q, param, nsegs[0], cvs_a);
+							dv[0] = q - pt[0];
+							pcen = q;
+							getPatParam(q, param, nsegs[1], cvs_b);
+							dv[1] = q - pt[1];
+							pcen += q;
+							getPatParam(q, param, nsegs[2], cvs_c);
+							dv[2] = q - pt[2];
+							pcen += q;
+							pcen /= 3.f;
+							
+							vertices[acc] = ppre;
+							acc++;
+							
+							pcur = pt[0] * ddice[i].alpha + pt[1] * ddice[i].beta + pt[2] * ddice[i].gamma;
+							
+							dmean = dv[0] * ddice[i].alpha + dv[1] * ddice[i].beta + dv[2] * ddice[i].gamma;
+							dmean.setLength(dv[0].length());
+							
+							
+							noi = 1.f + (fnoi.randfint( g_seed )-0.5)*g_attrib[0]; g_seed++;
+							dmean *= noi;
+							pcur += dmean;
+							
+							pcur += (pcen - pcur)*g_attrib[2]*j/num_seg;
+							
+							noi = fnoi.randfint( g_seed ); g_seed++;
+							if(noi<0.33) sidewind = pt[0] - pt[1];
+							else if(noi<0.66) sidewind = pt[1] - pt[2];
+							else sidewind = pt[2] - pt[0];
+							sidewind.setLength(dv[0].length());
+							
+							noi = (fnoi.randfint( g_seed )-0.5)*2*g_attrib[1]*param; g_seed++;
+
+							pcur += sidewind*noi*(1 - g_attrib[2]*j/num_seg);
+							
+							ddv = pcur - ppre;
+							ddv.normalize();
+							ddv *= dmean.length();
+
+							ppre += ddv;
+						}
+						vertices[acc] = ppre;
+						acc++;
+					}
+				}
+				
+				delete[] pbuf;
+				
+				RiCurves("linear", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, 
+				"uniform float s", (RtFloat*)coord_s, "uniform float t", (RtFloat*)coord_t, "uniform float mutant", (RtFloat*)mutant,
+				RI_NULL); 
+				
+				delete[] nsegbuf;
+				delete[] nvertices;
+				delete[] vertices;
+				delete[] widths;
+				delete[] coord_s;
+				delete[] coord_t;
+				delete[] mutant;
 			}
-			
-			delete[] pbuf;
-			
-			RiCurves("cubic", (RtInt)ncurves, (RtInt*)nvertices, "nonperiodic", "P", (RtPoint*)vertices, "width", (RtPointer)widths, 
-			"uniform float s", (RtFloat*)coord_s, "uniform float t", (RtFloat*)coord_t, "uniform float mutant", (RtFloat*)mutant,
-			RI_NULL); 
-			
-			delete[] nsegbuf;
-			delete[] nvertices;
-			delete[] vertices;
-			delete[] widths;
-			delete[] coord_s;
-			delete[] coord_t;
-			delete[] mutant;
 
 		}
 		delete[] isurvive;

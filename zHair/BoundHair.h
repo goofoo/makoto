@@ -19,7 +19,7 @@ public:
 	void release();
 	
 	void calculateBBox(float *box) const;
-	void emit(const float* g_attrib) const;
+	void emit(const float* g_attrib, float detail) const;
 	void emitGuider() const;
 	void emitBBox() const;
 	
