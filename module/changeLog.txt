@@ -1,3 +1,7 @@
+28/08/09
+
+Fix hidden hair removal error
+
 27/08/09
 
 Hair rigen and procedural calculate hidden hair based on camera matrix got from RIBContext. No need save depth map any more.

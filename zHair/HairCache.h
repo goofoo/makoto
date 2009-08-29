@@ -13,6 +13,8 @@
 #include "BindTriangle.h"
 #include <string>
 
+struct ddensmap;
+
 struct Dguide
 {
 	short num_seg;
@@ -90,6 +92,7 @@ public:
 	float getEpsilon(float& ndice) const;
 	void lookupMeanDisplace(unsigned& idx, float& fract, XYZ& disp) const;
 	void lookupMeanPos(unsigned& idx, float& fract, XYZ& p0, XYZ& p1) const;
+	void setDensity(ddensmap& map) const;
 	
 private:
 	DiceParam* ddice;

@@ -5,6 +5,8 @@
 
 #include "HairCache.h"
 
+struct ddensmap;
+
 class RHair {
 public:
 	RHair(std::string& parameter);
@@ -29,6 +31,7 @@ public:
 	void meanDisplace(unsigned& idx, XYZ& disp) const;
 	void simplifyDOF(unsigned& idx, float& depth, float& val) const;
 	void simplifyMotion(unsigned& idx, float& val) const;
+	void setDensity(ddensmap& map) const;
 	
 	HairCache* pHair;
 	char has_densmap;

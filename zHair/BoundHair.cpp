@@ -3,13 +3,13 @@
 #include "../shared/FNoise.h"
 #include "BindTriangle.h"
 
-BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0),/*velocities(0), shutters(0),*/densities(0)
+BoundHair::BoundHair():cvs_a(0), cvs_b(0), cvs_c(0)/*,velocities(0), shutters(0),densities(0)*/
 {
 	points = new XYZ[3]; 
 	bindPoints = new XYZ[3];
 	ucoord = new float[3];
 	vcoord = new float[3];
-	attrib = new float[5];
+	//attrib = new float[5];
 }
 
 void BoundHair::calculateBBox(float *box) const
@@ -69,7 +69,7 @@ void BoundHair::calculateBBox(float *box) const
 	box[5] += mlv;
 }
 
-void BoundHair::emit() const
+void BoundHair::emit(const float* g_attrib) const
 {
 	float widthScale = 1.0, threshold = 1.0, realthreshold;
 	threshold = distantSimp;
@@ -108,7 +108,14 @@ void BoundHair::emit() const
 			noi = fnoi.randfint( g_seed );
 			
 			realthreshold = threshold;
-			if(densities) realthreshold *= densities[ddice[i].id0]*ddice[i].alpha +  densities[ddice[i].id1]*ddice[i].beta + densities[ddice[i].id2]*ddice[i].gamma;
+			//if(densities) realthreshold *= densities[ddice[i].id0]*ddice[i].alpha +  densities[ddice[i].id1]*ddice[i].beta + densities[ddice[i].id2]*ddice[i].gamma;
+			if(!densmap.isNil) {
+				
+				int it = (densmap.maph-1)*(1.f-ddice[i].coordt);
+				int is = (densmap.mapw-1)*ddice[i].coords;
+				realthreshold *=densmap.data[it*densmap.mapw + is];
+
+			}
 			
 			if(noi < realthreshold) {
 				isurvive[i] = 1;
@@ -144,8 +151,8 @@ void BoundHair::emit() const
 			
 			float* widths = new float[nwidths];
 			acc = 0;
-			float rootWidth = attrib[3];
-			float tipWidth = attrib[4];
+			float rootWidth = g_attrib[3];
+			float tipWidth = g_attrib[4];
 			
 			for(unsigned i=0; i<n_samp; i++) {
 				if(isurvive[i]) {
@@ -227,11 +234,11 @@ void BoundHair::emit() const
 						dmean.setLength(dv[0].length());
 						
 						
-						noi = 1.f + (fnoi.randfint( g_seed )-0.5)*attrib[0]; g_seed++;
+						noi = 1.f + (fnoi.randfint( g_seed )-0.5)*g_attrib[0]; g_seed++;
 						dmean *= noi;
 						pcur += dmean;
 						
-						pcur += (pcen - pcur)*attrib[2]*j/num_seg;
+						pcur += (pcen - pcur)*g_attrib[2]*j/num_seg;
 						
 						noi = fnoi.randfint( g_seed ); g_seed++;
 						if(noi<0.33) sidewind = pt[0] - pt[1];
@@ -239,9 +246,9 @@ void BoundHair::emit() const
 						else sidewind = pt[2] - pt[0];
 						sidewind.setLength(dv[0].length());
 						
-						noi = (fnoi.randfint( g_seed )-0.5)*2*attrib[1]*param; g_seed++;
+						noi = (fnoi.randfint( g_seed )-0.5)*2*g_attrib[1]*param; g_seed++;
 
-						pcur += sidewind*noi*(1 - attrib[2]*j/num_seg);
+						pcur += sidewind*noi*(1 - g_attrib[2]*j/num_seg);
 						
 						ddv = pcur - ppre;
 						ddv.normalize();
@@ -390,10 +397,10 @@ void BoundHair::release()
 	delete[] bindPoints;
 	delete[] ucoord;
 	delete[] vcoord;
-	delete[] attrib;
+	//delete[] attrib;
 	//if(velocities) delete[] velocities;
 	//if(shutters) delete[] shutters;
-	if(densities) delete[] densities;
+	//if(densities) delete[] densities;
 }
 
 void BoundHair::getPatParam(XYZ& p, const float& param, const unsigned& nseg, const XYZ* cvs) const

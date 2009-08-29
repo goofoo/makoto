@@ -11,6 +11,7 @@
 #include "../shared/QuickSort.h"
 #include "../shared/zFnEXR.h"
 #include "../shared/zGlobal.h"
+#include "BoundHair.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -669,5 +670,13 @@ void HairCache::lookupDensity(unsigned& idx, float* densities) const
 	it = (densmap_h-1)*(1.f-v);
 	is = (densmap_w-1)*u;
 	densities[2] = pDensmap[it*densmap_w + is];
+}
+
+void HairCache::setDensity(ddensmap& map) const
+{
+	map.mapw = densmap_w;
+	map.maph = densmap_h;
+	map.data = new float[densmap_w*densmap_h];
+	for(int i=0; i<densmap_w*densmap_h; i++) map.data[i] = pDensmap[i];
 }
 //~:

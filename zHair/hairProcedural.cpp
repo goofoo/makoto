@@ -11,6 +11,8 @@
 #define export
 #endif
 
+float glb_attrib[5];
+
 extern "C" {
     export RtPointer ConvertParameters(RtString paramstr);
     export RtVoid Subdivide(RtPointer data, RtFloat detail);
@@ -33,6 +35,11 @@ Subdivide(RtPointer data, RtFloat detail)
 {
 	RHair* pdata = static_cast<RHair*>(data);
 	pdata->init();
+	
+	ddensmap fmap;
+	fmap.isNil = 1;
+	
+	pdata->setDensity(fmap);
 	
 	if(pdata->isShadow() ==0) pdata->setDepthPersp();
 	else pdata->setDepthOrtho();
@@ -71,12 +78,15 @@ Subdivide(RtPointer data, RtFloat detail)
 		bound[4] = box[4];
 		bound[5] = box[5];
 		
-		pdata->setAttrib(param->attrib);
-
+		//pdata->setAttrib(param->attrib);
+		pdata->setAttrib(glb_attrib);
+/*
 		if(pdata->has_densmap) {
 			param->densities = new float[3];
 			pdata->pHair->lookupDensity(i, param->densities);
 		}
+*/		
+		param->densmap = fmap;
 		
 		if(pdata->isShadow() == 1) RiProcedural((RtPointer)param, bound, SubdivideReal, FreeReal);
 		else {
@@ -124,15 +134,16 @@ SubdivideReal(RtPointer data, RtFloat detail)
 		if(detail <1000) param->distantSimp = 0.2;
 		else param->distantSimp = 1.0 - 0.8*(9000 - detail)/8000;
 	}
-	param->emit();
+	param->emit(glb_attrib);
 	//printf(" dtl: %f",(float)detail);
 }
 
 export RtVoid
 SubdivideReal1(RtPointer data, RtFloat detail)
 {
+	//printf("a0: %f ", glb_attrib[0]);
 	BoundHair* param = static_cast<BoundHair*>(data);
-	param->emit();
+	param->emit(glb_attrib);
 }
 
 export RtVoid

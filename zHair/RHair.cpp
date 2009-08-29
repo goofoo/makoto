@@ -2,6 +2,7 @@
 #include "../shared/zGlobal.h"
 #include "../shared/FXMLScene.h"
 #include "../shared/zFnEXR.h"
+#include "BoundHair.h"
 using namespace std;
 
 #define DEPTHMAP_W 1024
@@ -270,6 +271,14 @@ void RHair::simplifyMotion(unsigned& idx, float& val) const
 		fract = (a-2)/18;
 		if(fract > 1) fract = 1;
 		val -= val*0.5*fract*fract;
+	}
+}
+
+void RHair::setDensity(ddensmap& map) const
+{
+	if(has_densmap) {
+		map.isNil = 0;
+		pHair->setDensity(map);
 	}
 }
 //:~
