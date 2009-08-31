@@ -17,6 +17,7 @@ copy .\slim\ylset.slim D:\wamp\www\ztools\slim
 copy .\slim\z_colors_prt.slim D:\wamp\www\ztools\slim
 copy .\slim\z_lights_hdr.slim D:\wamp\www\ztools\slim
 copy .\slim\include\zprt.dll D:\wamp\www\ztools\slim\include
+copy .\slim\include\zdump.dll D:\wamp\www\ztools\slim\include
 copy .\plug-ins\meshCache.mll D:\wamp\www\ztools\plug-ins
 copy .\plug-ins\meshCache2008.mll D:\wamp\www\ztools\plug-ins
 copy .\plug-ins\HDREnvironmentViewer70.mll D:\wamp\www\ztools\plug-ins
