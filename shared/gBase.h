@@ -58,6 +58,7 @@ public :
 	static void drawPointArray(int length, float exposure, float* data);
 	static void drawSprite(XYZ& center, float width, MATRIX44F& space);
 	static void drawBox(const float xmin, const float xmax, const float ymin, const float ymax, const float zmin, const float zmax);
+	static void drawLineCircleAt(const XYZ& pos, const XYZ& facing, const float& radius);
 	
 };
 #endif
