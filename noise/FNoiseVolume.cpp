@@ -100,3 +100,26 @@ char FNoiseVolume::isInViewFrustum(unsigned id) const
 	if(pp.y - global_size> top || pp.y + global_size< -top) return 0;
 	return 1;
 }
+
+void FNoiseVolume::getBBox(XYZ& bcenter,float& bsize)
+{
+	XYZ bbmin(10000000);
+	XYZ bbmax(-10000000);
+	for(unsigned i=0; i<num_bac; i++)
+	{
+		if(data[i].pos.x < bbmin.x) bbmin.x = data[i].pos.x;
+		if(data[i].pos.y < bbmin.y) bbmin.y = data[i].pos.y;
+		if(data[i].pos.z < bbmin.z) bbmin.z = data[i].pos.z;
+		if(data[i].pos.x > bbmax.x) bbmax.x = data[i].pos.x;
+		if(data[i].pos.y > bbmax.y) bbmax.y = data[i].pos.y;
+		if(data[i].pos.z > bbmax.z) bbmax.z = data[i].pos.z;
+
+		bcenter = (bbmin + bbmax)/2;
+	
+	    bsize = bbmax.x - bcenter.x;
+	    float ts = bbmax.y - bcenter.y;
+	    if(ts > bsize) bsize = ts;
+	    ts = bbmax.z - bcenter.z;
+	    if(ts > bsize) bsize = ts;
+	}
+}

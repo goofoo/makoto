@@ -55,6 +55,7 @@ public:
 	static	MObject		ahapeture;
 	static	MObject		avapeture;
 	static	MObject		afocallength;
+	static	MObject		amaxage;
     
     // Output
     static  MObject aoutput;
@@ -64,7 +65,7 @@ public:
 private:
 	unsigned int m_num_fish, m_num_bone;
 
-	float m_fish_length;
+	float m_fish_length, maxage;
 	
 	FNoiseVolume* f_bac;
 };

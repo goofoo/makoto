@@ -34,6 +34,7 @@ public:
 	float getGlobalSize() const{return global_size;}
 	float getAgeById(unsigned id) const {return data[id].age;}
 	void getSideAndUpById(unsigned id, XYZ& side, XYZ& up) const;
+	void getBBox(XYZ& center,float& size);
 	char isInViewFrustum(unsigned id) const;
 private:
 	MATRIX44F eyespace, eyespaceinv;

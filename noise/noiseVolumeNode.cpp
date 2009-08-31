@@ -38,6 +38,7 @@ MObject noiseVolumeNode::afar;
 MObject noiseVolumeNode::ahapeture;
 MObject noiseVolumeNode::avapeture;
 MObject noiseVolumeNode::afocallength;
+MObject noiseVolumeNode::amaxage;
 
 noiseVolumeNode::noiseVolumeNode():m_num_fish(0), m_num_bone(20)
 {
@@ -85,6 +86,7 @@ MStatus noiseVolumeNode::compute( const MPlug& plug, MDataBlock& data )
 		h_apeture = data.inputValue(ahapeture, &status).asFloat();
 		v_apeture = data.inputValue(avapeture, &status).asFloat();
 		fl = data.inputValue(afocallength, &status).asFloat();
+		maxage = data.inputValue(amaxage, &status).asFloat();
 		
 		f_bac->updateCamera(nearClip, farClip, h_apeture, v_apeture, fl);
 		
@@ -198,6 +200,11 @@ MStatus noiseVolumeNode::initialize()
 	nAttr.setStorable(false);
 	nAttr.setConnectable(true);
 	addAttribute( afocallength );
+
+	amaxage= nAttr.create( "maxage", "ma", MFnNumericData::kFloat, 10.0 );
+	nAttr.setStorable(false);
+	nAttr.setConnectable(true);
+	addAttribute( amaxage );
 	
 	attributeAffects( amatrix, aoutput );
 	attributeAffects( anear, aoutput );
@@ -207,6 +214,7 @@ MStatus noiseVolumeNode::initialize()
 	attributeAffects( afocallength, aoutput );
 	attributeAffects( atime, aoutput );
 	attributeAffects( aFrequency, aoutput );
+	attributeAffects( amaxage, aoutput );
 	
 	return MS::kSuccess;
 }
@@ -249,8 +257,6 @@ void noiseVolumeNode::draw( M3dView & view, const MDagPath & /*path*/,
 	XYZ facing;
 	facing.x = viewDir[0];facing.y = viewDir[1];facing.z = viewDir[2];
 
-	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-	glBegin(GL_POLYGON);
 	XYZ xvec, yvec, vert;
 	size = f_bac->getGlobalSize();
 	for(unsigned i=0; i<num_ptc; i++)
@@ -258,17 +264,49 @@ void noiseVolumeNode::draw( M3dView & view, const MDagPath & /*path*/,
 		if(f_bac->isInViewFrustum(i))
 		{
 			cen =  f_bac->getPositionById(i);
-			double age= f_bac->getAgeById(i);
-			while(age>1)
-			{
-				age = age-1;
-			}
-			glColor3f(age,age,age);
+			double age= f_bac->getAgeById(i)/maxage;	
+			glColor3f(1-age,age,0.0);
 			gBase::drawLineCircleAt(cen,facing,size);
 		}
 	}
-	glEnd();
 	
+	glPopAttrib();
+	//XYZ center = f_bac->getBCenter();
+	//float boxsize = f_bac->getBSize();
+	//cout<<boxsize<<"  "<<center.x<<"  "<<center.y<<"  "<<center.z<<endl;
+    XYZ center;
+	float boxsize;
+	f_bac->getBBox(center,boxsize);
+	cout<<boxsize<<"  "<<center.x<<"  "<<center.y<<"  "<<center.z<<endl;
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glBegin(GL_LINES);
+		glVertex3f(center.x - boxsize,center.y - boxsize,center.z - boxsize );
+	    glVertex3f(center.x + boxsize,center.y - boxsize,center.z - boxsize );
+		glVertex3f(center.x + boxsize,center.y - boxsize,center.z - boxsize );
+		glVertex3f(center.x + boxsize,center.y + boxsize,center.z - boxsize );
+		glVertex3f(center.x + boxsize,center.y + boxsize,center.z - boxsize );
+		glVertex3f(center.x - boxsize,center.y + boxsize,center.z - boxsize );
+		glVertex3f(center.x - boxsize,center.y + boxsize,center.z - boxsize );
+		glVertex3f(center.x - boxsize,center.y - boxsize,center.z - boxsize );
+
+		glVertex3f(center.x - boxsize,center.y - boxsize,center.z + boxsize );
+	    glVertex3f(center.x + boxsize,center.y - boxsize,center.z + boxsize );
+		glVertex3f(center.x + boxsize,center.y - boxsize,center.z + boxsize );
+		glVertex3f(center.x + boxsize,center.y + boxsize,center.z + boxsize );
+		glVertex3f(center.x + boxsize,center.y + boxsize,center.z + boxsize );
+		glVertex3f(center.x - boxsize,center.y + boxsize,center.z + boxsize );
+		glVertex3f(center.x - boxsize,center.y + boxsize,center.z + boxsize );
+		glVertex3f(center.x - boxsize,center.y - boxsize,center.z + boxsize );
+
+		glVertex3f(center.x - boxsize,center.y - boxsize,center.z - boxsize );
+	    glVertex3f(center.x - boxsize,center.y - boxsize,center.z + boxsize );
+		glVertex3f(center.x + boxsize,center.y - boxsize,center.z - boxsize );
+		glVertex3f(center.x + boxsize,center.y - boxsize,center.z + boxsize );
+		glVertex3f(center.x + boxsize,center.y + boxsize,center.z - boxsize );
+		glVertex3f(center.x + boxsize,center.y + boxsize,center.z + boxsize );
+		glVertex3f(center.x - boxsize,center.y + boxsize,center.z - boxsize );
+		glVertex3f(center.x - boxsize,center.y + boxsize,center.z + boxsize );
+	glEnd();
 	glPopAttrib();
 	view.endGL();
 }
