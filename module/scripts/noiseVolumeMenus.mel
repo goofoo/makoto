@@ -1,0 +1,128 @@
+global proc noiseVolumeVizRemoveMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the noiseVolumeViz menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if noiseVolumeViz menu exists, delete it first.
+        else {
+            if(`menuItem -exists noiseVolumeVizItems` ) deleteUI noiseVolumeVizItems;
+        }
+    }
+}
+
+global proc noiseVolumeVizCreateMenus()
+{
+    global string $gMainWindow;
+    if ($gMainWindow != "") {
+        global string $gRenderingMenus[];
+        int $menuIndex = -1;
+        int $menuSize = `size $gRenderingMenus`;
+        setParent $gMainWindow;
+
+        // iterate through the Rendering menu to find the noiseVolumeViz menu.
+        for ($i = 0; $i < $menuSize; $i++) {
+            string $m = `match "zTools" $gRenderingMenus[$i]`;
+            if ( $m != "" ) {
+                $menuIndex = $i;
+                break;
+            }
+        }
+       
+        // if not found, create it.
+        if ($menuIndex == -1) {
+            $gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+        }
+       
+        // if noiseVolumeViz menu exists, seach the menu item.
+        else {
+            if(`menuItem -exists noiseVolumeVizItems` ) deleteUI noiseVolumeVizItems;
+        }
+       
+        // append menu items
+        menuItem -p zTools -l "noiseVolume" -subMenu true noiseVolumeVizItems;
+            menuItem -l "Create Viz" -c noiseVolumeSetupWnd;
+            setParent -menu ..;
+    }
+}
+
+global proc noiseVolumeSetup()
+{
+	string $log;
+	
+	string $viz = `createNode noiseVolumeViz`;
+	setAttr -type "string" ($viz+".cacheName") (`textFieldGrp -q -text noiseVolumegrpcachename`);
+
+	connectAttr -f time1.outTime ($viz+".currentTime");
+	
+	string $dummy = `createNode -n dummy transform`;
+	connectAttr -f ($viz+".output") ($dummy+".translateY");
+	playbackOptions -min `floatFieldGrp -q -v1 noiseVolumegrprange` -max `floatFieldGrp -q -v2 noiseVolumegrprange`;
+	
+	string $cams[] = `ls -ca`;
+	int $atc = `optionMenuGrp -q -sl noiseVolumegrpeye`;
+	connectAttr -f ($cams[$atc-1]+".worldMatrix[0]") ($viz+".cameraMatrix");
+	select -r $cams[$atc-1];
+	string $cam[] = `pickWalk -d down`;
+	connectAttr -f ($cam[0] +".nearClipPlane") ($viz+".nearClip");
+	connectAttr -f ($cam[0] +".farClipPlane") ($viz+".farClip");
+	connectAttr -f ($cam[0] +".focalLength") ($viz+".focalLength"); 
+	connectAttr -f ($cam[0] +".horizontalFilmAperture") ($viz+".horizontalFilmAperture");
+	connectAttr -f ($cam[0] +".verticalFilmAperture") ($viz+".verticalFilmAperture");
+}
+
+global proc noiseVolumeSetupWnd()
+{
+	
+//If such a window already exists, destory it.
+if ( (`window -exists wndnoiseVolumeSetup`) == true ) deleteUI wndnoiseVolumeSetup;
+
+//Create the window.
+window -title "noiseVolume AI Cache Reader" -wh 400 320 wndnoiseVolumeSetup;
+columnLayout -adjustableColumn true; //Start of the column.
+text -l "";
+text -l ("Current project: "+`workspace -q -fn`);
+text -l "";
+separator -style "single";
+string $cams[] = `ls -ca`;
+	string $ac;
+	optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 80 noiseVolumegrpeye;
+		for($ac in $cams) menuItem -label `listRelatives -p $ac`;
+	setParent..;
+
+textFieldButtonGrp -cw 1 100 -cw 2 190 -bl "..." -bc "noiseVolume_loadPDC" -label "Cache Name" -text  "" noiseVolumegrpcachename;
+floatFieldGrp -cw 1 100 -label "Start/End" -nf 2 -v1 1 -v2 200 noiseVolumegrprange;
+separator -style "single";
+button -l "Import" -c "noiseVolumeSetup";
+
+//Show it.
+showWindow wndnoiseVolumeSetup; 
+}
+
+global proc noiseVolume_loadPDC()
+{
+	string $proj = `workspace -q -rd`;
+	string $path = `fileDialog -dm ($proj+"particles/*.pdc")`;
+	
+	string $buffer[];
+	$numTokens = `tokenize $path "." $buffer`;
+	
+	textFieldButtonGrp -e -text $buffer[0] noiseVolumegrpcachename;
+}

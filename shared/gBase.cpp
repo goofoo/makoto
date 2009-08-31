@@ -1031,4 +1031,69 @@ void gBase::drawLocator(const XYZ& origin)
 		glVertex3f(origin.x, origin.y, origin.z-1);
 	glEnd();
 }
+
+void gBase::drawLineCircleAt(const XYZ& pos, const XYZ& facing, const float& r)
+{
+	XYZ tang, binor;
+	facing.perpendicular(tang);
+	binor = facing^tang; binor.normalize();
+		
+	MATRIX44F mat;
+	//mat.setIdentity();
+	mat.setOrientations(tang, binor, facing);
+	mat.setTranslation(pos);
+	
+	//0
+	XYZ p1(r,0,0);
+	//30
+	XYZ p3(0.866f*r, 0.5f*r, 0);
+	//60
+	XYZ p5(0.5f*r, 0.866f*r, 0);
+	//90
+	XYZ p7(0, r, 0);
+	//120
+	XYZ p9(-0.5f*r, 0.866f*r, 0);
+	//150
+	XYZ p11(-0.866f*r, 0.5f*r,0);
+	//180
+	XYZ p13(-r, 0, 0);
+	//210
+	XYZ p15(-0.866f*r, -0.5f*r,0);
+	//240
+	XYZ p17(-0.5f*r, -0.866f*r,0);
+	//270
+	XYZ p19(0, -r, 0);
+	//300
+	XYZ p21(0.5f*r, -0.866f*r, 0);
+	//330
+	XYZ p23(0.866f*r, -0.5f*r, 0);
+	
+	mat.transform(p1);
+	mat.transform(p3);
+	mat.transform(p5);
+	mat.transform(p7);
+	mat.transform(p9);
+	mat.transform(p11);
+	mat.transform(p13);
+	mat.transform(p15);
+	mat.transform(p17);
+	mat.transform(p19);
+	mat.transform(p21);
+	mat.transform(p23);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex3f(p1.x, p1.y, p1.z);
+	glVertex3f(p3.x, p3.y, p3.z);
+	glVertex3f(p5.x, p5.y, p5.z);
+	glVertex3f(p7.x, p7.y, p7.z);
+	glVertex3f(p9.x, p9.y, p9.z);
+	glVertex3f(p11.x, p11.y, p11.z);
+	glVertex3f(p13.x, p13.y, p13.z);
+	glVertex3f(p15.x, p15.y, p15.z);
+	glVertex3f(p17.x, p17.y, p17.z);
+	glVertex3f(p19.x, p19.y, p19.z);
+	glVertex3f(p21.x, p21.y, p21.z);
+	glVertex3f(p23.x, p23.y, p23.z);
+	glEnd();
+}
 //~:
