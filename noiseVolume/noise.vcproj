@@ -105,11 +105,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
-				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaFX.lib Foundation.lib OpenMayaUI.lib opengl32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib OpenMayaFX.lib Foundation.lib OpenMayaUI.lib"
 				OutputFile="..\module\plug-ins\noiseVolume.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(MAYA_LOCATION70)\lib"
+				AdditionalLibraryDirectories="D:\local\glut;&quot;$(MAYA_LOCATION70)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/shellNode.pdb"
 				SubSystem="2"
