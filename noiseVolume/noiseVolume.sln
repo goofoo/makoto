@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "noiseVolume", "noise.vcproj", "{DBAF6940-FAC8-4001-8F7D-32DA732573DD}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+		ReleaseDebug = ReleaseDebug
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{DBAF6940-FAC8-4001-8F7D-32DA732573DD}.Debug.ActiveCfg = Debug|Win32
+		{DBAF6940-FAC8-4001-8F7D-32DA732573DD}.Debug.Build.0 = Debug|Win32
+		{DBAF6940-FAC8-4001-8F7D-32DA732573DD}.Release.ActiveCfg = Release|Win32
+		{DBAF6940-FAC8-4001-8F7D-32DA732573DD}.Release.Build.0 = Release|Win32
+		{DBAF6940-FAC8-4001-8F7D-32DA732573DD}.ReleaseDebug.ActiveCfg = ReleaseDebug|Win32
+		{DBAF6940-FAC8-4001-8F7D-32DA732573DD}.ReleaseDebug.Build.0 = ReleaseDebug|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
