@@ -202,46 +202,6 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7FB3E2C91044121A00024EE8</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>FXMLMesh.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FB3E2CA1044121A00024EE8</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>FXMLMesh.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FB3E2CC1044121A00024EE8</string>
-						<key>history</key>
-						<array>
-							<string>7FB3E2CB1044121A00024EE8</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {598, 559}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>620 147 598 600 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
 				<string>7FB3E2CD1044121A00024EE8</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>FXMLMesh.h</string>
@@ -256,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FB3E2D11044121A00024EE8</string>
+						<string>7FB3E2DB1044300900024EE8</string>
 						<key>history</key>
 						<array>
-							<string>7FB3E2CF1044121A00024EE8</string>
+							<string>7FB3E2D11044121A00024EE8</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -296,10 +256,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FB3E2D31044121A00024EE8</string>
+						<string>7FB3E2DD1044300900024EE8</string>
 						<key>history</key>
 						<array>
-							<string>7FB3E2871043DE4E00024EE8</string>
+							<string>7FB3E2D31044121A00024EE8</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -398,13 +358,11 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>8</integer>
-									<integer>2</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 93}, {186, 294}}</string>
+							<string>{{0, 0}, {186, 294}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -423,7 +381,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>530 180 656 353 0 0 1280 778 </string>
+						<string>246 224 656 353 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -460,7 +418,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {448, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>530 180 656 353 0 0 1280 778 </string>
+								<string>246 224 656 353 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -482,7 +440,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {448, 307}}</string>
 								<key>RubberWindowFrame</key>
-								<string>530 180 656 353 0 0 1280 778 </string>
+								<string>246 224 656 353 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -506,9 +464,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7FB3E2791043DE4E00024EE8</string>
+				<string>7FB3E2D91044300900024EE8</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7FB3E27A1043DE4E00024EE8</string>
+				<string>7FB3E2DA1044300900024EE8</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -642,14 +600,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7FE58BA50FB61F9000187112</string>
+		<string>7FB3E2C91044121A00024EE8</string>
 		<string>7FB3E2851043DE4E00024EE8</string>
 		<string>7FB3E2CD1044121A00024EE8</string>
-		<string>7FB3E2C91044121A00024EE8</string>
 		<string>/Users/jianzhang/Documents/plankton/depthMap/zdepthMap.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>530 180 656 353 0 0 1280 778 </string>
+	<string>246 224 656 353 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>

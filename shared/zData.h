@@ -381,6 +381,12 @@ struct sssSample
 	float length;
 };
 
+struct RGRID
+{
+	XYZ pos, nor, col;
+	float area;
+};
+
 struct pcdSample
 {
 	pcdSample() { area = 0.0f;}

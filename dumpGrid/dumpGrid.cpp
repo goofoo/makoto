@@ -10,10 +10,9 @@
 #include "../shared/zMath.h"
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include "../shared/zString.h"
-#define BLOCKSIZE 955368
 using namespace std;
+
+#define BLOCKSIZE 955368
 
 class CDumpData {
 
@@ -140,11 +139,7 @@ extern "C" SHADEOP(dumpData_f)
 	
 	CDumpData *db = ( CDumpData *) initdata;
 	
-	if(db->isInitialized() != 1) 
-	{
-		windowspath(file_name);
-		db->initialize(file_name);
-	}
+	if(db->isInitialized() != 1) db->initialize(file_name);
 
 	db->addpoint(in_p, in_n, in_c, *in_area);
 	

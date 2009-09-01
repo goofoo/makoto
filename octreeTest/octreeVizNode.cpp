@@ -1,7 +1,6 @@
 #include "octreeVizNode.h"
 #include "../shared/zWorks.h"
 #include "../shared/gBase.h"
-#include <maya/MItMeshVertex.h>
 
 MTypeId octreeVizNode::id( 0x0003508 );
 MObject octreeVizNode::afuzz;
@@ -24,13 +23,14 @@ MObject octreeVizNode::adefinepositionX;
 MObject octreeVizNode::adefinepositionY;
 MObject octreeVizNode::adefinepositionZ;
 
-octreeVizNode::octreeVizNode():raw_data(0),num_raw_data(0),tree(0),num_raw_area_data(0),raw_area_data(0)
+octreeVizNode::octreeVizNode():m_pTex(0)
 {
+	m_gridname = "nil";
 }
 
 octreeVizNode::~octreeVizNode() 
 {
-	if(tree) delete tree;
+	if(m_pTex) delete m_pTex;
 }
 
 MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
@@ -38,55 +38,7 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 	MStatus status;
 	if(plug == aoutput)
 	{
-		MObject thisNode = thisMObject();
-	    MFnDagNode dagFn(thisNode);
-	    short lv;
-		XYZ position;
-		float area;
-		MPlug PlugLv = dagFn.findPlug( alevel, &status);
-	    PlugLv.getValue( lv ); 
-		MPlug PlugPoX = dagFn.findPlug( adefinepositionX, &status);
-		PlugPoX.getValue(position.x);
-		MPlug PlugPoY = dagFn.findPlug( adefinepositionY, &status);
-		PlugPoY.getValue(position.y);
-		MPlug PlugPoZ = dagFn.findPlug( adefinepositionZ, &status);
-		PlugPoZ.getValue(position.z);
-		MPlug PlugAar = dagFn.findPlug( aarea, &status);
-		PlugAar.getValue(area);
-		MPlug PlugAco = dagFn.findPlug( acount, &status);
-		PlugAco.getValue(num_raw_area_data);
-			
-		MArrayDataHandle hArray = data.inputArrayValue(aguide);
-		int n_guide = hArray.elementCount();
-		MObjectArray guidelist;
-		for(int i=0; i<n_guide; i++) {
-			guidelist.append(hArray.inputValue().asMesh());
-			hArray.next();
-		}
-		
-		unsigned num_vert = 0;
-		for(unsigned iguide=0; iguide<guidelist.length(); iguide++) {
-			MFnMesh meshFn(guidelist[iguide], &status);
-			num_vert += meshFn.numVertices();
-		}
-		
-		zDisplayFloat(num_vert);
-		
-		if(raw_data) delete[] raw_data;
-		
-		raw_data = new XYZ[num_vert];
-		
-		num_raw_data = 0;
-		for(unsigned iguide=0; iguide<guidelist.length(); iguide++) {
-			MItMeshVertex vertIter(guidelist[iguide], &status);
-			
-			for(; !vertIter.isDone(); vertIter.next()) {
-				MPoint vert = vertIter.position ( MSpace::kObject);
-				raw_data[num_raw_data] = XYZ(vert.x, vert.y, vert.z);
-				num_raw_data++;
-			}
-		}
-		
+		/*
 		XYZ rootCenter;
 		float rootSize;
 		OcTree::getBBox(raw_data, num_raw_data, rootCenter, rootSize);
@@ -97,7 +49,16 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		if(raw_area_data||tree) delete[] raw_area_data;
 		raw_area_data = new XYZ[num_raw_area_data];tree->acount = 0;
-		tree->search(position,area,raw_data,raw_area_data,num_raw_area_data);		
+		tree->search(position,area,raw_data,raw_area_data,num_raw_area_data);
+		*/
+		MString sname = data.inputValue(aHDRName).asString();	
+		if(sname != m_gridname)	{
+			m_gridname = sname;
+			if(m_pTex) delete m_pTex;
+			
+			m_pTex = new z3dtexture;
+			if(m_pTex->loadGrid(m_gridname.asChar())) m_pTex->constructTree();
+		}
 		data.setClean(plug);
 	}
 	return MS::kUnknownParameter;
@@ -111,28 +72,17 @@ void octreeVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
 	glPointSize(3);
-	if(num_raw_data > 0 && raw_data) {
-		glBegin(GL_POINTS);
-		glColor3f(1,0,0);
-		for(unsigned i=0; i<num_raw_data; i++) {
-			
-			glVertex3f(raw_data[i].x, raw_data[i].y, raw_data[i].z);
-		}
-		glEnd();
-		
-		glBegin(GL_LINES);
-		if(tree) tree->draw();
-		glEnd();
-	}
 
-	glPointSize(5);
-	glBegin(GL_POINTS);
-	
-	glColor3f(1,1,0);
-	if(raw_area_data&&tree->acount>0)
-	for(unsigned i=0; i<tree->acount; i++)
-		glVertex3f(raw_area_data[i].x,raw_area_data[i].y,raw_area_data[i].z);
-	glEnd();
+	if(m_pTex) {
+		XYZ pos, nor, col;
+		float r;
+		for(int i=0; i<m_pTex->getNumGrid(); i++) {
+			m_pTex->getGrid(i, pos, nor, col, r);
+			gBase::drawSplatAt(pos, nor, r);
+		}
+		
+		m_pTex->draw();
+	}
 	
 	glPopAttrib();
 	view.endGL();
@@ -304,6 +254,7 @@ MStatus octreeVizNode::initialize()
 	attributeAffects( adefinepositionX, aoutput );
 	attributeAffects( adefinepositionY, aoutput );
 	attributeAffects( adefinepositionZ, aoutput );
+	attributeAffects( aHDRName, aoutput );
 	
 	return MS::kSuccess;
 }

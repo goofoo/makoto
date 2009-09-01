@@ -20,7 +20,7 @@
 #include <maya/MFnUnitAttribute.h>
 #include <maya/MFndagNode.h>
 #include "../shared/zData.h"
-#include "../shared/Octree.h"
+#include "../3dtexture/3dtexture.h"
 
 class octreeVizNode : public MPxLocatorNode
 {
@@ -63,9 +63,6 @@ public:
 	static MObject     adefinepositionZ;
 
 private :
-	XYZ* raw_data;
-	XYZ* raw_area_data;
-	int num_raw_area_data;
-	unsigned num_raw_data;
-	OcTree* tree;
+	z3dtexture* m_pTex;
+	MString m_gridname;
 };

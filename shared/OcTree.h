@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 #include "QuickSort.h"
-#include "view.h"
-#include "../shared/gBase.h"
+#include "PerspectiveView.h"
+#include "gBase.h"
 
 using namespace std;
 
@@ -73,9 +73,11 @@ public:
 	unsigned getNumVoxel() const {return num_voxel;}
 	int hasColor() const;
 	
-	void draw(const particleView *pview,XYZ facing,string drawType);
-	void drawCube(const TreeNode *node, const particleView *pview);
-	void getDrawList(const TreeNode *node, const particleView *pview,int &index,DataAndId* drawList);
+	void draw();
+	void drawCube(const TreeNode *node);
+	void draw(const PerspectiveView *pview,XYZ facing,string drawType);
+	void drawCube(const TreeNode *node, const PerspectiveView *pview);
+	void getDrawList(const TreeNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 

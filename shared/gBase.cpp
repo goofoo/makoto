@@ -206,9 +206,6 @@ void gBase::drawSplatAt(const XYZ& pos, const XYZ& facing, const float& r)
 	mat.transform(p21);
 	mat.transform(p23);
 
-	
-	glColor4f(0.5f+facing.x/2, 0.5f+facing.y/2, 0.5f+facing.z/2, 0.0625);
-	//glColor3f(data.col.x, data.col.y, data.col.z);
 	glBegin(GL_POLYGON);
 	glVertex3f(p1.x, p1.y, p1.z);
 	glVertex3f(p3.x, p3.y, p3.z);
@@ -274,10 +271,9 @@ void gBase::drawSplatAt(XYZ& pos, XYZ& facing, float r)
 	mat.transform(p21);
 	mat.transform(p23);
 
-	
 	glColor4f(0.5f+facing.x/2, 0.5f+facing.y/2, 0.5f+facing.z/2, 0.0625);
 	//glColor3f(data.col.x, data.col.y, data.col.z);
-	glBegin(GL_POLYGON);
+	glBegin(GL_LINE_LOOP);
 	glVertex3f(p1.x, p1.y, p1.z);
 	glVertex3f(p3.x, p3.y, p3.z);
 	glVertex3f(p5.x, p5.y, p5.z);

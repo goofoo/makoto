@@ -416,7 +416,68 @@ void OcTree::load(ifstream& file, TreeNode *node)
 	else node->child111 = NULL;
 }
 
-void OcTree::draw(const particleView *pview,XYZ facing,string drawType)
+void OcTree::draw()
+{
+	if(root) drawCube(root);
+}
+
+void OcTree::drawCube(const TreeNode *node)
+{
+	if(!node) return;
+	int i = hasColor();
+	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111) {
+			XYZ cen = node->center;
+			float size = node->size;
+			glBegin(GL_QUADS);
+			if(i>=0)
+				glColor4f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z,0.2f);
+			else 
+				glColor4f(0.05f, 0.6f, 0.2f, 0.2f);
+	
+			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
+
+			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
+			
+			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
+
+			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
+			
+			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
+
+			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
+			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
+			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
+			glEnd();	
+	}
+	else {
+		drawCube(node->child000 );
+		drawCube(node->child001 );
+		drawCube(node->child010 );
+		drawCube(node->child011 );
+		drawCube(node->child100 );
+		drawCube(node->child101 );
+		drawCube(node->child110 );
+		drawCube(node->child111 );
+	}
+}
+
+void OcTree::draw(const PerspectiveView *pview,XYZ facing,string drawType)
 {
 	if(root) 
 	{
@@ -442,7 +503,7 @@ void OcTree::draw(const particleView *pview,XYZ facing,string drawType)
 	}
 }
 
-void OcTree::getDrawList(const TreeNode *node, const particleView *pview,int &index,DataAndId* drawList)
+void OcTree::getDrawList(const TreeNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList)
 {
 	if(!node) return;
 	if(!pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) 
@@ -471,7 +532,7 @@ void OcTree::getDrawList(const TreeNode *node, const particleView *pview,int &in
 	}
 }
 
-void OcTree::drawCube(const TreeNode *node, const particleView *pview)
+void OcTree::drawCube(const TreeNode *node, const PerspectiveView *pview)
 {
 	if(!node) return;
 	int i = hasColor();
@@ -531,7 +592,7 @@ int OcTree::hasColor() const
 {
 	if(dThree.size()) 
 		for(unsigned int i = 0;i<dThree.size();i++)
-			if(dThree[i]->name=="color")
+			if(dThree[i]->name=="color" || dThree[i]->name=="Cs")
 				return i;
 	return -1;
 }
