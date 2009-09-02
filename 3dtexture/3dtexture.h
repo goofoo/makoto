@@ -22,6 +22,8 @@ public:
 	
 	int getNumGrid() const { return num_grid; }
 	void getGrid(int& idx, XYZ& pos, XYZ& nor, XYZ& col, float& r) const;
+	
+	int getNumVoxel() const {return m_pTree->getNumVoxel(); }
 private:
 	int num_grid;
 	RGRID* m_pGrid;

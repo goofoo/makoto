@@ -57,7 +57,10 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 			if(m_pTex) delete m_pTex;
 			
 			m_pTex = new z3dtexture;
-			if(m_pTex->loadGrid(m_gridname.asChar())) m_pTex->constructTree();
+			if(m_pTex->loadGrid(m_gridname.asChar())) {
+				m_pTex->constructTree();
+				zDisplayFloat(m_pTex->getNumVoxel());
+			}
 		}
 		data.setClean(plug);
 	}

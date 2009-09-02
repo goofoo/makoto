@@ -62,6 +62,10 @@ void z3dtexture::constructTree()
 	
 	m_pTree->addThree(colbuf, "Cs", buf);
 	
+	for(int i=0; i<num_grid; i++) colbuf[i] = m_pGrid[i].nor;
+	
+	m_pTree->addThree(colbuf, "normal", buf);
+	
 	delete[] buf;
 	delete[] colbuf;
 }

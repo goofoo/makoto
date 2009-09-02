@@ -1009,6 +1009,41 @@ void gBase::drawBox(const float xmin, const float xmax, const float ymin, const 
 	glEnd();
 }
 
+void gBase::drawBox(const XYZ& cen, const float& size)
+{
+	glBegin(GL_QUADS);
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+	glEnd();
+}
+
 void gBase::drawLocator(const XYZ& origin)
 {
 	glColor3f(0.1, 0.9, 0.1);

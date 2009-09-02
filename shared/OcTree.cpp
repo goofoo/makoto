@@ -1,5 +1,4 @@
 #include "OcTree.h"
-#include "zWorks.h"
 
 #ifdef WIN32
 # include <windows.h>
@@ -428,42 +427,13 @@ void OcTree::drawCube(const TreeNode *node)
 	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111) {
 			XYZ cen = node->center;
 			float size = node->size;
-			glBegin(GL_QUADS);
+			
 			if(i>=0)
 				glColor4f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z,0.2f);
 			else 
 				glColor4f(0.05f, 0.6f, 0.2f, 0.2f);
 	
-			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
-
-			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
-			
-			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
-
-			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
-			
-			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y - 0.98*size, cen.z + 0.98*size);
-
-			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z - 0.98*size);
-			glVertex3f(cen.x + 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
-			glVertex3f(cen.x - 0.98*size, cen.y + 0.98*size, cen.z + 0.98*size);
-			glEnd();	
+		gBase::drawBox(cen, size);
 	}
 	else {
 		drawCube(node->child000 );
@@ -510,7 +480,7 @@ void OcTree::getDrawList(const TreeNode *node, const PerspectiveView *pview,int 
 	{
 		
 		XYZ cen = node->center;
-		float size = node->size;
+		//float size = node->size;
 		drawList[index].pos = cen;
 		drawList[index].idx = node->index;
 		drawList[index].val =pview->deep(cen);
