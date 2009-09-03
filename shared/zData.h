@@ -754,4 +754,9 @@ struct CoeSample
 	float area;
 	float coe[16];
 };
+
+struct SHCOEFF
+{
+	XYZ value[16];
+};
 #endif /* ZDATA_H */

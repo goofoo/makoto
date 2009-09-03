@@ -171,6 +171,11 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 }
 
+void OcTree::doOcclusion(SHCOEFF* res) const
+{
+
+}
+
 void OcTree::addSingle(const float *rawdata, const char* name, const PosAndId *index)
 {
 	NamedSingle* attr = new NamedSingle();

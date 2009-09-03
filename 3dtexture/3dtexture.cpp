@@ -16,6 +16,8 @@ z3dtexture::z3dtexture() : m_pGrid(0), num_grid(0), m_pTree(0) {}
 z3dtexture::~z3dtexture() 
 {
 	if(m_pGrid) delete[] m_pGrid;
+	for(unsigned i=0; i<attrib_sh.size(); i++) delete[] attrib_sh[i]->data;
+	attrib_sh.clear();
 }
 
 char z3dtexture::loadGrid(const char* filename)
@@ -81,4 +83,13 @@ void z3dtexture::getGrid(int& idx, XYZ& pos, XYZ& nor, XYZ& col, float& r) const
 	nor = m_pGrid[idx].nor;
 	col = m_pGrid[idx].col;
 	r = m_pGrid[idx].area;
+}
+
+void z3dtexture::doOcclusion()
+{
+	NamedSHCOEFF* attr = new NamedSHCOEFF();
+	attr->name = "occlusion";
+	attr->data = new SHCOEFF[m_pTree->getNumVoxel()];
+	m_pTree->doOcclusion(attr->data);
+	attrib_sh.push_back(attr);
 }

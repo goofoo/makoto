@@ -17,6 +17,8 @@ int main (int argc, char * const argv[]) {
 	pTex->constructTree();
 	cout <<"num voxels "<<pTex->getNumVoxel()<<endl;
 	
+	pTex->doOcclusion();
+	
 	delete pTex;
     return 0;
 }

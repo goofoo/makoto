@@ -69,160 +69,203 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 273566966;
-			PBXWorkspaceStateSaveDate = 273566966;
+			PBXPerProjectTemplateStateSaveDate = 273664153;
+			PBXWorkspaceStateSaveDate = 273664153;
 		};
 		perUserProjectItems = {
-			7FA29F55104E462E00C0A625 /* PBXTextBookmark */ = 7FA29F55104E462E00C0A625 /* PBXTextBookmark */;
-			7FA29F58104E462E00C0A625 /* PBXTextBookmark */ = 7FA29F58104E462E00C0A625 /* PBXTextBookmark */;
-			7FA29F59104E462E00C0A625 /* PBXTextBookmark */ = 7FA29F59104E462E00C0A625 /* PBXTextBookmark */;
-			7FA29F5B104E462E00C0A625 /* PBXTextBookmark */ = 7FA29F5B104E462E00C0A625 /* PBXTextBookmark */;
-			7FA29FCD104E4D4200C0A625 /* PBXTextBookmark */ = 7FA29FCD104E4D4200C0A625 /* PBXTextBookmark */;
-			7FA29FCE104E4D4200C0A625 /* PBXTextBookmark */ = 7FA29FCE104E4D4200C0A625 /* PBXTextBookmark */;
-			7FA29FCF104E4D4200C0A625 /* PBXTextBookmark */ = 7FA29FCF104E4D4200C0A625 /* PBXTextBookmark */;
-			7FA29FD1104E4D4200C0A625 /* PBXTextBookmark */ = 7FA29FD1104E4D4200C0A625 /* PBXTextBookmark */;
+			7F8C965A104FCB5400E73095 /* PBXTextBookmark */ = 7F8C965A104FCB5400E73095 /* PBXTextBookmark */;
+			7F8C9672104FD22400E73095 /* PBXTextBookmark */ = 7F8C9672104FD22400E73095 /* PBXTextBookmark */;
+			7F8C9674104FD22400E73095 /* PBXTextBookmark */ = 7F8C9674104FD22400E73095 /* PBXTextBookmark */;
+			7F8C9682104FD3F000E73095 /* PBXTextBookmark */ = 7F8C9682104FD3F000E73095 /* PBXTextBookmark */;
+			7F8C9687104FD49000E73095 /* PBXTextBookmark */ = 7F8C9687104FD49000E73095 /* PBXTextBookmark */;
+			7F8C9689104FD49000E73095 /* PBXTextBookmark */ = 7F8C9689104FD49000E73095 /* PBXTextBookmark */;
+			7F8C968B104FD49000E73095 /* PBXTextBookmark */ = 7F8C968B104FD49000E73095 /* PBXTextBookmark */;
+			7F8C968C104FD49000E73095 /* PBXTextBookmark */ = 7F8C968C104FD49000E73095 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
 		};
 	};
-	7FA29F55104E462E00C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA42042104D9BE2009ABB17 /* 3dtexture.cpp */;
-		name = "3dtexture.cpp: 67";
-		rLen = 0;
-		rLoc = 1450;
-		rType = 0;
-		vrLen = 839;
-		vrLoc = 906;
-	};
-	7FA29F58104E462E00C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA42045104D9BF8009ABB17 /* OcTree.cpp */;
-		name = "OcTree.cpp: 66";
-		rLen = 9;
-		rLoc = 1231;
-		rType = 0;
-		vrLen = 1115;
-		vrLoc = 1039;
-	};
-	7FA29F59104E462E00C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA29F5A104E462E00C0A625 /* OcTree.h */;
-		name = "OcTree.h: 76";
-		rLen = 0;
-		rLoc = 1732;
-		rType = 0;
-		vrLen = 1414;
-		vrLoc = 804;
-	};
-	7FA29F5A104E462E00C0A625 /* OcTree.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = OcTree.h;
-		path = /Users/jianzhang/Documents/plankton/shared/OcTree.h;
-		sourceTree = "<absolute>";
+	7F80C8D4104EFCA1001882AC /* shVizNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {812, 1750}}";
-			sepNavSelRange = "{1732, 0}";
-			sepNavVisRange = "{804, 1414}";
-			sepNavWindowFrame = "{{15, 95}, {810, 678}}";
+			sepNavIntBoundsRect = "{{0, 0}, {515, 2842}}";
+			sepNavSelRange = "{172, 0}";
+			sepNavVisRange = "{0, 512}";
+			sepNavWindowFrame = "{{64, 59}, {645, 716}}";
 		};
 	};
-	7FA29F5B104E462E00C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA29F5C104E462E00C0A625 /* 3dtexture.h */;
-		name = "3dtexture.h: 21";
-		rLen = 18;
-		rLoc = 335;
-		rType = 0;
-		vrLen = 594;
-		vrLoc = 0;
+	7F80C8DA104EFD61001882AC /* SphericalHarmonics.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {590, 10360}}";
+			sepNavSelRange = "{10936, 80}";
+			sepNavVisRange = "{10309, 1207}";
+			sepNavWindowFrame = "{{492, 56}, {645, 716}}";
+		};
 	};
-	7FA29F5C104E462E00C0A625 /* 3dtexture.h */ = {
+	7F80C925104F04CB001882AC /* shVizNode.h */ = {
 		isa = PBXFileReference;
 		lastKnownFileType = sourcecode.c.h;
-		name = 3dtexture.h;
-		path = /Users/jianzhang/Documents/plankton/3dtexture/3dtexture.h;
-		sourceTree = "<absolute>";
-	};
-	7FA29FCD104E4D4200C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA42042104D9BE2009ABB17 /* 3dtexture.cpp */;
-		name = "3dtexture.cpp: 67";
-		rLen = 0;
-		rLoc = 1450;
-		rType = 0;
-		vrLen = 857;
-		vrLoc = 888;
-	};
-	7FA29FCE104E4D4200C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA42045104D9BF8009ABB17 /* OcTree.cpp */;
-		name = "OcTree.cpp: 65";
-		rLen = 9;
-		rLoc = 1231;
-		rType = 0;
-		vrLen = 1114;
-		vrLoc = 1020;
-	};
-	7FA29FCF104E4D4200C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA29FD0104E4D4200C0A625 /* OcTree.h */;
-		name = "OcTree.h: 76";
-		rLen = 0;
-		rLoc = 1732;
-		rType = 0;
-		vrLen = 1414;
-		vrLoc = 804;
-	};
-	7FA29FD0104E4D4200C0A625 /* OcTree.h */ = {
-		isa = PBXFileReference;
-		name = OcTree.h;
-		path = /Users/jianzhang/Documents/plankton/shared/OcTree.h;
-		sourceTree = "<absolute>";
-	};
-	7FA29FD1104E4D4200C0A625 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA29FD2104E4D4200C0A625 /* 3dtexture.h */;
-		name = "3dtexture.h: 21";
-		rLen = 18;
-		rLoc = 335;
-		rType = 0;
-		vrLen = 594;
-		vrLoc = 0;
-	};
-	7FA29FD2104E4D4200C0A625 /* 3dtexture.h */ = {
-		isa = PBXFileReference;
-		name = 3dtexture.h;
-		path = /Users/jianzhang/Documents/plankton/3dtexture/3dtexture.h;
+		name = shVizNode.h;
+		path = /Users/jianzhang/Documents/plankton/octreeTest/shVizNode.h;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {481, 510}}";
-			sepNavSelRange = "{335, 18}";
-			sepNavVisRange = "{0, 594}";
-			sepNavWindowFrame = "{{529, 94}, {540, 638}}";
+			sepNavIntBoundsRect = "{{0, 0}, {586, 854}}";
+			sepNavSelRange = "{1331, 0}";
+			sepNavVisRange = "{385, 1046}";
+			sepNavWindowFrame = "{{534, 56}, {645, 716}}";
+		};
+	};
+	7F80C9CB104F1151001882AC /* SphericalHarmonics.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = SphericalHarmonics.h;
+		path = /Users/jianzhang/Documents/plankton/sh_lighting/SphericalHarmonics.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {586, 2408}}";
+			sepNavSelRange = "{1696, 14}";
+			sepNavVisRange = "{421, 683}";
+			sepNavWindowFrame = "{{510, 61}, {645, 716}}";
+		};
+	};
+	7F8C965A104FCB5400E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8C965B104FCB5400E73095 /* zHairNode.cpp */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F8C965B104FCB5400E73095 /* zHairNode.cpp */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = zHairNode.cpp;
+		path = /Users/jianzhang/Documents/plankton/zHair/zHairNode.cpp;
+		sourceTree = "<absolute>";
+	};
+	7F8C9672104FD22400E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F80C9CB104F1151001882AC /* SphericalHarmonics.h */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F8C9674104FD22400E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F80C8DA104EFD61001882AC /* SphericalHarmonics.cpp */;
+		name = "SphericalHarmonics.cpp: 494";
+		rLen = 80;
+		rLoc = 10936;
+		rType = 0;
+		vrLen = 1207;
+		vrLoc = 10309;
+	};
+	7F8C9682104FD3F000E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F80C925104F04CB001882AC /* shVizNode.h */;
+		name = "shVizNode.h: 44";
+		rLen = 4;
+		rLoc = 1068;
+		rType = 0;
+		vrLen = 1023;
+		vrLoc = 385;
+	};
+	7F8C9687104FD49000E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8C9688104FD49000E73095 /* shVizNode.h */;
+		name = "shVizNode.h: 54";
+		rLen = 0;
+		rLoc = 1331;
+		rType = 0;
+		vrLen = 1046;
+		vrLoc = 385;
+	};
+	7F8C9688104FD49000E73095 /* shVizNode.h */ = {
+		isa = PBXFileReference;
+		name = shVizNode.h;
+		path = /Users/jianzhang/Documents/plankton/octreeTest/shVizNode.h;
+		sourceTree = "<absolute>";
+	};
+	7F8C9689104FD49000E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8C968A104FD49000E73095 /* SphericalHarmonics.h */;
+		name = "SphericalHarmonics.h: 94";
+		rLen = 14;
+		rLoc = 1696;
+		rType = 0;
+		vrLen = 683;
+		vrLoc = 421;
+	};
+	7F8C968A104FD49000E73095 /* SphericalHarmonics.h */ = {
+		isa = PBXFileReference;
+		name = SphericalHarmonics.h;
+		path = /Users/jianzhang/Documents/plankton/sh_lighting/SphericalHarmonics.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {586, 2408}}";
+			sepNavSelRange = "{1696, 14}";
+			sepNavVisRange = "{421, 683}";
+			sepNavWindowFrame = "{{510, 61}, {645, 716}}";
+		};
+	};
+	7F8C968B104FD49000E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F80C8DA104EFD61001882AC /* SphericalHarmonics.cpp */;
+		name = "SphericalHarmonics.cpp: 494";
+		rLen = 80;
+		rLoc = 10936;
+		rType = 0;
+		vrLen = 1207;
+		vrLoc = 10309;
+	};
+	7F8C968C104FD49000E73095 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8C968D104FD49000E73095 /* zHairNode.cpp */;
+		name = "zHairNode.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1101;
+		vrLoc = 318;
+	};
+	7F8C968D104FD49000E73095 /* zHairNode.cpp */ = {
+		isa = PBXFileReference;
+		name = zHairNode.cpp;
+		path = /Users/jianzhang/Documents/plankton/zHair/zHairNode.cpp;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {586, 3906}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{318, 1101}";
+			sepNavWindowFrame = "{{532, 62}, {645, 716}}";
 		};
 	};
 	7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {470, 3948}}";
 			sepNavSelRange = "{1729, 0}";
-			sepNavVisRange = "{1069, 1013}";
-			sepNavWindowFrame = "{{38, 107}, {495, 645}}";
+			sepNavVisRange = "{1582, 739}";
+			sepNavWindowFrame = "{{557, 94}, {495, 645}}";
+		};
+	};
+	7FA4203C104D9BCF009ABB17 /* pluginMain.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {586, 966}}";
+			sepNavSelRange = "{1475, 0}";
+			sepNavVisRange = "{521, 1041}";
+			sepNavWindowFrame = "{{15, 57}, {645, 716}}";
 		};
 	};
 	7FA42042104D9BE2009ABB17 /* 3dtexture.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {776, 1176}}";
+			sepNavIntBoundsRect = "{{0, 0}, {776, 1330}}";
 			sepNavSelRange = "{1450, 0}";
-			sepNavVisRange = "{888, 857}";
+			sepNavVisRange = "{876, 887}";
 			sepNavWindowFrame = "{{24, 102}, {540, 638}}";
 		};
 	};
 	7FA42045104D9BF8009ABB17 /* OcTree.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {830, 11578}}";
+			sepNavIntBoundsRect = "{{0, 0}, {830, 11956}}";
 			sepNavSelRange = "{1231, 9}";
 			sepNavVisRange = "{1020, 1114}";
 			sepNavWindowFrame = "{{406, 88}, {660, 683}}";

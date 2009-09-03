@@ -34,7 +34,7 @@ struct TreeNode
 		      child100(0),child101(0),child110(0),child111(0)/*,isNull(1)*/ {}
 
 	unsigned low, high;
-	XYZ center,mean;
+	XYZ center, mean;
 	float size;
 	unsigned index;
 	
@@ -59,6 +59,9 @@ public:
 	
 	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
 	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
+	
+	void doOcclusion(SHCOEFF* res) const;
+	
 	void addSingle(const float *rawdata, const char* name, const PosAndId *index);
 	void setSingle(float *res, TreeNode *node, const float *rawdata, const PosAndId *index);
 	void addThree(const XYZ *rawdata, const char* name, const PosAndId *index);
@@ -81,19 +84,6 @@ public:
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	
-	
-	
-	//void saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum);
-    //void saveColor(TreeNode *node,XYZ *color,PosAndId *buf);
-	
-	//void saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum);
-	//void saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf);
-	
-	
-	
-	//void loadColor(const char*filename,XYZ* &voxelcolor);
-	//void loadVelocity(const char*filename,XYZ* &voxelvelocity);
 	void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
 	void searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex);
 

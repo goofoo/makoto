@@ -7,8 +7,21 @@
  *
  */
 #pragma once
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 #include "../shared/zData.h"
 #include "../shared/OcTree.h"
+
+struct NamedSHCOEFF
+{
+	string name;
+	SHCOEFF* data;
+};
+
+typedef vector<NamedSHCOEFF*>TriDTexSHList;
 
 class z3dtexture
 {
@@ -21,11 +34,13 @@ public:
 	void draw() const;
 	
 	int getNumGrid() const { return num_grid; }
+	int getNumVoxel() const {return m_pTree->getNumVoxel(); }
 	void getGrid(int& idx, XYZ& pos, XYZ& nor, XYZ& col, float& r) const;
 	
-	int getNumVoxel() const {return m_pTree->getNumVoxel(); }
+	void doOcclusion();
 private:
 	int num_grid;
 	RGRID* m_pGrid;
 	OcTree* m_pTree;
+	TriDTexSHList attrib_sh;
 };
