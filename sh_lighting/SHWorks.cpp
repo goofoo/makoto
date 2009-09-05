@@ -458,6 +458,8 @@ void SHWorks::saveLightRT(const FXMLScene* scene, const FQSPLAT* light)
 		XYZ* coebfj = new XYZ[n_vert*SH_N_BASES];
 	
 		XYZ Q, ray, tang;
+		
+		float glb_gridsize = sqrt((*it)->getArea()/(*it)->getNumTriangle())/2;
 	
 		for(int i=0; i<n_vert; i++)
 		{
