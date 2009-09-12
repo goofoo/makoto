@@ -1,11 +1,8 @@
-#pragma once
 #ifndef ZMATH_H
 #define ZMATH_H
 #include "zData.h"
 #include <math.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string>
 
 #define TRUE 1
 #define FALSE 0

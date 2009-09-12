@@ -56,6 +56,7 @@ public:
 	static MObject  aHDRName;
 	static MObject  aSize;
 	static MObject aworldSpace;
+	static MObject acullFace;
 	static MObject aoutput;
 	static	MTypeId		id;
 	

@@ -1,7 +1,6 @@
 #ifndef _Z_WORKS_H
 #define _Z_WORKS_H
-#pragma once
-#include <maya/MIOStream.h>
+
 #include <maya/MFnDependencyNode.h>
 #include <maya/MPlug.h>
 #include <maya/MFnMatrixAttribute.h>

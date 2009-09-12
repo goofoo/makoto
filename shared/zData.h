@@ -1,6 +1,6 @@
 #ifndef ZDATA_H
 #define ZDATA_H
-#include <iostream>
+#include  <stdlib.h>
 #include <math.h>
 #define PI 3.14159265358979323846
 

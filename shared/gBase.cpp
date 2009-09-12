@@ -6,7 +6,8 @@
  *  Copyright 2007 __MyCompanyName__. All rights reserved.
  *
  */
-#include <ostream>
+#include <string.h>
+#include <stdio.h>
 #include "gBase.h"
 
 #ifdef WIN32
@@ -818,7 +819,7 @@ void gBase::genTexture(GLuint& tex, GLenum target, int width, int height, GLint 
 	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
-
+/*
 void gBase::checkOcclusionQuerySupported()
 {
 	GLint bitsSupported;
@@ -839,7 +840,7 @@ void gBase::deleteQuery(GLuint n, GLuint* ids)
 {
 	glDeleteQueriesARB( n, ids );
 }
-
+*/
 void gBase::drawTextureQuad(GLuint width, GLint height, const float* data, float exposure)
 {
 	float h = 0.00613f;

@@ -2,7 +2,6 @@
 #define _HDRTEXTURE_H
 
 #include "../shared/zMath.h"
-#include <iostream>
 #include <fstream>
 using namespace std;
 class HDRtexture {
