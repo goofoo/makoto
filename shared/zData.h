@@ -755,8 +755,8 @@ struct CoeSample
 	float coe[16];
 };
 
-struct SHCOEFF
+struct SHB3COEFF
 {
-	XYZ value[16];
+	XYZ value[9];
 };
 #endif /* ZDATA_H */
