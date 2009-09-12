@@ -1,4 +1,3 @@
-#pragma once
 #ifndef _ZSPHERICALHARMONICS_H
 #define _ZSPHERICALHARMONICS_H
 #include "../shared/zData.h"

@@ -1,6 +1,7 @@
 // Class for dealing with HDR textures
 
 #include "hdrtexture.h"
+#include "string.h"
 
 #define RGBE_RLE_32BIT 0
 /* offsets to red, green, and blue components in a data (float) pixel */

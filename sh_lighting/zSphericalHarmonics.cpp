@@ -1,9 +1,6 @@
-#include "zsphericalharmonics.h"
+#include "zSphericalHarmonics.h"
 #include "SH Rotation/SH Rotation.h"
 #include "../shared/zNoise.h"
-#include <iostream>
-#include <fstream>
-using namespace std;
 
 sphericalHarmonics::sphericalHarmonics(void):m_pSample(0)
 {

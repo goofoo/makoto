@@ -3,8 +3,8 @@
 #include "../shared/eigenSystem.h"
 #include "../shared/gBase.h"
 //#define MAX_N_SPLAT 1548576
-#define MIN_CONE -0.09
-#define POOLSCALE 1.09
+#define MIN_CONE 0.5
+#define POOLSCALE 2.26
 
 FQSPLAT::FQSPLAT():m_root(0),is_null(1),m_col_buf(0),m_coe_buf(0)
 {}
@@ -388,7 +388,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 	//level++;
 	
 	DivideBy<XYZ> adivide;
-	
+	/*
 	MATRIX44F objectSpace;
 	if(hi-lo>32) {
 			
@@ -399,7 +399,7 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 		
 			for(int i=lo; i<=hi; i++) objectSpaceInverse.transform(data[i].pos);
 	}
-	
+	*/
 	int aa, ab, a, b, ba, bb;
 	divideByAngle(adivide, data, cx, cy, cz, lo, hi, a, b);
 	
@@ -409,11 +409,11 @@ void FQSPLAT::createTreeNoColor(pcdSample* data, HierarchyQSPLATNode* res, unsig
 	
 	divideByAngle(adivide, data, ta.mean.x, ta.mean.y, ta.mean.z, lo, a, aa, ab);
 	divideByAngle(adivide, data, tb.mean.x, tb.mean.y, tb.mean.z, b, hi, ba, bb);
-	
+	/*
 	if(hi-lo>32) {
 			for(int i=lo; i<=hi; i++) objectSpace.transform(data[i].pos);
 	}
-	
+	*/
 	res->child0 = new HierarchyQSPLATNode();
 	res->child1 = new HierarchyQSPLATNode();
 	res->child2 = new HierarchyQSPLATNode();
@@ -457,7 +457,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 	float cz = (zmin + zmax)/2;
 	
 	DivideBy<XYZ> adivide;
-	
+	/*
 	MATRIX44F objectSpace;
 	if(hi-lo>32) {
 			
@@ -468,7 +468,7 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 		
 			for(int i=lo; i<=hi; i++) objectSpaceInverse.transform(data[i].pos);
 	}
-	
+	*/
 	int aa, ab, a, b, ba, bb;
 	divideByAngle(adivide, data, cx, cy, cz, lo, hi, a, b);
 	
@@ -478,11 +478,11 @@ void FQSPLAT::createTree(pcdSample* data, HierarchyQSPLATNode* res, XYZ* res_col
 	
 	divideByAngle(adivide, data, ta.mean.x, ta.mean.y, ta.mean.z, lo, a, aa, ab);
 	divideByAngle(adivide, data, tb.mean.x, tb.mean.y, tb.mean.z, b, hi, ba, bb);
-	
+	/*
 	if(hi-lo>32) {
 			for(int i=lo; i<=hi; i++) objectSpace.transform(data[i].pos);
 	}
-	
+	*/
 	res->child0 = new HierarchyQSPLATNode();
 	res->child1 = new HierarchyQSPLATNode();
 	res->child2 = new HierarchyQSPLATNode();
@@ -527,7 +527,7 @@ void FQSPLAT::createTreeRT(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNod
 	float cz = (zmin + zmax)/2;
 	
 	DivideBy<CoeRec> adivide;
-	
+	/*
 	MATRIX44F objectSpace;
 	if(hi-lo>32) {
 			
@@ -538,7 +538,7 @@ void FQSPLAT::createTreeRT(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNod
 		
 			for(int i=lo; i<=hi; i++) objectSpaceInverse.transform(data[i].pos);
 	}
-	
+	*/
 	int aa, ab, a, b, ba, bb;
 	divideByAngle(adivide, data, coe_data, cx, cy, cz, lo, hi, a, b);
 	
@@ -548,11 +548,11 @@ void FQSPLAT::createTreeRT(pcdSample* data, CoeRec* coe_data, HierarchyQSPLATNod
 	
 	divideByAngle(adivide, data, coe_data, ta.mean.x, ta.mean.y, ta.mean.z, lo, a, aa, ab);
 	divideByAngle(adivide, data, coe_data, tb.mean.x, tb.mean.y, tb.mean.z, b, hi, ba, bb);
-	
+	/*
 	if(hi-lo>32) {
 			for(int i=lo; i<=hi; i++) objectSpace.transform(data[i].pos);
 	}
-	
+	*/
 	res->child0 = new HierarchyQSPLATNode();
 	res->child1 = new HierarchyQSPLATNode();
 	res->child2 = new HierarchyQSPLATNode();
@@ -599,7 +599,7 @@ void FQSPLAT::createTreeRTNColor(pcdSample* data, CoeRec* coe_data, HierarchyQSP
 	float cz = (zmin + zmax)/2;
 	
 	DivideBy<CoeRec> adivide;
-	
+	/*
 	MATRIX44F objectSpace;
 	if(hi-lo>32) {
 			
@@ -610,7 +610,7 @@ void FQSPLAT::createTreeRTNColor(pcdSample* data, CoeRec* coe_data, HierarchyQSP
 		
 			for(int i=lo; i<=hi; i++) objectSpaceInverse.transform(data[i].pos);
 	}
-	
+	*/
 	int aa, ab, a, b, ba, bb;
 	divideByAngle(adivide, data, coe_data, cx, cy, cz, lo, hi, a, b);
 	
@@ -620,11 +620,11 @@ void FQSPLAT::createTreeRTNColor(pcdSample* data, CoeRec* coe_data, HierarchyQSP
 	
 	divideByAngle(adivide, data, coe_data, ta.mean.x, ta.mean.y, ta.mean.z, lo, a, aa, ab);
 	divideByAngle(adivide, data, coe_data, tb.mean.x, tb.mean.y, tb.mean.z, b, hi, ba, bb);
-	
+	/*
 	if(hi-lo>32) {
 			for(int i=lo; i<=hi; i++) objectSpace.transform(data[i].pos);
 	}
-	
+	*/
 	res->child0 = new HierarchyQSPLATNode();
 	res->child1 = new HierarchyQSPLATNode();
 	res->child2 = new HierarchyQSPLATNode();
@@ -695,7 +695,7 @@ void FQSPLAT::recursive_lookupNoDist(const XYZ& origin, const XYZ& ray, Hierarch
 	float solid_angle = node->r/dist;
 
 	if(solid_angle < VIS_DELTA_THETA || node->is_leaf) {
-		if(dist < bias) return;
+		if(z < node->r) return;
 		if( tsdotn< 0) return;
 
 		int n_grd = 1 + solid_angle/VIS_DELTA_THETA;

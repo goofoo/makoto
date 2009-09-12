@@ -1,26 +1,8 @@
-//-
-// ==========================================================================
-// Copyright (C) 1995 - 2005 Alias Systems Corp. and/or its licensors.  All 
-// rights reserved. 
-// 
-// The coded instructions, statements, computer programs, and/or related 
-// material (collectively the "Data") in these files are provided by Alias 
-// Systems Corp. ("Alias") and/or its licensors for the exclusive use of the 
-// Customer (as defined in the Alias Software License Agreement that 
-// accompanies this Alias software). Such Customer has the right to use, 
-// modify, and incorporate the Data into other products and to distribute such 
-// products for use by end-users.
-//  
-// THE DATA IS PROVIDED "AS IS".  ALIAS HEREBY DISCLAIMS ALL WARRANTIES 
-// RELATING TO THE DATA, INCLUDING, WITHOUT LIMITATION, ANY AND ALL EXPRESS OR 
-// IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND/OR FITNESS FOR A 
-// PARTICULAR PURPOSE. IN NO EVENT SHALL ALIAS BE LIABLE FOR ANY DAMAGES 
-// WHATSOEVER, WHETHER DIRECT, INDIRECT, SPECIAL, OR PUNITIVE, WHETHER IN AN 
-// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, OR IN EQUITY, 
-// ARISING OUT OF ACCESS TO, USE OF, OR RELIANCE UPON THE DATA.
-// ==========================================================================
-//+
-
+#include <maya/MMatrix.h>
+#include <maya/MVectorArray.h>
+#include <maya/MFnVectorArrayData.h>
+#include <maya/MFnNumericAttribute.h>
+#include <maya/MFnTypedAttribute.h>
 #include "hdrEnvNode.h"
 #include "../shared/zWorks.h"
 #include "../shared/gBase.h"
@@ -34,6 +16,7 @@ MObject	hdrEnvNode::aExposure;
 MObject	hdrEnvNode::aSize;
 MObject	hdrEnvNode::aHDRName;
 MObject hdrEnvNode::aworldSpace;
+MObject hdrEnvNode::acullFace;
 MObject hdrEnvNode::aoutput;
 
 #define IMG_W 64
@@ -66,44 +49,46 @@ void hdrEnvNode::loadHDR(MString& hdrname)
 	m_program = new hdrProgram();
 	if(hdrname=="") return;
 
-			if(f_hdr)
-			{
-				delete f_hdr;
-				f_hdr = NULL;
-			}
-			
-			f_hdr = new HDRtexture(hdrname.asChar());
-			if(f_hdr->isValid()) 
-			{
+	if(f_hdr)
+	{
+		delete f_hdr;
+		f_hdr = NULL;
+	}
+	
+	f_hdr = new HDRtexture(hdrname.asChar());
+	if(f_hdr->isValid()) 
+	{
 
-//#ifdef __APPLE__
-				gBase::genTexture(m_tex, GL_TEXTURE_RECTANGLE_ARB, f_hdr->getWidth(), f_hdr->getHeight(), GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT, f_hdr->getTexturePointer());
-//#else
+#ifdef LINUX
+		gBase::genTexture(m_tex, GL_TEXTURE_RECTANGLE_ARB, f_hdr->getWidth(), f_hdr->getHeight(), GL_RGBA, GL_RGBA, GL_FLOAT, f_hdr->getTexturePointer());
+#else
+		gBase::genTexture(m_tex, GL_TEXTURE_RECTANGLE_ARB, f_hdr->getWidth(), f_hdr->getHeight(), GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT, f_hdr->getTexturePointer());
+#endif
 //				gBase::genTexture(m_tex, GL_TEXTURE_RECTANGLE_NV, f_hdr->getWidth(), f_hdr->getHeight(), GL_FLOAT_RGBA16_NV, GL_RGBA, GL_FLOAT, f_hdr->getTexturePointer());
-//#endif
-				m_width = f_hdr->getWidth();
-				m_height = f_hdr->getHeight();
-				
-				float grid_x = (float)m_width/(float)IMG_WMINUSONE;
-				float grid_y = (float)m_height/(float)IMG_HMINUSONE;
-				
-				for(int j=0; j<IMG_H; j++)
-				{
-					for(int i=0; i<IMG_W; i++)
-					{
-						m_pST[j*IMG_W+i].x = i*grid_x;
-						m_pST[j*IMG_W+i].y = j*grid_y;
-					}
-				}
-				MGlobal::displayInfo(MString("HDR texture loaded: ")+ hdrname);
-			}
-			else
+//
+		m_width = f_hdr->getWidth();
+		m_height = f_hdr->getHeight();
+		
+		float grid_x = (float)m_width/(float)IMG_WMINUSONE;
+		float grid_y = (float)m_height/(float)IMG_HMINUSONE;
+		
+		for(int j=0; j<IMG_H; j++)
+		{
+			for(int i=0; i<IMG_W; i++)
 			{
-				MGlobal::displayWarning(MString("Failed to load: ")+ hdrname);
+				m_pST[j*IMG_W+i].x = i*grid_x;
+				m_pST[j*IMG_W+i].y = j*grid_y;
 			}
+		}
+		MGlobal::displayInfo(MString("HDR texture loaded: ")+ hdrname);
+	}
+	else
+	{
+		MGlobal::displayWarning(MString("Failed to load: ")+ hdrname);
+	}
 }
 
-hdrEnvNode::hdrEnvNode() : m_tex(0),m_program(0),f_hdr(0)
+hdrEnvNode::hdrEnvNode() : m_tex(0),f_hdr(0),m_program(0)
 {
 	gBase::initExt();
 	
@@ -149,7 +134,7 @@ MStatus hdrEnvNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		MVectorArray outv;
 		outv.setLength(16);
-		
+
 		if(f_hdr)
 		{
 			if(f_hdr->isValid())
@@ -188,11 +173,18 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 							 M3dView::DisplayStyle style,
 							 M3dView::DisplayStatus status )
 {
+	MObject thisNode = thisMObject();
+	MPlug plug( thisNode, acullFace );
+	int ireverse;
+	plug.getValue( ireverse );
+
 	if(!m_program) return;
 	view.beginGL(); 
 
 	glPushAttrib( GL_POLYGON_BIT );
 	glEnable(GL_CULL_FACE);
+	if(ireverse==1) glFrontFace(GL_CW);
+	else glFrontFace(GL_CCW);
 
 	m_program->voronoiBegin(m_tex, pow(2.0f, m_exposure));
 		glBegin(GL_QUADS);
@@ -251,44 +243,45 @@ MStatus hdrEnvNode::initialize()
 	
 	aExposure = nAttr.create("exposure", "exposure",
 						  MFnNumericData::kFloat, 1.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( nAttr.setStorable(true));
-    CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(1.f));
-    CHECK_MSTATUS( nAttr.setSoftMin(-10.f));
-    CHECK_MSTATUS( nAttr.setSoftMax(10.f));
+    nAttr.setStorable(true);
+    nAttr.setKeyable(true);
+    nAttr.setDefault(1.f);
+    nAttr.setSoftMin(-10.f);
+    nAttr.setSoftMax(10.f);
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
 	
 	aSize = nAttr.create("size", "size",
 						  MFnNumericData::kFloat, 900.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( nAttr.setStorable(true));
-    CHECK_MSTATUS( nAttr.setKeyable(true));
-    CHECK_MSTATUS( nAttr.setDefault(900.f));
-    CHECK_MSTATUS( nAttr.setMin(1.f));
+    nAttr.setStorable(true);
+    nAttr.setKeyable(true);
+    nAttr.setDefault(900.f);
+    nAttr.setMin(1.f);
 	nAttr.setCached( true );
 	nAttr.setInternal( true );
 	
 	aHDRName = tAttr.create("hdrName", "hdrname",
 	MFnData::kString, MObject::kNullObj, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( tAttr.setStorable(true));
-    CHECK_MSTATUS( tAttr.setKeyable(false));
+
+    tAttr.setStorable(true);
+    tAttr.setKeyable(false);
 	tAttr.setCached( true );
 	tAttr.setInternal( true );
 	
 	zWorks::createMatrixAttr(aworldSpace, "worldSpace", "ws");
 	
 	zWorks::createVectorArrayAttr(aoutput, "output", "output");
+	zWorks::createIntAttr(acullFace, "backSide", "bks", 1, 0);
 	
-	CHECK_MSTATUS( addAttribute(aSize));
-		CHECK_MSTATUS( addAttribute(aExposure));
-	CHECK_MSTATUS( addAttribute(aHDRName));
-	CHECK_MSTATUS( addAttribute(aoutput));
+	addAttribute(aSize);
+	addAttribute(aExposure);
+	addAttribute(aHDRName);
+	addAttribute(aoutput);
 	addAttribute(aworldSpace);
+	addAttribute(acullFace);
 	attributeAffects( aExposure, aoutput );
 	attributeAffects( aworldSpace, aoutput );
+	attributeAffects( acullFace, aoutput );
 	
 	return MS::kSuccess;
 }

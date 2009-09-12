@@ -1,12 +1,3 @@
-/*
- *  pluginMain.cpp
- *  hwHDREnvShader
- *
- *  2.4.5 - 04.18.08
- *  Generalize sph2vec(), pointing zenith to -Z axis
- *
- */
-
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
 #include "hdrEnvNode.h"
@@ -19,7 +10,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "2.6.1 - 04/11/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "2.6.5 - 13/09/09", "Any");
 
 	status = plugin.registerNode( "hwHDREnvViewer", hdrEnvNode::id, 
 						 &hdrEnvNode::creator, &hdrEnvNode::initialize,

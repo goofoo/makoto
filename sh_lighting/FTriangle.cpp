@@ -171,25 +171,25 @@ void FTriangle::create(const XYZ& p0, const XYZ& p1, const XYZ& p2)
 	{
 		a = 0;
 		b = 1;
-		
-		if(edge_length[1] > edge_length[2]) m_min_length = edge_length[2];
-		else m_min_length = edge_length[1];
+		m_min_length = m_area*2/edge_length[0];
+		//if(edge_length[1] > edge_length[2]) m_min_length = edge_length[2];
+		//else m_min_length = edge_length[1];
 	}
 	else if(edge_length[1] > edge_length[2] && edge_length[1] > edge_length[0])
 	{
 		a = 1; 
 		b = 2;
-		
-		if(edge_length[2] > edge_length[0]) m_min_length = edge_length[0];
-		else m_min_length = edge_length[2];
+		m_min_length = m_area*2/edge_length[1];
+		//if(edge_length[2] > edge_length[0]) m_min_length = edge_length[0];
+		//else m_min_length = edge_length[2];
 	}
 	else
 	{
 		a = 2;
 		b = 0;
-		
-		if(edge_length[1] > edge_length[0]) m_min_length = edge_length[0];
-		else m_min_length = edge_length[1];
+		m_min_length = m_area*2/edge_length[2];
+		//if(edge_length[1] > edge_length[0]) m_min_length = edge_length[0];
+		//else m_min_length = edge_length[1];
 	}
 	
 	XYZ side = V[a];
@@ -300,6 +300,8 @@ void FTriangle::rasterize(const float delta, pcdSample* res, int& count)
 	if(real_delta > m_min_length) real_delta = m_min_length;
 	if(real_delta < delta/4) real_delta = delta/4;
 	
+	int missed = 1;
+	
 	for(int j=0; j<grid_y; j++)
 	{
 		for(int i=0; i<grid_x; i++)
@@ -320,10 +322,25 @@ void FTriangle::rasterize(const float delta, pcdSample* res, int& count)
 			res[count].pos = p_interp;
 			res[count].nor = n_interp;
 			res[count].col = c_interp;
-			res[count].area = real_delta/1.414;
+			res[count].area = delta/2;
 			
+			missed = 0;
 			count++;
 		}
+	}
+	
+	if(missed == 1) {
+		alpha = beta = gamma = 0.33f;
+		p_interp = P[0]*alpha + P[1]*beta + P[2]*gamma;
+		n_interp = normal[0]*alpha + normal[1]*beta + normal[2]*gamma;n_interp.normalize();
+		c_interp = color[0]*alpha + color[1]*beta + color[2]*gamma;
+
+		res[count].pos = p_interp;
+		res[count].nor = n_interp;
+		res[count].col = c_interp;
+		res[count].area = delta/2;
+		
+		count++;
 	}
 }
 
@@ -347,6 +364,8 @@ void FTriangle::rasterize(const float delta, const CoeRec* vertex_coe, pcdSample
 	
 	if(real_delta > m_min_length) real_delta = m_min_length;
 	if(real_delta < delta/4) real_delta = delta/4;
+	
+	int missed = 1;
 
 	for(int j=0; j<grid_y; j++)
 	{
@@ -368,15 +387,35 @@ void FTriangle::rasterize(const float delta, const CoeRec* vertex_coe, pcdSample
 			res[count].pos = p_interp;
 			res[count].nor = n_interp;
 			res[count].col = c_interp;
-			res[count].area = real_delta/1.414;
+			res[count].area = delta/2;
 			
 			for(int k=0; k<16; k++)
 			{
 				coe_res[count].data[k] = vertex_coe[id[0]].data[k] * alpha + vertex_coe[id[1]].data[k] * beta + vertex_coe[id[2]].data[k] * gamma;
 			}
 			
+			missed = 0;
 			count++;
 		}
+	}
+	
+	if(missed == 1) {
+		alpha = beta = gamma = 0.33f;
+		p_interp = P[0]*alpha + P[1]*beta + P[2]*gamma;
+		n_interp = normal[0]*alpha + normal[1]*beta + normal[2]*gamma;n_interp.normalize();
+		c_interp = color[0]*alpha + color[1]*beta + color[2]*gamma;
+
+		res[count].pos = p_interp;
+		res[count].nor = n_interp;
+		res[count].col = c_interp;
+		res[count].area = delta/2;
+		
+		for(int k=0; k<16; k++)
+		{
+			coe_res[count].data[k] = vertex_coe[id[0]].data[k] * alpha + vertex_coe[id[1]].data[k] * beta + vertex_coe[id[2]].data[k] * gamma;
+		}
+		
+		count++;
 	}
 }
 

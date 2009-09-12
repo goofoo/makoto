@@ -16,10 +16,10 @@
 #ifdef __APPLE__
 # include <OpenGL/gl.h>
 # include <OpenGL/glext.h>
-# include <GLUT/glut.h>
+//# include <GLUT/glut.h>
 #else
 # include <GL/gl.h>
-# include <GL/glut.h>
+//# include <GL/glut.h>
 #include "./glext.h"
 #endif
 
@@ -47,9 +47,9 @@ public :
 	static void texCoord4f(GLenum target, float x, float y, float z, float w);
 	static void genTexture(GLuint& tex, GLenum target, int width, int height, GLint internalformat, GLenum format, GLenum type);
 	static void genTexture(GLuint& tex, GLenum target, int width, int height, GLint internalformat, GLenum format, GLenum type, const float* data);
-	static void checkOcclusionQuerySupported();
-	static void genQuery(GLuint n, GLuint* ids);
-	static void deleteQuery(GLuint n, GLuint* ids);
+	//static void checkOcclusionQuerySupported();
+	//static void genQuery(GLuint n, GLuint* ids);
+	//static void deleteQuery(GLuint n, GLuint* ids);
 	static void drawTextureQuad(GLuint width, GLint height, const float* data, float exposure);
 	static void drawTextureSphere(GLuint width, GLint height, const float* data, float exposure, XYZ* coord);
 	static void getSphCoord(GLuint width, GLint height, XYZ* data);
@@ -59,6 +59,7 @@ public :
 	static void drawSprite(XYZ& center, float width, MATRIX44F& space);
 	static void drawBox(const float xmin, const float xmax, const float ymin, const float ymax, const float zmin, const float zmax);
 	static void drawBox(const XYZ& cen, const float& size);
+	static void drawLineCircleAt(const XYZ& pos, const XYZ& facing, const float& radius);
 };
 #endif
 //~:
