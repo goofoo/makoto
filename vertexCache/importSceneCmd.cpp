@@ -17,7 +17,7 @@
 #include <maya/MFnMeshData.h>
 #include "meshCacheVizNode.h"
 #include "../shared/zData.h"
-#include "../shared/ZXMLDoc.h"
+#include "../shared/zXMLDoc.h"
 #include "../shared/FXMLMesh.h"
 #include "../shared/zGlobal.h"
 ////////////////////////////////////////

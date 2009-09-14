@@ -42,7 +42,7 @@ void FQSPLAT::create(pcdSample* rec, int n_rec)
 	m_num_leaf = 0;
 	createTree(rec, m_root, m_col_buf, m_num_hipix, 0, m_point_count-1);
 		
-	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf;
+	printf(" N QSPLAT Node: %i N Leaf Node: %i",m_num_hipix,m_num_leaf);
 }
 
 void FQSPLAT::createNoColor(pcdSample* rec, int n_rec)
@@ -63,7 +63,7 @@ void FQSPLAT::createNoColor(pcdSample* rec, int n_rec)
 		if(m_root[i].is_leaf && m_root[i].r<min_leaf) min_leaf = m_root[i].r;
 	}
 	*/
-	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<endl;
+	printf(" N QSPLAT Node: %i N Leaf Node: %i",m_num_hipix,m_num_leaf);
 	
 }
 
@@ -87,7 +87,7 @@ void FQSPLAT::createRT(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 		if(m_root[i].is_leaf && m_root[i].r<min_leaf) min_leaf = m_root[i].r;
 	}
 	*/	
-	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<endl;
+	printf(" N QSPLAT Node: %i N Leaf Node: %i",m_num_hipix,m_num_leaf);
 	
 }
 
@@ -112,7 +112,7 @@ void FQSPLAT::createRTandColor(pcdSample* rec, CoeRec* coe_rec, int n_rec)
 		if(m_root[i].is_leaf && m_root[i].r<min_leaf) min_leaf = m_root[i].r;
 	}
 	*/
-	cout<<" N QSPLAT Node:"<<m_num_hipix<<" N Leaf Node:"<<m_num_leaf<<endl;
+	printf(" N QSPLAT Node: %i N Leaf Node: %i",m_num_hipix,m_num_leaf);
 }
 
 void FQSPLAT::combineSamplesNoColor(pcdSample* data, int lo, int hi, HierarchyQSPLATNode& node)

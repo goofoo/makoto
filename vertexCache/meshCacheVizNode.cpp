@@ -78,7 +78,13 @@ void meshCacheVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 	{
 		glPushAttrib( GL_ALL_ATTRIB_BITS );
 		if(m_mode<0) glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+#ifdef LINUX	
+		glFrontFace(GL_CCW);
+#else
 		glFrontFace(GL_CW);
+#endif
+
 		glShadeModel(GL_SMOOTH);
 		if(m_mode<-2) m_pMesh->drawUV(-3-m_mode);
 		else if(m_mode<-1) 

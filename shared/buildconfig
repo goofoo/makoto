@@ -52,7 +52,7 @@ CFLAGS		= -DREQUIRE_IOSTREAM  -O3 -Wall -D_BOOL -DLINUX -fPIC \
 		-Wno-reorder -fno-gnu-keywords -ftemplate-depth-25 -pthread
 C++FLAGS	= $(CFLAGS) $(WARNFLAGS) -Wno-deprecated -fno-gnu-keywords
 INCLUDES	= -I. -I.. -I$(MAYA_LOCATION)/include \
-                       -I/usr/X11R6/include
+                       -I/usr/X11R6/include -I/usr/include/libxml2 
 
 # -Bsymbolic binds references to global symbols within the library.
 # This avoids symbol clashes in other shared libraries but forces

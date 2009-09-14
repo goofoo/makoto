@@ -10,7 +10,6 @@
 #include "FXMLMesh.h"
 #include "gBase.h"
 #include "zGlobal.h"
-#include <iostream>
 
 const float constantCoeff[16] = { 3.543211, 0.000605, 0.000152, -0.003217, 
 								0.000083, -0.002813, -0.000021, -0.001049,
@@ -382,11 +381,11 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 	if(string(meshname)=="") return 0;
 	free();
 	m_xml_name = string(filename);
-	if(doc.load(filename) != 1) { cout<<"cannot open scene "<<filename; return 0;}
+	if(doc.load(filename) != 1) { printf("cannot open scene %s",filename); return 0;}
 	
 	doc.setChildren();
 	
-	if(findMesh(meshname) !=1) { cout<<"cannot find mesh "<<meshname; return 0;}
+	if(findMesh(meshname) !=1) { printf("cannot find mesh %s",meshname); return 0;}
 	
 	ifstream ffin;
 	int pos, size;
@@ -1288,7 +1287,7 @@ void FXMLMesh::setHDRLighting(const XYZ* coeff)
 
 void FXMLMesh::resetHDRLighting()
 {
-	for(unsigned i=0; i<16; i++) usr_hdrCoeff[i] = XYZ(hdrCoeff[i*16], hdrCoeff[i*16+1], hdrCoeff[i*16+2]);
+	for(unsigned i=0; i<16; i++) usr_hdrCoeff[i] = XYZ(hdrCoeff[i*3], hdrCoeff[i*3+1], hdrCoeff[i*3+2]);
 }
 
 void FXMLMesh::interpolateRT(int lo, int hi, int frame, float weight, const char* extension, int fpv)

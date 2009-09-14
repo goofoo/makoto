@@ -132,10 +132,10 @@ MStatus obj2mcf::doIt( const MArgList& args )
 		int *vertex_id = new int[polygonConnects.length()];
 		int *uv_id = new int[polygonConnects.length()];
 		
-		cout<<" N face: "<<polygonCounts.length()<<endl;
-		cout<<" N face vertex: "<<polygonConnects.length()<<endl;
-		cout<<" N vertex: "<<vertexArray.length()<<endl;
-		cout<<" N uv: "<<uArray.length()<<endl;
+		//cout<<" N face: "<<polygonCounts.length()<<endl;
+		//cout<<" N face vertex: "<<polygonConnects.length()<<endl;
+		//cout<<" N vertex: "<<vertexArray.length()<<endl;
+		//cout<<" N uv: "<<uArray.length()<<endl;
 
 		for(unsigned int  i = 0; i < polygonCounts.length(); i++ ) fcbuf[i] = polygonCounts[i];
 		

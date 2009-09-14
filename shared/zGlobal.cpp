@@ -1,5 +1,7 @@
 #include "zGlobal.h"
-
+#include <fstream>
+#include <stdlib.h>
+#include <time.h>
 void zGlobal::divideByFirstSpace(std::string& ab2a, std::string& b)
 {
 	b = ab2a;
@@ -220,14 +222,13 @@ void zGlobal::cutfilepath(std::string& res)
 #ifdef WIN32
 #include <windows.h>
 #endif
-#include <iostream>
 
 void zGlobal::saveFloatFile(const char* filename, const int nfloat, const float* data)
 {
 	std::string tmpfile = filename;
 	cutfilepath(tmpfile);
 	
-	std::cout<<" saving "<<tmpfile<<std::endl;
+	//std::cout<<" saving "<<tmpfile<<std::endl;
 	
 	std::ofstream ffile;
 	ffile.open(tmpfile.c_str(), std::ios::out | std::ios::binary);

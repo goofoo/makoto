@@ -6,7 +6,7 @@
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
  *
  */
-#include "../sh_lighting/FQSplat.h"
+#include "../sh_lighting/FQSPLAT.h"
 #include "FXMLMesh.h"
 #include "FXMLScene.h"
 #include "XMLUtil.h"
@@ -414,7 +414,7 @@ void FXMLScene::dice(int n_cell)
 	{
 		if(m_mesh[i]->hasAttrib("noShadow") !=1)
 		{
-			cout<<" dicing "<<m_mesh[i]->getMeshName();
+			printf(" dicing %s",m_mesh[i]->getMeshName());
 
 			int estimate_ncell = m_mesh[i]->getNumTriangle()*n_cell*2;
 			estimate_ncell += estimate_ncell/9;
@@ -425,7 +425,7 @@ void FXMLScene::dice(int n_cell)
 			float epsilon = sqrt(m_mesh[i]->getArea()/m_mesh[i]->getNumTriangle()/2/n_cell);
 			m_mesh[i]->dice(epsilon, samp, n_samp);
 			
-			cout<<" n samples: "<<n_samp<<endl;
+			printf(" n samples: %i",n_samp);
 			
 			FQSPLAT* psplat = new FQSPLAT();
 			psplat->createNoColor(samp, n_samp);
@@ -449,7 +449,7 @@ void FXMLScene::diceWithRTandColor(int n_cell)
 	{
 		if(m_mesh[i]->hasAttrib("noShadow") !=1)
 		{
-			cout<<" dicing "<<m_mesh[i]->getMeshName();
+			printf(" dicing %s",m_mesh[i]->getMeshName());
 
 			//int estimate_ncell = m_mesh[i]->getNumTriangle()*n_cell*2;
 			//estimate_ncell += estimate_ncell/9;
@@ -471,7 +471,7 @@ void FXMLScene::diceWithRTandColor(int n_cell)
 			//delete[] coe_samp;
 		}
 	}
-	cout<<" n samples: "<<n_samp<<endl;
+	printf(" n samples: %i",n_samp);
 	
 	m_rt_tree = new FQSPLAT();
 	m_rt_tree->createRTandColor(samp, coe_samp, n_samp);
@@ -488,12 +488,7 @@ void FXMLScene::dice(int n_cell, FQSPLAT* cloud) const
 	pcdSample* samp = new pcdSample[estimate_ncell];
 	int n_samp = 0;
 	
-	
-	
-	//float epsilon = sqrt(m_scene_area/m_scene_numtri/2/n_cell);
-	//cout<<" global grid: "<<epsilon<<endl;
-	
-	cout<<" dicing... ";
+	printf(" dicing... ");
 	
 	for(unsigned i=0; i<m_mesh.size(); i++) 
 	{
@@ -501,7 +496,7 @@ void FXMLScene::dice(int n_cell, FQSPLAT* cloud) const
 		m_mesh[i]->dice(epsilon, samp, n_samp);
 	}
 
-	cout<<"\r n samples: "<<n_samp<<endl;
+	printf("\r n samples: %i",n_samp);
 	cloud->createNoColor(samp, n_samp);
 	delete[] samp;
 }
@@ -514,7 +509,7 @@ void FXMLScene::diceLight(int n_cell, FQSPLAT* cloud) const
 	pcdSample* samp = new pcdSample[estimate_ncell];
 	int n_samp = 0;
 	
-	cout<<" dicing... ";
+	printf(" dicing... ");
 	
 	for(unsigned i=0; i<m_light.size(); i++) 
 	{
@@ -522,7 +517,7 @@ void FXMLScene::diceLight(int n_cell, FQSPLAT* cloud) const
 		m_light[i]->dice(epsilon, samp, n_samp);
 	}
 
-	cout<<"\r n light samples: "<<n_samp<<endl;
+	printf("\r n light samples: %i",n_samp);
 	cloud->create(samp, n_samp);
 	delete[] samp;
 }
@@ -536,7 +531,7 @@ void FXMLScene::diceWithRT(int n_cell, FQSPLAT* cloud) const
 	CoeRec* coe_samp = new CoeRec[estimate_ncell];
 	int n_samp = 0;
 	
-	cout<<" dicing... ";
+	printf(" dicing... ");
 	
 	for(unsigned i=0; i<m_mesh.size(); i++) 
 	{
@@ -544,7 +539,7 @@ void FXMLScene::diceWithRT(int n_cell, FQSPLAT* cloud) const
 		m_mesh[i]->diceWithRT(epsilon, samp, coe_samp, n_samp);
 	}
 
-	cout<<"\r n samples: "<<n_samp<<endl;
+	printf("\r n samples: %i",n_samp);
 	cloud->createRT(samp, coe_samp, n_samp);
 	delete[] samp;
 	delete[] coe_samp;

@@ -1,11 +1,7 @@
 #ifndef _Z_GLOBAL_H
 #define _Z_GLOBAL_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <string>
-#include <fstream>
-#include <time.h>
 
 class zGlobal
 {
