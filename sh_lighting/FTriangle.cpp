@@ -1,5 +1,4 @@
-#include "ftriangle.h"
-#include <iostream>
+#include "FTriangle.h"
 
 FTriangle::FTriangle()
 {}

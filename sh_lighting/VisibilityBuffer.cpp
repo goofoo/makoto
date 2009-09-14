@@ -1,4 +1,4 @@
-#include "visibilitybuffer.h"
+#include "VisibilityBuffer.h"
 
 CVisibilityBuffer::CVisibilityBuffer(void)
 {

@@ -1,7 +1,5 @@
 #include "FMCFMesh.h"
-#include "gBase.h"
-#include <iostream>
-using namespace std;
+#include "gBase.h"
 
 FMCFMesh::FMCFMesh(void):is_null(1), 
 faceCount(0), 

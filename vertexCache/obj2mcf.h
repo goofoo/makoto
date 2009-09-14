@@ -15,8 +15,6 @@
 #include <maya/MSyntax.h>
 #include <maya/MArgDatabase.h>
 
-//#include "meshInfo.h"
-
 class obj2mcf : public MPxCommand
 {
 public :

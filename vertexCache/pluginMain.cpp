@@ -24,13 +24,12 @@ MStatus initializePlugin( MObject obj )
 MStatus status;
 MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.6.0 08/03/09", "Any" );
 
-	//if( licenseIsValid ( "C:/flexlm/shot_sculptor.lic" ) ) {
-		status = plugin.registerCommand( "vxCache", vxCache::creator, vxCache::newSyntax);
+	status = plugin.registerCommand( "vxCache", vxCache::creator, vxCache::newSyntax);
 		if (!status) {
 			status.perror("registerCommand");
 			return status;
 		}
-	//}
+
 	status = plugin.registerCommand( "obj2mcf", obj2mcf::creator, obj2mcf::newSyntax);
 		if (!status) {
 			status.perror("registerCommand");
@@ -96,7 +95,7 @@ MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.6.0 08/03/09", "Any" );
 	}
 	
 	MGlobal::executeCommand ( "source vertexCacheMenus.mel;meshCacheMakeMenus;" );
- 
+
  return MS::kSuccess;
  }
  
@@ -105,7 +104,6 @@ MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.6.0 08/03/09", "Any" );
 MStatus status;
 MFnPlugin plugin( obj );
 
-	//if( licenseIsValid ( "C:/flexlm/shot_sculptor.lic" ) ) {
 		status = plugin.deregisterCommand( "vxCache" );
 		if (!status) {
 		      status.perror("deregisterCommand");
@@ -123,6 +121,12 @@ MFnPlugin plugin( obj );
 		      status.perror("deregisterCommand");
 		      return status;
 		}
+
+	status = plugin.deregisterNode( meshCacheNode::id );
+	if (!status) {
+		status.perror("deregisterNode");
+		return status;
+	}
 		
 		status = plugin.deregisterNode( vxCacheDeformer::id );
 		if (!status) {
@@ -130,20 +134,12 @@ MFnPlugin plugin( obj );
 		      return status;
 		}
 	
-	//}
-	
 		status = plugin.deregisterCommand( "xmlMeshCache" );
 		if (!status) {
 		      status.perror("deregisterCommand");
 		      return status;
 		}
 
-status = plugin.deregisterNode( meshCacheNode::id );
-	if (!status) {
-		status.perror("deregisterNode");
-		return status;
-	}
-	
 	status = plugin.deregisterNode( meshCacheVizNode::id );
 	if (!status) {
 		      status.perror("deregisterCommand");
@@ -156,7 +152,7 @@ status = plugin.deregisterNode( meshCacheNode::id );
 		return status;
 	}
 	
-			status = plugin.deregisterCommand( "importSceneCache" );
+	status = plugin.deregisterCommand( "importSceneCache" );
 		if (!status) {
 		      status.perror("deregisterCommand");
 		      return status;

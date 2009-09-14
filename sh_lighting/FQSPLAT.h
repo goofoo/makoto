@@ -2,7 +2,6 @@
 #define _FQSPLAT_H
 #include "../shared/zData.h"
 #include <string>
-#include <iostream>
 #include <fstream>
 #include "VisibilityBuffer.h"
 using namespace std;

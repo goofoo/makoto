@@ -27,7 +27,12 @@ struct XYZ
 	XYZ(const float v) {x= y= z=v;}
 	XYZ(const int v) {x= y= z=(float)v;}
 	XYZ(const float* p) {x= p[0]; y=p[1]; z=p[2];}
-	XYZ(const float& _x, const float& _y, const float& _z):x(_x), y(_y), z(_z) {}
+	XYZ(const float& _x, const float& _y, const float& _z) 
+	{
+		x = _x;
+		y = _y;
+		z = _z;
+	}
 	XYZ(const XYZ& from, const XYZ& to) 
 	{
 		x = to.x - from.x; 

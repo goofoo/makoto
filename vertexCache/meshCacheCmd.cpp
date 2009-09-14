@@ -128,8 +128,8 @@ MStatus vxCache::writeMesh(const char* filename, MDagPath meshDag, const MObject
 	mesh.numUVs = meshFn.numUVs(uvset, &status);
 	mesh.skip_interreflection = mesh.skip_scattering = 0;
 	
-	if(zWorks::hasNamedAttribute(meshObj, "_prt_ig_intr") == 1) mesh.skip_interreflection = 1;
-	if(zWorks::hasNamedAttribute(meshObj, "_prt_ig_scat") == 1) mesh.skip_scattering = 1;
+	//if(zWorks::hasNamedAttribute(meshObj, "_prt_ig_intr") == 1) mesh.skip_interreflection = 1;
+	//if(zWorks::hasNamedAttribute(meshObj, "_prt_ig_scat") == 1) mesh.skip_scattering = 1;
 
 	//zWorks::displayIntParam("N Face", mesh.numPolygons);
 	//zWorks::displayIntParam("N Vertex", mesh.numVertices);
