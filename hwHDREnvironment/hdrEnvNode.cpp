@@ -108,6 +108,7 @@ hdrEnvNode::hdrEnvNode() : m_tex(0),f_hdr(0),m_program(0)
 	m_size = 100;
 	m_exposure = 0.0f;
 	f_sh = new sphericalHarmonics();
+	
 }
 
 hdrEnvNode::~hdrEnvNode() 
@@ -198,7 +199,7 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 				
 				glTexCoord4f(m_pST[j*IMG_W+i1].x, m_pST[j*IMG_W+i1].y, 0, 0);
 				glVertex3f(m_pPos[j*IMG_W+i1].x*m_size, m_pPos[j*IMG_W+i1].y*m_size, m_pPos[j*IMG_W+i1].z*m_size);
-
+				
 				glTexCoord4f(m_pST[j1*IMG_W+i1].x, m_pST[j1*IMG_W+i1].y, 0, 0);
 				glVertex3f(m_pPos[j1*IMG_W+i1].x*m_size, m_pPos[j1*IMG_W+i1].y*m_size, m_pPos[j1*IMG_W+i1].z*m_size);
 			}

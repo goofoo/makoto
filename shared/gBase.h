@@ -32,14 +32,9 @@
 
 #include "zData.h"
 
-extern PFNGLMULTITEXCOORD4FARBPROC		glMultiTexCoord4fARB;
-
 class gBase
 {
 public :
-	static int initExt();
-	static char checkEXT();
-	static const char* checkEXT(const char* name);
 	static void drawLocator(const XYZ& origin);
 	static void drawCoordinate();
 	static void drawTex2DCoordinate();
@@ -56,9 +51,6 @@ public :
 	static void drawQuad(float x, float y, float z, float w, float t);
 	static void genTexture(GLuint& tex, GLenum target, int width, int height, GLint internalformat, GLenum format, GLenum type);
 	static void genTexture(GLuint& tex, GLenum target, int width, int height, GLint internalformat, GLenum format, GLenum type, const float* data);
-	//static void checkOcclusionQuerySupported();
-	//static void genQuery(GLuint n, GLuint* ids);
-	//static void deleteQuery(GLuint n, GLuint* ids);
 	static void drawTextureQuad(GLuint width, GLint height, const float* data, float exposure);
 	static void drawTextureSphere(GLuint width, GLint height, const float* data, float exposure, XYZ* coord);
 	static void getSphCoord(GLuint width, GLint height, XYZ* data);

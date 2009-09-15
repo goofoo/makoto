@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "gBase.h"
-
+/*
 #ifdef WIN32 
 PFNGLMULTITEXCOORD1IARBPROC glMultiTexCoord1iARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glMultiTexCoord2iARB = NULL;
@@ -105,7 +105,7 @@ const char* gBase::checkEXT(const char* name)
 	//if( strstr( ext, name ) == NULL ) return 0;
 	return ext;
 }
-
+*/
 void gBase::drawCoordinate()
 {
 		glBegin( GL_LINES );
