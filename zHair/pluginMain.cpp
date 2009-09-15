@@ -32,7 +32,7 @@ MStatus initializePlugin( MObject obj )
 		status.perror("registerNode");
 		return status;
 	}
-
+/*
 	status = plugin.registerNode( "ZHairCache", HairDguideNode::id, &HairDguideNode::creator,
 								  &HairDguideNode::initialize,MPxNode::kLocatorNode );
 	if (!status) {
@@ -76,7 +76,7 @@ MStatus initializePlugin( MObject obj )
 	}
 
 	MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
-
+*/
 	return status;
 }
 
@@ -94,7 +94,7 @@ MStatus uninitializePlugin( MObject obj )
 		status.perror("deregisterNode");
 		return status;
 	}
-
+/*
 	status = plugin.deregisterNode( HairDguideNode::id );
 	if (!status) {
 		status.perror("deregisterNode");
@@ -128,6 +128,6 @@ MStatus uninitializePlugin( MObject obj )
 	}
 		
 	MGlobal::executeCommand("zhairRemoveMenus;");
-
+*/
 	return status;
 }

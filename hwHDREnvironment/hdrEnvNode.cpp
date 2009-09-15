@@ -44,7 +44,7 @@ struct HDRLight : public SHFunction
 };
 
 void hdrEnvNode::loadHDR(MString& hdrname)
-{	
+{
 	if(!m_program) delete m_program;
 	m_program = new hdrProgram();
 	if(hdrname=="") return;
@@ -58,12 +58,8 @@ void hdrEnvNode::loadHDR(MString& hdrname)
 	f_hdr = new HDRtexture(hdrname.asChar());
 	if(f_hdr->isValid()) 
 	{
-
-#ifdef LINUX
-		gBase::genTexture(m_tex, GL_TEXTURE_RECTANGLE_ARB, f_hdr->getWidth(), f_hdr->getHeight(), GL_RGBA, GL_RGBA, GL_FLOAT, f_hdr->getTexturePointer());
-#else
 		gBase::genTexture(m_tex, GL_TEXTURE_RECTANGLE_ARB, f_hdr->getWidth(), f_hdr->getHeight(), GL_RGBA32F_ARB, GL_RGBA, GL_FLOAT, f_hdr->getTexturePointer());
-#endif
+
 //				gBase::genTexture(m_tex, GL_TEXTURE_RECTANGLE_NV, f_hdr->getWidth(), f_hdr->getHeight(), GL_FLOAT_RGBA16_NV, GL_RGBA, GL_FLOAT, f_hdr->getTexturePointer());
 //
 		m_width = f_hdr->getWidth();
@@ -90,8 +86,6 @@ void hdrEnvNode::loadHDR(MString& hdrname)
 
 hdrEnvNode::hdrEnvNode() : m_tex(0),f_hdr(0),m_program(0)
 {
-	gBase::initExt();
-	
 	m_width = m_height = 1;
 	
 	m_pPos = new XYZ[IMG_W*IMG_H];
@@ -181,7 +175,7 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 	if(!m_program) return;
 	view.beginGL(); 
 
-	glPushAttrib( GL_POLYGON_BIT );
+	glPushAttrib( GL_ALL_ATTRIB_BITS );
 	glEnable(GL_CULL_FACE);
 	if(ireverse==1) glFrontFace(GL_CW);
 	else glFrontFace(GL_CCW);
@@ -196,16 +190,16 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 			{
 				i1 = i+1;
 
-				gBase::texCoord4f(GL_TEXTURE0_ARB, m_pST[j1*IMG_W+i].x, m_pST[j1*IMG_W+i].y, 0, 0);
+				glTexCoord4f(m_pST[j1*IMG_W+i].x, m_pST[j1*IMG_W+i].y, 0, 0);
 				glVertex3f(m_pPos[j1*IMG_W+i].x*m_size, m_pPos[j1*IMG_W+i].y*m_size, m_pPos[j1*IMG_W+i].z*m_size);
 				
-				gBase::texCoord4f(GL_TEXTURE0_ARB, m_pST[j*IMG_W+i].x, m_pST[j*IMG_W+i].y, 0, 0);
+				glTexCoord4f(m_pST[j*IMG_W+i].x, m_pST[j*IMG_W+i].y, 0, 0);
 				glVertex3f(m_pPos[j*IMG_W+i].x*m_size, m_pPos[j*IMG_W+i].y*m_size, m_pPos[j*IMG_W+i].z*m_size);
 				
-				gBase::texCoord4f(GL_TEXTURE0_ARB, m_pST[j*IMG_W+i1].x, m_pST[j*IMG_W+i1].y, 0, 0);
+				glTexCoord4f(m_pST[j*IMG_W+i1].x, m_pST[j*IMG_W+i1].y, 0, 0);
 				glVertex3f(m_pPos[j*IMG_W+i1].x*m_size, m_pPos[j*IMG_W+i1].y*m_size, m_pPos[j*IMG_W+i1].z*m_size);
 
-				gBase::texCoord4f(GL_TEXTURE0_ARB, m_pST[j1*IMG_W+i1].x, m_pST[j1*IMG_W+i1].y, 0, 0);
+				glTexCoord4f(m_pST[j1*IMG_W+i1].x, m_pST[j1*IMG_W+i1].y, 0, 0);
 				glVertex3f(m_pPos[j1*IMG_W+i1].x*m_size, m_pPos[j1*IMG_W+i1].y*m_size, m_pPos[j1*IMG_W+i1].z*m_size);
 			}
 		}

@@ -13,6 +13,7 @@
 #ifdef WIN32
 # include <windows.h>
 #endif
+
 #ifdef __APPLE__
 # include <OpenGL/gl.h>
 # include <OpenGL/glext.h>
@@ -20,15 +21,24 @@
 #else
 # include <GL/gl.h>
 //# include <GL/glut.h>
-#include "./glext.h"
+#include <GL/glext.h>
+#endif
+
+#ifdef LINUX
+#include <GL/glx.h>
+#include <GL/glxext.h>
+#include <GL/glext.h>
 #endif
 
 #include "zData.h"
+
+extern PFNGLMULTITEXCOORD4FARBPROC		glMultiTexCoord4fARB;
 
 class gBase
 {
 public :
 	static int initExt();
+	static char checkEXT();
 	static const char* checkEXT(const char* name);
 	static void drawLocator(const XYZ& origin);
 	static void drawCoordinate();
@@ -44,7 +54,6 @@ public :
 	static void drawQuadAt(XYZ& pos, XYZ& facing, float size);
 	static void drawSplatST(float s, float t, float radius, float r, float g, float b);
 	static void drawQuad(float x, float y, float z, float w, float t);
-	static void texCoord4f(GLenum target, float x, float y, float z, float w);
 	static void genTexture(GLuint& tex, GLenum target, int width, int height, GLint internalformat, GLenum format, GLenum type);
 	static void genTexture(GLuint& tex, GLenum target, int width, int height, GLint internalformat, GLenum format, GLenum type, const float* data);
 	//static void checkOcclusionQuerySupported();
@@ -59,7 +68,6 @@ public :
 	static void drawSprite(XYZ& center, float width, MATRIX44F& space);
 	static void drawBox(const float xmin, const float xmax, const float ymin, const float ymax, const float zmin, const float zmax);
 	static void drawLineCircleAt(const XYZ& pos, const XYZ& facing, const float& radius);
-	
 };
 #endif
 //~:

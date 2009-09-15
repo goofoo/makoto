@@ -6,7 +6,7 @@
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
  *
  */
-#include "hairMap.h"
+#include "HairMap.h"
 #include "../shared/zWorks.h"
 #include "../shared/gBase.h"
 #include <maya/MItMeshVertex.h>
