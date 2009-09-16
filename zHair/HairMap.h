@@ -136,8 +136,8 @@ public:
 	float getBald() const {return m_bald;}
 	const char* getDensityName() const {return m_densityname.c_str();}
 
-	void setDensityMap(const char* filename);
-	void muliplyDensityMap(float& val, float& s, float& t) const;
+	//void setDensityMap(const char* filename);
+	//void muliplyDensityMap(float& val, float& s, float& t) const;
 	
 private:
 	char has_base, has_guide;
@@ -165,8 +165,8 @@ private:
 	XYZ tip_color, root_color, mutant_color;
 	int* nsegbuf;
 	float m_offset, m_bald, m_snow_size, m_snow_rate;
-	int densmap_w, densmap_h;
-	float* pDensmap;
+	//int densmap_w, densmap_h;
+	//float* pDensmap;
 	char is_nil;
 };
 #endif

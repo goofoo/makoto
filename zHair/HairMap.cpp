@@ -22,7 +22,7 @@ using namespace std;
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
 parray(0),pframe1(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0),is_nil(1)
+draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),/*pDensmap(0),*/is_nil(1)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
@@ -45,7 +45,7 @@ hairMap::~hairMap()
 	if(varray) delete[] varray;
 	if(pNSeg) delete[] pNSeg;
 	if(nsegbuf) delete[] nsegbuf;
-	if(pDensmap) delete[] pDensmap;
+	//if(pDensmap) delete[] pDensmap;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -1123,9 +1123,9 @@ void hairMap::drawBind()
 	}
 	glEnd();
 }
-
+/*
 void hairMap::setDensityMap(const char* filename)
-{/*
+{
 	densmap_w =-1, densmap_h = -1;
 	if(pDensmap) {
 		delete[] pDensmap;
@@ -1144,7 +1144,7 @@ void hairMap::setDensityMap(const char* filename)
 		pDensmap = new float[densmap_w*densmap_h];
 		ZFnEXR::readR(filename, densmap_w, densmap_h, pDensmap);
 		m_densityname = filename;
-	}*/
+	}
 }
 
 void hairMap::muliplyDensityMap(float& val, float& s, float& t) const
@@ -1153,7 +1153,7 @@ void hairMap::muliplyDensityMap(float& val, float& s, float& t) const
 	int is = (densmap_w-1)*s;
 	val *= pDensmap[it*densmap_w + is];
 }
-
+*/
 void hairMap::drawBBox()
 {
 	glBegin(GL_LINES);

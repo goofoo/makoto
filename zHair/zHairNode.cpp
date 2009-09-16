@@ -83,7 +83,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			m_base->initGuide();
 			
 			MString dnmpath = data.inputValue(adensitymap, &status).asString();
-			if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
+			//if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
 			
 			m_base->bind();
 			if(isave==1) 
