@@ -185,24 +185,21 @@ MStatus curvePatchNode::initialize()
 	
 	aSize = numAttr.create("width", "wd",
 						  MFnNumericData::kFloat, 1.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
-    CHECK_MSTATUS( numAttr.setMin(0.01f));
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
+    numAttr.setMin(0.01f);
 	addAttribute(aSize);
 	
 	arotate = numAttr.create("zigzag", "zg",
 						  MFnNumericData::kFloat, 0, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
 	addAttribute(arotate);
 	
 	atwist = numAttr.create("twist", "tw",
 						  MFnNumericData::kFloat, 0.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
 	addAttribute(atwist);
 	
 	zCheckStatus(zWorks::createTypedAttr(aoutput, MString("outMesh"), MString("om"), MFnData::kMesh), "ERROR creating out mesh");

@@ -20,7 +20,7 @@
 #include "../shared/zGlobal.h"
 #include "../shared/zWorks.h"
 #include "HairMap.h"
-#include <iostream>
+
 #include <fstream>
 using namespace std;
 

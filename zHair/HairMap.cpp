@@ -14,9 +14,8 @@
 #include <maya/MItMeshPolygon.h>
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
-#include "../shared/zFnEXR.h"
+//#include "../shared/zFnEXR.h"
 #include "../shared/zGlobal.h"
-#include <iostream>
 #include <fstream>
 using namespace std;
 
@@ -1057,7 +1056,7 @@ int hairMap::loadNext()
 	infile.open(filename.c_str(), ios_base::in | ios_base::binary);
 	if(!infile.is_open()) 
 	{
-		cout<<"Cannot open file: "<<filename<<endl;
+		printf("Cannot open file: %s",filename.c_str());
 		return 0;
 	}
 	
@@ -1126,7 +1125,7 @@ void hairMap::drawBind()
 }
 
 void hairMap::setDensityMap(const char* filename)
-{
+{/*
 	densmap_w =-1, densmap_h = -1;
 	if(pDensmap) {
 		delete[] pDensmap;
@@ -1145,7 +1144,7 @@ void hairMap::setDensityMap(const char* filename)
 		pDensmap = new float[densmap_w*densmap_h];
 		ZFnEXR::readR(filename, densmap_w, densmap_h, pDensmap);
 		m_densityname = filename;
-	}
+	}*/
 }
 
 void hairMap::muliplyDensityMap(float& val, float& s, float& t) const

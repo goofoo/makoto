@@ -95,7 +95,7 @@ void ZFnEXR::readCameraNZ(const char* filename, int width, int height, float* da
 	
 	Box2i dw = file.header().dataWindow();
 	
-	int size = (width)*(height);
+	//int size = (width)*(height);
 	
 	FrameBuffer frameBuffer; 
 	frameBuffer.insert ("R",                                  
