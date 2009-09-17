@@ -9,8 +9,22 @@
 #include <string.h>
 #include <stdio.h>
 #include "gBase.h"
+/*
+#ifdef WIN32 
+PFNGLMULTITEXCOORD1IARBPROC glMultiTexCoord1iARB = NULL;
+PFNGLMULTITEXCOORD2IARBPROC glMultiTexCoord2iARB = NULL;
+PFNGLMULTITEXCOORD3IARBPROC glMultiTexCoord3iARB = NULL;
+PFNGLMULTITEXCOORD4IARBPROC glMultiTexCoord4iARB = NULL;
+PFNGLMULTITEXCOORD1FARBPROC glMultiTexCoord1fARB = NULL;
+PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB = NULL;
+PFNGLMULTITEXCOORD3FARBPROC glMultiTexCoord3fARB = NULL;
+PFNGLMULTITEXCOORD4FARBPROC glMultiTexCoord4fARB = NULL;
+PFNGLGETQUERYIVPROC glGetQueryiv = NULL;
+PFNGLGENQUERIESARBPROC glGenQueriesARB = NULL;
+PFNGLDELETEQUERIESARBPROC glDeleteQueriesARB = NULL;
+#endif
 
-#ifdef WIN32
+#ifdef LINUX
 PFNGLMULTITEXCOORD1IARBPROC glMultiTexCoord1iARB = NULL;
 PFNGLMULTITEXCOORD2IARBPROC glMultiTexCoord2iARB = NULL;
 PFNGLMULTITEXCOORD3IARBPROC glMultiTexCoord3iARB = NULL;
@@ -25,8 +39,8 @@ PFNGLDELETEQUERIESARBPROC glDeleteQueriesARB = NULL;
 #endif
 
 int gBase::initExt()
-{
-#ifdef WIN32
+{printf("try GL Extension initialized");
+#ifdef WIN32 
 	glMultiTexCoord1iARB = (PFNGLMULTITEXCOORD1IARBPROC)wglGetProcAddress("glMultiTexCoord1iARB");
 		glMultiTexCoord2iARB = (PFNGLMULTITEXCOORD2IARBPROC)wglGetProcAddress("glMultiTexCoord2iARB");
 		glMultiTexCoord3iARB = (PFNGLMULTITEXCOORD3IARBPROC)wglGetProcAddress("glMultiTexCoord3iARB");
@@ -46,6 +60,28 @@ int gBase::initExt()
 			return 0;
 		}
 #endif
+
+#ifdef LINUX 
+	glMultiTexCoord1iARB = (PFNGLMULTITEXCOORD1IARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord1iARB");
+		glMultiTexCoord2iARB = (PFNGLMULTITEXCOORD2IARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord2iARB");
+		glMultiTexCoord3iARB = (PFNGLMULTITEXCOORD3IARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord3iARB");
+		glMultiTexCoord4iARB = (PFNGLMULTITEXCOORD4IARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord4iARB");
+		glMultiTexCoord1fARB = (PFNGLMULTITEXCOORD1FARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord1fARB");
+		glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord2fARB");
+		glMultiTexCoord3fARB = (PFNGLMULTITEXCOORD3FARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord3fARB");
+		glMultiTexCoord4fARB = (PFNGLMULTITEXCOORD4FARBPROC)glXGetProcAddressARB((const GLubyte*)"glMultiTexCoord4fARB");
+		glGetQueryiv = (PFNGLGETQUERYIVPROC)glXGetProcAddressARB((const GLubyte*)"glGetQueryiv");
+		glGenQueriesARB = (PFNGLGENQUERIESARBPROC)glXGetProcAddressARB((const GLubyte*)"glGenQueriesARB");
+		glDeleteQueriesARB = (PFNGLDELETEQUERIESARBPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteQueriesARB");
+		
+		if( !glMultiTexCoord1iARB || !glMultiTexCoord2iARB || !glMultiTexCoord3iARB || !glMultiTexCoord4iARB ||
+		!glMultiTexCoord1fARB || !glMultiTexCoord2fARB || !glMultiTexCoord3fARB || !glMultiTexCoord4fARB || 
+		!glGetQueryiv || !glGenQueriesARB || !glDeleteQueriesARB )
+		{
+			printf("cannot get some gl ext");
+			return 0;
+		}
+#endif
 		const char *glversion = (const char*)glGetString(GL_VERSION);
 		printf("GL Version: %s ",glversion);
 		
@@ -57,13 +93,19 @@ int gBase::initExt()
 		return 1;
 }
 
+char gBase::checkEXT()
+{
+	if(!glMultiTexCoord4fARB) return 0;
+	return 1;
+}
+
 const char* gBase::checkEXT(const char* name)
 {
 	const char *ext = (const char*)glGetString( GL_EXTENSIONS );
 	//if( strstr( ext, name ) == NULL ) return 0;
 	return ext;
 }
-
+*/
 void gBase::drawCoordinate()
 {
 		glBegin( GL_LINES );
@@ -789,11 +831,6 @@ void gBase::drawQuad(float x, float y, float z, float w, float t)
 	glTexCoord2f(t, t); glVertex3f(x+w, y+w, z);
 	glTexCoord2f(0, t); glVertex3f(x, y+w, z);
 	glEnd();
-}
-
-void gBase::texCoord4f(GLenum target, float x, float y, float z, float w)
-{
-	glMultiTexCoord4fARB(target, x, y, z, w);
 }
 
 void gBase::genTexture(GLuint& tex, GLenum target, int width, int height, GLint internalformat, GLenum format, GLenum type)

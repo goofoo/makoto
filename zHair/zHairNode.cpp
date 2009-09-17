@@ -83,7 +83,7 @@ MStatus HairNode::compute( const MPlug& plug, MDataBlock& data )
 			m_base->initGuide();
 			
 			MString dnmpath = data.inputValue(adensitymap, &status).asString();
-			if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
+			//if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
 			
 			m_base->bind();
 			if(isave==1) 
@@ -176,34 +176,34 @@ MStatus HairNode::initialize()
 	
 	alengthnoise = numAttr.create("kink", "kink",
 						  MFnNumericData::kFloat, 0.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
+
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
 	addAttribute(alengthnoise);
 	
 	aSize = numAttr.create("clumping", "clp",
 						  MFnNumericData::kFloat, 0.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
-    CHECK_MSTATUS( numAttr.setDefault(0.f));
+
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
+    numAttr.setDefault(0.f);
 	numAttr.setCached( true );
 	addAttribute(aSize);
 	
 	aoffset = numAttr.create("offset", "ofs",
 						  MFnNumericData::kFloat, 0.f, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( numAttr.setStorable(true));
-    CHECK_MSTATUS( numAttr.setKeyable(true));
-    CHECK_MSTATUS( numAttr.setDefault(0.f));
+
+    numAttr.setStorable(true);
+    numAttr.setKeyable(true);
+    numAttr.setDefault(0.f);
 	numAttr.setCached( true );
 	addAttribute(aoffset);
 	
 	aHDRName = tAttr.create("cachePath", "cp",
 	MFnData::kString, MObject::kNullObj, &status);
-    CHECK_MSTATUS( status );
-    CHECK_MSTATUS( tAttr.setStorable(true));
-    CHECK_MSTATUS( tAttr.setKeyable(false));
+
+    tAttr.setStorable(true);
+    tAttr.setKeyable(false);
 	tAttr.setCached( true );
 	
 	zWorks::createMatrixAttr(aworldSpace, "worldSpace", "ws");
@@ -246,7 +246,7 @@ MStatus HairNode::initialize()
 	numAttr.setKeyable(true);
 	addAttribute(aenable);
 	
-	CHECK_MSTATUS( addAttribute(aHDRName));
+	addAttribute(aHDRName);
 	addAttribute(aworldSpace);
 	attributeAffects( alengthnoise, aoutput );
 	attributeAffects( aSize, aoutput );

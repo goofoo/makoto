@@ -6,7 +6,7 @@
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
  *
  */
-#include "hairMap.h"
+#include "HairMap.h"
 #include "../shared/zWorks.h"
 #include "../shared/gBase.h"
 #include <maya/MItMeshVertex.h>
@@ -14,16 +14,15 @@
 #include <maya/MItMeshPolygon.h>
 #include "../shared/FNoise.h"
 #include "../shared/QuickSort.h"
-#include "../shared/zFnEXR.h"
+//#include "../shared/zFnEXR.h"
 #include "../shared/zGlobal.h"
-#include <iostream>
 #include <fstream>
 using namespace std;
 
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
 parray(0),pframe1(0),pconnection(0),uarray(0),varray(0),
 sum_area(0.f),mutant_scale(0.f),
-draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),pDensmap(0),is_nil(1)
+draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),/*pDensmap(0),*/is_nil(1)
 {
 	root_color.x = 1.f; root_color.y = root_color.z = 0.f;
 	tip_color.y = 0.7f; tip_color.x = 0.f; tip_color.z = 0.2f;
@@ -46,7 +45,7 @@ hairMap::~hairMap()
 	if(varray) delete[] varray;
 	if(pNSeg) delete[] pNSeg;
 	if(nsegbuf) delete[] nsegbuf;
-	if(pDensmap) delete[] pDensmap;
+	//if(pDensmap) delete[] pDensmap;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -1057,7 +1056,7 @@ int hairMap::loadNext()
 	infile.open(filename.c_str(), ios_base::in | ios_base::binary);
 	if(!infile.is_open()) 
 	{
-		cout<<"Cannot open file: "<<filename<<endl;
+		printf("Cannot open file: %s",filename.c_str());
 		return 0;
 	}
 	
@@ -1124,7 +1123,7 @@ void hairMap::drawBind()
 	}
 	glEnd();
 }
-
+/*
 void hairMap::setDensityMap(const char* filename)
 {
 	densmap_w =-1, densmap_h = -1;
@@ -1154,7 +1153,7 @@ void hairMap::muliplyDensityMap(float& val, float& s, float& t) const
 	int is = (densmap_w-1)*s;
 	val *= pDensmap[it*densmap_w + is];
 }
-
+*/
 void hairMap::drawBBox()
 {
 	glBegin(GL_LINES);

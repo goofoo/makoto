@@ -1,12 +1,6 @@
-CC =  g++
-CFLAGS = -dynamiclib
-INCS = -I${DELIGHT}/include/ -I/usr/local/include/OpenEXR/
-LIBS = -L${DELIGHT}/lib/ -L/usr/local/lib/ -l3delight -lHalf -lIlmImf
-SRC = hairProcedural.cpp RHair.cpp HairCache.cpp ../shared/DiceTriangle.cpp   BindTriangle.cpp ../shared/FNoise.cpp ../shared/QuickSort.cpp  ../shared/zGlobal.cpp ../shared/zFnEXR.cpp BoundHair.cpp
+include ../shared/buildconfig
+
+SRC = pluginMain.cpp zHairNode.cpp HairMap.cpp BindTriangle.cpp ../shared/QuickSort.cpp ../shared/zWorks.cpp ../shared/FNoise.cpp ../shared/zGlobal.cpp HairDguideNode.cpp guideCommand.cpp hairDeformer.cpp curvePatchNode.cpp combCurveTool.cpp 
 
 all:
-	$(CC) $(CFLAGS) -o hairProcedural.so $(SRC) $(INCS) $(LIBS)
-	renderdl foo.rib
-
-test:
-	renderdl foo.rib
+	$(LD) -o ../module/plug-ins/ZHair.so $(SRC) $(INCLUDES) $(LIBS) -lOpenMayaUI -lOpenMayaAnim

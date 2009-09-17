@@ -20,7 +20,7 @@
 #include "../shared/zGlobal.h"
 #include "../shared/zWorks.h"
 #include "HairMap.h"
-#include <iostream>
+
 #include <fstream>
 using namespace std;
 
@@ -86,7 +86,7 @@ MStatus HairDguideNode::compute( const MPlug& plug, MDataBlock& data )
 				head += ".hairstart";
 				m_base->loadStart(head.c_str());
 				
-				if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
+				//if(dnmpath.length() > 0) m_base->setDensityMap(dnmpath.asChar());
 			}
 			if(!m_base->isNil()) m_base->load(sbuf.c_str());
 			//if(iss != 1) MGlobal::displayWarning(MString("Cannot open file ")+sbuf.c_str());

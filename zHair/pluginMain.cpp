@@ -47,14 +47,6 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 	
-	status = plugin.registerNode( "ZFeatherViz", FeatherNode::id, 
-						 &FeatherNode::creator, &FeatherNode::initialize,
-						 MPxNode::kLocatorNode );
-	if (!status) {
-		status.perror("registerNode");
-		return status;
-	}
-	
 	status = plugin.registerNode( "Curve2Patch", curvePatchNode::id, 
 						 &curvePatchNode::creator, &curvePatchNode::initialize);
 	if (!status) {
@@ -104,12 +96,6 @@ MStatus uninitializePlugin( MObject obj )
 	status = plugin.deregisterCommand( "ZHairGuider" );
 	if (!status) {
 		status.perror("deregisterCommand");
-		return status;
-	}
-	
-	status = plugin.deregisterNode( FeatherNode::id );
-	if (!status) {
-		status.perror("deregisterNode");
 		return status;
 	}
 	
