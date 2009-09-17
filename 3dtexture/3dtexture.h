@@ -14,11 +14,12 @@
 #include <vector>
 #include "../shared/zData.h"
 #include "../shared/OcTree.h"
+#include "../sh_lighting/SphericalHarmonics.h"
 
 struct NamedSHCOEFF
 {
 	string name;
-	SHCOEFF* data;
+	SHB3COEFF* data;
 };
 
 typedef vector<NamedSHCOEFF*>TriDTexSHList;
@@ -31,16 +32,17 @@ public:
 	
 	char loadGrid(const char* filename);
 	void constructTree();
+	void computePower();
 	void draw() const;
+	void drawGrid() const;
 	
-	int getNumGrid() const { return num_grid; }
+	int getNumGrid() const { return m_pTree->getNumGrid(); }
 	int getNumVoxel() const {return m_pTree->getNumVoxel(); }
-	void getGrid(int& idx, XYZ& pos, XYZ& nor, XYZ& col, float& r) const;
+	short getMaxLevel() const {return m_pTree->getMaxLevel();}
 	
 	void doOcclusion();
 private:
-	int num_grid;
-	RGRID* m_pGrid;
+	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
 	TriDTexSHList attrib_sh;
 };

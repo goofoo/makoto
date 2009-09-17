@@ -36,21 +36,7 @@ octreeVizNode::~octreeVizNode()
 MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 { 
 	MStatus status;
-	if(plug == aoutput)
-	{
-		/*
-		XYZ rootCenter;
-		float rootSize;
-		OcTree::getBBox(raw_data, num_raw_data, rootCenter, rootSize);
-		
-		if(tree) delete tree;
-		tree = new OcTree();
-		tree->construct(raw_data, num_raw_data, rootCenter, rootSize,lv);
-		
-		if(raw_area_data||tree) delete[] raw_area_data;
-		raw_area_data = new XYZ[num_raw_area_data];tree->acount = 0;
-		tree->search(position,area,raw_data,raw_area_data,num_raw_area_data);
-		*/
+	if(plug == aoutput) {
 		MString sname = data.inputValue(aHDRName).asString();	
 		if(sname != m_gridname)	{
 			m_gridname = sname;
@@ -59,7 +45,10 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 			m_pTex = new z3dtexture;
 			if(m_pTex->loadGrid(m_gridname.asChar())) {
 				m_pTex->constructTree();
+				m_pTex->computePower();
+				zDisplayFloat(m_pTex->getNumGrid());
 				zDisplayFloat(m_pTex->getNumVoxel());
+				zDisplayFloat(m_pTex->getMaxLevel());
 			}
 		}
 		data.setClean(plug);
@@ -77,13 +66,7 @@ void octreeVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 	glPointSize(3);
 
 	if(m_pTex) {
-		XYZ pos, nor, col;
-		float r;
-		for(int i=0; i<m_pTex->getNumGrid(); i++) {
-			m_pTex->getGrid(i, pos, nor, col, r);
-			gBase::drawSplatAt(pos, nor, r);
-		}
-		
+		m_pTex->drawGrid();
 		m_pTex->draw();
 	}
 	

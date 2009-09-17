@@ -13,8 +13,9 @@
 #include "./glext.h"
 #endif
 
+#include "../sh_lighting/SphericalHarmonics.h"
 
-OcTree::OcTree():root(0),num_voxel(0)
+OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),m_pPower(0)
 {
 }
 
@@ -25,6 +26,8 @@ OcTree::~OcTree()
 
 void OcTree::release()
 {
+	if(m_pGrid) delete[] m_pGrid;
+	if(m_pPower) delete[] m_pPower;
 	if(root) release(root);
 	for(unsigned i=0; i<dSingle.size(); i++) delete[] dSingle[i]->data;
 	for(unsigned i=0; i<dThree.size(); i++) delete[] dThree[i]->data;
@@ -56,14 +59,56 @@ void OcTree::release(TreeNode *node)
 	delete node;
 }
 
-void OcTree::construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level)
+char OcTree::loadGrid(const char* filename)
 {
-	release();
-	if(num_data == 0) return;
+	ifstream ffile;
+	ffile.open(filename, ios::in | ios::binary | ios::ate);
+	
+	if(!ffile.is_open()) return 0;
+
+	ifstream::pos_type size = ffile.tellg();
+	
+	num_grid = (int)size / sizeof(RGRID);
+	
+	m_pGrid = new RGRID[num_grid];
+	
+	ffile.seekg(0, ios::beg);
+	
+	ffile.read((char*)m_pGrid, sizeof(RGRID)*num_grid);
+	
+	ffile.close();
+	return 1;
+}
+
+void OcTree::construct()
+{
+	PosAndId *buf = new PosAndId[num_grid];
+	float mean_r = 0;
+	for(int i=0; i<num_grid; i++) {
+		buf[i].pos = m_pGrid[i].pos;
+		buf[i].idx = i;
+		mean_r += sqrt(m_pGrid[i].area);
+	}
+	mean_r /= num_grid;
+	
+	XYZ rootCenter;
+	float rootSize;
+    getBBox(buf, num_grid, rootCenter, rootSize);
+	rootSize += mean_r;
+	
+	max_level = 0;
+	
+	float minboxsize = rootSize;
+	while(minboxsize > mean_r*2.71) {
+		max_level++;
+		minboxsize /=2;
+	}
+
 	root = new TreeNode();
-	max_level = level;
 	num_voxel = 0;
-	create(root, data, 0, num_data-1, center, size, 0, num_voxel);
+	create(root, buf, 0, num_grid-1, rootCenter, rootSize, 0, num_voxel);
+	
+	delete[] buf;
 }
 
 void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count)
@@ -72,10 +117,14 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 	node->high = high;
 	node->center = center;
 	node->size = size;
-	getMean(data, low, high, node->mean);
-	count++;
+	combineSurfel(data, low, high, node->mean, node->col, node->dir, node->area);
 	node->index = count;
-	if(level == max_level ) return;
+	count++;
+	
+	if(level == max_level) {
+		node->isLeaf = 1;
+		return;
+	}
 
 	level++;
 	float halfsize = size/2;
@@ -171,7 +220,50 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 }
 
-void OcTree::doOcclusion(SHCOEFF* res) const
+void OcTree::computePower(sphericalHarmonics* _sh)
+{
+	m_pPower = new SHB3COEFF[num_voxel];
+	sh = _sh;
+	computePower(root);
+}
+
+void OcTree::computePower(TreeNode *node)
+{
+	if(!node) return;
+	sh->zeroCoeff(m_pPower[node->index].value);
+	if(node->isLeaf) {
+		float H;
+		XYZ one(1.f);
+		for(unsigned j=0; j<SH_N_SAMPLES; j++) {
+			SHSample s = sh->getSample(j);
+			for(unsigned i=node->low; i<= node->high; i++) {
+				H = m_pGrid[i].nor.dot(s.vector)*m_pGrid[i].area;
+				if(H>0) sh->projectASample(m_pPower[node->index].value, j, one*H);
+			}
+		}
+	}
+	else {
+		computePower(node->child000);
+		computePower(node->child001);
+		computePower(node->child010);
+		computePower(node->child011);
+		computePower(node->child100);
+		computePower(node->child101);
+		computePower(node->child110);
+		computePower(node->child111);
+		
+		if(node->child000) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child000->index].value);
+		if(node->child001) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child001->index].value);
+		if(node->child010) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child010->index].value);
+		if(node->child011) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child011->index].value);
+		if(node->child100) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child100->index].value);
+		if(node->child101) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child101->index].value);
+		if(node->child110) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child110->index].value);
+		if(node->child111) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child111->index].value);
+	}
+}
+
+void OcTree::doOcclusion(SHB3COEFF* res) const
 {
 
 }
@@ -422,21 +514,16 @@ void OcTree::load(ifstream& file, TreeNode *node)
 
 void OcTree::draw()
 {
-	if(root) drawCube(root);
+	if(root) drawSurfel(root);
 }
 
 void OcTree::drawCube(const TreeNode *node)
 {
 	if(!node) return;
-	int i = hasColor();
-	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111) {
-			XYZ cen = node->center;
-			float size = node->size;
-			
-			if(i>=0)
-				glColor4f(dThree[i]->data[node->index -1].x, dThree[i]->data[node->index -1].y, dThree[i]->data[node->index -1].z,0.2f);
-			else 
-				glColor4f(0.05f, 0.6f, 0.2f, 0.2f);
+	if(node->isLeaf) {
+		XYZ cen = node->center;
+		float size = node->size;
+		glColor3f(node->col.x, node->col.y, node->col.z);
 	
 		gBase::drawBox(cen, size);
 	}
@@ -449,6 +536,26 @@ void OcTree::drawCube(const TreeNode *node)
 		drawCube(node->child101 );
 		drawCube(node->child110 );
 		drawCube(node->child111 );
+	}
+}
+
+void OcTree::drawSurfel(const TreeNode *node)
+{
+	if(!node) return;
+	if(node->isLeaf) {
+		glColor3f(node->col.x, node->col.y, node->col.z);
+		float r = sqrt(node->area/3.14);
+		gBase::drawSplatAt(node->mean, node->dir, r);
+	}
+	else {
+		drawSurfel(node->child000 );
+		drawSurfel(node->child001 );
+		drawSurfel(node->child010 );
+		drawSurfel(node->child011 );
+		drawSurfel(node->child100 );
+		drawSurfel(node->child101 );
+		drawSurfel(node->child110 );
+		drawSurfel(node->child111 );
 	}
 }
 
@@ -681,13 +788,28 @@ char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
 	return 1;
 }
 
-void OcTree::getMean(const PosAndId *data, const int low, const int high, XYZ& center)
+void OcTree::combineSurfel(const PosAndId *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const
 {
 	center.x = center.y = center.z = 0.f;
+	color.x = color.y = color.z = 0.f;
+	dir.x = dir.y = dir.z = 0.f;
+	area = 0.f;
 	
-	for(int i=low; i<=high; i++) center += data[i].pos;
+	for(int i=low; i<=high; i++) {
+		center += data[i].pos;
+		color += m_pGrid[data[i].idx].col;
+		dir += m_pGrid[data[i].idx].nor;
+		area += m_pGrid[data[i].idx].area;
+	}
 	
 	center /= float(high - low + 1);
+	color /= float(high - low + 1);
+	dir.normalize();
+	
+// testing now use normal as color
+	color.x = 0.5 + 0.5*dir.x;
+	color.y = 0.5 + 0.5*dir.y;
+	color.z = 0.5 + 0.5*dir.z;
 }
 /*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)
@@ -819,6 +941,15 @@ void OcTree::searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex)
 				searchNearVoxel(node->child110,position,treeindex);
 			else
 				searchNearVoxel(node->child111,position,treeindex);
+	}
+}
+
+void OcTree::drawGrid()
+{
+	float r;
+	for(unsigned i=0; i<num_grid; i++) {
+		r = sqrt(m_pGrid[i].area/3.14);
+		gBase::drawSplatAt(m_pGrid[i].pos, m_pGrid[i].nor, r);
 	}
 }
 //:~
