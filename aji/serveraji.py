@@ -1,16 +1,15 @@
 # Server program
 
-import socket, time, threading
+import socket, time, threading, os
 
 class NilProc(threading.Thread):
-        def __init__(self):
+        def __init__(self, scmd):
+                self.scmd = scmd
                 threading.Thread.__init__(self)
         def run(self):
-                print 'hilstart'
-                for n in range(300):
-                        for u in range(300):
-                                print n, ':', u
-                print 'nilend'
+                print 'start'
+                print self.scmd
+                print 'end'
 
 # Set the socket parameters
 host = ''
@@ -40,7 +39,7 @@ while 1:
                                 conn.send('busy')
                         else:
                                 conn.send('roger')
-                                NilProc().start()
+                                NilProc(data[5:]).start()
 # start process here
                                 
                 else:
