@@ -226,8 +226,9 @@ void zGlobal::cutfilepath(std::string& res)
 void zGlobal::saveFloatFile(const char* filename, const int nfloat, const float* data)
 {
 	std::string tmpfile = filename;
+#ifdef WIN32
 	cutfilepath(tmpfile);
-	
+#endif	
 	//std::cout<<" saving "<<tmpfile<<std::endl;
 	
 	std::ofstream ffile;
@@ -242,11 +243,11 @@ void zGlobal::saveFloatFile(const char* filename, const int nfloat, const float*
 	CopyFile(tmpfile.c_str(),filename,0);
 	
 	Sleep(1999);
-#endif	
+	
 	tmpfile = "del " + tmpfile;
 	
 	system(tmpfile.c_str());
-	
+#endif	
 	return;
 }
 

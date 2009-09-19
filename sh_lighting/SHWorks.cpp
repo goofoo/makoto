@@ -429,7 +429,7 @@ void SHWorks::saveRT(const FXMLScene* scene)
 		zGlobal::replacefilename(coeName, meshName);
 		zGlobal::changeFilenameExtension(coeName, "prt");
 		zGlobal::saveFloatFile(coeName.c_str(), n_vert*SH_N_BASES, coebf);
-		Sleep(1999);
+		//Sleep(1999);
 		zGlobal::changeFilenameExtension(coeName, "prtu");
 		zGlobal::saveFloatFile(coeName.c_str(), n_vert*SH_N_BASES, coebf1);
 
@@ -503,13 +503,13 @@ void SHWorks::saveLightRT(const FXMLScene* scene, const FQSPLAT* light)
 		zGlobal::replacefilename(coeName, meshName);
 		zGlobal::changeFilenameExtension(coeName, "prt");
 		zGlobal::saveFloatFile(coeName.c_str(), n_vert*SH_N_BASES, coebf);
-		Sleep(1999);
+		//Sleep(1999);
 		zGlobal::changeFilenameExtension(coeName, "prtu");
 		zGlobal::saveFloatFile(coeName.c_str(), n_vert*SH_N_BASES, coebfu);
-		Sleep(1999);
+		//Sleep(1999);
 		zGlobal::changeFilenameExtension(coeName, "prtl");
 		zGlobal::saveFloatFile(coeName.c_str(), n_vert*3*SH_N_BASES, (float*)coebfl);
-		Sleep(1999);
+		//Sleep(1999);
 		zGlobal::changeFilenameExtension(coeName, "prtj");
 		zGlobal::saveFloatFile(coeName.c_str(), n_vert*3*SH_N_BASES, (float*)coebfj);
 
@@ -592,7 +592,7 @@ void SHWorks::saveScat(const FXMLScene* scene, int n_cell, int iscat, int ibacks
 				zGlobal::replacefilename(coeName, meshName);
 				zGlobal::changeFilenameExtension(coeName, "prts");
 				zGlobal::saveFloatFile(coeName.c_str(), n_vert*SH_N_BASES, coebf);
-				Sleep(1999);
+				//Sleep(1999);
 				zGlobal::changeFilenameExtension(coeName, "prte");
 				zGlobal::saveFloatFile(coeName.c_str(), n_vert*SH_N_BASES, coebf1);
 
