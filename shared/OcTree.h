@@ -7,10 +7,12 @@
 #include <string>
 #include <vector>
 #include "QuickSort.h"
-#include "view.h"
-#include "../shared/gBase.h"
+#include "PerspectiveView.h"
+#include "gBase.h"
 
 using namespace std;
+
+class sphericalHarmonics;
 
 struct NamedSingle
 {
@@ -31,12 +33,12 @@ struct TreeNode
 {
 
 	TreeNode():child000(0),child001(0),child010(0),child011(0),
-		      child100(0),child101(0),child110(0),child111(0)/*,isNull(1)*/ {}
+		      child100(0),child101(0),child110(0),child111(0),isLeaf(0) {}
 
-	unsigned low, high;
-	XYZ center,mean;
-	float size;
-	unsigned index;
+	unsigned low, high, index;
+	XYZ center, mean, col, dir;
+	float size, area;
+	char isLeaf;
 	
 	TreeNode *child000;
 	TreeNode *child001;
@@ -57,8 +59,13 @@ public:
 	void release();
 	void release(TreeNode *node);
 	
-	void construct(PosAndId* data, const int num_data, const XYZ& center, const float size,short level);
+	void construct();
 	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
+	void computePower(sphericalHarmonics* sh);
+	void computePower(TreeNode *node);
+	
+	void doOcclusion(SHB3COEFF* res) const;
+	
 	void addSingle(const float *rawdata, const char* name, const PosAndId *index);
 	void setSingle(float *res, TreeNode *node, const float *rawdata, const PosAndId *index);
 	void addThree(const XYZ *rawdata, const char* name, const PosAndId *index);
@@ -69,29 +76,23 @@ public:
 	
 	int load(const char *filename);
 	void load(ifstream& file, TreeNode *node);
+	char loadGrid(const char* filename);
 	
+	unsigned getNumGrid() const {return num_grid;}
 	unsigned getNumVoxel() const {return num_voxel;}
+	short getMaxLevel() const {return max_level;}
 	int hasColor() const;
 	
-	void draw(const particleView *pview,XYZ facing,string drawType);
-	void drawCube(const TreeNode *node, const particleView *pview);
-	void getDrawList(const TreeNode *node, const particleView *pview,int &index,DataAndId* drawList);
+	void draw();
+	void drawGrid();
+	void drawCube(const TreeNode *node);
+	void drawSurfel(const TreeNode *node);
+	void draw(const PerspectiveView *pview,XYZ facing,string drawType);
+	void drawCube(const TreeNode *node, const PerspectiveView *pview);
+	void getDrawList(const TreeNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	
-	
-	
-	//void saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum);
-    //void saveColor(TreeNode *node,XYZ *color,PosAndId *buf);
-	
-	//void saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsigned sum);
-	//void saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf);
-	
-	
-	
-	//void loadColor(const char*filename,XYZ* &voxelcolor);
-	//void loadVelocity(const char*filename,XYZ* &voxelvelocity);
 	void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
 	void searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex);
 
@@ -100,14 +101,20 @@ public:
 	static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void getBBox(const PosAndId* data, const int num_data, XYZ& center, float& size);
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
-	static void getMean(const PosAndId *data, const int low, const int high, XYZ& center);
+	void combineSurfel(const PosAndId *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
+	
 private:
 	
 	TreeNode *root;
 	short max_level;
 	unsigned num_voxel;
 	
+	int num_grid;
+	RGRID* m_pGrid;
 	
 	VoxSingleList dSingle;
 	VoxThreeList dThree;
+	
+	SHB3COEFF* m_pPower;
+	sphericalHarmonics* sh;
 };

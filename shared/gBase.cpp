@@ -249,9 +249,6 @@ void gBase::drawSplatAt(const XYZ& pos, const XYZ& facing, const float& r)
 	mat.transform(p21);
 	mat.transform(p23);
 
-	
-	glColor4f(0.5f+facing.x/2, 0.5f+facing.y/2, 0.5f+facing.z/2, 0.0625);
-	//glColor3f(data.col.x, data.col.y, data.col.z);
 	glBegin(GL_POLYGON);
 	glVertex3f(p1.x, p1.y, p1.z);
 	glVertex3f(p3.x, p3.y, p3.z);
@@ -317,10 +314,9 @@ void gBase::drawSplatAt(XYZ& pos, XYZ& facing, float r)
 	mat.transform(p21);
 	mat.transform(p23);
 
-	
 	glColor4f(0.5f+facing.x/2, 0.5f+facing.y/2, 0.5f+facing.z/2, 0.0625);
 	//glColor3f(data.col.x, data.col.y, data.col.z);
-	glBegin(GL_POLYGON);
+	glBegin(GL_LINE_LOOP);
 	glVertex3f(p1.x, p1.y, p1.z);
 	glVertex3f(p3.x, p3.y, p3.z);
 	glVertex3f(p5.x, p5.y, p5.z);
@@ -1048,6 +1044,41 @@ void gBase::drawBox(const float xmin, const float xmax, const float ymin, const 
 			glVertex3f(xmin, ymin, zmax);
 			glVertex3f(xmin, ymax, zmax);
 			glVertex3f(xmin, ymax, zmin);
+	glEnd();
+}
+
+void gBase::drawBox(const XYZ& cen, const float& size)
+{
+	glBegin(GL_QUADS);
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			
+			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y - size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y - size, cen.z + size);
+
+			glVertex3f(cen.x - size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
+			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
+			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
 	glEnd();
 }
 

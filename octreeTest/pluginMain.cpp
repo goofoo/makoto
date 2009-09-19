@@ -8,7 +8,7 @@
 #include <maya/MFnPlugin.h>
 #include <maya/MGlobal.h>
 #include "octreeVizNode.h"
-#include "pmapCmd.h"
+#include "shVizNode.h"
 
 // The initializePlugin method is called by Maya when the
 // plugin is loaded. It registers the hwbruiseMapShader node
@@ -18,7 +18,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "0.0.6 - 06/22/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "0.0.7 - 02/09/09", "Any");
 
 	status = plugin.registerNode( "ZOctreeViz", octreeVizNode::id, 
 						 &octreeVizNode::creator, &octreeVizNode::initialize,
@@ -27,13 +27,14 @@ MStatus initializePlugin( MObject obj )
 		status.perror("registerNode");
 		return status;
 	}
-
-	status = plugin.registerCommand( "pmapCmd", pmapCmd::creator ,pmapCmd::newSyntax );
+	
+	status = plugin.registerNode( "SHViz", shVizNode::id, 
+						 &shVizNode::creator, &shVizNode::initialize,
+						 MPxNode::kLocatorNode );
 	if (!status) {
-		status.perror("registerCommand");
+		status.perror("registerNode");
 		return status;
 	}
-
 	
 	//MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
 
@@ -54,13 +55,12 @@ MStatus uninitializePlugin( MObject obj )
 		status.perror("deregisterNode");
 		return status;
 	}
-    
-	status = plugin.deregisterCommand( "pmapCmd" );
+ 
+	status = plugin.deregisterNode( shVizNode::id );
 	if (!status) {
-		status.perror("deregisterCommand");
+		status.perror("deregisterNode");
 		return status;
 	}
-
 
 	//MGlobal::executeCommand("zhairRemoveMenus;");
 

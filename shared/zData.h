@@ -386,6 +386,12 @@ struct sssSample
 	float length;
 };
 
+struct RGRID
+{
+	XYZ pos, nor, col;
+	float area;
+};
+
 struct pcdSample
 {
 	pcdSample() { area = 0.0f;}
@@ -752,5 +758,10 @@ struct CoeSample
 	XYZ pos, nor, col;
 	float area;
 	float coe[16];
+};
+
+struct SHB3COEFF
+{
+	XYZ value[9];
 };
 #endif /* ZDATA_H */

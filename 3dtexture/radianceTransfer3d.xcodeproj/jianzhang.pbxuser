@@ -1,0 +1,143 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeArchitecture = i386;
+		activeBuildConfigurationName = Release;
+		activeExecutable = 7FA29F60104E46E500C0A625 /* radianceTransfer3d */;
+		activeTarget = 8DD76F620486A84900D96B5E /* radianceTransfer3d */;
+		addToTargets = (
+			8DD76F620486A84900D96B5E /* radianceTransfer3d */,
+		);
+		codeSenseManager = 7FA29F69104E46F000C0A625 /* Code sense */;
+		executables = (
+			7FA29F60104E46E500C0A625 /* radianceTransfer3d */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					243,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					203,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 273691131;
+			PBXWorkspaceStateSaveDate = 273691131;
+		};
+		sourceControlManager = 7FA29F68104E46F000C0A625 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	08FB7796FE84155DC02AAC07 /* main.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {439, 350}}";
+			sepNavSelRange = "{471, 0}";
+			sepNavVisRange = "{154, 337}";
+			sepNavWindowFrame = "{{555, 117}, {495, 645}}";
+		};
+	};
+	7FA29F60104E46E500C0A625 /* radianceTransfer3d */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = radianceTransfer3d;
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+	};
+	7FA29F68104E46F000C0A625 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	7FA29F69104E46F000C0A625 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	7FA29F7E104E49D600C0A625 /* 3dtexture.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {586, 1456}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{76, 980}";
+			sepNavWindowFrame = "{{29, 108}, {495, 645}}";
+		};
+	};
+	7FA29F80104E49FA00C0A625 /* OcTree.cpp */ = {
+		uiCtxt = {
+			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{19595, 2575}\";\n        }\n    );\n    r = \"{0, 23431}\";\n}";
+			sepNavIntBoundsRect = "{{0, 0}, {830, 10626}}";
+			sepNavSelRange = "{1638, 0}";
+			sepNavVisRange = "{3564, 997}";
+			sepNavWindowFrame = "{{398, 99}, {589, 647}}";
+		};
+	};
+	7FA29F82104E49FA00C0A625 /* gBase.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {944, 14154}}";
+			sepNavSelRange = "{25085, 54}";
+			sepNavVisRange = "{25140, 1506}";
+			sepNavWindowFrame = "{{599, 94}, {495, 645}}";
+		};
+	};
+	8DD76F620486A84900D96B5E /* radianceTransfer3d */ = {
+		activeExec = 0;
+		executables = (
+			7FA29F60104E46E500C0A625 /* radianceTransfer3d */,
+		);
+	};
+}
