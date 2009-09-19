@@ -62,7 +62,7 @@ class TalkTo(threading.Thread):
 ##                                break
 ##                        else:
                         s.send(jobstack[nleft-1])
-                        print 'sending ',jobstack[nleft-1]
+##                      print 'sending ',jobstack[nleft-1]
                         try:
                                 data = s.recv(1024)
                         except socket.error, msg:
@@ -70,11 +70,10 @@ class TalkTo(threading.Thread):
                                 break
                         if data:
                                 if data == 'roger':
-                                        nleft -= 1
-                                        print 'sent!',nleft,'left'
-                                
-##                        else:
-##                                print "no reply"
+					nleft -= 1
+                                        print jobstack[nleft],'sent to',self.hostname,',',nleft,'left'
+                        	##else:
+                        		##print data
                         time.sleep(9)
 
                 # Close socket
