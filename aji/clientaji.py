@@ -1,8 +1,15 @@
 # Client program
 
-import socket
-import time
-import threading
+import socket, time, threading
+from optparse import OptionParser
+
+# set command line option
+parser = OptionParser()
+parser.add_option("-f", "--file", dest="filename", help="read ascii job script file")
+args = ["-f", "foo.txt"]
+(options, args) = parser.parse_args()
+
+print 'read job script',options.filename
 
 # Set the socket parameters
 host = '127.0.0.1'
@@ -19,7 +26,15 @@ port = 52907
 #data = s.recv(1024)
 #print 'get reply ', data
 
-nleft = 5
+jobstack = []
+
+f = open(options.filename,'r')
+for line in f:
+        jobstack.append(line[:len(line)-1])
+
+print 'job count: ', len(jobstack)
+
+nleft = len(jobstack)
 
 class TalkTo(threading.Thread):
         def __init__(self, hostname):
@@ -46,8 +61,8 @@ class TalkTo(threading.Thread):
 ##                                print 'empty input stop talk to', self.hostname
 ##                                break
 ##                        else:
-                        s.send('file')
-                        print 'sending file '
+                        s.send(jobstack[nleft-1])
+                        print 'sending ',jobstack[nleft-1]
                         try:
                                 data = s.recv(1024)
                         except socket.error, msg:
@@ -55,8 +70,8 @@ class TalkTo(threading.Thread):
                                 break
                         if data:
                                 if data == 'roger':
-                                        print 'file left ', nleft
                                         nleft -= 1
+                                        print 'sent!',nleft,'left'
                                 
 ##                        else:
 ##                                print "no reply"
