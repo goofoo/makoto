@@ -1,0 +1,304 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 44;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		7F88C3B71065EF81002405A5 /* photosynth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3B61065EF81002405A5 /* photosynth.cpp */; };
+		7F88C3C31065F0B5002405A5 /* FColorSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3B91065F0B5002405A5 /* FColorSet.cpp */; };
+		7F88C3C41065F0B5002405A5 /* FFloatSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3BA1065F0B5002405A5 /* FFloatSet.cpp */; };
+		7F88C3C51065F0B5002405A5 /* FUVSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3BB1065F0B5002405A5 /* FUVSet.cpp */; };
+		7F88C3C71065F0B5002405A5 /* FXMLMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3BD1065F0B5002405A5 /* FXMLMesh.cpp */; };
+		7F88C3C81065F0B5002405A5 /* FXMLScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3BE1065F0B5002405A5 /* FXMLScene.cpp */; };
+		7F88C3C91065F0B5002405A5 /* gBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3BF1065F0B5002405A5 /* gBase.cpp */; };
+		7F88C3CA1065F0B5002405A5 /* QuickSort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3C01065F0B5002405A5 /* QuickSort.cpp */; };
+		7F88C3CB1065F0B5002405A5 /* zGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3C11065F0B5002405A5 /* zGlobal.cpp */; };
+		7F88C3CC1065F0B5002405A5 /* zXMLDoc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3C21065F0B5002405A5 /* zXMLDoc.cpp */; };
+		7F88C3D91065F12E002405A5 /* FQSPLAT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3D31065F12E002405A5 /* FQSPLAT.cpp */; };
+		7F88C3DA1065F12E002405A5 /* FTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3D41065F12E002405A5 /* FTriangle.cpp */; };
+		7F88C3DB1065F12E002405A5 /* SHMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3D51065F12E002405A5 /* SHMath.cpp */; };
+		7F88C3DC1065F12E002405A5 /* SHWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3D61065F12E002405A5 /* SHWorks.cpp */; };
+		7F88C3DD1065F12E002405A5 /* VisibilityBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3D71065F12E002405A5 /* VisibilityBuffer.cpp */; };
+		7F88C3DE1065F12E002405A5 /* zSphericalHarmonics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C3D81065F12E002405A5 /* zSphericalHarmonics.cpp */; };
+		7F88C3E11065F167002405A5 /* libxml.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F88C3E01065F167002405A5 /* libxml.framework */; };
+		7F88C3E61065F399002405A5 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F88C3E51065F399002405A5 /* OpenGL.framework */; };
+		7F88C4301065F3CE002405A5 /* hdrtexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C42F1065F3CE002405A5 /* hdrtexture.cpp */; };
+		7F88C4331065F3E2002405A5 /* XMLUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C4321065F3E2002405A5 /* XMLUtil.cpp */; };
+		7F88C4391065F3FA002405A5 /* ApplyMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C4351065F3FA002405A5 /* ApplyMatrix.cpp */; };
+		7F88C43A1065F3FA002405A5 /* GetX90DegreeRotationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C4361065F3FA002405A5 /* GetX90DegreeRotationMatrix.cpp */; };
+		7F88C43B1065F3FA002405A5 /* GetZRotationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C4371065F3FA002405A5 /* GetZRotationMatrix.cpp */; };
+		7F88C43C1065F3FA002405A5 /* RotateSHCoefficients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F88C4381065F3FA002405A5 /* RotateSHCoefficients.cpp */; };
+		8DD76F6A0486A84900D96B5E /* photosynth.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* photosynth.1 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F6A0486A84900D96B5E /* photosynth.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		7F88C3B61065EF81002405A5 /* photosynth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = photosynth.cpp; sourceTree = "<group>"; };
+		7F88C3B91065F0B5002405A5 /* FColorSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FColorSet.cpp; path = ../shared/FColorSet.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3BA1065F0B5002405A5 /* FFloatSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FFloatSet.cpp; path = ../shared/FFloatSet.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3BB1065F0B5002405A5 /* FUVSet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FUVSet.cpp; path = ../shared/FUVSet.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3BD1065F0B5002405A5 /* FXMLMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FXMLMesh.cpp; path = ../shared/FXMLMesh.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3BE1065F0B5002405A5 /* FXMLScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FXMLScene.cpp; path = ../shared/FXMLScene.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3BF1065F0B5002405A5 /* gBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gBase.cpp; path = ../shared/gBase.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3C01065F0B5002405A5 /* QuickSort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickSort.cpp; path = ../shared/QuickSort.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3C11065F0B5002405A5 /* zGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zGlobal.cpp; path = ../shared/zGlobal.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3C21065F0B5002405A5 /* zXMLDoc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zXMLDoc.cpp; path = ../shared/zXMLDoc.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3D31065F12E002405A5 /* FQSPLAT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FQSPLAT.cpp; path = ../sh_lighting/FQSPLAT.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3D41065F12E002405A5 /* FTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FTriangle.cpp; path = ../sh_lighting/FTriangle.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3D51065F12E002405A5 /* SHMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SHMath.cpp; path = ../sh_lighting/SHMath.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3D61065F12E002405A5 /* SHWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SHWorks.cpp; path = ../sh_lighting/SHWorks.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3D71065F12E002405A5 /* VisibilityBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VisibilityBuffer.cpp; path = ../sh_lighting/VisibilityBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3D81065F12E002405A5 /* zSphericalHarmonics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zSphericalHarmonics.cpp; path = ../sh_lighting/zSphericalHarmonics.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C3E01065F167002405A5 /* libxml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libxml.framework; path = /Library/Frameworks/libxml.framework; sourceTree = "<absolute>"; };
+		7F88C3E51065F399002405A5 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = SDKs/MacOSX10.5.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
+		7F88C42F1065F3CE002405A5 /* hdrtexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = hdrtexture.cpp; path = ../shared/hdrtexture.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C4321065F3E2002405A5 /* XMLUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XMLUtil.cpp; path = ../shared/XMLUtil.cpp; sourceTree = SOURCE_ROOT; };
+		7F88C4351065F3FA002405A5 /* ApplyMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ApplyMatrix.cpp; path = "../sh_lighting/SH Rotation/ApplyMatrix.cpp"; sourceTree = SOURCE_ROOT; };
+		7F88C4361065F3FA002405A5 /* GetX90DegreeRotationMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GetX90DegreeRotationMatrix.cpp; path = "../sh_lighting/SH Rotation/GetX90DegreeRotationMatrix.cpp"; sourceTree = SOURCE_ROOT; };
+		7F88C4371065F3FA002405A5 /* GetZRotationMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GetZRotationMatrix.cpp; path = "../sh_lighting/SH Rotation/GetZRotationMatrix.cpp"; sourceTree = SOURCE_ROOT; };
+		7F88C4381065F3FA002405A5 /* RotateSHCoefficients.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RotateSHCoefficients.cpp; path = "../sh_lighting/SH Rotation/RotateSHCoefficients.cpp"; sourceTree = SOURCE_ROOT; };
+		8DD76F6C0486A84900D96B5E /* photosynth */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = photosynth; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6859E8B029090EE04C91782 /* photosynth.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = photosynth.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F88C3E11065F167002405A5 /* libxml.framework in Frameworks */,
+				7F88C3E61065F399002405A5 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* photosynth */ = {
+			isa = PBXGroup;
+			children = (
+				7F88C3E01065F167002405A5 /* libxml.framework */,
+				7F88C3E51065F399002405A5 /* OpenGL.framework */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = photosynth;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7F88C4351065F3FA002405A5 /* ApplyMatrix.cpp */,
+				7F88C4361065F3FA002405A5 /* GetX90DegreeRotationMatrix.cpp */,
+				7F88C4371065F3FA002405A5 /* GetZRotationMatrix.cpp */,
+				7F88C4381065F3FA002405A5 /* RotateSHCoefficients.cpp */,
+				7F88C4321065F3E2002405A5 /* XMLUtil.cpp */,
+				7F88C42F1065F3CE002405A5 /* hdrtexture.cpp */,
+				7F88C3D31065F12E002405A5 /* FQSPLAT.cpp */,
+				7F88C3D41065F12E002405A5 /* FTriangle.cpp */,
+				7F88C3D51065F12E002405A5 /* SHMath.cpp */,
+				7F88C3D61065F12E002405A5 /* SHWorks.cpp */,
+				7F88C3D71065F12E002405A5 /* VisibilityBuffer.cpp */,
+				7F88C3D81065F12E002405A5 /* zSphericalHarmonics.cpp */,
+				7F88C3B91065F0B5002405A5 /* FColorSet.cpp */,
+				7F88C3BA1065F0B5002405A5 /* FFloatSet.cpp */,
+				7F88C3BB1065F0B5002405A5 /* FUVSet.cpp */,
+				7F88C3BD1065F0B5002405A5 /* FXMLMesh.cpp */,
+				7F88C3BE1065F0B5002405A5 /* FXMLScene.cpp */,
+				7F88C3BF1065F0B5002405A5 /* gBase.cpp */,
+				7F88C3C01065F0B5002405A5 /* QuickSort.cpp */,
+				7F88C3C11065F0B5002405A5 /* zGlobal.cpp */,
+				7F88C3C21065F0B5002405A5 /* zXMLDoc.cpp */,
+				7F88C3B61065EF81002405A5 /* photosynth.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* photosynth */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859E8B029090EE04C91782 /* photosynth.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* photosynth */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "photosynth" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = photosynth;
+			productInstallPath = "$(HOME)/bin";
+			productName = photosynth;
+			productReference = 8DD76F6C0486A84900D96B5E /* photosynth */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "photosynth" */;
+			compatibilityVersion = "Xcode 3.0";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* photosynth */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* photosynth */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F88C3B71065EF81002405A5 /* photosynth.cpp in Sources */,
+				7F88C3C31065F0B5002405A5 /* FColorSet.cpp in Sources */,
+				7F88C3C41065F0B5002405A5 /* FFloatSet.cpp in Sources */,
+				7F88C3C51065F0B5002405A5 /* FUVSet.cpp in Sources */,
+				7F88C3C71065F0B5002405A5 /* FXMLMesh.cpp in Sources */,
+				7F88C3C81065F0B5002405A5 /* FXMLScene.cpp in Sources */,
+				7F88C3C91065F0B5002405A5 /* gBase.cpp in Sources */,
+				7F88C3CA1065F0B5002405A5 /* QuickSort.cpp in Sources */,
+				7F88C3CB1065F0B5002405A5 /* zGlobal.cpp in Sources */,
+				7F88C3CC1065F0B5002405A5 /* zXMLDoc.cpp in Sources */,
+				7F88C3D91065F12E002405A5 /* FQSPLAT.cpp in Sources */,
+				7F88C3DA1065F12E002405A5 /* FTriangle.cpp in Sources */,
+				7F88C3DB1065F12E002405A5 /* SHMath.cpp in Sources */,
+				7F88C3DC1065F12E002405A5 /* SHWorks.cpp in Sources */,
+				7F88C3DD1065F12E002405A5 /* VisibilityBuffer.cpp in Sources */,
+				7F88C3DE1065F12E002405A5 /* zSphericalHarmonics.cpp in Sources */,
+				7F88C4301065F3CE002405A5 /* hdrtexture.cpp in Sources */,
+				7F88C4331065F3E2002405A5 /* XMLUtil.cpp in Sources */,
+				7F88C4391065F3FA002405A5 /* ApplyMatrix.cpp in Sources */,
+				7F88C43A1065F3FA002405A5 /* GetX90DegreeRotationMatrix.cpp in Sources */,
+				7F88C43B1065F3FA002405A5 /* GetZRotationMatrix.cpp in Sources */,
+				7F88C43C1065F3FA002405A5 /* RotateSHCoefficients.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(DEVELOPER_DIR)/SDKs/MacOSX10.5.sdk/System/Library/Frameworks\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_GLIBCXX_DEBUG=1",
+					"_GLIBCXX_DEBUG_PEDANTIC=1",
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = photosynth;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(DEVELOPER_DIR)/SDKs/MacOSX10.5.sdk/System/Library/Frameworks\"",
+				);
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = photosynth;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "photosynth" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "photosynth" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

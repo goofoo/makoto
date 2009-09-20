@@ -1,0 +1,147 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeArchitecture = i386;
+		activeBuildConfigurationName = Release;
+		activeExecutable = 7F88C3AB1065EEC5002405A5 /* photosynth */;
+		activeTarget = 8DD76F620486A84900D96B5E /* photosynth */;
+		addToTargets = (
+			8DD76F620486A84900D96B5E /* photosynth */,
+		);
+		codeSenseManager = 7F88C3B21065EEC8002405A5 /* Code sense */;
+		executables = (
+			7F88C3AB1065EEC5002405A5 /* photosynth */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					243,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 275115717;
+			PBXWorkspaceStateSaveDate = 275115717;
+		};
+		perUserProjectItems = {
+			7F88C3CE1065F0C7002405A5 /* PBXTextBookmark */ = 7F88C3CE1065F0C7002405A5 /* PBXTextBookmark */;
+			7F88C3CF1065F0C7002405A5 /* PBXTextBookmark */ = 7F88C3CF1065F0C7002405A5 /* PBXTextBookmark */;
+			7F88C43E1065F40D002405A5 /* PBXTextBookmark */ = 7F88C43E1065F40D002405A5 /* PBXTextBookmark */;
+			7F88C43F1065F40D002405A5 /* PBXTextBookmark */ = 7F88C43F1065F40D002405A5 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 7F88C3B11065EEC8002405A5 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	7F88C3AB1065EEC5002405A5 /* photosynth */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = photosynth;
+		sourceDirectories = (
+		);
+	};
+	7F88C3B11065EEC8002405A5 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	7F88C3B21065EEC8002405A5 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	7F88C3BC1065F0B5002405A5 /* FVisibility.cpp */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.cpp.cpp;
+		name = FVisibility.cpp;
+		path = /Users/jianzhang/Documents/plankton/shared/FVisibility.cpp;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {506, 9520}}";
+			sepNavSelRange = "{0, 27}";
+			sepNavVisRange = "{0, 298}";
+		};
+	};
+	7F88C3CE1065F0C7002405A5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: .\\fvisibility.h: No such file or directory";
+		fRef = 7F88C3BC1065F0B5002405A5 /* FVisibility.cpp */;
+		rLen = 1;
+		rLoc = 0;
+		rType = 1;
+	};
+	7F88C3CF1065F0C7002405A5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F88C3BC1065F0B5002405A5 /* FVisibility.cpp */;
+		name = "FVisibility.cpp: 1";
+		rLen = 27;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 212;
+		vrLoc = 0;
+	};
+	7F88C3D61065F12E002405A5 /* SHWorks.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {788, 10500}}";
+			sepNavSelRange = "{11379, 0}";
+			sepNavVisRange = "{11262, 369}";
+		};
+	};
+	7F88C43E1065F40D002405A5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "warning: unused variable 'glb_gridsize'";
+		fRef = 7F88C3D61065F12E002405A5 /* SHWorks.cpp */;
+		rLen = 1;
+		rLoc = 461;
+		rType = 1;
+	};
+	7F88C43F1065F40D002405A5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F88C3D61065F12E002405A5 /* SHWorks.cpp */;
+		name = "SHWorks.cpp: 462";
+		rLen = 0;
+		rLoc = 11379;
+		rType = 0;
+		vrLen = 336;
+		vrLoc = 11262;
+	};
+	8DD76F620486A84900D96B5E /* photosynth */ = {
+		activeExec = 0;
+		executables = (
+			7F88C3AB1065EEC5002405A5 /* photosynth */,
+		);
+	};
+}
