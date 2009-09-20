@@ -188,7 +188,6 @@ private:
 	AttribList m_attrib;
 	
 	int findMesh(const char* meshname);
-	//float m_grid;
 	XYZ usr_hdrCoeff[16];
 };
 

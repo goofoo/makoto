@@ -27,7 +27,7 @@ class xmlMeshCache : public MPxCommand
  	static void* creator();
 	static MSyntax newSyntax();
 
-	void orderMesh();
+	//void orderMesh();
 	void save(const char* filename, int frameNumber);
   private:
 

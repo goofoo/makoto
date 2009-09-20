@@ -41,6 +41,9 @@ MSyntax xmlMeshCache::newSyntax()
 	syntax.addFlag("-t", "-title", MSyntax::kString);
 	syntax.addFlag("-bc", "-backscatcamera", MSyntax::kString);
 	syntax.addFlag("-ec", "-eyecamera", MSyntax::kString);
+	syntax.addFlag("-ej", "-externaljob", MSyntax::kString);
+	syntax.addFlag("-fs", "-framestart", MSyntax::kLong );
+	syntax.addFlag("-fe", "-frameend", MSyntax::kLong );
 	
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -136,9 +139,32 @@ MStatus xmlMeshCache::doIt( const MArgList& args )
 	    
 	sprintf( file_name, "%s/%s.%d.scene", cache_path.asChar(), scene_name.asChar(), frame );
 
-	//orderMesh();
 	save(file_name, frame);
-	MGlobal::displayInfo ( MString("Vertex Cache writes ") + file_name);
+	MGlobal::displayInfo ( MString("mesh cache writes ") + file_name);
+	
+	if(argData.isFlagSet("-ej")) {
+		MString jobparam;
+		argData.getFlagArgument("-ej", 0, jobparam);
+		int istart = 1, iend = 1;
+		if(argData.isFlagSet("-fs")) argData.getFlagArgument("-fs", 0, istart);
+		if(argData.isFlagSet("-fe")) argData.getFlagArgument("-fe", 0, iend);
+		
+		string sjob = file_name;
+		zGlobal::cutByFirstDot(sjob);
+		string stitle = sjob;
+		sjob = sjob + ".txt";
+		
+		ofstream ffjob;
+		ffjob.open(sjob.c_str(), ios::out);
+		char job_line[1024];
+		for(int i=istart; i<= iend; i++) {
+			sprintf(job_line, "%s %s.%i.scene\n", jobparam.asChar(), stitle.c_str(), i);
+			ffjob.write((char*)job_line, strlen(job_line));
+		}
+		ffjob.close();
+		
+		MGlobal::displayInfo(MString(" writes external job script: ") + sjob.c_str());
+	}
 
  return MS::kSuccess;
  }
@@ -153,7 +179,7 @@ MStatus xmlMeshCache::parseArgs( const MArgList& args )
 	MStatus stat = MS::kSuccess;
 	return MS::kSuccess;
 }
-
+/*
 void xmlMeshCache::orderMesh()
 {
 	MIntArray nvertarray;
@@ -185,7 +211,7 @@ void xmlMeshCache::orderMesh()
 		}
 	}
 }
-
+*/
 void xmlMeshCache::save(const char* filename, int frameNumber)
 {	
 	MStatus status;

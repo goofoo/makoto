@@ -766,8 +766,11 @@ global proc int setXMLScenePath(string $path, string $type)
 	return true;
 }
 
-global proc saveXMLSceneSingleFrame()
+global proc saveXMLSceneSingleFrame(int $fc)
 {
+	int $fs = `intFieldGrp -q -v1 saveXMLSceneRange`;
+	int $fe = `intFieldGrp -q -v2 saveXMLSceneRange`;
+		
 	int $icam = `optionMenuGrp -q -select saveXMLSceneOptBS`;
 	int $ieye = `optionMenuGrp -q -select saveXMLSceneOptEye`;
 	string $cams[] = `ls -ca`;
@@ -778,6 +781,13 @@ global proc saveXMLSceneSingleFrame()
 		$cmd = "xmlMeshCache -t `textFieldGrp -q -text saveXMLSceneTitle` -bc `listRelatives -p "+$cams[$icam-1]+"` -ec `listRelatives -p "+$cams[$ieye-1]+"`";
 	else
 		$cmd = "xmlMeshCache -p `textFieldButtonGrp -q -text saveXMLScenePath` -t `textFieldGrp -q -text saveXMLSceneTitle` -bc `listRelatives -p "+$cams[$icam-1]+"` -ec `listRelatives -p "+$cams[$ieye-1]+"`";
+	
+	if($fc == $fs) {
+		int $iprog = `optionMenuGrp -q -select saveXMLProgOpt`;
+		string $progarray[] = {"photosynth", "foo"};
+		string $jparam = "file:./"+ $progarray[$iprog - 1] +" -dice "+`intFieldGrp -q -v1 saveXMLAccuracyInt` + " -opt " + `checkBox -q -v saveXMLDirectChk` + " " + `checkBox -q -v saveXMLIndirectChk` + " " + `checkBox -q -v saveXMLSSSChk` + " " + `checkBox -q -v saveXMLBScatChk`;
+		$cmd = $cmd + " -ej \""+ $jparam +"\" -fs " + $fs + " -fe " + $fe;
+	}
 	
 	eval($cmd);
 }
@@ -804,8 +814,7 @@ global proc dosaveXMLScene()
  
 			progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%"); 
  			
- 			if( ($i-$s)%$step == 0 || $i==$e )
-				saveXMLSceneSingleFrame;
+ 			if( ($i-$s)%$step == 0 || $i==$e ) saveXMLSceneSingleFrame($i);
 		}
 		
 		progressWindow -endProgress;
@@ -818,7 +827,7 @@ global proc openSaveXMLSceneWin()
  if ( (`window -exists saveXMLSceneWin`) == true ) deleteUI saveXMLSceneWin;
 
 //Create the window.
- window -title "vertexCache 4.1 - Save Scene Options" -wh 400 300  -mb false saveXMLSceneWin;
+ window -title "vertexCache 4.2 - Save Scene Options" -wh 400 300  -mb false saveXMLSceneWin;
 
 //Layout
 string $form = `formLayout -numberOfDivisions 100`;
@@ -848,11 +857,20 @@ optionMenuGrp -label "Back-Scatter Camera" -cw 1 120 -columnWidth 2 80 saveXMLSc
 	string $ac;
 	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
 
-
-
 	optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 80 saveXMLSceneOptEye;
 		for($ac in $cams) menuItem -label `listRelatives -p $ac`;
-	setParent..;
+	
+	frameLayout -label "External Job" -labelAlign "center" -borderStyle "out";
+                columnLayout;
+                    optionMenuGrp -label "Program" -cw 1 120 -columnWidth 2 80 saveXMLProgOpt;
+					menuItem -label "photosynth";
+					intFieldGrp -cw 1 110 -label "Accuracy" -nf 1 -v1 12 saveXMLAccuracyInt;
+					checkBox -label "Direct" -v 1 saveXMLDirectChk;
+					checkBox -label "Inter-reflection" -v 0 saveXMLIndirectChk;
+					checkBox -label "Epiderm/Subderm" -v 0 saveXMLSSSChk;
+					checkBox -label "Back-scatter" -v 0 saveXMLBScatChk;
+                   setParent ..;
+            setParent ..;    
 
 //row begin
 button -l "Export" -c "dosaveXMLScene;deleteUI saveXMLSceneWin" -p $row;

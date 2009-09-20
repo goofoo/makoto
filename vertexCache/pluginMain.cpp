@@ -22,7 +22,7 @@
 MStatus initializePlugin( MObject obj ) 
 {
 MStatus status;
-MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.6.0 08/03/09", "Any" );
+MFnPlugin plugin( obj, "ZHANG JIAN", "build 3.6.3 21/09/09", "Any" );
 
 	status = plugin.registerCommand( "vxCache", vxCache::creator, vxCache::newSyntax);
 		if (!status) {
