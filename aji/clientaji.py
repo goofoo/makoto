@@ -1,7 +1,8 @@
 # Client program
 
-import socket, time, threading
+import socket, time, threading, sys
 from optparse import OptionParser
+from time import gmtime, strftime
 
 # set command line option
 parser = OptionParser()
@@ -12,19 +13,7 @@ args = ["-f", "foo.txt"]
 print 'read job script',options.filename
 
 # Set the socket parameters
-host = '127.0.0.1'
 port = 52907
-
-# Create socket
-#s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-#try:
-#        s.connect((host,port))     
-#except socket.error, msg:
-#        print 'server', host ,'offline, stop '
-#        sys.exit(1)
-#s.send('Hello, world')
-#data = s.recv(1024)
-#print 'get reply ', data
 
 jobstack = []
 
@@ -47,7 +36,7 @@ class TalkTo(threading.Thread):
                         s.connect((self.hostname,port))     
                 except socket.error, msg:
                         print 'server', self.hostname ,'offline, stop '
-                        sys.exit(1)
+                        sys.exit()
                 s.send('status')
                 data = s.recv(1024)
                 print 'get reply from',s.getpeername(), data
@@ -71,6 +60,7 @@ class TalkTo(threading.Thread):
                         if data:
                                 if data == 'roger':
 					nleft -= 1
+					print strftime("%a, %d %b %Y %H:%M:%S", gmtime())
                                         print jobstack[nleft],'sent to',self.hostname,',',nleft,'left'
                         	##else:
                         		##print data
@@ -79,42 +69,8 @@ class TalkTo(threading.Thread):
                 # Close socket
                 s.close()
 
-
-def hello():
-        print 'oh my, not again'
-
-class Listen(threading.Thread):
-        def __init__(self):
-                threading.Thread.__init__(self)
-        def run(self):
-                t = threading.Timer(3.0, hello)
-                t.start()
-
-talk = TalkTo('127.0.0.1')
-talk.start()
-
-#listen = Listen()
-#listen.start()
-
-# Send messages
-##while (1):
-##	data = raw_input('>> ')
-##	if not data:
-##		break
-##	else:
-##		if(s.send(data)):
-##			print "Sending message '",data,"'....."
-##			try:
-##                                data = s.recv(1024)
-##                        except socket.error, msg:
-##                                print 'server lost, stop'
-##                                break
-##			if data:
-##                                print "\n received msg ", data
-##                                
-##                        else:
-##                                print "no reply"
-##
-### Close socket
-##s.close()
+f = open('./ajihost.txt','r')
+for line in f:
+        TalkTo(line[:len(line)-1]).start()
+        time.sleep(1)
 

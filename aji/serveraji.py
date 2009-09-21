@@ -2,6 +2,7 @@
 
 import socket, time, threading, os, commands
 from optparse import OptionParser
+from time import gmtime, strftime
 
 # set command line option
 parser = OptionParser()
@@ -47,7 +48,7 @@ while 1:
                                 conn.send('busy')
                         else:
 # start process here
-				print 'accept ',data
+                                print strftime("%a, %d %b %Y %H:%M:%S", gmtime())
                                 conn.send('roger')
                                 NilProc(data[5:]).start()
                      
