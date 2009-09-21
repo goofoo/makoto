@@ -26,6 +26,7 @@ print 'job count: ', len(jobstack)
 nleft = len(jobstack)
 
 class TalkTo(threading.Thread):
+        lock = threading.Lock()
         def __init__(self, hostname):
                 self.hostname = hostname
                 threading.Thread.__init__(self)
@@ -43,13 +44,9 @@ class TalkTo(threading.Thread):
 
                 global nleft
 
-                # Send messages
+## Send messages
                 while (nleft > 0):
-##                        data = raw_input('>> ')
-##                        if not data:
-##                                print 'empty input stop talk to', self.hostname
-##                                break
-##                        else:
+                        TalkTo.lock.acquire()
                         s.send(jobstack[nleft-1])
 ##                      print 'sending ',jobstack[nleft-1]
                         try:
@@ -64,13 +61,12 @@ class TalkTo(threading.Thread):
                                         print jobstack[nleft],'sent to',self.hostname,',',nleft,'left'
                         	##else:
                         		##print data
-                        time.sleep(9)
-
-                # Close socket
+                        TalkTo.lock.release()
+                        time.sleep(1)
+## Close socket
                 s.close()
 
 f = open('./ajihost.txt','r')
 for line in f:
         TalkTo(line[:len(line)-1]).start()
-        time.sleep(1)
 
