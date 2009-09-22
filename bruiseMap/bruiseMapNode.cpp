@@ -74,6 +74,7 @@ MStatus bruiseMapNode::compute( const MPlug& plug, MDataBlock& data )
 		}
 		
 		int npt = m_base->dice(bias);
+		MGlobal::displayInfo(MString(" bruise map n sample ")+npt);
 
 		int isave = data.inputValue(asavemap, &status).asInt();
 		if(isave==1) 
