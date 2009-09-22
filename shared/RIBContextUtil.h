@@ -4,7 +4,8 @@
 //
 // $Revision: #1 $
 //
-
+#include <string.h>
+#include <stdlib.h>
 #include "RIBContext.h"
 
 namespace RIBContextUtil

@@ -1,6 +1,6 @@
-#include "RIBGen.h"
-#include "RIBContext.h"
-#include "RIBContextUtil.h"
+#include <RIBGen.h>
+#include <RIBContext.h>
+#include <RIBContextUtil.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -152,10 +152,10 @@ quadrics::GenRIB( RIBContext *c )
 	
 	//c->ReportError( RIBContext::reInfo, "quadrics get motion: %f %f %f %i", shutterOpen, shutterClose, fps, frame);
 	
-	const char *vizname = c->GetObjName();
+	const char *vizname = c->GetObjName(); MString svname(vizname);
 	MObject viznode;
 	
-	zWorks::getTypedNodeByName(MFn::kLocator, MString(vizname), viznode);
+	zWorks::getTypedNodeByName(MFn::kLocator, svname, viznode);
 	
 	if(viznode.isNull()) return err;
 	
@@ -199,9 +199,9 @@ quadrics::GenRIB( RIBContext *c )
 	
 	double dtime0 = frame;
 	MTime mt0;
-	if(fps == 24) mt0 = MTime(dtime0, MTime::Unit::kFilm);
-	else if(fps == 25) mt0 = MTime(dtime0, MTime::Unit::kPALFrame);
-	else mt0 = MTime(dtime0, MTime::Unit::kNTSCFrame);
+	if(fps == 24) mt0 = MTime(dtime0, MTime::kFilm);
+	else if(fps == 25) mt0 = MTime(dtime0, MTime::kPALFrame);
+	else mt0 = MTime(dtime0, MTime::kNTSCFrame);
 	
 	MDGContext ctx0(mt0);
 	
@@ -269,7 +269,7 @@ quadrics::GenRIB( RIBContext *c )
 
 //c->ReportError( RIBContext::reInfo, "mesh cache ribgen complete %f %f %f %f %f %f", mybound[0], mybound[1], mybound[2], mybound[3], mybound[4], mybound[5]);
     //c->AttributeBegin();
-		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(c->ProceduralSubdivFunction::kDynamicLoad), c->GetProcFreeFunc());
+		c->Procedural((RtPointer)args, mybound, c->GetProcSubdivFunc(RIBContext::kDynamicLoad), c->GetProcFreeFunc());
 	//c->AttributeEnd();
     
     return err;
