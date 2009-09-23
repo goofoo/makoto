@@ -7,3 +7,4 @@ SRC = prtRslPlugin.cpp
 all:
 	$(CC) $(FLAG) -o zPRT.so -shared $(SRC) $(INC) $(LIB)
 	shader myconstant.sl
+	cp zPRT.so ../module/rslPlugin
