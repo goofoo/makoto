@@ -347,7 +347,6 @@ void FXMLMesh::free()
 		if(m_vertices) delete[] m_vertices;
 		if(m_triangleConn) delete[] m_triangleConn;
 		if(m_cvs) delete[] m_cvs;
-		//if(m_subd_cvs) delete[] m_subd_cvs;
 		if(m_normals) delete[] m_normals;
 		if(m_tangents) delete[] m_tangents;
 		if(m_binormals) delete[] m_binormals;
@@ -356,8 +355,23 @@ void FXMLMesh::free()
 		if(m_pOpen) delete[] m_pOpen;
 		if(m_pClose) delete[] m_pClose;
 		if(m_grd) delete[] m_grd;
+		for(unsigned i=0; i<m_uvSet.size(); i++) {
+			delete[] m_uvSet[i]->s;
+			delete[] m_uvSet[i]->t;
+		}
 		m_uvSet.clear();
+		//for(unsigned i=0; i<m_vertexFloatSet.size(); i++) {
+		//	delete[] m_vertexFloatSet[i]->s;
+		//	delete[] m_vertexFloatSet[i]->t;
+		//}
+		//m_vertexFloatSet.clear();
+		for(unsigned i=0; i<m_colorSet.size(); i++) {
+			delete[] m_colorSet[i]->data;
+		}
 		m_colorSet.clear();
+		for(unsigned i=0; i<m_floatSet.size(); i++) {
+			delete[] m_floatSet[i]->data;
+		}
 		m_floatSet.clear();
 		m_isNull = 1;
 	}
@@ -455,7 +469,7 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 			
 		doc.setParent();
 		
-		doc.setChildren();
+		/*doc.setChildren();
 		while(doc.isLastNode()!=1)
 		{
 			if(doc.checkNodeName("vertex_float") ==1)
@@ -471,7 +485,7 @@ int FXMLMesh::load(const char* filename, const char* meshname)
 			}
 			doc.nextNode();
 		}
-		doc.setParent();
+		doc.setParent();*/
 		
 		doc.setChildren();
 		

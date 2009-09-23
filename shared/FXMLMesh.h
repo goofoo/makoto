@@ -100,9 +100,9 @@ public:
 	const float* getSById(int i) const { return m_uvSet[i]->s;}
 	const float* getTById(int i) const { return m_uvSet[i]->t;}
 	
-	int getNumVertexFloatSet() const { return m_vertexFloatSet.size(); }
-	const char* getVertexFloatNameById(int i) const {return m_vertexFloatSet[i]->name.c_str();}
-	const float* getVertexFloatById(int i) const {return m_vertexFloatSet[i]->s;}
+	//int getNumVertexFloatSet() const { return m_vertexFloatSet.size(); }
+	//const char* getVertexFloatNameById(int i) const {return m_vertexFloatSet[i]->name.c_str();}
+	//const float* getVertexFloatById(int i) const {return m_vertexFloatSet[i]->s;}
 	
 	void updateFrom(const char* filename);
 	void setMotion(float open, float close);
@@ -176,7 +176,7 @@ private:
 	char m_has_color;
 	
 	UVList m_uvSet;
-	UVList m_vertexFloatSet;
+	//UVList m_vertexFloatSet;
 	ColorList m_colorSet;
 	FloatList m_floatSet;
 	
