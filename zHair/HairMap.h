@@ -86,6 +86,7 @@ public:
 	void bind();
 	
 	void draw();
+	void draw(MVector& vec);
 	void drawUV();
 	void initGuide();
 	void updateGuide();
@@ -151,6 +152,7 @@ private:
 	float* varray;
 	XYZ* parray;
 	XYZ* pframe1;
+	XYZ* pfacing;
 
 	Dguide* guide_data;
 	unsigned* pNSeg;

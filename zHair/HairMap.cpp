@@ -20,7 +20,7 @@
 using namespace std;
 
 hairMap::hairMap():has_base(0),ddice(0),n_samp(0),has_guide(0),guide_data(0),bind_data(0),guide_spaceinv(0),pNSeg(0),
-parray(0),pframe1(0),pconnection(0),uarray(0),varray(0),
+parray(0),pframe1(0),pconnection(0),uarray(0),varray(0),pfacing(0),
 sum_area(0.f),mutant_scale(0.f),
 draw_step(1),nsegbuf(0),m_offset(1.f),m_bald(0.f),/*pDensmap(0),*/is_nil(1)
 {
@@ -45,7 +45,7 @@ hairMap::~hairMap()
 	if(varray) delete[] varray;
 	if(pNSeg) delete[] pNSeg;
 	if(nsegbuf) delete[] nsegbuf;
-	//if(pDensmap) delete[] pDensmap;
+	if(pfacing) delete[] pfacing;
 }
 
 void hairMap::setBase(const MObject& mesh)
@@ -105,6 +105,9 @@ void hairMap::updateBase()
 	if(varray) delete[] varray;
 	varray = new float[n_tri*3];
 	
+	if(pfacing) delete[] pfacing;
+	pfacing = new XYZ[n_tri];
+	
 	int acc = 0;
 	faceIter.reset();
 	for( ; !faceIter.isDone(); faceIter.next() ) 
@@ -115,19 +118,22 @@ void hairMap::updateBase()
 		faceIter.getUVs (ub, vb);
 		for( int i=vexlist.length()-2; i >0; i-- ) 
 		{
-			pconnection[acc] = vexlist[vexlist.length()-1];
-			pconnection[acc+1] = vexlist[i];
-			pconnection[acc+2] = vexlist[i-1];
+			pconnection[acc*3] = vexlist[vexlist.length()-1];
+			pconnection[acc*3+1] = vexlist[i];
+			pconnection[acc*3+2] = vexlist[i-1];
 			
-			uarray[acc] = ub[vexlist.length()-1];
-			uarray[acc+1] = ub[i];
-			uarray[acc+2] = ub[i-1];
+			uarray[acc*3] = ub[vexlist.length()-1];
+			uarray[acc*3+1] = ub[i];
+			uarray[acc*3+2] = ub[i-1];
 			
-			varray[acc] = vb[vexlist.length()-1];
-			varray[acc+1] = vb[i];
-			varray[acc+2] = vb[i-1];
+			varray[acc*3] = vb[vexlist.length()-1];
+			varray[acc*3+1] = vb[i];
+			varray[acc*3+2] = vb[i-1];
 			
-			acc += 3;
+			meshFn.getVertexNormal (vexlist[i], vn, MSpace::kObject);
+			pfacing[acc] = XYZ(vn.x, vn.y, vn.z);
+			
+			acc++;
 		}
 	}
 }
@@ -329,6 +335,105 @@ void hairMap::draw()
 	
 	delete[] pbuf;
 	//delete[] isoverbald;
+}
+
+void hairMap::draw(MVector& vec)
+{
+	if(n_samp < 1 || !bind_data || !guide_data || !parray || !pNSeg) return;
+	
+	int g_seed = 13;
+	FNoise fnoi;
+	float noi;
+	
+	XYZ* pbuf = new XYZ[n_samp];
+	for(unsigned i=0; i<n_samp; i++) pbuf[i] = parray[ddice[i].id0]*ddice[i].alpha + parray[ddice[i].id1]*ddice[i].beta + parray[ddice[i].id2]*ddice[i].gamma;
+	
+	float keepx;
+	MATRIX44F tspace, tspace1, tspace2;
+	XYZ ppre, pcur, dv, ddv, cc, pobj, pt[3], pw[3], dv0, dv1, dv2;
+	glBegin(GL_LINES);
+	for(unsigned i=0; i<n_samp; i += 3)
+	{
+		noi  = fnoi.randfint( g_seed )*mutant_scale; g_seed++;
+		XYZ croot = root_color + (mutant_color - root_color)*noi;
+		XYZ ctip = tip_color + (mutant_color - tip_color)*noi;
+		
+		ppre = (pbuf[i] + pbuf[i+1] + pbuf[i+2])/3.f;
+		
+		pobj = ppre;
+		pt[0] = pt[1] = pt[2] = ppre;
+		guide_spaceinv[bind_data[i].idx[0]].transform(pobj);
+		
+		guide_spaceinv[bind_data[i].idx[0]].transform(pt[0]);
+		guide_spaceinv[bind_data[i].idx[1]].transform(pt[1]);
+		guide_spaceinv[bind_data[i].idx[2]].transform(pt[2]);
+		
+		unsigned num_seg = pNSeg[i];
+		float dparam = 1.f/num_seg;
+		XYZ dcolor = (ctip - croot)/(float)num_seg;
+		float param;
+
+		for(short j = 0; j< num_seg; j++) {
+			param = dparam*j;
+			
+			guide_data[bind_data[i].idx[0]].getDvAtParam(dv0, param, num_seg);
+			guide_data[bind_data[i].idx[1]].getDvAtParam(dv1, param, num_seg);
+			guide_data[bind_data[i].idx[2]].getDvAtParam(dv2, param, num_seg);
+			
+			guide_data[bind_data[i].idx[0]].getSpaceAtParam(tspace, param);
+			guide_data[bind_data[i].idx[1]].getSpaceAtParam(tspace1, param);
+			guide_data[bind_data[i].idx[2]].getSpaceAtParam(tspace2, param);
+			
+			dv = dv0 * bind_data[i].wei[0] + dv1 * bind_data[i].wei[1] + dv2 * bind_data[i].wei[2];
+			dv.setLength(dv0.length()* bind_data[i].wei[0] + dv1.length()* bind_data[i].wei[1] + dv2.length()* bind_data[i].wei[2]);
+			
+			cc = croot + dcolor * j;
+			glColor3f(cc.x, cc.y, cc.z);
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			
+			keepx = pt[0].x;
+			pw[0] = pt[0]*(1 - clumping*(j+1)/num_seg);
+			pw[0] *= noi;
+			pw[0].x = keepx;
+			tspace.transform(pw[0]);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			keepx = pt[1].x;
+			pw[1] = pt[1]*(1 - clumping*(j+1)/num_seg);
+			pw[1] *= noi;
+			pw[1].x = keepx;
+			tspace1.transform(pw[1]);
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*kink; g_seed++;
+			keepx = pt[2].x;
+			pw[2] = pt[2]*(1 - clumping*(j+1)/num_seg);
+			pw[2] *= noi;
+			pw[2].x = keepx;
+			tspace2.transform(pw[2]);
+			
+			pcur = pw[0]*bind_data[i].wei[0] + pw[1]*bind_data[i].wei[1] + pw[2]*bind_data[i].wei[2];
+			
+			noi = 1.f + (fnoi.randfint( g_seed )-0.5)*fuzz; g_seed++;
+			dv *= noi;
+			pcur += dv;
+			
+			ddv = pcur - ppre;
+			ddv.normalize();
+			ddv *= dv.length();
+
+			ppre += ddv;
+			
+			cc = croot + dcolor * (j+1);
+			glColor3f(cc.x, cc.y, cc.z);
+			glVertex3f(ppre.x, ppre.y, ppre.z);
+		}
+			
+	}
+	glEnd();
+	
+	delete[] pbuf;
 }
 
 void hairMap::drawUV()

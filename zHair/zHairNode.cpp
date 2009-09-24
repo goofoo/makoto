@@ -120,11 +120,19 @@ void HairNode::draw( M3dView & view, const MDagPath & /*path*/,
 							 M3dView::DisplayStatus status )
 {
 	if(ienable == 0) return;
+	
+	MDagPath camera;
+	view = M3dView::active3dView();
+	view.getCamera(camera);
+	MFnCamera fnCamera( camera );
+
+	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
+	
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
-	if(idraw ==1) m_base->draw();
-	else if(idraw ==0) m_base->drawGuide();
+	if(idraw ==0) m_base->draw(viewDir);
+	else if(idraw ==1) m_base->drawGuide();
 	else if(idraw == 2){
 		m_base->drawUV();
 		m_base->drawGuideUV();
