@@ -1,0 +1,2118 @@
+## z_colors_prt.slim
+## zhangmdev@gmail.com
+## 04/08/09
+## slim template for Spherical Harmonics and Pre-computed Radiance Transfer
+##  
+## z_colors_prt.slim {
+##	{ zhang,prtShadowed#0	color {PRT Shadowed}		/Color}
+##	{ zhang,prtInterreflection#0	color {PRT Interreflection}		/Color}
+##	{ zhang,prtSubderm#0	color {PRT Subderm}		/Color}
+##	{ zhang,prtEpiderm#0	color {PRT Epiderm}		/Color}
+##	{ zhang,prtBackscatter#0	color {PRT Backscatter}		/Color}
+##	{ zhang,prtShadowedSrc#0	color {PRT Shadowed Light Source}		/Color}
+##	{ zhang,hdrReflection#0	color {HDR Reflection}		/Color}
+##	{ zhang,prtOcclusion#0	color {PRT Occlusion}		/Color}
+## }
+
+slim 1 extensions zhangdb {
+extensions zhang pxsl {
+ 
+template color prtShadowed {
+       description "Receive HDR Environment light."
+	
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+
+	parameter float Kd {
+		description {Overall scale of the light}
+		default 1;
+	}
+	
+	parameter float envsat {
+        label "Environment Map Saturation"
+            default 1
+        detail varying
+            subtype slider
+            range {0 3}
+            description {Controls the saturation of map results. 
+	    Set this to 1 for no effects.}  
+	}
+	
+	parameter float ig_disp {
+			label {Ignore Displacement}
+			detail uniform
+			subtype switch
+			default 0
+	}
+	
+       parameter color result {
+	   access output
+	   display hidden
+       }
+
+	parameter float coeff0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeff15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslprtShadowed(color filter; float Kd, envsat, ig_disp; output color C;)\
+	   {
+		    extern float coeff0;
+		   extern float coeff1;
+		   extern float coeff2;
+		   extern float coeff3;
+		   extern float coeff4;
+		   extern float coeff5;
+		   extern float coeff6;
+		   extern float coeff7;
+		extern float coeff8;
+		   extern float coeff9;
+		   extern float coeff10;
+		   extern float coeff11;
+		   extern float coeff12;
+		   extern float coeff13;
+		   extern float coeff14;
+		   extern float coeff15;
+		   extern float coeffu0;
+		   extern float coeffu1;
+		   extern float coeffu2;
+		   extern float coeffu3;
+		   extern float coeffu4;
+		   extern float coeffu5;
+		   extern float coeffu6;
+		   extern float coeffu7;
+		extern float coeffu8;
+		   extern float coeffu9;
+		   extern float coeffu10;
+		   extern float coeffu11;
+		   extern float coeffu12;
+		   extern float coeffu13;
+		   extern float coeffu14;
+		   extern float coeffu15;
+			
+		   uniform float exposure;
+		   uniform string hdrname="", spacename="", cat="";
+		   uniform float fnear, ffar;
+		   uniform vector side = vector (1,0,0);
+		   uniform vector up = vector (0,1,0);
+		   extern normal N;
+			extern point P;
+			 C = 0;
+		   illuminance(P) 
+			{
+				if(lightsource ("__hdrname", hdrname) ==1)
+				{
+					lightsource ("__hdrspace", spacename);
+					lightsource ("__hdrexposure", exposure);
+				
+					if(spacename != "")
+					{
+						side = normalize(vtransform (spacename, "world", side));
+						up = normalize(vtransform (spacename, "world", up));
+					}
+
+					if(hdrname != "")
+					{
+						normal Nbe;
+						if(displacement("__Nbe", Nbe) == 0.0 || ig_disp == 1)
+						{
+							C += SHLighting(hdrname, exposure, side, up, 
+							coeff0, coeff1, coeff2, coeff3, 
+							coeff4, coeff5, coeff6, coeff7, 
+							coeff8, coeff9, coeff10, coeff11, 
+							coeff12, coeff13, coeff14, coeff15);
+						}
+						else
+						{
+							normal Nw = normalize(ntransform("world",N));
+							C += SHLighting(hdrname, exposure, side, up, Nw,
+							coeffu0, coeffu1, coeffu2, coeffu3, 
+							coeffu4, coeffu5, coeffu6, coeffu7, 
+							coeffu8, coeffu9, coeffu10, coeffu11, 
+							coeffu12, coeffu13, coeffu14, coeffu15);
+						}
+						
+					}
+				}
+			}
+		   
+			
+
+			C *= filter * Kd;
+
+
+	   }
+       }
+   }
+   
+template color prtInterreflection {
+       description "Receive HDR Environment bounce light."
+	
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+
+	parameter float Kd {
+		description {Overall scale of the light}
+		default 1;
+	}
+	
+       parameter color result {
+	   access output
+	   display hidden
+       }
+
+	parameter color coeffi0 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi1 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi2 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi3 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi4 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi5 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi6 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi7 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi8 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi9 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi10 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi11 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi12 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi13 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi14 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffi15 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslprtInterreflection(color filter; float Kd; output color C;)\
+	   {
+	      extern color coeffi0;
+		   extern color coeffi1;
+		   extern color coeffi2;
+		   extern color coeffi3;
+		   extern color coeffi4;
+		   extern color coeffi5;
+		   extern color coeffi6;
+		   extern color coeffi7;
+		extern color coeffi8;
+		   extern color coeffi9;
+		   extern color coeffi10;
+		   extern color coeffi11;
+		   extern color coeffi12;
+		   extern color coeffi13;
+		   extern color coeffi14;
+		   extern color coeffi15;
+		   
+		   	uniform float exposure;
+		   uniform string hdrname="", spacename="";
+		   uniform float fnear, ffar;
+		   uniform vector side = vector (1,0,0);
+		   uniform vector up = vector (0,1,0);
+		   extern normal N;
+			extern point P;
+			C = 0;
+		   illuminance (P) 
+			{
+				if(lightsource ("__hdrname", hdrname) ==1)
+				{
+					lightsource ("__hdrspace", spacename);
+					lightsource ("__hdrexposure", exposure);
+					if(spacename != "")
+					{
+						side = normalize(vtransform (spacename, "world", side));
+						up = normalize(vtransform (spacename, "world", up));
+					}
+
+					 
+					if(hdrname != "")
+					{
+						C += SHLighting(hdrname, exposure, side, up, 
+						coeffi0,coeffi1,coeffi2,coeffi3,
+						coeffi4,coeffi5,coeffi6,coeffi7,
+						coeffi8,coeffi9,coeffi10,coeffi11,
+						coeffi12,coeffi13,coeffi14,coeffi15);
+					}
+					
+				}
+			}
+			C *= filter * Kd;
+
+	   }
+       }
+   }
+   
+
+template color prtSubderm {
+       description "Receive HDR Environment light."
+	  
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+
+	parameter float Kd {
+		description {Overall scale of the light}
+		default 1;
+	}
+	
+       parameter color result {
+	   access output
+	   display hidden
+       }
+
+parameter float coeffs0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffs15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslprtSubderm(color filter; float Kd; output color C;)\
+	   {
+			extern float coeffs0;
+		   extern float coeffs1;
+		   extern float coeffs2;
+		   extern float coeffs3;
+		   extern float coeffs4;
+		   extern float coeffs5;
+		   extern float coeffs6;
+		   extern float coeffs7;
+		extern float coeffs8;
+		   extern float coeffs9;
+		   extern float coeffs10;
+		   extern float coeffs11;
+		   extern float coeffs12;
+		   extern float coeffs13;
+		   extern float coeffs14;
+		   extern float coeffs15;
+		   
+		   	uniform float exposure;
+		   uniform string hdrname="", spacename="";
+		   uniform float fnear, ffar;
+		   uniform vector side = vector (1,0,0);
+		   uniform vector up = vector (0,1,0);
+		   extern normal N;
+			extern point P;
+			 C = 0;
+		   illuminance (P) 
+			{
+				if(lightsource ("__hdrname", hdrname) ==1)
+				{
+					lightsource ("__hdrspace", spacename);
+					lightsource ("__hdrexposure", exposure);
+				
+					if(spacename != "")
+					{
+						side = normalize(vtransform (spacename, "world", side));
+						up = normalize(vtransform (spacename, "world", up));
+					} 
+		   
+					if(hdrname != "")
+					{
+						C += SHLighting(hdrname, exposure, side, up, 
+							coeffs0,coeffs1,coeffs2,coeffs3,
+							coeffs4,coeffs5,coeffs6,coeffs7,
+							coeffs8,coeffs9,coeffs10,coeffs11,
+							coeffs12,coeffs13,coeffs14,coeffs15);
+					}
+				}
+			}
+			C *= filter * Kd;
+	   }
+       }
+   }  
+   
+   
+template color prtEpiderm {
+       description "Receive HDR Environment light."
+	
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+
+	parameter float Kd {
+		description {Overall scale of the light}
+		default 1;
+	}
+	
+       parameter color result {
+	   access output
+	   display hidden
+       }
+
+	parameter float coeffe0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffe15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslprtEpiderm(color filter; float Kd; output color C;)\
+	   {
+			extern float coeffe0;
+		   extern float coeffe1;
+		   extern float coeffe2;
+		   extern float coeffe3;
+		   extern float coeffe4;
+		   extern float coeffe5;
+		   extern float coeffe6;
+		   extern float coeffe7;
+		extern float coeffe8;
+		   extern float coeffe9;
+		   extern float coeffe10;
+		   extern float coeffe11;
+		   extern float coeffe12;
+		   extern float coeffe13;
+		   extern float coeffe14;
+		   extern float coeffe15;
+		   
+		   	uniform float exposure;
+		   uniform string hdrname="", spacename="";
+		   uniform float fnear, ffar;
+		   uniform vector side = vector (1,0,0);
+		   uniform vector up = vector (0,1,0);
+		   extern normal N;
+			extern point P;
+			C = 0;
+		   illuminance (P) 
+			{
+				if(lightsource ("__hdrname", hdrname)==1)
+				{
+					lightsource ("__hdrspace", spacename);
+					lightsource ("__hdrexposure", exposure);
+					
+					if(spacename != "")
+					{
+						side = normalize(vtransform (spacename, "world", side));
+						up = normalize(vtransform (spacename, "world", up));
+					}
+	       
+					if(hdrname != "")
+					{
+						
+						C += SHLighting(hdrname, exposure, side, up, 
+							coeffe0,coeffe1,coeffe2,coeffe3,
+							coeffe4,coeffe5,coeffe6,coeffe7,
+							coeffe8,coeffe9,coeffe10,coeffe11,
+							coeffe12,coeffe13,coeffe14,coeffe15);
+					}
+				}
+			}
+
+			C *= filter * Kd;
+
+	   }
+       }
+   }
+   
+template color prtBackscatter {
+       description "Receive HDR Environment light."
+	
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+
+	parameter float Kd {
+		description {Overall scale of the light}
+		default 1;
+	}
+
+       parameter color result {
+	   access output
+	   display hidden
+       }
+
+	parameter float coeffb0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffb15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslprtBackscatter( color filter; float Kd; output color C;)\
+	   {
+			extern float coeffb0;
+		   extern float coeffb1;
+		   extern float coeffb2;
+		   extern float coeffb3;
+		   extern float coeffb4;
+		   extern float coeffb5;
+		   extern float coeffb6;
+		   extern float coeffb7;
+		extern float coeffb8;
+		   extern float coeffb9;
+		   extern float coeffb10;
+		   extern float coeffb11;
+		   extern float coeffb12;
+		   extern float coeffb13;
+		   extern float coeffb14;
+		   extern float coeffb15;
+		   
+		   	uniform float exposure;
+		   uniform string hdrname="", spacename="";
+		   uniform float fnear, ffar;
+		   uniform vector side = vector (1,0,0);
+		   uniform vector up = vector (0,1,0);
+		   extern normal N;
+			extern point P;
+			 C = 0;
+
+		   illuminance (P) 
+			{
+				if(lightsource ("__hdrname", hdrname) ==1)
+				{
+					lightsource ("__hdrspace", spacename);
+					lightsource ("__hdrexposure", exposure);
+					if(spacename != "")
+					{
+						side = normalize(vtransform (spacename, "world", side));
+						up = normalize(vtransform (spacename, "world", up));
+					}
+	      
+					if(hdrname != "")
+					{
+						C += SHLighting(hdrname, exposure, side, up, coeffb0,coeffb1,coeffb2,coeffb3,
+								coeffb4,coeffb5,coeffb6,coeffb7,
+								coeffb8,coeffb9,coeffb10,coeffb11,
+								coeffb12,coeffb13,coeffb14,coeffb15 );
+					}
+				}
+			}
+		   
+			
+			
+			C *= filter * Kd;
+
+	   }
+       }
+   }
+   
+template color prtShadowedSrc {
+	parameter float i_ignoreDisp {
+		label {Ignore Displacement}
+		detail uniform
+		subtype switch
+		default 1
+	}
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+
+	parameter float Kd {
+		description {Overall scale of the light}
+		default 1;
+	}
+       parameter color result {
+	   access output
+	   display hidden
+       }
+
+	parameter color coeffl0 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl1 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl2 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl3 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl4 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl5 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl6 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl7 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl8 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl9 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl10 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl11 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl12 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl13 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl14 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffl15 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+		parameter color coeffj0 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj1 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj2 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj3 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj4 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj5 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj6 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj7 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj8 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj9 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj10 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj11 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj12 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj13 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj14 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	
+	parameter color coeffj15 {
+	       detail varying
+	       provider primitive
+	       default {0 0 0}
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslprtShadowedSrc(uniform float ig_disp; color filter; float Kd; output color C;)\
+	   {
+			extern color coeffl0;
+		   extern color coeffl1;
+		   extern color coeffl2;
+		   extern color coeffl3;
+		   extern color coeffl4;
+		   extern color coeffl5;
+		   extern color coeffl6;
+		   extern color coeffl7;
+		extern color coeffl8;
+		   extern color coeffl9;
+		   extern color coeffl10;
+		   extern color coeffl11;
+		   extern color coeffl12;
+		   extern color coeffl13;
+		   extern color coeffl14;
+		   extern color coeffl15;
+		extern float coeffu0;
+		   extern float coeffu1;
+		   extern float coeffu2;
+		   extern float coeffu3;
+		   extern float coeffu4;
+		   extern float coeffu5;
+		   extern float coeffu6;
+		   extern float coeffu7;
+		extern float coeffu8;
+		   extern float coeffu9;
+		   extern float coeffu10;
+		   extern float coeffu11;
+		   extern float coeffu12;
+		   extern float coeffu13;
+		   extern float coeffu14;
+		   extern float coeffu15;
+		   extern color coeffj0;
+		   extern color coeffj1;
+		   extern color coeffj2;
+		   extern color coeffj3;
+		   extern color coeffj4;
+		   extern color coeffj5;
+		   extern color coeffj6;
+		   extern color coeffj7;
+		extern color coeffj8;
+		   extern color coeffj9;
+		   extern color coeffj10;
+		   extern color coeffj11;
+		   extern color coeffj12;
+		   extern color coeffj13;
+		   extern color coeffj14;
+		   extern color coeffj15;
+	       C = 0;
+			extern normal N;
+		normal Nbe;
+			if(displacement("__Nbe", Nbe) == 0.0 || ig_disp==1)
+			{
+				C = SHLighting(coeffl0,coeffl1,coeffl2,coeffl3,
+						coeffl4,coeffl5,coeffl6,coeffl7,
+						coeffl8,coeffl9,coeffl10,coeffl11,
+						coeffl12,coeffl13,coeffl14,coeffl15);
+			}
+			else
+			{
+				normal Nw = normalize(ntransform("world",N));
+				C = SHLighting(Nw, 		   coeffj0,coeffj1,coeffj2,coeffj3,
+						coeffj4,coeffj5,coeffj6,coeffj7,
+						coeffj8,coeffj9,coeffj10,coeffj11,
+						coeffj12,coeffj13,coeffj14,coeffj15, coeffu0,coeffu1,coeffu2,coeffu3,
+						coeffu4,coeffu5,coeffu6,coeffu7,
+						coeffu8,coeffu9,coeffu10,coeffu11,
+						coeffu12,coeffu13,coeffu14,coeffu15);
+			}
+			C *= filter * Kd;
+
+	   }
+       }
+   }
+   
+template color hdrReflection {
+       	
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+
+	parameter float Krmin {
+		label {Kr Min}
+		description {Minimun scale of the reflection}
+		detail slider
+		range {0 1 0.01}
+		default 0.5;
+	}
+	
+	parameter float ig_occ {
+			label {Ignore PRT Occlusion}
+			detail uniform
+			subtype switch
+			default 0
+	}
+	
+       parameter color result {
+	   access output
+	   display hidden
+       }
+	
+	parameter float coeffu0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslhdrReflection(color filter; float Krmin, ig_occ; output color C;)\
+	   {
+			extern float coeffu0;
+		   extern float coeffu1;
+		   extern float coeffu2;
+		   extern float coeffu3;
+		   extern float coeffu4;
+		   extern float coeffu5;
+		   extern float coeffu6;
+		   extern float coeffu7;
+		extern float coeffu8;
+		   extern float coeffu9;
+		   extern float coeffu10;
+		   extern float coeffu11;
+		   extern float coeffu12;
+		   extern float coeffu13;
+		   extern float coeffu14;
+		   extern float coeffu15;
+			
+		   uniform float exposure;
+		   uniform string hdrname="", spacename="";
+		   uniform float fnear, ffar;
+		   uniform vector side = vector (1,0,0);
+		   uniform vector up = vector (0,1,0);
+		   extern normal N;
+			extern point P;
+			extern vector I;
+			normal Nn = normalize(N);
+    	    	vector Vn  = normalize(I);
+		float Kr, Kt;
+    	    	vector R, T;
+    	    	
+		fresnel(Vn, Nn, 1/1.4, Kr, Kt, R, T);
+		
+		R = normalize(vtransform("world", R));
+
+			C = 0;
+		   illuminance (P) 
+			{
+				if(lightsource ("__hdrname", hdrname) ==1)
+				{
+					lightsource ("__hdrspace", spacename);
+					lightsource ("__hdrexposure", exposure);
+					
+					if(spacename != "")
+					{
+						side = normalize(vtransform (spacename, "world", side));
+						up = normalize(vtransform (spacename, "world", up));
+					}
+					if(hdrname != "")
+					{
+						C += SHLighting(hdrname, exposure, side, up, R);
+					}
+				}
+			}
+
+		float occ = 1.0;
+		if(ig_occ != 1)
+		{
+			normal Nw = normalize(ntransform("world",N));
+			occ = SHLighting(Nw, coeffu0,coeffu1,coeffu2,coeffu3,
+						coeffu4,coeffu5,coeffu6,coeffu7,
+						coeffu8,coeffu9,coeffu10,coeffu11,
+						coeffu12,coeffu13,coeffu14,coeffu15);
+		}
+
+		C *= filter * (Krmin + (1.0 - Krmin )*Kr) * occ;
+
+	   }
+       }
+   }
+   
+   template color prtOcclusion {
+       description "Receive PRT Environment Occlusion."
+	
+	parameter color flt {
+		label {Coloration}
+		detail varying
+		default {1 1 1}
+	}
+	
+       parameter color result {
+	   access output
+	   display hidden
+       }
+	
+	parameter float coeffu0 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu1 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu2 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu3 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu4 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu5 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu6 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu7 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu8 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu9 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu10 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu11 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu12 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu13 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu14 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	
+	parameter float coeffu15 {
+	       detail varying
+	       provider primitive
+	       default 0
+	       access input
+	       display hidden
+	}
+	RSLPlugin {zPRT}
+       RSLFunction {
+	   void pxslprtOcclusion(color filter; output color C;)\
+	   {
+		   
+		extern float coeffu0;
+		   extern float coeffu1;
+		   extern float coeffu2;
+		   extern float coeffu3;
+		   extern float coeffu4;
+		   extern float coeffu5;
+		   extern float coeffu6;
+		   extern float coeffu7;
+		extern float coeffu8;
+		   extern float coeffu9;
+		   extern float coeffu10;
+		   extern float coeffu11;
+		   extern float coeffu12;
+		   extern float coeffu13;
+		   extern float coeffu14;
+		   extern float coeffu15;
+
+		extern normal N;
+
+		float occ = 1.0;
+		
+			normal Nw = normalize(ntransform("world",N));
+			occ = SHLighting(Nw, coeffu0,coeffu1,coeffu2,coeffu3,
+						coeffu4,coeffu5,coeffu6,coeffu7,
+						coeffu8,coeffu9,coeffu10,coeffu11,
+						coeffu12,coeffu13,coeffu14,coeffu15);
+
+		C = filter * occ;
+
+	   }
+       }
+   }
+
+}  
+}
