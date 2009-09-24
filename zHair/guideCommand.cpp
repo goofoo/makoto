@@ -192,39 +192,54 @@ void guide::createCurve()
 	list.getDagPath (fDagPath, component);
 
 	MIntArray vertlist;
-	MIntArray facelist;
-	int index;
-	MItMeshVertex vertexIter( fDagPath, component );
-	MFnMesh meshFn( fDagPath );
-	vertexIter.reset();
-	if(vertexIter.isDone())
-		MGlobal::displayError("No vertex or faceVertex selected");
-	else
-	for( int i = 0;!vertexIter.isDone();vertexIter.next() ,i++)
-	{
-		pointArray.append(vertexIter.position(MSpace::kWorld ));
-		vertexIter.getConnectedFaces(facelist);
-		index = vertexIter.index();
-		meshFn.getFaceVertexTangent(facelist[0],index,tang,MSpace::kObject);
-		
-		vertexIter.getNormal(nor,MSpace::kObject);
-		normalArray.append(nor);	
-		tang = nor^tang;
-		tang = tang^nor;
-		tangentArray.append( tang );
+	MItMeshPolygon faceIter( fDagPath, component );
+	faceIter.reset();
+	if(faceIter.isDone()) {
+		MGlobal::displayError(" no face selected, do nothing");
+		return;
+	}
+	else {
+		float wei0, wei1, wei2;
+		MPoint vert0, vert1, vert2, vertsum;
+		MFnMesh meshFn( fDagPath );
+		float swt = 0;
+		for( int i = 0; !faceIter.isDone(); faceIter.next() ,i++) {
+			faceIter.getVertices(vertlist);
+			meshFn.getFaceVertexTangent(i,vertlist[0],tang,MSpace::kObject);
+			faceIter.getNormal(nor,MSpace::kObject);
+			tang = nor^tang;
+			tang = tang^nor;
+			
+			for(int j=0; j<vertlist.length()-2; j++) {
+				
+				if(int(swt)%3 == 1) {
+					wei0 = float(rand()%137)/137.f*0.6+0.2;
+					wei1 = (float(rand()%191)/191.f*0.6+0.2)*(1.f - wei0);
+					wei2 = 1.f - wei0 - wei1;
+					
+					meshFn.getPoint(vertlist[0], vert0, MSpace::kWorld);
+					meshFn.getPoint(vertlist[1+j], vert1, MSpace::kWorld);
+					meshFn.getPoint(vertlist[2+j], vert2, MSpace::kWorld);
+					
+					vertsum = vert0*wei0 + vert1*wei1 + vert2*wei2;
+					pointArray.append(vertsum);
+					normalArray.append(nor);
+					tangentArray.append( tang );
+				}
+				swt += float(rand()%97)/97.f*11;
+			}
+		}
 	}
 	
 	MFnNurbsCurve fcurve;
 	MDoubleArray knots;
 	for(unsigned j = 0;j <= num_seg;j++) knots.append(j);
 		
-	for(unsigned i = 0;i < pointArray.length();i++)
-	{
+	for(unsigned i = 0;i < pointArray.length();i++) {
 		MPointArray cvs;
 		MPoint vert;
 		MVector binormal;
-		for(unsigned j = 0;j <= num_seg;j++)
-		{
+		for(unsigned j = 0;j <= num_seg;j++) {
 			binormal = tangentArray[i]^normalArray[i];
 			
 			vert = pointArray[i] + (normalArray[i] + binormal*0.1)*seglength*j;
