@@ -7,9 +7,9 @@ using namespace std;
 
 meshData::meshData(std::string& parameter):
 m_i_hdr_shadowed(0), m_i_hdr_indirect(0), m_i_hdr_scat(0), m_i_hdr_backscat(0),
-m_i_lightsrc_shadowed(0), m_i_lightsrc_indirect(0), m_i_lightsrc_scat(0),m_i_double_sided(0),m_has_tangentSpace(0)
+m_i_lightsrc_shadowed(0),m_i_double_sided(0)
 {
-	int n = sscanf(parameter.c_str(), "%s %s %s %d %d %d %d %d %f %f %f %f %d %d %d", 
+	int n = sscanf(parameter.c_str(), "%s %s %s %d %d %d %d %d %f %f %f %f %d %d", 
 	m_cache_name, 
 	m_mesh_name,
 	m_prt_name,
@@ -21,8 +21,7 @@ m_i_lightsrc_shadowed(0), m_i_lightsrc_indirect(0), m_i_lightsrc_scat(0),m_i_dou
 	&m_shutter_open, &m_shutter_close,
 	&m_mesh_0, &m_mesh_1,
 	&m_is_blur,
-	&m_i_double_sided,
-	&m_has_tangentSpace);
+	&m_i_double_sided);
 }
 
 meshData::~meshData() 
@@ -63,20 +62,6 @@ void meshData::generateRIB(RtFloat detail)
 				nparam++;
 				paramname[nparam] = (RtToken)pMesh->getTNameById(i);
 				paramvalue[nparam] = (RtFloat*)pMesh->getTById(i);
-				nparam++;
-			}
-			
-			if(m_has_tangentSpace == 1) {
-				paramname[nparam] = "vertex color local_x";
-				paramvalue[nparam] = (RtFloat*)pMesh->getBiNormals();
-				nparam++;
-				
-				paramname[nparam] = "vertex color local_y";
-				paramvalue[nparam] = (RtFloat*)pMesh->getTangents();
-				nparam++;
-				
-				paramname[nparam] = "vertex color local_z";
-				paramvalue[nparam] = (RtFloat*)pMesh->getNormals();
 				nparam++;
 			}
 			

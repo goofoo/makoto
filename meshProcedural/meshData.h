@@ -14,8 +14,8 @@ private:
 	char m_mesh_name[1024];
 	char m_prt_name[1024];
 	int m_i_hdr_shadowed, m_i_hdr_indirect, m_i_hdr_scat, m_i_hdr_backscat;
-	int m_i_lightsrc_shadowed, m_i_lightsrc_indirect, m_i_lightsrc_scat;
+	int m_i_lightsrc_shadowed;//, m_i_lightsrc_indirect, m_i_lightsrc_scat;
 	float m_shutter_open, m_shutter_close;
 	float m_mesh_0, m_mesh_1;
-	int m_is_blur, m_i_double_sided, m_has_tangentSpace;
+	int m_is_blur, m_i_double_sided;
 };
