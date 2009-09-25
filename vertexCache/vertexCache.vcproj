@@ -301,7 +301,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
-				AdditionalDependencies="OpenMaya.lib Foundation.lib OpenMayaUI.lib OpenMayaAnim.lib libxml2.lib"
+				AdditionalDependencies="OpenMaya.lib Foundation.lib OpenMayaUI.lib OpenMayaAnim.lib libxml2.lib opengl32.lib"
 				OutputFile="..\module\plug-ins\meshCache2008.mll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
