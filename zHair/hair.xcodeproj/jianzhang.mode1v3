@@ -202,24 +202,24 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7F3CA5EA106BF669007F5DFE</string>
+				<string>7FA95B70106CBEF4006E662F</string>
 				<key>PBXProjectModuleLabel</key>
-				<string>guideCommand.cpp</string>
+				<string>QuickSort.cpp</string>
 				<key>PBXSplitModuleInNavigatorKey</key>
 				<dict>
 					<key>Split0</key>
 					<dict>
 						<key>PBXProjectModuleGUID</key>
-						<string>7F3CA5EB106BF669007F5DFE</string>
+						<string>7FA95B71106CBEF4006E662F</string>
 						<key>PBXProjectModuleLabel</key>
-						<string>guideCommand.cpp</string>
+						<string>QuickSort.cpp</string>
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F3CA5EC106BF669007F5DFE</string>
+						<string>7FA95B72106CBEF4006E662F</string>
 						<key>history</key>
 						<array>
-							<string>7F3CA5DD106BF15B007F5DFE</string>
+							<string>7FA95B6D106CBEF1006E662F</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -231,35 +231,35 @@
 			<key>Geometry</key>
 			<dict>
 				<key>Frame</key>
-				<string>{{0, 20}, {605, 594}}</string>
+				<string>{{0, 20}, {621, 495}}</string>
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>120 133 605 635 0 0 1280 778 </string>
+				<string>25 197 621 536 0 0 1280 778 </string>
 			</dict>
 		</dict>
 		<dict>
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7F3CA5ED106BF669007F5DFE</string>
+				<string>7F8F1C50106C16D000B70FE0</string>
 				<key>PBXProjectModuleLabel</key>
-				<string>pluginMain.cpp</string>
+				<string>HairMap.cpp</string>
 				<key>PBXSplitModuleInNavigatorKey</key>
 				<dict>
 					<key>Split0</key>
 					<dict>
 						<key>PBXProjectModuleGUID</key>
-						<string>7F3CA5EE106BF669007F5DFE</string>
+						<string>7F8F1C51106C16D000B70FE0</string>
 						<key>PBXProjectModuleLabel</key>
-						<string>pluginMain.cpp</string>
+						<string>HairMap.cpp</string>
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F3CA5EF106BF669007F5DFE</string>
+						<string>7FA95B73106CBEF4006E662F</string>
 						<key>history</key>
 						<array>
-							<string>7F3CA5E3106BF50A007F5DFE</string>
+							<string>7F8F1C53106C16D000B70FE0</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -271,11 +271,91 @@
 			<key>Geometry</key>
 			<dict>
 				<key>Frame</key>
-				<string>{{0, 20}, {792, 608}}</string>
+				<string>{{0, 20}, {746, 592}}</string>
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>462 111 792 649 0 0 1280 778 </string>
+				<string>38 139 746 633 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>7F8F1C54106C16D000B70FE0</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>zHairNode.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7F8F1C55106C16D000B70FE0</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>zHairNode.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7FA95B74106CBEF4006E662F</string>
+						<key>history</key>
+						<array>
+							<string>7F8F1C56106C16D000B70FE0</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {636, 600}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>523 127 636 641 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>7F8F1C57106C16D000B70FE0</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>HairMap.h</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7F8F1C58106C16D000B70FE0</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>HairMap.h</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7FA95B75106CBEF4006E662F</string>
+						<key>history</key>
+						<array>
+							<string>7F8F1C5B106C16D000B70FE0</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {480, 584}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>15 148 480 625 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -312,8 +392,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -360,13 +438,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>18</integer>
+									<integer>5</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 121}, {186, 294}}</string>
+							<string>{{0, 36}, {186, 294}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -430,6 +508,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -466,9 +546,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F3CA5E8106BF669007F5DFE</string>
+				<string>7FA95B6E106CBEF4006E662F</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F3CA5E9106BF669007F5DFE</string>
+				<string>7FA95B6F106CBEF4006E662F</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -602,9 +682,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7F3CA5ED106BF669007F5DFE</string>
-		<string>7FE58BA50FB61F9000187112</string>
-		<string>7F3CA5EA106BF669007F5DFE</string>
+		<string>7F8F1C57106C16D000B70FE0</string>
+		<string>7F8F1C54106C16D000B70FE0</string>
+		<string>7F8F1C50106C16D000B70FE0</string>
+		<string>7FA95B70106CBEF4006E662F</string>
 		<string>/Users/jianzhang/Documents/plankton/zHair/hair.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -685,7 +766,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FE58BA50FB61F9000187112</string>
-				<string>7F3CA5F0106BF669007F5DFE</string>
+				<string>7F8F1C5D106C16D000B70FE0</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
