@@ -26,7 +26,7 @@ OcTree::~OcTree()
 
 void OcTree::release()
 {
-	if(m_pGrid) delete[] m_pGrid;
+	//if(m_pGrid) delete[] m_pGrid;
 	if(m_pPower) delete[] m_pPower;
 	if(root) release(root);
 	for(unsigned i=0; i<dSingle.size(); i++) delete[] dSingle[i]->data;
@@ -78,6 +78,12 @@ char OcTree::loadGrid(const char* filename)
 	
 	ffile.close();
 	return 1;
+}
+
+void OcTree::setGrid(RGRID* data, int n_data)
+{
+	num_grid = n_data;
+	m_pGrid = data;
 }
 
 void OcTree::construct()
@@ -335,17 +341,11 @@ void OcTree::setThree(XYZ *res, TreeNode *node, const XYZ *rawdata, const PosAnd
 	}
 }
 
-void OcTree::save(const char *filename) const
+void OcTree::save(ofstream& file) const
 {
-	ofstream outfile;
-	
-	outfile.open(filename, ios_base::out | ios_base::binary );
-	if(!outfile.is_open()) return;
-	
-	//outfile.write((char*)&sum,sizeof(sum));
-	outfile.write((char*)&num_voxel,sizeof(unsigned));
-	save(outfile, root);
-	
+	file.write((char*)&num_voxel,sizeof(unsigned));
+	save(file, root);
+	/*
 	int datatype = 4;
 	int datalen;
 	for(unsigned i=0; i<dSingle.size(); i++) {
@@ -363,52 +363,47 @@ void OcTree::save(const char *filename) const
 		outfile.write((char*)dThree[i]->name.c_str(), datalen);
 		outfile.write((char*)dThree[i]->data, sizeof(XYZ)*num_voxel);
 	}
-
-	outfile.close();
+*/
+	
 }
 
 void OcTree::save(ofstream& file, TreeNode *node) const
 {
 	if(!node) return;
-	else
-	{
-		file.write((char*)&node->index,sizeof(int));
-		file.write((char*)&node->low,sizeof(unsigned));
-		file.write((char*)&node->high,sizeof(unsigned));
-		file.write((char*)&node->center,sizeof(XYZ));
-		file.write((char*)&node->mean,sizeof(XYZ));
-		file.write((char*)&node->size,sizeof(float));
-		file.write((char*)&node->child000,sizeof(node->child000));
-	    file.write((char*)&node->child001,sizeof(node->child001));
-	    file.write((char*)&node->child010,sizeof(node->child010));
-	    file.write((char*)&node->child011,sizeof(node->child011));
-	    file.write((char*)&node->child100,sizeof(node->child100));
-	    file.write((char*)&node->child101,sizeof(node->child101));
-	    file.write((char*)&node->child110,sizeof(node->child110));
-	    file.write((char*)&node->child111,sizeof(node->child111));
-		
-		save(file, node->child000);
-		save(file, node->child001);
-		save(file, node->child010);
-		save(file, node->child011);
-		save(file, node->child100);
-		save(file, node->child101);
-		save(file, node->child110);
-		save(file, node->child111);
-	}
+	file.write((char*)&node->isLeaf,sizeof(char));
+	file.write((char*)&node->index,sizeof(int));
+	file.write((char*)&node->low,sizeof(unsigned));
+	file.write((char*)&node->high,sizeof(unsigned));
+	file.write((char*)&node->center,sizeof(XYZ));
+	file.write((char*)&node->mean,sizeof(XYZ));
+	file.write((char*)&node->size,sizeof(float));
+	file.write((char*)&node->child000,sizeof(node->child000));
+	file.write((char*)&node->child001,sizeof(node->child001));
+	file.write((char*)&node->child010,sizeof(node->child010));
+	file.write((char*)&node->child011,sizeof(node->child011));
+	file.write((char*)&node->child100,sizeof(node->child100));
+	file.write((char*)&node->child101,sizeof(node->child101));
+	file.write((char*)&node->child110,sizeof(node->child110));
+	file.write((char*)&node->child111,sizeof(node->child111));
+	
+	save(file, node->child000);
+	save(file, node->child001);
+	save(file, node->child010);
+	save(file, node->child011);
+	save(file, node->child100);
+	save(file, node->child101);
+	save(file, node->child110);
+	save(file, node->child111);
 }
 
-int OcTree::load(const char*filename)
+char OcTree::load(ifstream& file)
 {
-	ifstream infile;
-	infile.open(filename,ios_base::in | ios_base::binary );
-	if(!infile.is_open()) return 0;
-	
-	infile.read((char*)&num_voxel, sizeof(unsigned));
+	file.read((char*)&num_voxel, sizeof(unsigned));
 	if(num_voxel>0) {   
 		root = new TreeNode();
-		load(infile, root);
-		
+		num_voxel = 0;
+		load(file, root);
+		/*
 		int datatype;
 		int datalen;
 		
@@ -438,16 +433,16 @@ int OcTree::load(const char*filename)
 			}
 			infile.read((char*)&datatype, 4);
 		}
+		*/
 	}
-	
-	infile.close();
+
 	return 1;
 }
 
 void OcTree::load(ifstream& file, TreeNode *node)
 {   
-	if(node == NULL) return;
-	
+	num_voxel++;
+	file.read((char*)&node->isLeaf,sizeof(char));
 	file.read((char*)&node->index,sizeof(int));
 	file.read((char*)&node->low,sizeof(unsigned));
 	file.read((char*)&node->high,sizeof(unsigned));
@@ -514,7 +509,7 @@ void OcTree::load(ifstream& file, TreeNode *node)
 
 void OcTree::draw()
 {
-	if(root) drawSurfel(root);
+	drawCube(root);
 }
 
 void OcTree::drawCube(const TreeNode *node)
@@ -523,7 +518,7 @@ void OcTree::drawCube(const TreeNode *node)
 	if(node->isLeaf) {
 		XYZ cen = node->center;
 		float size = node->size;
-		glColor3f(node->col.x, node->col.y, node->col.z);
+		//glColor3f(node->col.x, node->col.y, node->col.z);
 	
 		gBase::drawBox(cen, size);
 	}
@@ -558,7 +553,7 @@ void OcTree::drawSurfel(const TreeNode *node)
 		drawSurfel(node->child111 );
 	}
 }
-
+/*
 void OcTree::draw(const PerspectiveView *pview,XYZ facing,string drawType)
 {
 	if(root) 
@@ -669,7 +664,7 @@ void OcTree::drawCube(const TreeNode *node, const PerspectiveView *pview)
 		drawCube(node->child111,pview);
 	}
 }
-
+*/
 int OcTree::hasColor() const
 {
 	if(dThree.size()) 
@@ -904,7 +899,7 @@ void OcTree::loadVelocity(const char*filename,XYZ* &voxelvelocity)
 		infile.read((char*)&voxelvelocity[i],sizeof(XYZ));
 	infile.close();
 }
-*/
+
 
 void OcTree::searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex)
 {
@@ -952,4 +947,5 @@ void OcTree::drawGrid()
 		gBase::drawSplatAt(m_pGrid[i].pos, m_pGrid[i].nor, r);
 	}
 }
+*/
 //:~

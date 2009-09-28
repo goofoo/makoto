@@ -22,8 +22,8 @@
 #include <string>
 #include <maya/MFnCamera.h>
 #include <maya/MDagPath.h>
-#include "../shared/OcTree.h"
-#include "view.h"
+#include "../3dtexture/Z3DTexture.h"
+//#include "view.h"
  
 class pMapLocator : public MPxLocatorNode
 {
@@ -52,7 +52,7 @@ public:
 	static      MObject     aposition;
 private:
 	float f_rez;
-	OcTree* tree;
+	Z3DTexture* tree;
 };
 
 #endif

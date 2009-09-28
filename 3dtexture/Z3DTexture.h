@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 #include "../shared/zData.h"
-#include "../shared/OcTree.h"
+#include "OcTree.h"
 #include "../sh_lighting/SphericalHarmonics.h"
 
 struct NamedSHCOEFF
@@ -24,25 +24,31 @@ struct NamedSHCOEFF
 
 typedef vector<NamedSHCOEFF*>TriDTexSHList;
 
-class z3dtexture
+class Z3DTexture
 {
 public:
-	z3dtexture();
-	~z3dtexture();
+	Z3DTexture();
+	~Z3DTexture();
 	
-	char loadGrid(const char* filename);
+	void setGrid(RGRID* data, int n_data);
+	char load(const char* filename);
 	void constructTree();
 	void computePower();
 	void draw() const;
 	void drawGrid() const;
 	
-	int getNumGrid() const { return m_pTree->getNumGrid(); }
+	int getNumGrid() const { return m_ngrd; }
 	int getNumVoxel() const {return m_pTree->getNumVoxel(); }
 	short getMaxLevel() const {return m_pTree->getMaxLevel();}
+	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	
 	void doOcclusion();
+	
+	void save(const char* filename);
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
 	TriDTexSHList attrib_sh;
+	int m_ngrd;
+	RGRID* m_pGrid;
 };

@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 #include "QuickSort.h"
-#include "PerspectiveView.h"
+//#include "PerspectiveView.h"
 #include "gBase.h"
 
 using namespace std;
@@ -71,12 +71,13 @@ public:
 	void addThree(const XYZ *rawdata, const char* name, const PosAndId *index);
 	void setThree(XYZ *res, TreeNode *node, const XYZ *rawdata, const PosAndId *index);
 	
-	void save(const char *filename) const;
+	void save(ofstream& file) const;
 	void save(ofstream& file, TreeNode *node) const;
 	
-	int load(const char *filename);
+	char load(ifstream& file);
 	void load(ifstream& file, TreeNode *node);
 	char loadGrid(const char* filename);
+	void setGrid(RGRID* data, int n_data);
 	
 	unsigned getNumGrid() const {return num_grid;}
 	unsigned getNumVoxel() const {return num_voxel;}
@@ -84,17 +85,17 @@ public:
 	int hasColor() const;
 	
 	void draw();
-	void drawGrid();
+	//void drawGrid();
 	void drawCube(const TreeNode *node);
 	void drawSurfel(const TreeNode *node);
-	void draw(const PerspectiveView *pview,XYZ facing,string drawType);
-	void drawCube(const TreeNode *node, const PerspectiveView *pview);
-	void getDrawList(const TreeNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
+	//void draw(const PerspectiveView *pview,XYZ facing,string drawType);
+	//void drawCube(const TreeNode *node, const PerspectiveView *pview);
+	//void getDrawList(const TreeNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
-	void searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex);
+	//void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
+	//void searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex);
 
 	static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);

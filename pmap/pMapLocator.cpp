@@ -66,10 +66,10 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
 		
 		if(tree) delete tree;
-	    tree = new OcTree();
+	    tree = new Z3DTexture();
 		tree->load(filename);
-		//if(tree->hasColor()) MGlobal::displayInfo("check color");
-		//tree->searchNearVoxel(tree,pos,index);
+		MGlobal::displayInfo(MString(" num grid ") + tree->getNumGrid());
+		MGlobal::displayInfo(MString(" num voxel ") + tree->getNumVoxel());
 	}
 	
 	return MS::kUnknownParameter;
@@ -98,16 +98,8 @@ MBoundingBox pMapLocator::boundingBox() const
 	MPoint corner1( -1,-1,-1 );
 	MPoint corner2( 1,1,1 );
 	
-	if(tree) {
-		XYZ center; float size;
-		tree->getRootCenterNSize(center, size);
-		corner1.x = center.x -size;
-		corner1.y = center.y -size;
-		corner1.z = center.z -size;
-		corner2.x = center.x +size;
-		corner2.y = center.y +size;
-		corner2.z = center.z +size;
-	}
+	if(tree) tree->getBBox(corner1.x, corner2.x, corner1.y, corner2.y, corner1.z, corner2.z);
+	
 	return MBoundingBox( corner1, corner2 ); 
 } 
 
@@ -135,8 +127,8 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
 	double fl;
 	fl = fnCamera.focalLength();
-	double h_fov = h_apeture * 0.5*25.4 /fl;
-	double v_fov = v_apeture * 0.5*25.4 /fl;
+	//double h_fov = h_apeture * 0.5*25.4 /fl;
+	//double v_fov = v_apeture * 0.5*25.4 /fl;
 
 	MATRIX44F mat;
 	mat.setIdentity ();
@@ -155,11 +147,11 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	mat.inverse();
 
 	view.beginGL(); 
-	//glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	
-	particleView *pview = new particleView(); 
+	//particleView *pview = new particleView(); 
 	//double signal = 0.01;
-	pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez); 
+	//pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez); 
 	//string drawType;
 	/*
 	glPointSize(3);
@@ -175,12 +167,15 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	if(tree){
 		//glBegin(GL_QUADS);
-		glClearDepth(1.0);
-	    glEnable(GL_BLEND);
-	    glDepthFunc(GL_LEQUAL);
-	    glShadeModel(GL_SMOOTH);
-	    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		tree->draw(pview,facing,"disk");
+		//glClearDepth(1.0);
+	    //glEnable(GL_BLEND);
+	    //glDepthFunc(GL_LEQUAL);
+	    //glShadeModel(GL_SMOOTH);
+	    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPointSize(2.5);
+		tree->draw();
+		tree->drawGrid();
 		//glEnd();
 	}
 	glPopAttrib();

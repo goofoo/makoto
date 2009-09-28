@@ -23,7 +23,7 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "YiLi", "0.1.2 7.20.09", "Any");
+	MFnPlugin plugin( obj, "ZHANG JIAN", "0.1.7 28/09/09", "Any");
 
 	status = plugin.registerCommand( "pMapCmd", pMapCmd::creator,pMapCmd::newSyntax );
 	if (!status) {
