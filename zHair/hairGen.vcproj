@@ -196,6 +196,72 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="2008ribgen|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			UseOfATL="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="0">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="-DNT"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;D:\Pixar\RenderMan-Studio-1.0.1-Maya2008\devkit\include&quot;;D:\local\openexr\include\OpenEXR;&quot;$(MAYA_LOCATION_2008)\include&quot;;D:\local\iconv\include;D:\local\libxml\include;D:\Pixar\devkit\examples\ribgen;&quot;D:\Pixar\RenderMan-Studio-1.0.1-Maya2008\devkit\examples\ribgen&quot;;D:\pixar\devkit\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM;USE_MAYA2007"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=""
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/EXPORT:RIBGenCreate /EXPORT:RIBGenDestroy"
+				AdditionalDependencies="FOUNDATION.lib OpenMaya.lib OpenMayaUI.lib opengl32.lib half.lib ilmimf.lib zlib.lib"
+				OutputFile="..\module\ribgen\hairRibgen.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\local\openexr\lib;D:\local\glut;&quot;$(MAYA_LOCATION_2008)\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/getArrayValue.pdb"
+				SubSystem="2"
+				ImportLibrary=""
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="
+
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -225,7 +291,7 @@
 				RelativePath="..\shared\QuickSort.cpp">
 			</File>
 			<File
-				RelativePath="..\..\Pixar\devkit\examples\ribgen\RIBContextUtil.cpp">
+				RelativePath="..\meshGen\RIBContextUtil.cpp">
 			</File>
 			<File
 				RelativePath="..\shared\zFnEXR.cpp">
