@@ -1,18 +1,18 @@
-#include "pMapCmd.h"
+#include "PTCMapCmd.h"
 #include <assert.h>
 #include <maya/MGlobal.h>
 #include <string>
 #include "../3dtexture/Z3DTexture.h"
 
-pMapCmd::pMapCmd()
+PTCMapCmd::PTCMapCmd()
 {
 }
 
-pMapCmd::~pMapCmd()
+PTCMapCmd::~PTCMapCmd()
 {
 }
 
-MSyntax pMapCmd::newSyntax() 
+MSyntax PTCMapCmd::newSyntax() 
 {
 	MSyntax syntax;
 
@@ -27,7 +27,7 @@ MSyntax pMapCmd::newSyntax()
 	return syntax;
 }
 
-MStatus pMapCmd::doIt( const MArgList& args)
+MStatus PTCMapCmd::doIt( const MArgList& args)
 {
 	MStatus status = parseArgs( args );
 	
@@ -63,8 +63,8 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	}
 
     char filename[512];
-	sprintf( filename, "%s/%s.%d.pmap", cache_path.asChar(), cache_name.asChar(), frame );
-	MGlobal::displayInfo(MString("PMap saving ") + filename);
+	sprintf( filename, "%s/%s.%d.PTCMap", cache_path.asChar(), cache_name.asChar(), frame );
+	MGlobal::displayInfo(MString("PTCMap saving ") + filename);
 	MObject component;
 
 	if (list.isDone()) {
@@ -190,17 +190,17 @@ MStatus pMapCmd::doIt( const MArgList& args)
 	return MS::kSuccess;
 }
 
-void* pMapCmd::creator()
+void* PTCMapCmd::creator()
 {
-	return new pMapCmd();
+	return new PTCMapCmd();
 }
 
-bool pMapCmd::isUndoable() const
+bool PTCMapCmd::isUndoable() const
 {
 	return false;
 }
 
-MStatus pMapCmd::parseArgs( const MArgList& args )
+MStatus PTCMapCmd::parseArgs( const MArgList& args )
 {
 	MStatus stat = MS::kSuccess;
 	return MS::kSuccess;

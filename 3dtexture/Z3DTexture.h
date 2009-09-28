@@ -37,7 +37,7 @@ public:
 	void draw() const;
 	void drawGrid() const;
 	
-	int getNumGrid() const { return m_ngrd; }
+	int getNumGrid() const { return m_nGrid; }
 	int getNumVoxel() const {return m_pTree->getNumVoxel(); }
 	short getMaxLevel() const {return m_pTree->getMaxLevel();}
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
@@ -49,6 +49,6 @@ private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
 	TriDTexSHList attrib_sh;
-	int m_ngrd;
+	int m_nGrid;
 	RGRID* m_pGrid;
 };

@@ -1,14 +1,14 @@
 //
 // Copyright (C) YiLi
 // 
-// File: pMapLocator.cpp
+// File: PTCMapLocator.cpp
 //
-// Dependency Graph Node: pMapLocator
+// Dependency Graph Node: PTCMapLocator
 //
 // Author: Maya Plug-in Wizard 2.0
 //
 
-#include "pMapLocator.h"
+#include "PTCMapViz.h"
 #include <maya/MPlug.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
@@ -21,25 +21,25 @@
 
 #include <maya/MGlobal.h>
 
-MTypeId     pMapLocator::id( 0x0004001 );
-MObject     pMapLocator::frame;
-MObject     pMapLocator::aresolution;
-MObject     pMapLocator::amaxframe;
-MObject     pMapLocator::aminframe;
-MObject     pMapLocator::aposition;
-MObject     pMapLocator::input;
-MObject     pMapLocator::aoutval;
+MTypeId     PTCMapLocator::id( 0x0004001 );
+MObject     PTCMapLocator::frame;
+MObject     PTCMapLocator::aresolution;
+MObject     PTCMapLocator::amaxframe;
+MObject     PTCMapLocator::aminframe;
+MObject     PTCMapLocator::aposition;
+MObject     PTCMapLocator::input;
+MObject     PTCMapLocator::aoutval;
 
-pMapLocator::pMapLocator() :tree(0)
+PTCMapLocator::PTCMapLocator() :tree(0)
 {
 }
 
-pMapLocator::~pMapLocator() 
+PTCMapLocator::~PTCMapLocator() 
 {
 	if(tree) delete tree;
 }
 
-MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
+MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 //
 //	Description:
 //		This method computes the value of the given output plug based
@@ -63,7 +63,7 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    if( time < minfrm ) time = minfrm;
 	    int frame_lo = time;
 	    char filename[512];
-		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
+		sprintf( filename, "%s.%d.PTCMap", path.asChar(), frame_lo );
 		
 		if(tree) delete tree;
 	    tree = new Z3DTexture();
@@ -75,7 +75,7 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	return MS::kUnknownParameter;
 }
 
-void* pMapLocator::creator()
+void* PTCMapLocator::creator()
 //
 //	Description:
 //		this method exists to give Maya a way to create new objects
@@ -85,15 +85,15 @@ void* pMapLocator::creator()
 //		a new object of this type
 //
 {
-	return new pMapLocator();
+	return new PTCMapLocator();
 }
 
-bool pMapLocator::isBounded() const
+bool PTCMapLocator::isBounded() const
 { 
     return true;
 }
 
-MBoundingBox pMapLocator::boundingBox() const
+MBoundingBox PTCMapLocator::boundingBox() const
 {
 	MPoint corner1( -1,-1,-1 );
 	MPoint corner2( 1,1,1 );
@@ -103,7 +103,7 @@ MBoundingBox pMapLocator::boundingBox() const
 	return MBoundingBox( corner1, corner2 ); 
 } 
 
-void pMapLocator::draw( M3dView & view, const MDagPath & path, 
+void PTCMapLocator::draw( M3dView & view, const MDagPath & path, 
                                  M3dView::DisplayStyle style,M3dView::DisplayStatus status )
 { 	
 	MDagPath camera;
@@ -182,7 +182,7 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	view.endGL();
 }
 
-MStatus pMapLocator::initialize()
+MStatus PTCMapLocator::initialize()
 //
 //	Description:
 //		This method is called to create and initialize all of the attributes

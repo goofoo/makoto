@@ -151,15 +151,15 @@ global proc exportParticleCacheSingleFrame()
   //for($i = 0;$i<size($attr);$i++,$index++)
        if($attribute == ""){
         if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
+             $cmd = "pmapCache -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
 	else
-             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
+             $cmd = "pmapCache -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
              }
         else{
         if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
+             $cmd = "pmapCache -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
 	else
-             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
+             $cmd = "pmapCache -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
              }
         eval($cmd);
 }
@@ -558,7 +558,7 @@ string $path = `textFieldGrp -q -text importParticleCachePath`;
 string $buffer[];
 $numTokens = `tokenize $path "." $buffer`;
 
-string $node = `createNode pMapViz`;
+string $node = `createNode pmapViz`;
 string $shape = `group -empty -n dummy`;
 connectAttr -f ($node + ".outval") ($shape + ".translateY");
 setAttr -type "string" ($node + ".cachePath") $buffer[0];

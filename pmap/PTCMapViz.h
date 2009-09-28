@@ -1,11 +1,11 @@
-#ifndef _pMapLocator
-#define _pMapLocator
+#ifndef _PTCMapLocator
+#define _PTCMapLocator
 //
 // Copyright (C) YiLi
 // 
-// File: pMapLocator.h
+// File: PTCMapLocator.h
 //
-// Dependency Graph Node: pMapLocator
+// Dependency Graph Node: PTCMapLocator
 //
 // Author: Maya Plug-in Wizard 2.0
 //
@@ -25,11 +25,11 @@
 #include "../3dtexture/Z3DTexture.h"
 //#include "view.h"
  
-class pMapLocator : public MPxLocatorNode
+class PTCMapLocator : public MPxLocatorNode
 {
 public:
-						  pMapLocator();
-	virtual				  ~pMapLocator(); 
+						  PTCMapLocator();
+	virtual				  ~PTCMapLocator(); 
 
 	virtual MStatus		  compute( const MPlug& plug, MDataBlock& data );
 	virtual void          draw( M3dView & view, const MDagPath & path, 

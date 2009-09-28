@@ -27,7 +27,7 @@ void Z3DTexture::setGrid(RGRID* data, int n_data)
 	if(m_pTree) delete m_pTree;
 	m_pTree = new OcTree();
 	m_pTree->setGrid(data, n_data);
-	m_ngrd = n_data;
+	m_nGrid = n_data;
 	m_pGrid = data;
 }
 
@@ -37,14 +37,14 @@ char Z3DTexture::load(const char* filename)
 	infile.open(filename,ios_base::in | ios_base::binary );
 	if(!infile.is_open()) return 0;
 	
-	infile.read((char*)&m_ngrd, sizeof(int));
-	if(m_ngrd < 1) {
+	infile.read((char*)&m_nGrid, sizeof(int));
+	if(m_nGrid < 1) {
 		infile.close();
 		return 0;
 	}
 	
-	m_pGrid = new RGRID[m_ngrd];
-	infile.read((char*)m_pGrid, sizeof(RGRID)*m_ngrd);
+	m_pGrid = new RGRID[m_nGrid];
+	infile.read((char*)m_pGrid, sizeof(RGRID)*m_nGrid);
 	
 	m_pTree = new OcTree();
 	
@@ -74,7 +74,7 @@ void Z3DTexture::draw() const
 void Z3DTexture::drawGrid() const
 {
 	glBegin(GL_POINTS);
-	for(int i=0; i<m_ngrd; i++) glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
+	for(int i=0; i<m_nGrid; i++) glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
 	glEnd();
 }
 
@@ -94,9 +94,8 @@ void Z3DTexture::save(const char* filename)
 	outfile.open(filename, ios_base::out | ios_base::binary );
 	if(!outfile.is_open()) return;
 	
-	m_ngrd = getNumGrid();
-	outfile.write((char*)&m_ngrd,sizeof(int));
-	outfile.write((char*)m_pGrid,sizeof(RGRID)*m_ngrd);
+	outfile.write((char*)&m_nGrid,sizeof(int));
+	outfile.write((char*)m_pGrid,sizeof(RGRID)*m_nGrid);
 	
 	m_pTree->save(outfile);
 	
