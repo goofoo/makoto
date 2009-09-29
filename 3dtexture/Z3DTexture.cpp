@@ -123,15 +123,13 @@ void Z3DTexture::getBBox(double& xmin, double& xmax, double& ymin, double& ymax,
 	}
 }
 
-void Z3DTexture::distanceToNeighbour()
+void Z3DTexture::distanceToNeighbour(float min, float max)
 {
 	if(!m_pTree) return;
 	int ngrid = m_pTree->getNumGrid();
 	for(int i=0; i<ngrid; i++) {
 
 		XYZ to = m_pGrid[i].pos;
-		float min = 0.1;
-		float max = 4.9;
 		float dist = max;
 		m_pTree->nearestGrid(to, min, max, dist);
 		m_pGrid[i].area = dist;

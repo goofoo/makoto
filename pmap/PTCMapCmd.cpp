@@ -19,7 +19,9 @@ MSyntax PTCMapCmd::newSyntax()
 	syntax.addFlag("-p", "-path", MSyntax::kString);
 	syntax.addFlag("-n", "-name", MSyntax::kString);
 	syntax.addFlag("-a","-attrib",MSyntax::kString);
-	syntax.addFlag("-md","-mindist",MSyntax::kDouble);
+	syntax.addFlag("-mnd","-mindist",MSyntax::kDouble);
+	syntax.addFlag("-mxd","-maxdist",MSyntax::kDouble);
+	syntax.addFlag("-dfd","-defaultdist",MSyntax::kDouble);
 
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -44,12 +46,16 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
     MString cache_path = proj + "/data";
 	MString cache_name = "foo";
 	MString cache_attrib;
-	double cache_mindist = 1.0;
+	double cache_mindist = 0.1;
+	double cache_maxdist = 4.1;
+	double cache_defdist = 1.1;
 
 	if (argData.isFlagSet("-p")) argData.getFlagArgument("-p", 0, cache_path);
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
 	if (argData.isFlagSet("-a")) argData.getFlagArgument("-a", 0, cache_attrib);
-	if (argData.isFlagSet("-md")) argData.getFlagArgument("-md", 0, cache_mindist);
+	if (argData.isFlagSet("-mnd")) argData.getFlagArgument("-mnd", 0, cache_mindist);
+	if (argData.isFlagSet("-mxd")) argData.getFlagArgument("-mxd", 0, cache_maxdist);
+	if (argData.isFlagSet("-dfd")) argData.getFlagArgument("-dfd", 0, cache_defdist);
 
 	MStringArray attribArray;
 	cache_attrib.split('.', attribArray);
@@ -62,18 +68,13 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		return status;
 	}
 
-    char filename[512];
-	sprintf( filename, "%s/%s.%d.pmap", cache_path.asChar(), cache_name.asChar(), frame );
-	MGlobal::displayInfo(MString("PTCMap saving ") + filename);
-	MObject component;
-
 	if (list.isDone()) {
 		displayError( "No particles selected" );
-		return MS::kFailure;
+		return MS::kSuccess;
 	}
 
 	MDagPath fDagPath;
-	
+	MObject component;
 	unsigned npt = 0,acc = 0;
 	for(;!list.isDone();list.next()) {
 		list.getDagPath (fDagPath, component);
@@ -83,6 +84,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	
 	if(npt < 1) {
 		MGlobal::displayInfo(" zero particle: do nothing ");
+		return MS::kSuccess;
 	}
 	
 	RGRID *buf = new RGRID[npt];
@@ -108,7 +110,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		    buf[acc].nor.x = velarr[i].x;
 			buf[acc].nor.y = velarr[i].y;
 			buf[acc].nor.z = velarr[i].z;
-			buf[acc].area = 1;
+			buf[acc].area = cache_defdist;
 			buf[acc].col = XYZ(1,1,0);
 		}
 	}
@@ -120,7 +122,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	MGlobal::displayInfo(MString(" num voxel ")+ tree->getNumVoxel());
 	MGlobal::displayInfo(MString(" max level ")+ tree->getMaxLevel());
 	MGlobal::displayInfo(" updating distance to neighbour...");
-	tree->distanceToNeighbour();
+	tree->distanceToNeighbour(cache_mindist, cache_maxdist);
 	MGlobal::displayInfo(" done");
 /*
 	XYZ* attrArray = new XYZ[npt];
@@ -187,6 +189,9 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 			//delete attrArray;
 	}
 */
+	char filename[512];
+	sprintf( filename, "%s/%s.%d.pmap", cache_path.asChar(), cache_name.asChar(), frame );
+	MGlobal::displayInfo(MString("PTCMap saved ") + filename);
 	tree->save(filename);
 	
 	delete tree;

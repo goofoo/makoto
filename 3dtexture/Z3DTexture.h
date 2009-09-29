@@ -42,7 +42,7 @@ public:
 	short getMaxLevel() const {if(m_pTree) return m_pTree->getMaxLevel(); else return -1;}
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	
-	void distanceToNeighbour();
+	void distanceToNeighbour(float min, float max);
 	void doOcclusion();
 	
 	void save(const char* filename);
