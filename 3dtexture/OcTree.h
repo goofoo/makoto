@@ -6,10 +6,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "QuickSort.h"
-//#include "PerspectiveView.h"
-#include "gBase.h"
 
+#include "QuickSort.h"
 using namespace std;
 
 class sphericalHarmonics;
@@ -29,10 +27,10 @@ struct NamedThree
 typedef vector<NamedSingle*>VoxSingleList;
 typedef vector<NamedThree*>VoxThreeList;
 
-struct TreeNode
+struct OCTNode
 {
 
-	TreeNode():child000(0),child001(0),child010(0),child011(0),
+	OCTNode():child000(0),child001(0),child010(0),child011(0),
 		      child100(0),child101(0),child110(0),child111(0),isLeaf(0) {}
 
 	unsigned low, high, index;
@@ -40,14 +38,15 @@ struct TreeNode
 	float size, area;
 	char isLeaf;
 	
-	TreeNode *child000;
-	TreeNode *child001;
-	TreeNode *child010;
-	TreeNode *child011;
-	TreeNode *child100;
-	TreeNode *child101;
-	TreeNode *child110;
-	TreeNode *child111;
+	OCTNode *parent;
+	OCTNode *child000;
+	OCTNode *child001;
+	OCTNode *child010;
+	OCTNode *child011;
+	OCTNode *child100;
+	OCTNode *child101;
+	OCTNode *child110;
+	OCTNode *child111;
 };
 
 class OcTree
@@ -57,25 +56,29 @@ public:
 	~OcTree();
 	
 	void release();
-	void release(TreeNode *node);
+	void release(OCTNode *node);
 	
 	void construct();
-	void create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
+	void create(OCTNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
+	
+	void nearestGrid(const XYZ& to, float min, float max, float& dist);
+	void nearestGrid(OCTNode *node, const XYZ& to, float min, float max, float& dist);
+	
 	void computePower(sphericalHarmonics* sh);
-	void computePower(TreeNode *node);
+	void computePower(OCTNode *node);
 	
 	void doOcclusion(SHB3COEFF* res) const;
 	
 	void addSingle(const float *rawdata, const char* name, const PosAndId *index);
-	void setSingle(float *res, TreeNode *node, const float *rawdata, const PosAndId *index);
+	void setSingle(float *res, OCTNode *node, const float *rawdata, const PosAndId *index);
 	void addThree(const XYZ *rawdata, const char* name, const PosAndId *index);
-	void setThree(XYZ *res, TreeNode *node, const XYZ *rawdata, const PosAndId *index);
+	void setThree(XYZ *res, OCTNode *node, const XYZ *rawdata, const PosAndId *index);
 	
 	void save(ofstream& file) const;
-	void save(ofstream& file, TreeNode *node) const;
+	void save(ofstream& file, OCTNode *node) const;
 	
 	char load(ifstream& file);
-	void load(ifstream& file, TreeNode *node);
+	void load(ifstream& file, OCTNode *node);
 	char loadGrid(const char* filename);
 	void setGrid(RGRID* data, int n_data);
 	
@@ -86,16 +89,16 @@ public:
 	
 	void draw();
 	//void drawGrid();
-	void drawCube(const TreeNode *node);
-	void drawSurfel(const TreeNode *node);
+	void drawCube(const OCTNode *node);
+	void drawSurfel(const OCTNode *node);
 	//void draw(const PerspectiveView *pview,XYZ facing,string drawType);
-	//void drawCube(const TreeNode *node, const PerspectiveView *pview);
-	//void getDrawList(const TreeNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
+	//void drawCube(const OCTNode *node, const PerspectiveView *pview);
+	//void getDrawList(const OCTNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
 	//void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
-	//void searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex);
+	//void searchNearVoxel(OCTNode *node,const XYZ position,int & treeindex);
 
 	static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
@@ -106,7 +109,7 @@ public:
 	
 private:
 	
-	TreeNode *root;
+	OCTNode *root;
 	short max_level;
 	unsigned num_voxel;
 	
@@ -118,4 +121,6 @@ private:
 	
 	SHB3COEFF* m_pPower;
 	sphericalHarmonics* sh;
+	
+	PosAndId *idBuf;
 };

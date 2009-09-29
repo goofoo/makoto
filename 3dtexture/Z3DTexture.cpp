@@ -24,11 +24,10 @@ Z3DTexture::~Z3DTexture()
 
 void Z3DTexture::setGrid(RGRID* data, int n_data)
 {
+	m_pGrid = data;
 	if(m_pTree) delete m_pTree;
 	m_pTree = new OcTree();
 	m_pTree->setGrid(data, n_data);
-	m_nGrid = n_data;
-	m_pGrid = data;
 }
 
 char Z3DTexture::load(const char* filename)
@@ -37,17 +36,18 @@ char Z3DTexture::load(const char* filename)
 	infile.open(filename,ios_base::in | ios_base::binary );
 	if(!infile.is_open()) return 0;
 	
-	infile.read((char*)&m_nGrid, sizeof(int));
-	if(m_nGrid < 1) {
+	int ngrid = -1;
+	infile.read((char*)&ngrid, sizeof(int));
+	if(ngrid < 1) {
 		infile.close();
 		return 0;
 	}
 	
-	m_pGrid = new RGRID[m_nGrid];
-	infile.read((char*)m_pGrid, sizeof(RGRID)*m_nGrid);
+	m_pGrid = new RGRID[ngrid];
+	infile.read((char*)m_pGrid, sizeof(RGRID)*ngrid);
 	
 	m_pTree = new OcTree();
-	
+	m_pTree->setGrid(m_pGrid, ngrid);
 	m_pTree->load(infile);
 	
 	infile.close();
@@ -71,11 +71,17 @@ void Z3DTexture::draw() const
 	if(m_pTree) m_pTree->draw();
 }
 
-void Z3DTexture::drawGrid() const
+void Z3DTexture::drawGrid(const XYZ& viewdir) const
 {
-	glBegin(GL_POINTS);
-	for(int i=0; i<m_nGrid; i++) glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
-	glEnd();
+	if(!m_pTree) return;
+	//glBegin(GL_POINTS);
+	int ngrid = m_pTree->getNumGrid();
+	for(int i=0; i<ngrid; i++) {
+		glColor3f(m_pGrid[i].col.x, m_pGrid[i].col.y, m_pGrid[i].col.z);
+		//glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
+		gBase::drawSplatAt(m_pGrid[i].pos, viewdir, m_pGrid[i].area);
+	}
+	//glEnd();
 }
 
 void Z3DTexture::doOcclusion()
@@ -94,8 +100,9 @@ void Z3DTexture::save(const char* filename)
 	outfile.open(filename, ios_base::out | ios_base::binary );
 	if(!outfile.is_open()) return;
 	
-	outfile.write((char*)&m_nGrid,sizeof(int));
-	outfile.write((char*)m_pGrid,sizeof(RGRID)*m_nGrid);
+	int ngrid = m_pTree->getNumGrid();
+	outfile.write((char*)&ngrid,sizeof(int));
+	outfile.write((char*)m_pGrid,sizeof(RGRID)*ngrid);
 	
 	m_pTree->save(outfile);
 	
@@ -114,4 +121,20 @@ void Z3DTexture::getBBox(double& xmin, double& xmax, double& ymin, double& ymax,
 		ymax = center.y +size;
 		zmax = center.z +size;
 	}
+}
+
+void Z3DTexture::distanceToNeighbour()
+{
+	if(!m_pTree) return;
+	int ngrid = m_pTree->getNumGrid();
+	for(int i=0; i<ngrid; i++) {
+
+		XYZ to = m_pGrid[i].pos;
+		float min = 0.1;
+		float max = 4.9;
+		float dist = max;
+		m_pTree->nearestGrid(to, min, max, dist);
+		m_pGrid[i].area = dist;
+	}
+	
 }

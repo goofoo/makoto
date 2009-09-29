@@ -35,13 +35,14 @@ public:
 	void constructTree();
 	void computePower();
 	void draw() const;
-	void drawGrid() const;
+	void drawGrid(const XYZ& viewdir) const;
 	
-	int getNumGrid() const { return m_nGrid; }
-	int getNumVoxel() const {return m_pTree->getNumVoxel(); }
-	short getMaxLevel() const {return m_pTree->getMaxLevel();}
+	int getNumGrid() const { if(m_pTree) return m_pTree->getNumGrid(); else return -1; }
+	int getNumVoxel() const {if(m_pTree) return m_pTree->getNumVoxel(); else return -1;}
+	short getMaxLevel() const {if(m_pTree) return m_pTree->getMaxLevel(); else return -1;}
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	
+	void distanceToNeighbour();
 	void doOcclusion();
 	
 	void save(const char* filename);
@@ -49,6 +50,5 @@ private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
 	TriDTexSHList attrib_sh;
-	int m_nGrid;
 	RGRID* m_pGrid;
 };

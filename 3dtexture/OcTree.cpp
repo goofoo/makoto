@@ -14,8 +14,9 @@
 #endif
 
 #include "../sh_lighting/SphericalHarmonics.h"
+#include "gBase.h"
 
-OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),m_pPower(0)
+OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),m_pPower(0),idBuf(0)
 {
 }
 
@@ -26,7 +27,7 @@ OcTree::~OcTree()
 
 void OcTree::release()
 {
-	//if(m_pGrid) delete[] m_pGrid;
+	if(idBuf) delete[] idBuf;
 	if(m_pPower) delete[] m_pPower;
 	if(root) release(root);
 	for(unsigned i=0; i<dSingle.size(); i++) delete[] dSingle[i]->data;
@@ -35,7 +36,7 @@ void OcTree::release()
 	dThree.clear();
 }
 
-void OcTree::release(TreeNode *node)
+void OcTree::release(OCTNode *node)
 {
 	if(!node) return;
 	
@@ -88,36 +89,36 @@ void OcTree::setGrid(RGRID* data, int n_data)
 
 void OcTree::construct()
 {
-	PosAndId *buf = new PosAndId[num_grid];
+	idBuf = new PosAndId[num_grid];
 	float mean_r = 0;
 	for(int i=0; i<num_grid; i++) {
-		buf[i].pos = m_pGrid[i].pos;
-		buf[i].idx = i;
-		mean_r += sqrt(m_pGrid[i].area);
+		idBuf[i].pos = m_pGrid[i].pos;
+		idBuf[i].idx = i;
+		mean_r += m_pGrid[i].area;
 	}
 	mean_r /= num_grid;
 	
 	XYZ rootCenter;
 	float rootSize;
-    getBBox(buf, num_grid, rootCenter, rootSize);
+    getBBox(idBuf, num_grid, rootCenter, rootSize);
 	rootSize += mean_r;
 	
 	max_level = 0;
 	
 	float minboxsize = rootSize;
-	while(minboxsize > mean_r*2.71) {
+	while(minboxsize > mean_r*4.1) {
 		max_level++;
 		minboxsize /=2;
 	}
 
-	root = new TreeNode();
+	root = new OCTNode();
+	root->parent = NULL;
 	num_voxel = 0;
-	create(root, buf, 0, num_grid-1, rootCenter, rootSize, 0, num_voxel);
+	create(root, idBuf, 0, num_grid-1, rootCenter, rootSize, 0, num_voxel);
 	
-	delete[] buf;
 }
 
-void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count)
+void OcTree::create(OCTNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count)
 {
 	node->low = low;
 	node->high = high;
@@ -162,7 +163,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 	
 		if(low <= zindex1-1)
 		{
-			node->child000 = new TreeNode();
+			node->child000 = new OCTNode(); node->child000->parent = node;
 			acen = center + XYZ(-halfsize, -halfsize, -halfsize);
 			create(node->child000,data,low,zindex1-1,acen,halfsize,level, count);
 		}
@@ -170,7 +171,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 		if(zindex1 <= yindex1-1)
 		{
-			node->child001 = new TreeNode();
+			node->child001 = new OCTNode(); node->child001->parent = node;
 			acen = center + XYZ(-halfsize, -halfsize, halfsize);
 			create(node->child001,data,zindex1,yindex1-1,acen,halfsize,level, count);
 		}
@@ -178,7 +179,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 		if(yindex1<=zindex2-1)
 		{
-			node->child010 = new TreeNode();
+			node->child010 = new OCTNode(); node->child010->parent = node;
 			acen = center + XYZ(-halfsize, halfsize, -halfsize);
 			create(node->child010,data,yindex1,zindex2-1,acen,halfsize,level, count);
 		}
@@ -186,7 +187,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 		if(zindex2<=xindex-1)
 		{
-			node->child011 = new TreeNode();
+			node->child011 = new OCTNode(); node->child011->parent = node;
 			acen = center + XYZ(-halfsize, halfsize, halfsize);
 			create(node->child011,data,zindex2,xindex-1,acen,halfsize,level, count);
 		}
@@ -194,7 +195,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 		if(xindex<=zindex3-1)
 		{
-			node->child100 = new TreeNode();
+			node->child100 = new OCTNode(); node->child100->parent = node;
 			acen = center + XYZ(halfsize, -halfsize, -halfsize);
 			create(node->child100,data,xindex,zindex3-1,acen,halfsize,level, count);
 		}
@@ -202,7 +203,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 		if(zindex3<=yindex2-1)
 		{
-			node->child101 = new TreeNode();
+			node->child101 = new OCTNode(); node->child101->parent = node;
 			acen = center + XYZ(halfsize, -halfsize, halfsize);
 			create(node->child101,data,zindex3,yindex2-1,acen,halfsize,level, count);
 		}
@@ -210,7 +211,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 		if(yindex2<=zindex4-1)
 		{
-			node->child110 = new TreeNode();
+			node->child110 = new OCTNode(); node->child110->parent = node;
 			acen = center + XYZ(halfsize, halfsize, -halfsize);
 			create(node->child110,data,yindex2,zindex4-1,acen,halfsize,level, count);
 		}
@@ -218,7 +219,7 @@ void OcTree::create(TreeNode *node, PosAndId* data, int low, int high, const XYZ
 
 		if(zindex4<=high)
 		{
-			node->child111 = new TreeNode();
+			node->child111 = new OCTNode(); node->child111->parent = node;
 			acen = center + XYZ(halfsize, halfsize, halfsize);
 			create(node->child111,data,zindex4,high,acen,halfsize,level, count);
 		}
@@ -233,7 +234,7 @@ void OcTree::computePower(sphericalHarmonics* _sh)
 	computePower(root);
 }
 
-void OcTree::computePower(TreeNode *node)
+void OcTree::computePower(OCTNode *node)
 {
 	if(!node) return;
 	sh->zeroCoeff(m_pPower[node->index].value);
@@ -285,7 +286,7 @@ void OcTree::addSingle(const float *rawdata, const char* name, const PosAndId *i
 	dSingle.push_back(attr);
 }
 
-void OcTree::setSingle(float *res, TreeNode *node, const float *rawdata, const PosAndId *index)
+void OcTree::setSingle(float *res, OCTNode *node, const float *rawdata, const PosAndId *index)
 {
 	if(!node) return;
 	else {
@@ -318,7 +319,7 @@ void OcTree::addThree(const XYZ *rawdata, const char* name, const PosAndId *inde
 	dThree.push_back(attr);
 }
 
-void OcTree::setThree(XYZ *res, TreeNode *node, const XYZ *rawdata, const PosAndId *index)
+void OcTree::setThree(XYZ *res, OCTNode *node, const XYZ *rawdata, const PosAndId *index)
 {
 	if(!node) return;
 	else {
@@ -367,7 +368,7 @@ void OcTree::save(ofstream& file) const
 	
 }
 
-void OcTree::save(ofstream& file, TreeNode *node) const
+void OcTree::save(ofstream& file, OCTNode *node) const
 {
 	if(!node) return;
 	file.write((char*)&node->isLeaf,sizeof(char));
@@ -400,7 +401,8 @@ char OcTree::load(ifstream& file)
 {
 	file.read((char*)&num_voxel, sizeof(unsigned));
 	if(num_voxel>0) {   
-		root = new TreeNode();
+		root = new OCTNode();
+		root->parent = NULL;
 		num_voxel = 0;
 		load(file, root);
 		/*
@@ -439,7 +441,7 @@ char OcTree::load(ifstream& file)
 	return 1;
 }
 
-void OcTree::load(ifstream& file, TreeNode *node)
+void OcTree::load(ifstream& file, OCTNode *node)
 {   
 	num_voxel++;
 	file.read((char*)&node->isLeaf,sizeof(char));
@@ -459,49 +461,49 @@ void OcTree::load(ifstream& file, TreeNode *node)
 	file.read((char*)&node->child111,sizeof(node->child111));
 	
 	if(node->child000) {
-		node->child000 = new TreeNode();
+		node->child000 = new OCTNode(); node->child000->parent = node;
 		load(file, node->child000);
 	}
 	else node->child000 = NULL;
 	
 	if(node->child001) {
-		node->child001 = new TreeNode();
+		node->child001 = new OCTNode(); node->child001->parent = node;
 		load(file, node->child001);
 	}
 	else node->child001 = NULL;
 	
 	if(node->child010) {
-		node->child010 = new TreeNode();
+		node->child010 = new OCTNode(); node->child010->parent = node;
 		load(file, node->child010);
 	}
 	else node->child010 = NULL;
 	
 	if(node->child011) {
-		node->child011 = new TreeNode();
+		node->child011 = new OCTNode(); node->child011->parent = node;
 		load(file, node->child011);
 	}
 	else node->child011 = NULL;
 	
 	if(node->child100) {
-		node->child100 = new TreeNode();
+		node->child100 = new OCTNode(); node->child100->parent = node;
 		load(file, node->child100);
 	}
 	else node->child100 = NULL;
 	
 	if(node->child101) {
-		node->child101 = new TreeNode();
+		node->child101 = new OCTNode(); node->child101->parent = node;
 		load(file, node->child101);
 	}
 	else node->child101 = NULL;
 	
 	if(node->child110) {
-		node->child110 = new TreeNode();
+		node->child110 = new OCTNode(); node->child110->parent = node;
 		load(file, node->child110);
 	}
 	else node->child110 = NULL;
 	
 	if(node->child111) {
-		node->child111 = new TreeNode();
+		node->child111 = new OCTNode(); node->child111->parent = node;
 		load(file, node->child111);
 	}
 	else node->child111 = NULL;
@@ -512,7 +514,7 @@ void OcTree::draw()
 	drawCube(root);
 }
 
-void OcTree::drawCube(const TreeNode *node)
+void OcTree::drawCube(const OCTNode *node)
 {
 	if(!node) return;
 	if(node->isLeaf) {
@@ -534,7 +536,7 @@ void OcTree::drawCube(const TreeNode *node)
 	}
 }
 
-void OcTree::drawSurfel(const TreeNode *node)
+void OcTree::drawSurfel(const OCTNode *node)
 {
 	if(!node) return;
 	if(node->isLeaf) {
@@ -580,7 +582,7 @@ void OcTree::draw(const PerspectiveView *pview,XYZ facing,string drawType)
 	}
 }
 
-void OcTree::getDrawList(const TreeNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList)
+void OcTree::getDrawList(const OCTNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList)
 {
 	if(!node) return;
 	if(!pview->needSplit(node->size,node->center) || (!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)) 
@@ -609,7 +611,7 @@ void OcTree::getDrawList(const TreeNode *node, const PerspectiveView *pview,int 
 	}
 }
 
-void OcTree::drawCube(const TreeNode *node, const PerspectiveView *pview)
+void OcTree::drawCube(const OCTNode *node, const PerspectiveView *pview)
 {
 	if(!node) return;
 	int i = hasColor();
@@ -806,6 +808,53 @@ void OcTree::combineSurfel(const PosAndId *data, const int low, const int high, 
 	color.y = 0.5 + 0.5*dir.y;
 	color.z = 0.5 + 0.5*dir.z;
 }
+
+void OcTree::nearestGrid(const XYZ& to, float min, float max, float& dist)
+{
+	nearestGrid(root, to, min, max, dist);
+}
+
+void OcTree::nearestGrid(OCTNode *node, const XYZ& to, float min, float max, float& dist)
+{
+	if(!node) return;
+	
+	float delta;
+	delta = node->center.x - to.x;
+	if(delta < 0) delta *= -1;
+	delta -= node->size;
+	if(delta > max) return;
+	
+	delta = node->center.y - to.y;
+	if(delta < 0) delta *= -1;
+	delta -= node->size;
+	if(delta > max) return;
+	
+	delta = node->center.z - to.z;
+	if(delta < 0) delta *= -1;
+	delta -= node->size;
+	if(delta > max) return;
+	
+	if(node->isLeaf) {
+		
+		for(unsigned i= node->low; i<= node->high; i++) {
+			XYZ disp = idBuf[i].pos - to;
+			delta = disp.length();
+			if(delta < dist && delta > min) dist = delta;
+		}
+	}
+	else {
+		nearestGrid(node->child000, to, min, max, dist );
+		nearestGrid(node->child001, to, min, max, dist);
+		nearestGrid(node->child010, to, min, max, dist);
+		nearestGrid(node->child011, to, min, max, dist);
+		nearestGrid(node->child100, to, min, max, dist);
+		nearestGrid(node->child101, to, min, max, dist);
+		nearestGrid(node->child110, to, min, max, dist);
+		nearestGrid(node->child111, to, min, max, dist);
+	}
+}
+
+
 /*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)
 {
@@ -818,7 +867,7 @@ void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum
 	outfile.close();
 }
 
-void OcTree::saveColor(TreeNode *node,XYZ *color,PosAndId *buf)
+void OcTree::saveColor(OCTNode *node,XYZ *color,PosAndId *buf)
 {
 	if(!node) return;
 	else
@@ -850,7 +899,7 @@ void OcTree::saveVelocity(const char*filename,XYZ *velocity,PosAndId *buf,unsign
 	outfile.close();
 }
 
-void OcTree::saveVelocity(TreeNode *node,XYZ *velocity,PosAndId *buf)
+void OcTree::saveVelocity(OCTNode *node,XYZ *velocity,PosAndId *buf)
 {
 	if(!node) return;
 	else
@@ -907,7 +956,7 @@ void OcTree::searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex)
 	searchNearVoxel(root,position,treeindex);
 }
 
-void OcTree::searchNearVoxel(TreeNode *node,const XYZ position,int & treeindex)
+void OcTree::searchNearVoxel(OCTNode *node,const XYZ position,int & treeindex)
 {
 	if(!node->child000 && !node->child001 && !node->child010 && !node->child011 && !node->child100 && !node->child101 && !node->child110 && !node->child111)
 	{

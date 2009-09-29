@@ -63,7 +63,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	}
 
     char filename[512];
-	sprintf( filename, "%s/%s.%d.PTCMap", cache_path.asChar(), cache_name.asChar(), frame );
+	sprintf( filename, "%s/%s.%d.pmap", cache_path.asChar(), cache_name.asChar(), frame );
 	MGlobal::displayInfo(MString("PTCMap saving ") + filename);
 	MObject component;
 
@@ -108,7 +108,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		    buf[acc].nor.x = velarr[i].x;
 			buf[acc].nor.y = velarr[i].y;
 			buf[acc].nor.z = velarr[i].z;
-			buf[acc].area = 4;
+			buf[acc].area = 1;
 			buf[acc].col = XYZ(1,1,0);
 		}
 	}
@@ -119,6 +119,9 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	MGlobal::displayInfo(MString(" num grid ")+ tree->getNumGrid());
 	MGlobal::displayInfo(MString(" num voxel ")+ tree->getNumVoxel());
 	MGlobal::displayInfo(MString(" max level ")+ tree->getMaxLevel());
+	MGlobal::displayInfo(" updating distance to neighbour...");
+	tree->distanceToNeighbour();
+	MGlobal::displayInfo(" done");
 /*
 	XYZ* attrArray = new XYZ[npt];
 	float* attr = new float[npt];

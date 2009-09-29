@@ -21,7 +21,7 @@
 
 #include <maya/MGlobal.h>
 
-MTypeId     PTCMapLocator::id( 0x0004001 );
+MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
 MObject     PTCMapLocator::aresolution;
 MObject     PTCMapLocator::amaxframe;
@@ -63,13 +63,13 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    if( time < minfrm ) time = minfrm;
 	    int frame_lo = time;
 	    char filename[512];
-		sprintf( filename, "%s.%d.PTCMap", path.asChar(), frame_lo );
+		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
 		
 		if(tree) delete tree;
 	    tree = new Z3DTexture();
-		tree->load(filename);
-		MGlobal::displayInfo(MString(" num grid ") + tree->getNumGrid());
-		MGlobal::displayInfo(MString(" num voxel ") + tree->getNumVoxel());
+		if(!tree->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
+		//MGlobal::displayInfo(MString(" num grid ") + tree->getNumGrid());
+		//MGlobal::displayInfo(MString(" num voxel ") + tree->getNumVoxel());
 	}
 	
 	return MS::kUnknownParameter;
@@ -174,8 +174,8 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glPointSize(2.5);
-		tree->draw();
-		tree->drawGrid();
+		//tree->draw();
+		tree->drawGrid(facing);
 		//glEnd();
 	}
 	glPopAttrib();
