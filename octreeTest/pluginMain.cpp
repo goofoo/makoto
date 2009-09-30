@@ -9,6 +9,7 @@
 #include <maya/MGlobal.h>
 #include "octreeVizNode.h"
 #include "shVizNode.h"
+#include "rasterVizNode.h"
 
 // The initializePlugin method is called by Maya when the
 // plugin is loaded. It registers the hwbruiseMapShader node
@@ -36,6 +37,14 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 	
+	status = plugin.registerNode( "RasterViz", rasterVizNode::id, 
+						 &rasterVizNode::creator, &rasterVizNode::initialize,
+						 MPxNode::kLocatorNode );
+	if (!status) {
+		status.perror("registerNode");
+		return status;
+	}
+	
 	//MGlobal::executeCommand("source zhairMenus.mel; zhairCreateMenus;");
 
 	return status;
@@ -57,6 +66,12 @@ MStatus uninitializePlugin( MObject obj )
 	}
  
 	status = plugin.deregisterNode( shVizNode::id );
+	if (!status) {
+		status.perror("deregisterNode");
+		return status;
+	}
+	
+	status = plugin.deregisterNode( rasterVizNode::id );
 	if (!status) {
 		status.perror("deregisterNode");
 		return status;

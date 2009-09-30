@@ -42,8 +42,8 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 			m_gridname = sname;
 			if(m_pTex) delete m_pTex;
 			
-			m_pTex = new z3dtexture;
-			if(m_pTex->loadGrid(m_gridname.asChar())) {
+			m_pTex = new Z3DTexture;
+			if(m_pTex->load(m_gridname.asChar())) {
 				m_pTex->constructTree();
 				m_pTex->computePower();
 				zDisplayFloat(m_pTex->getNumGrid());
@@ -66,7 +66,8 @@ void octreeVizNode::draw( M3dView & view, const MDagPath & /*path*/,
 	glPointSize(3);
 
 	if(m_pTex) {
-		m_pTex->drawGrid();
+		XYZ view(0,0,1);
+		m_pTex->drawGrid(view);
 		m_pTex->draw();
 	}
 	
