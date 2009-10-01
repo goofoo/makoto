@@ -49,6 +49,8 @@ struct OCTNode
 	OCTNode *child111;
 };
 
+class CubeRaster;
+
 class OcTree
 {
 public:
@@ -59,7 +61,7 @@ public:
 	void release(OCTNode *node);
 	
 	void construct();
-	void create(OCTNode *node, PosAndId* data, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
+	void create(OCTNode *node, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	
 	void nearestGrid(const XYZ& to, float min, float max, float& dist);
 	void nearestGrid(OCTNode *node, const XYZ& to, float min, float max, float& dist);
@@ -103,9 +105,12 @@ public:
 	static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
-	static void getBBox(const PosAndId* data, const int num_data, XYZ& center, float& size);
+	static void getBBox(const RGRID* data, const int num_data, XYZ& center, float& size);
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
-	void combineSurfel(const PosAndId *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
+	void combineSurfel(const RGRID *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
+	
+	void occlusion(const XYZ& origin, CubeRaster* raster);
+	void occlusion(OCTNode *node, const XYZ& origin, CubeRaster* raster);
 	
 private:
 	
@@ -122,5 +127,5 @@ private:
 	SHB3COEFF* m_pPower;
 	sphericalHarmonics* sh;
 	
-	PosAndId *idBuf;
+	unsigned *idBuf;
 };

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7F7C14B610726A860029D454 /* CubeRaster.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F7C14B410726A860029D454 /* CubeRaster.h */; };
 		7F7C14B710726A860029D454 /* CubeRaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F7C14B510726A860029D454 /* CubeRaster.cpp */; };
 		7F81222910711B440022BF82 /* zGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81222810711B440022BF82 /* zGlobal.cpp */; };
 		7F81222E10711B660022BF82 /* QuickSort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81222D10711B660022BF82 /* QuickSort.cpp */; };
@@ -23,7 +22,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7F7C14B410726A860029D454 /* CubeRaster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CubeRaster.h; path = ../3dtexture/CubeRaster.h; sourceTree = SOURCE_ROOT; };
 		7F7C14B510726A860029D454 /* CubeRaster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CubeRaster.cpp; path = ../3dtexture/CubeRaster.cpp; sourceTree = SOURCE_ROOT; };
 		7F81222810711B440022BF82 /* zGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zGlobal.cpp; path = ../shared/zGlobal.cpp; sourceTree = SOURCE_ROOT; };
 		7F81222D10711B660022BF82 /* QuickSort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickSort.cpp; path = ../shared/QuickSort.cpp; sourceTree = SOURCE_ROOT; };
@@ -76,7 +74,6 @@
 				7F81222D10711B660022BF82 /* QuickSort.cpp */,
 				7F81222810711B440022BF82 /* zGlobal.cpp */,
 				7FE58BA00FB61F6700187112 /* pluginMain.cpp */,
-				7F7C14B410726A860029D454 /* CubeRaster.h */,
 				7F7C14B510726A860029D454 /* CubeRaster.cpp */,
 			);
 			name = Source;
@@ -112,7 +109,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F7C14B610726A860029D454 /* CubeRaster.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

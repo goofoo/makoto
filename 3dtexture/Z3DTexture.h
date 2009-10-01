@@ -14,6 +14,7 @@
 #include <vector>
 #include "../shared/zData.h"
 #include "OcTree.h"
+#include "CubeRaster.h"
 #include "../sh_lighting/SphericalHarmonics.h"
 
 struct NamedSHCOEFF
@@ -46,9 +47,12 @@ public:
 	void doOcclusion();
 	
 	void save(const char* filename);
+	
+	void testRaster(const XYZ& ori);
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
 	TriDTexSHList attrib_sh;
 	RGRID* m_pGrid;
+	CubeRaster* raster;
 };

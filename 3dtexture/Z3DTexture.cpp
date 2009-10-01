@@ -12,7 +12,11 @@
 
 using namespace std;
 
-Z3DTexture::Z3DTexture() : m_pTree(0), m_sh(0), m_pGrid(0) {}
+Z3DTexture::Z3DTexture() : m_pTree(0), m_sh(0), m_pGrid(0) 
+{
+	raster = new CubeRaster();
+}
+
 Z3DTexture::~Z3DTexture() 
 {
 	for(unsigned i=0; i<attrib_sh.size(); i++) delete[] attrib_sh[i]->data;
@@ -20,6 +24,7 @@ Z3DTexture::~Z3DTexture()
 	if(m_pTree) delete m_pTree;
 	if(m_sh) delete m_sh;
 	if(m_pGrid) delete[] m_pGrid;
+	delete raster;
 }
 
 void Z3DTexture::setGrid(RGRID* data, int n_data)
@@ -74,14 +79,12 @@ void Z3DTexture::draw() const
 void Z3DTexture::drawGrid(const XYZ& viewdir) const
 {
 	if(!m_pTree) return;
-	//glBegin(GL_POINTS);
 	int ngrid = m_pTree->getNumGrid();
 	for(int i=0; i<ngrid; i++) {
 		glColor3f(m_pGrid[i].col.x, m_pGrid[i].col.y, m_pGrid[i].col.z);
-		//glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
-		gBase::drawSplatAt(m_pGrid[i].pos, viewdir, m_pGrid[i].area);
+		float r = sqrt(m_pGrid[i].area/4);
+		gBase::drawSplatAt(m_pGrid[i].pos, viewdir, r);
 	}
-	//glEnd();
 }
 
 void Z3DTexture::doOcclusion()
@@ -131,8 +134,18 @@ void Z3DTexture::distanceToNeighbour(float min, float max)
 
 		XYZ to = m_pGrid[i].pos;
 		float dist = max;
-		m_pTree->nearestGrid(to, min, max, dist);
-		m_pGrid[i].area = dist;
+		float max2 = max*2;
+		m_pTree->nearestGrid(to, min, max2, dist);
+		m_pGrid[i].area = dist*dist*4;
 	}
-	
+}
+
+void Z3DTexture::testRaster(const XYZ& ori)
+{
+	if(!m_pTree) return;
+	raster->clear();
+	glBegin(GL_LINES);
+	m_pTree->occlusion(ori, raster);
+	glEnd();
+	raster->draw();
 }

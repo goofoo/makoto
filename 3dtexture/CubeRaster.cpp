@@ -6,16 +6,15 @@
  *  Copyright 2009 __MyCompanyName__. All rights reserved.
  *
  */
-#define CUBERASTER_BUFFER_H 4
-#define CUBERASTER_BUFFER_N 8
-#define CUBERASTER_BUFFER_NMINUS 7
-#define CUBERASTER_BUFFER_SIZE 384
+#define CUBERASTER_BUFFER_H 5
+#define CUBERASTER_BUFFER_N 10
+#define CUBERASTER_BUFFER_SIZE 600
 #define CUBERASTER_BUFFER_POSX 0
-#define CUBERASTER_BUFFER_NEGX 64
-#define CUBERASTER_BUFFER_POSY 128
-#define CUBERASTER_BUFFER_NEGY 192
-#define CUBERASTER_BUFFER_POSZ 256
-#define CUBERASTER_BUFFER_NEGZ 320
+#define CUBERASTER_BUFFER_NEGX 100
+#define CUBERASTER_BUFFER_POSY 200
+#define CUBERASTER_BUFFER_NEGY 300
+#define CUBERASTER_BUFFER_POSZ 400
+#define CUBERASTER_BUFFER_NEGZ 500
 
 #include "CubeRaster.h"
 #include "../shared/gBase.h"
@@ -46,23 +45,23 @@ void CubeRaster::write(XYZ& ray)
 		if(ray.x > 0) offset = CUBERASTER_BUFFER_POSX;
 		else offset = CUBERASTER_BUFFER_NEGX;
 		
-		u = (ray.z/x + 1)*0.5*CUBERASTER_BUFFER_NMINUS;
-		v = (ray.y/x + 1)*0.5*CUBERASTER_BUFFER_NMINUS;
+		u = (ray.z/x + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.y/x + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
 
 	}
 	else if(y>x && y>z) {
 		if(ray.y > 0) offset = CUBERASTER_BUFFER_POSY;
 		else offset = CUBERASTER_BUFFER_NEGY;
 		
-		u = (ray.x/y + 1)*0.5*CUBERASTER_BUFFER_NMINUS;
-		v = (ray.z/y + 1)*0.5*CUBERASTER_BUFFER_NMINUS;
+		u = (ray.x/y + 1 - 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.z/y + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
 	}
 	else {
 		if(ray.z > 0) offset = CUBERASTER_BUFFER_POSZ;
 		else offset = CUBERASTER_BUFFER_NEGZ;
 		
-		u = (ray.x/z + 1)*0.5*CUBERASTER_BUFFER_NMINUS;
-		v = (ray.y/z + 1)*0.5*CUBERASTER_BUFFER_NMINUS;
+		u = (ray.x/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.y/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
 	}
 	m_pOpacity[offset + v*CUBERASTER_BUFFER_N + u] = 1;
 }
