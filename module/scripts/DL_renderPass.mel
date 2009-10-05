@@ -14,6 +14,9 @@ global string $g_DL_geoPluginRequirements[];
 global string $g_DL_geoCacheCommands[];
 global string $g_DL_geoOutputCommands[];
 
+// store name of camera for output geo
+global string $ZHANG_curcamera;
+
 // ----------------------------------------------------------------------------
 // Utility procedures
 //
@@ -5954,6 +5957,13 @@ outputGeometry(string $render_pass,
                int $is_shadow_render,
                int $progress_range)
 {
+// get current camera
+	global string $ZHANG_curcamera;
+// get fps (flim, pal, or ntsc)
+	int $fps = 24;
+	if(`currentUnit -q -time` == "pal") $fps = 25;
+	if(`currentUnit -q -time` == "ntsc") $fps = 30;
+	
   int $output_geo_shaders;
   int $output_geo_attribs;
   int $output_transforms;
@@ -6118,7 +6128,22 @@ outputGeometry(string $render_pass,
 
           if( !canUseObjectInstance( $curr_geo, $geo_type ) )
           {
-            RiReadArchive -archiveName $geo_to_output;
+// emit custom procedural instead read archive here
+//            RiReadArchive -archiveName $geo_to_output;
+
+		string $zh_cmd;
+		
+		$zh_cmd = $geo_type+"CacheGeo -emit \""+$curr_geo+" "+`delightRenderState -qrn`+" "+`delightRenderState -qf`+" "+`delightRenderState -qso`+" "+`delightRenderState -qsc`+" "+$is_shadow_render+" "+$fps+" "+$ZHANG_curcamera+"\"";
+		outputRIBcomment($geo_type+"CacheGeo emits "+$curr_geo);
+		eval($zh_cmd);
+		
+		//$zh_cmd = $geo_type+"CacheGeo -pass "+`delightRenderState -qrn`;
+		//outputRIBcomment("calls "+$zh_cmd);
+		//eval($zh_cmd);
+		//print(`delightRenderState -qrn`+"\n");
+		//print(`delightRenderState -qf`+"\n");
+		//print(`delightRenderState -qso`+"\n");
+		//print(`delightRenderState -qsc`+"\n");
           }
           else if ($geo_type == "instancer")
           {
@@ -10474,7 +10499,9 @@ DRP_render(string $render_pass)
                     RiWorldBegin;
 
                       outputCoordinateSystems($coordinate_systems);
-
+// update current camera
+global string $ZHANG_curcamera;
+$ZHANG_curcamera = $shadow_camera;
                       outputGeometryAndCSG(
                         $render_pass,
                         $curr_shadow_objects,
@@ -10615,7 +10642,9 @@ DRP_render(string $render_pass)
               setProgressMessage(
                 "Frame " + $curr_frame 
                 + ": outputting geometry: ", 0 );
-
+// update current camera
+global string $ZHANG_curcamera;
+$ZHANG_curcamera = $render_camera;
               outputGeometryAndCSG(
                 $render_pass,
                 $xforms,
