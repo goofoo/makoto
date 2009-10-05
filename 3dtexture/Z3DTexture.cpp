@@ -15,6 +15,7 @@ using namespace std;
 Z3DTexture::Z3DTexture() : m_pTree(0), m_sh(0), m_pGrid(0) 
 {
 	raster = new CubeRaster();
+	m_sh = new sphericalHarmonics();
 }
 
 Z3DTexture::~Z3DTexture() 
@@ -67,7 +68,6 @@ void Z3DTexture::constructTree()
 
 void Z3DTexture::computePower()
 {
-	m_sh = new sphericalHarmonics();
 	m_pTree->computePower(m_sh);
 }
 
@@ -144,8 +144,16 @@ void Z3DTexture::testRaster(const XYZ& ori)
 {
 	if(!m_pTree) return;
 	raster->clear();
-	glBegin(GL_LINES);
-	m_pTree->occlusion(ori, raster);
-	glEnd();
+	m_pTree->setSampleOpacity(0.04f);
+	m_pTree->occlusionAccum(ori, raster);
 	raster->draw();
+	XYZ coe[SH_N_BASES];
+	m_sh->zeroCoeff(coe);
+	float l;
+	for(unsigned int j=0; j<SH_N_SAMPLES; j++) {
+		SHSample s = m_sh->getSample(j);
+		raster->readLight(s.vector, l);
+		m_sh->projectASample(coe, j, l);
+	}
+	m_sh->reconstructAndDraw(coe);
 }

@@ -178,6 +178,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		tree->drawGrid(facing);
 		XYZ ori(0,0,0);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glShadeModel(GL_SMOOTH);
 		tree->testRaster(ori);
 		//glEnd();
 	}

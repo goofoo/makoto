@@ -66,9 +66,41 @@ void CubeRaster::write(XYZ& ray)
 	m_pOpacity[offset + v*CUBERASTER_BUFFER_N + u] = 1;
 }
 
+void CubeRaster::write(XYZ& ray, float val)
+{
+	ray.normalize();
+	float x = ray.x; if(x<0) x *= -1;
+	float y = ray.y; if(y<0) y *= -1;
+	float z = ray.z; if(z<0) z *= -1;
+	unsigned offset, u, v;
+	if(x >y && x>z) {
+		if(ray.x > 0) offset = CUBERASTER_BUFFER_POSX;
+		else offset = CUBERASTER_BUFFER_NEGX;
+		
+		u = (ray.z/x + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.y/x + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+
+	}
+	else if(y>x && y>z) {
+		if(ray.y > 0) offset = CUBERASTER_BUFFER_POSY;
+		else offset = CUBERASTER_BUFFER_NEGY;
+		
+		u = (ray.x/y + 1 - 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.z/y + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+	}
+	else {
+		if(ray.z > 0) offset = CUBERASTER_BUFFER_POSZ;
+		else offset = CUBERASTER_BUFFER_NEGZ;
+		
+		u = (ray.x/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.y/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+	}
+	m_pOpacity[offset + v*CUBERASTER_BUFFER_N + u] += val;
+}
+
 void CubeRaster::draw() const
 {
-	float x, y, z;
+	float x, y, z, a, l;
 	unsigned offset;
 	x = CUBERASTER_BUFFER_H;
 	offset = CUBERASTER_BUFFER_POSX;
@@ -77,8 +109,14 @@ void CubeRaster::draw() const
 			z = -CUBERASTER_BUFFER_H + i;
 			y = -CUBERASTER_BUFFER_H + j;
 			
-			if(m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i] > 0) glBegin(GL_QUADS);
+			a = m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i];
+			
+			if(a > 0) glBegin(GL_QUADS);
 			else glBegin(GL_LINE_LOOP);
+			
+			getLight(a, l);
+			
+			glColor3f(l, 1-l, 0);
 			
 			glVertex3f(x, y, z);
 			glVertex3f(x, y, z+1);
@@ -94,8 +132,13 @@ void CubeRaster::draw() const
 			z = -CUBERASTER_BUFFER_H + i;
 			y = -CUBERASTER_BUFFER_H + j;
 			
-			if(m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i] > 0) glBegin(GL_QUADS);
+			a = m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i];
+			if(a > 0) glBegin(GL_QUADS);
 			else glBegin(GL_LINE_LOOP);
+			
+			getLight(a, l);
+			
+			glColor3f(l, 1-l, 0);
 			
 			glVertex3f(x, y, z);
 			glVertex3f(x, y, z+1);
@@ -111,8 +154,13 @@ void CubeRaster::draw() const
 			x = -CUBERASTER_BUFFER_H + i;
 			z = -CUBERASTER_BUFFER_H + j;
 			
-			if(m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i] > 0) glBegin(GL_QUADS);
+			a = m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i];
+			if(a > 0) glBegin(GL_QUADS);
 			else glBegin(GL_LINE_LOOP);
+			
+			getLight(a, l);
+			
+			glColor3f(l, 1-l, 0);
 			
 			glVertex3f(x, y, z);
 			glVertex3f(x+1, y, z);
@@ -128,8 +176,13 @@ void CubeRaster::draw() const
 			x = -CUBERASTER_BUFFER_H + i;
 			z = -CUBERASTER_BUFFER_H + j;
 			
-			if(m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i] > 0) glBegin(GL_QUADS);
+			a = m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i];
+			if(a > 0) glBegin(GL_QUADS);
 			else glBegin(GL_LINE_LOOP);
+			
+			getLight(a, l);
+			
+			glColor3f(l, 1-l, 0);
 			
 			glVertex3f(x, y, z);
 			glVertex3f(x+1, y, z);
@@ -145,8 +198,13 @@ void CubeRaster::draw() const
 			x = -CUBERASTER_BUFFER_H + i;
 			y = -CUBERASTER_BUFFER_H + j;
 			
-			if(m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i] > 0) glBegin(GL_QUADS);
+			a = m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i];
+			if(a > 0) glBegin(GL_QUADS);
 			else glBegin(GL_LINE_LOOP);
+			
+			getLight(a, l);
+			
+			glColor3f(l, 1-l, 0);
 			
 			glVertex3f(x, y, z);
 			glVertex3f(x+1, y, z);
@@ -162,8 +220,13 @@ void CubeRaster::draw() const
 			x = -CUBERASTER_BUFFER_H + i;
 			y = -CUBERASTER_BUFFER_H + j;
 			
-			if(m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i] > 0) glBegin(GL_QUADS);
+			a = m_pOpacity[offset + j*CUBERASTER_BUFFER_N + i];
+			if(a > 0) glBegin(GL_QUADS);
 			else glBegin(GL_LINE_LOOP);
+			
+			getLight(a, l);
+			
+			glColor3f(l, 1-l, 0);
 			
 			glVertex3f(x, y, z);
 			glVertex3f(x+1, y, z);
@@ -172,4 +235,42 @@ void CubeRaster::draw() const
 			glEnd();
 		}
 	}
+}
+
+void CubeRaster::getLight(const float& opacity, float& lighting) const
+{
+	lighting = 1.f - opacity;
+	if(lighting < 0) lighting = 0;
+}
+
+void CubeRaster::readLight(XYZ& ray, float& lighting) const
+{
+	ray.normalize();
+	float x = ray.x; if(x<0) x *= -1;
+	float y = ray.y; if(y<0) y *= -1;
+	float z = ray.z; if(z<0) z *= -1;
+	unsigned offset, u, v;
+	if(x >y && x>z) {
+		if(ray.x > 0) offset = CUBERASTER_BUFFER_POSX;
+		else offset = CUBERASTER_BUFFER_NEGX;
+		
+		u = (ray.z/x + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.y/x + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+
+	}
+	else if(y>x && y>z) {
+		if(ray.y > 0) offset = CUBERASTER_BUFFER_POSY;
+		else offset = CUBERASTER_BUFFER_NEGY;
+		
+		u = (ray.x/y + 1 - 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.z/y + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+	}
+	else {
+		if(ray.z > 0) offset = CUBERASTER_BUFFER_POSZ;
+		else offset = CUBERASTER_BUFFER_NEGZ;
+		
+		u = (ray.x/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+		v = (ray.y/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
+	}
+	getLight(m_pOpacity[offset + v*CUBERASTER_BUFFER_N + u], lighting);
 }

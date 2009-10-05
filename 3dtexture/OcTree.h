@@ -109,8 +109,10 @@ public:
 	static char isInBox(const XYZ& data, const XYZ& center, float size);
 	void combineSurfel(const RGRID *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
 	
-	void occlusion(const XYZ& origin, CubeRaster* raster);
-	void occlusion(OCTNode *node, const XYZ& origin, CubeRaster* raster);
+	void occlusionAccum(const XYZ& origin, CubeRaster* raster);
+	void occlusionAccum(OCTNode *node, const XYZ& origin, CubeRaster* raster);
+	
+	void setSampleOpacity(const float& val) {sample_opacity = val;}
 	
 private:
 	
@@ -128,4 +130,5 @@ private:
 	sphericalHarmonics* sh;
 	
 	unsigned *idBuf;
+	float sample_opacity;
 };

@@ -20,7 +20,10 @@ public:
 	
 	void clear();
 	void write(XYZ& ray);
+	void write(XYZ& ray, float val);
 	void draw() const;
+	void getLight(const float& opacity, float& lighting) const;
+	void readLight(XYZ& ray, float& lighting) const;
 private:
 	float* m_pOpacity;
 };

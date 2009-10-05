@@ -17,7 +17,7 @@
 #include "gBase.h"
 #include "CubeRaster.h"
 
-OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),m_pPower(0),idBuf(0)
+OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),m_pPower(0),idBuf(0),sample_opacity(0.04f)
 {
 }
 
@@ -871,21 +871,19 @@ void OcTree::nearestGrid(OCTNode *node, const XYZ& to, float min, float max, flo
 	}
 }
 
-void OcTree::occlusion(const XYZ& origin, CubeRaster* raster)
+void OcTree::occlusionAccum(const XYZ& origin, CubeRaster* raster)
 {
-	occlusion(root, origin, raster);
+	occlusionAccum(root, origin, raster);
 }
 
-void OcTree::occlusion(OCTNode *node, const XYZ& origin, CubeRaster* raster)
+void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin, CubeRaster* raster)
 {
 	if(!node) return;
 	XYZ ray;
 	if(node->isLeaf) {
 		for(unsigned i= node->low; i<= node->high; i++) {
 			ray = m_pGrid[i].pos - origin;
-			raster->write(ray);
-			//glVertex3f(origin.x, origin.y, origin.z);
-			//glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
+			raster->write(ray, sample_opacity);
 		}
 	}
 	else {
@@ -893,20 +891,18 @@ void OcTree::occlusion(OCTNode *node, const XYZ& origin, CubeRaster* raster)
 		float distance = ray.length() + 0.0001;
 		float solidangle = node->area/distance/distance;
 		if(solidangle < 0.09) {
-			raster->write(ray);
-			//glVertex3f(origin.x, origin.y, origin.z);
-			//glVertex3f(node->mean.x, node->mean.y, node->mean.z);
+			raster->write(ray, sample_opacity);
 			return;
 		}
 		
-		occlusion(node->child000, origin, raster);
-		occlusion(node->child001, origin, raster);
-		occlusion(node->child010, origin, raster);
-		occlusion(node->child011, origin, raster);
-		occlusion(node->child100, origin, raster);
-		occlusion(node->child101, origin, raster);
-		occlusion(node->child110, origin, raster);
-		occlusion(node->child111, origin, raster);
+		occlusionAccum(node->child000, origin, raster);
+		occlusionAccum(node->child001, origin, raster);
+		occlusionAccum(node->child010, origin, raster);
+		occlusionAccum(node->child011, origin, raster);
+		occlusionAccum(node->child100, origin, raster);
+		occlusionAccum(node->child101, origin, raster);
+		occlusionAccum(node->child110, origin, raster);
+		occlusionAccum(node->child111, origin, raster);
 	}
 }
 /*
