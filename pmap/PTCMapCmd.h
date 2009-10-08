@@ -1,11 +1,11 @@
-#ifndef _pMapCmd_H
-#define _pMapCmd_H
+#ifndef _PTCMapCmd_H
+#define _PTCMapCmd_H
 //
 // Copyright (C) YiLi
 // 
-// File: pMapCmd.h
+// File: PTCMapCmd.h
 //
-// MEL Command: pMapCmd
+// MEL Command: PTCMapCmd
 //
 // Author: Maya Plug-in Wizard 2.0
 //
@@ -33,12 +33,12 @@
 #include <iostream>
 #include <fstream>
 
-class pMapCmd : public MPxCommand
+class PTCMapCmd : public MPxCommand
 {
 
 public:
-				pMapCmd();
-	virtual		~pMapCmd();
+				PTCMapCmd();
+	virtual		~PTCMapCmd();
 
 	MStatus		doIt( const MArgList& );
 	static MSyntax newSyntax();

@@ -1,6 +1,6 @@
 /*
- *  octreeVizNode.h
- *  octreeVizNode
+ *  rasterVizNode.h
+ *  rasterVizNode
  *
  *  Created by zhang on 07-10-12.
  *  Copyright 2007 __MyCompanyName__. All rights reserved.
@@ -20,13 +20,14 @@
 #include <maya/MFnUnitAttribute.h>
 #include <maya/MFndagNode.h>
 #include "../shared/zData.h"
-#include "../3dtexture/Z3DTexture.h"
+#include "../sh_lighting/SphericalHarmonics.h"
+#include "../3dtexture/CubeRaster.h"
 
-class octreeVizNode : public MPxLocatorNode
+class rasterVizNode : public MPxLocatorNode
 {
 public:
-	octreeVizNode();
-	virtual ~octreeVizNode(); 
+	rasterVizNode();
+	virtual ~rasterVizNode(); 
 
     virtual MStatus   		compute( const MPlug& plug, MDataBlock& data );
 
@@ -40,29 +41,23 @@ public:
 	static  void *          creator();
 	static  MStatus         initialize();
 
-		// Attributes
-	static MObject afuzz;
-	static MObject  astartframe;
-	static MObject  acurrenttime;
-	static MObject  aHDRName;
-	static MObject  aSize;
-	static MObject aworldSpace;
+// Attributes
+	static MObject atype;
+	static MObject alight0x;
+	static MObject alight0y;
+	static MObject alight0z;
+	static MObject alight1x;
+	static MObject alight1y;
+	static MObject alight1z;
+	static MObject alight2x;
+	static MObject alight2y;
+	static MObject alight2z;
 	static MObject aoutput;
-	static MObject agrowth;
-	static MObject aguide;
-	static MObject alengthnoise;
-	static MObject asavemap;
-	static MObject astep;
-	static MObject aalternativepatch;
 	static MTypeId		id;
-	static MObject     alevel;
-	static MObject     aarea;
-	static MObject     acount;
-	static MObject     adefinepositionX;
-	static MObject     adefinepositionY;
-	static MObject     adefinepositionZ;
 
 private :
-	Z3DTexture* m_pTex;
-	MString m_gridname;
+	sphericalHarmonics* m_sh;
+	XYZ m_coeff[SH_N_BASES];
+	int m_type;
+	CubeRaster* raster;
 };

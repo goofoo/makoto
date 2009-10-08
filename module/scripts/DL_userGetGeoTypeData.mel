@@ -1,0 +1,16 @@
+global proc
+DL_userGetGeoTypeData(string $types[],
+                      string $plugin_requirements[],
+                      string $cache_commands[],
+                      string $output_commands[])
+{
+  clear($types);
+  clear($plugin_requirements);
+  clear($cache_commands);
+  clear($output_commands);
+
+  $types[0] = "fooNode";
+  $plugin_requirements[0] = "fooNodeRIBGenDL";
+  $cache_commands[0] = "fooNodeCacheGeo";
+  $output_commands[0] = "nil";
+}

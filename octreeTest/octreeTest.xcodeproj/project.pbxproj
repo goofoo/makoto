@@ -14,11 +14,13 @@
 		7F80C8E6104EFDDD001882AC /* GetZRotationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F80C8E2104EFDDD001882AC /* GetZRotationMatrix.cpp */; };
 		7F80C8E7104EFDDD001882AC /* RotateSHCoefficients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F80C8E3104EFDDD001882AC /* RotateSHCoefficients.cpp */; };
 		7F80C8EA104EFDF2001882AC /* SHMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F80C8E9104EFDF2001882AC /* SHMath.cpp */; };
+		7F9C4B68107310DD00F29D03 /* CubeRaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */; };
+		7F9C4B69107310DD00F29D03 /* Z3DTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */; };
+		7F9C4B6A107310DD00F29D03 /* OcTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9C4B67107310DD00F29D03 /* OcTree.cpp */; };
+		7F9C4B7C107312E100F29D03 /* rasterVizNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */; };
 		7FA4203D104D9BCF009ABB17 /* octreeVizNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */; };
 		7FA4203E104D9BCF009ABB17 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA4203C104D9BCF009ABB17 /* pluginMain.cpp */; };
-		7FA42043104D9BE2009ABB17 /* 3dtexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA42042104D9BE2009ABB17 /* 3dtexture.cpp */; };
 		7FA42047104D9BF8009ABB17 /* PerspectiveView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA42044104D9BF8009ABB17 /* PerspectiveView.cpp */; };
-		7FA42048104D9BF8009ABB17 /* OcTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA42045104D9BF8009ABB17 /* OcTree.cpp */; };
 		7FA42049104D9BF8009ABB17 /* gBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA42046104D9BF8009ABB17 /* gBase.cpp */; };
 		7FA4204D104D9C14009ABB17 /* QuickSort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA4204B104D9C14009ABB17 /* QuickSort.cpp */; };
 		7FA4204E104D9C14009ABB17 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FA4204C104D9C14009ABB17 /* zWorks.cpp */; };
@@ -32,11 +34,13 @@
 		7F80C8E2104EFDDD001882AC /* GetZRotationMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GetZRotationMatrix.cpp; path = "../sh_lighting/SH Rotation/GetZRotationMatrix.cpp"; sourceTree = SOURCE_ROOT; };
 		7F80C8E3104EFDDD001882AC /* RotateSHCoefficients.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RotateSHCoefficients.cpp; path = "../sh_lighting/SH Rotation/RotateSHCoefficients.cpp"; sourceTree = SOURCE_ROOT; };
 		7F80C8E9104EFDF2001882AC /* SHMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SHMath.cpp; path = ../sh_lighting/SHMath.cpp; sourceTree = SOURCE_ROOT; };
+		7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CubeRaster.cpp; path = ../3dtexture/CubeRaster.cpp; sourceTree = SOURCE_ROOT; };
+		7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Z3DTexture.cpp; path = ../3dtexture/Z3DTexture.cpp; sourceTree = SOURCE_ROOT; };
+		7F9C4B67107310DD00F29D03 /* OcTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OcTree.cpp; path = ../3dtexture/OcTree.cpp; sourceTree = SOURCE_ROOT; };
+		7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rasterVizNode.cpp; sourceTree = "<group>"; };
 		7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = octreeVizNode.cpp; sourceTree = "<group>"; };
 		7FA4203C104D9BCF009ABB17 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
-		7FA42042104D9BE2009ABB17 /* 3dtexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = 3dtexture.cpp; path = ../3dtexture/3dtexture.cpp; sourceTree = SOURCE_ROOT; };
 		7FA42044104D9BF8009ABB17 /* PerspectiveView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PerspectiveView.cpp; path = ../shared/PerspectiveView.cpp; sourceTree = SOURCE_ROOT; };
-		7FA42045104D9BF8009ABB17 /* OcTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OcTree.cpp; path = ../shared/OcTree.cpp; sourceTree = SOURCE_ROOT; };
 		7FA42046104D9BF8009ABB17 /* gBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gBase.cpp; path = ../shared/gBase.cpp; sourceTree = SOURCE_ROOT; };
 		7FA4204B104D9C14009ABB17 /* QuickSort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickSort.cpp; path = ../shared/QuickSort.cpp; sourceTree = SOURCE_ROOT; };
 		7FA4204C104D9C14009ABB17 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
@@ -68,6 +72,10 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */,
+				7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */,
+				7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */,
+				7F9C4B67107310DD00F29D03 /* OcTree.cpp */,
 				7F80C8E9104EFDF2001882AC /* SHMath.cpp */,
 				7F80C8E0104EFDDD001882AC /* ApplyMatrix.cpp */,
 				7F80C8E1104EFDDD001882AC /* GetX90DegreeRotationMatrix.cpp */,
@@ -78,9 +86,7 @@
 				7FA4204B104D9C14009ABB17 /* QuickSort.cpp */,
 				7FA4204C104D9C14009ABB17 /* zWorks.cpp */,
 				7FA42044104D9BF8009ABB17 /* PerspectiveView.cpp */,
-				7FA42045104D9BF8009ABB17 /* OcTree.cpp */,
 				7FA42046104D9BF8009ABB17 /* gBase.cpp */,
-				7FA42042104D9BE2009ABB17 /* 3dtexture.cpp */,
 				7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */,
 				7FA4203C104D9BCF009ABB17 /* pluginMain.cpp */,
 			);
@@ -163,9 +169,7 @@
 			files = (
 				7FA4203D104D9BCF009ABB17 /* octreeVizNode.cpp in Sources */,
 				7FA4203E104D9BCF009ABB17 /* pluginMain.cpp in Sources */,
-				7FA42043104D9BE2009ABB17 /* 3dtexture.cpp in Sources */,
 				7FA42047104D9BF8009ABB17 /* PerspectiveView.cpp in Sources */,
-				7FA42048104D9BF8009ABB17 /* OcTree.cpp in Sources */,
 				7FA42049104D9BF8009ABB17 /* gBase.cpp in Sources */,
 				7FA4204D104D9C14009ABB17 /* QuickSort.cpp in Sources */,
 				7FA4204E104D9C14009ABB17 /* zWorks.cpp in Sources */,
@@ -176,6 +180,10 @@
 				7F80C8E6104EFDDD001882AC /* GetZRotationMatrix.cpp in Sources */,
 				7F80C8E7104EFDDD001882AC /* RotateSHCoefficients.cpp in Sources */,
 				7F80C8EA104EFDF2001882AC /* SHMath.cpp in Sources */,
+				7F9C4B68107310DD00F29D03 /* CubeRaster.cpp in Sources */,
+				7F9C4B69107310DD00F29D03 /* Z3DTexture.cpp in Sources */,
+				7F9C4B6A107310DD00F29D03 /* OcTree.cpp in Sources */,
+				7F9C4B7C107312E100F29D03 /* rasterVizNode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

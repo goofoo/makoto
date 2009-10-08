@@ -70,34 +70,30 @@ global proc particleMapAppendMenuItems()
 }
 
 global proc doExportParticleCache()
-{
-	if( `checkBox -q -v exportParticleCacheMuilt` ) {
-		int $amount = 0;
-		progressWindow -title "Writing Particle Cache" -progress $amount -status "Completed: 0%" -isInterruptable true;
- 
-		int $s = `intFieldGrp -q -v1 exportParticleCacheRange`;
-		int $e = `intFieldGrp -q -v2 exportParticleCacheRange`;
-
-		int $i;
-		for( $i = $s; $i <= $e; $i++ ) {
-			currentTime $i;
-			$amount = ($i-$s)/(1.0*($e-$s))*100;
-
-			// Check if the dialog has been cancelled
-			if ( `progressWindow -query -isCancelled` ) break; 
-			// Check if end condition has been reached
-			if ( `progressWindow -query -progress` > 100 ) break;
- 
-			progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
- 			
-			exportParticleCacheSingleFrame;
-		}
+{	
+	int $amount = 0;
+	progressWindow -title "Writing Particle Cache" -progress $amount -status "Completed: 0%" -isInterruptable true;
+	
+	int $s = `intFieldGrp -q -v1 exportParticleCacheRange`;
+	int $e = `intFieldGrp -q -v2 exportParticleCacheRange`;
+	
+	int $i;
+	for( $i = $s; $i <= $e; $i++ ) {
+		currentTime $i;
+		$amount = ($i-$s)/(1.0*($e-$s))*100;
 		
-		progressWindow -endProgress;
-	}
-	else {
+		// Check if the dialog has been cancelled
+		if ( `progressWindow -query -isCancelled` ) break; 
+		// Check if end condition has been reached
+		if ( `progressWindow -query -progress` > 100 ) break;
+		
+		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
+		
 		exportParticleCacheSingleFrame;
 	}
+	
+	progressWindow -endProgress;
+	
 }
 
 global proc exportParticleCacheSingleFrame()
@@ -134,32 +130,27 @@ global proc exportParticleCacheSingleFrame()
     }
   }
 
-  float $mindist;
+
   string $attribute = stringArrayToString($attr,".");
-   if(`checkBox -q -v checkBoxRadius`)
-  {
-    $mindist = `floatSliderGrp -q -v fSliderRadius`;
-    if($mindist == 0) 
-    {
-      warning("Radius must bigger than 0");
-      $mindist = 0.1;
-    }
-  }
-  else  $mindist = 0.1;
-  string $dist = " -md "+$mindist;    
+  
+  float $mindist = `floatSliderGrp -q -v SliderRadiusMin`;
+  float $maxdist = `floatSliderGrp -q -v SliderRadiusMax`;
+  float $defdist = `floatSliderGrp -q -v SliderRadiusDef`;
+
+  string $sdist = " -mnd "+$mindist + " -mxd " + $maxdist + " -dfd " + $defdist;    
   string $cmd;
   //for($i = 0;$i<size($attr);$i++,$index++)
        if($attribute == ""){
         if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
+             $cmd = "pmapCache -n `textFieldGrp -q -text exportParticleCacheName`" + $sdist;
 	else
-             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`"+$dist;
+             $cmd = "pmapCache -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`" + $sdist;
              }
         else{
-        if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pMapCmd -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
+        if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" ) 
+             $cmd = "pmapCache -n `textFieldGrp -q -text exportParticleCacheName` -a " + $attribute +$sdist;
 	else
-             $cmd = "pMapCmd -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute+$dist;
+             $cmd = "pmapCache -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute + $sdist;
              }
         eval($cmd);
 }
@@ -171,7 +162,7 @@ global proc openExportParticleCacheWin()
  if ( (`window -exists exportParticleCacheWin`) == true ) deleteUI exportParticleCacheWin;
  
 //Create the window.
- window -title "particleCache - Save Particle Cache Options" -wh 400 300  -menuBar true -retain exportParticleCacheWin;
+ window -title "particleCache 1.0 - Save Particle Cache Options" -wh 400 300  -menuBar true -retain exportParticleCacheWin;
 
  menu -label "Attributes" ;
         menuItem -l "Add Attributes..." -c "openAddAttrWin";
@@ -197,14 +188,12 @@ textFieldButtonGrp
      -cw 1 110 -label "Cache Path" -buttonLabel "Browse.."
      -bc "fileBrowser \"setParticleCachePath\" \"Set Path\" \"\" 4"
      exportParticleCachePath;
-checkBox -al "left" -l "Multiple Frames" -v 0 -cc "intFieldGrp -e -en (!`intFieldGrp -q -en exportParticleCacheRange`) exportParticleCacheRange" exportParticleCacheMuilt;
-intFieldGrp -en 0 -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
-checkBox -al "left" -l "Radius" -v 0 -cc "floatSliderGrp -e -en (!`floatSliderGrp -q -en fSliderRadius`) fSliderRadius" checkBoxRadius;
-floatSliderGrp  -en 0 -cw 1 110 -label "Min Radius" -field true -minValue 0.0 -maxValue 10.0 -value 0.1 fSliderRadius;
 
-//button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" -p $row;
-//button -l "Apply" -c "doExportParticleCache" -p $row;
-//button -l "Close" -c "deleteUI exportParticleCacheWin" -p $row;
+intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
+floatSliderGrp -cw 1 110 -label "Min Radius" -field true -minValue 0.001 -maxValue 10.0 -value 0.1 SliderRadiusMin;
+floatSliderGrp -cw 1 110 -label "Max Radius" -field true -minValue 0.1 -maxValue 10.0 -value 4.0 SliderRadiusMax;
+floatSliderGrp -cw 1 110 -label "Default Radius" -field true -minValue 0.1 -maxValue 10.0 -value 1.0 SliderRadiusDef;
+
 setParent ..;
 setParent ..;
 $frameBasic = `frameLayout -label "Basic Attribute" -borderVisible true
@@ -512,7 +501,7 @@ global proc openImportParticleCacheWin()
  if ( (`window -exists importParticleCacheWin`) == true ) deleteUI importParticleCacheWin;
 
 //Create the window.
- window -title "particleCache 4.1 - Load Particle Cache Options" -wh 400 300  -mb false importParticleCacheWin;
+ window -title "particleCache 1.0 - Load Particle Cache Options" -wh 400 300  -mb false importParticleCacheWin;
 
 //Layout
 string $form = `formLayout -numberOfDivisions 100`;
@@ -558,7 +547,7 @@ string $path = `textFieldGrp -q -text importParticleCachePath`;
 string $buffer[];
 $numTokens = `tokenize $path "." $buffer`;
 
-string $node = `createNode pMapViz`;
+string $node = `createNode pmapViz`;
 string $shape = `group -empty -n dummy`;
 connectAttr -f ($node + ".outval") ($shape + ".translateY");
 setAttr -type "string" ($node + ".cachePath") $buffer[0];

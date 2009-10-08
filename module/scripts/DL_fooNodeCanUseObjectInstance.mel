@@ -1,0 +1,4 @@
+global proc int DL_fooNodeCanUseObjectInstance( string $geo )
+{
+    return 0;
+}

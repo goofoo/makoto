@@ -36,4 +36,7 @@ public:
 	static void sortY(PosAndId *array,int first,int last);
 	static void sortZ(PosAndId *array,int first,int last);
 	static void sortDeep(DataAndId *array,int first,int last);
+	static void sortX(RGRID *array, unsigned *idx, int first,int last);
+	static void sortY(RGRID *array, unsigned *idx, int first,int last);
+	static void sortZ(RGRID *array, unsigned *idx, int first,int last);
 };

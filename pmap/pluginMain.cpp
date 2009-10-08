@@ -5,11 +5,9 @@
 //
 // Author: Maya Plug-in Wizard 2.0
 //
-
-#include "pMapCmd.h"
-#include "pMapLocator.h"
-
 #include <maya/MFnPlugin.h>
+#include "PTCMapCmd.h"
+#include "PTCMapViz.h"
 
 MStatus initializePlugin( MObject obj )
 //
@@ -23,18 +21,18 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "YiLi", "0.1.2 7.20.09", "Any");
+	MFnPlugin plugin( obj, "ZHANG JIAN", "0.2.5 02/10/09", "Any");
 
-	status = plugin.registerCommand( "pMapCmd", pMapCmd::creator,pMapCmd::newSyntax );
+	status = plugin.registerCommand( "pmapCache", PTCMapCmd::creator, PTCMapCmd::newSyntax );
 	if (!status) {
 		status.perror("registerCommand");
 		return status;
 	}
-	status = plugin.registerNode( "pMapViz", pMapLocator::id, 
-                                   &pMapLocator::creator, &pMapLocator::initialize,
+	status = plugin.registerNode( "pmapViz", PTCMapLocator::id, 
+                                   &PTCMapLocator::creator, &PTCMapLocator::initialize,
                                                  MPxNode::kLocatorNode );
    if (!status) {
-		status.perror("registerCommand");
+		status.perror("registerNode");
 		return status;
 	}
 
@@ -56,17 +54,18 @@ MStatus uninitializePlugin( MObject obj )
 	MStatus   status;
 	MFnPlugin plugin( obj );
 
-	status = plugin.deregisterCommand( "pMapCmd" );
+	status = plugin.deregisterCommand( "pmapCache" );
 	if (!status) {
 		status.perror("deregisterCommand");
 		return status;
 	}
 
-	status = plugin.deregisterNode( pMapLocator::id );
+	status = plugin.deregisterNode( PTCMapLocator::id );
 	if (!status) {
 		status.perror("deregisterNode");
 		return status;
 	}
+	
     MGlobal::executeCommand ( "particleCacheRemoveMenus;" );
 
 	return status;

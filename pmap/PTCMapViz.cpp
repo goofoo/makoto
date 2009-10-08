@@ -1,14 +1,14 @@
 //
 // Copyright (C) YiLi
 // 
-// File: pMapLocator.cpp
+// File: PTCMapLocator.cpp
 //
-// Dependency Graph Node: pMapLocator
+// Dependency Graph Node: PTCMapLocator
 //
 // Author: Maya Plug-in Wizard 2.0
 //
 
-#include "pMapLocator.h"
+#include "PTCMapViz.h"
 #include <maya/MPlug.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
@@ -21,25 +21,25 @@
 
 #include <maya/MGlobal.h>
 
-MTypeId     pMapLocator::id( 0x0004001 );
-MObject     pMapLocator::frame;
-MObject     pMapLocator::aresolution;
-MObject     pMapLocator::amaxframe;
-MObject     pMapLocator::aminframe;
-MObject     pMapLocator::aposition;
-MObject     pMapLocator::input;
-MObject     pMapLocator::aoutval;
+MTypeId     PTCMapLocator::id( 0x0004091 );
+MObject     PTCMapLocator::frame;
+MObject     PTCMapLocator::aresolution;
+MObject     PTCMapLocator::amaxframe;
+MObject     PTCMapLocator::aminframe;
+MObject     PTCMapLocator::aposition;
+MObject     PTCMapLocator::input;
+MObject     PTCMapLocator::aoutval;
 
-pMapLocator::pMapLocator() :tree(0)
+PTCMapLocator::PTCMapLocator() :tree(0)
 {
 }
 
-pMapLocator::~pMapLocator() 
+PTCMapLocator::~PTCMapLocator() 
 {
 	if(tree) delete tree;
 }
 
-MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
+MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 //
 //	Description:
 //		This method computes the value of the given output plug based
@@ -66,16 +66,16 @@ MStatus pMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
 		
 		if(tree) delete tree;
-	    tree = new OcTree();
-		tree->load(filename);
-		//if(tree->hasColor()) MGlobal::displayInfo("check color");
-		//tree->searchNearVoxel(tree,pos,index);
+	    tree = new Z3DTexture();
+		if(!tree->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
+		//MGlobal::displayInfo(MString(" num grid ") + tree->getNumGrid());
+		//MGlobal::displayInfo(MString(" num voxel ") + tree->getNumVoxel());
 	}
 	
 	return MS::kUnknownParameter;
 }
 
-void* pMapLocator::creator()
+void* PTCMapLocator::creator()
 //
 //	Description:
 //		this method exists to give Maya a way to create new objects
@@ -85,33 +85,25 @@ void* pMapLocator::creator()
 //		a new object of this type
 //
 {
-	return new pMapLocator();
+	return new PTCMapLocator();
 }
 
-bool pMapLocator::isBounded() const
+bool PTCMapLocator::isBounded() const
 { 
     return true;
 }
 
-MBoundingBox pMapLocator::boundingBox() const
+MBoundingBox PTCMapLocator::boundingBox() const
 {
 	MPoint corner1( -1,-1,-1 );
 	MPoint corner2( 1,1,1 );
 	
-	if(tree) {
-		XYZ center; float size;
-		tree->getRootCenterNSize(center, size);
-		corner1.x = center.x -size;
-		corner1.y = center.y -size;
-		corner1.z = center.z -size;
-		corner2.x = center.x +size;
-		corner2.y = center.y +size;
-		corner2.z = center.z +size;
-	}
+	if(tree) tree->getBBox(corner1.x, corner2.x, corner1.y, corner2.y, corner1.z, corner2.z);
+	
 	return MBoundingBox( corner1, corner2 ); 
 } 
 
-void pMapLocator::draw( M3dView & view, const MDagPath & path, 
+void PTCMapLocator::draw( M3dView & view, const MDagPath & path, 
                                  M3dView::DisplayStyle style,M3dView::DisplayStatus status )
 { 	
 	MDagPath camera;
@@ -135,8 +127,8 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
 	double fl;
 	fl = fnCamera.focalLength();
-	double h_fov = h_apeture * 0.5*25.4 /fl;
-	double v_fov = v_apeture * 0.5*25.4 /fl;
+	//double h_fov = h_apeture * 0.5*25.4 /fl;
+	//double v_fov = v_apeture * 0.5*25.4 /fl;
 
 	MATRIX44F mat;
 	mat.setIdentity ();
@@ -155,11 +147,11 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 	mat.inverse();
 
 	view.beginGL(); 
-	//glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	
-	particleView *pview = new particleView(); 
+	//particleView *pview = new particleView(); 
 	//double signal = 0.01;
-	pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez); 
+	//pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez); 
 	//string drawType;
 	/*
 	glPointSize(3);
@@ -175,19 +167,26 @@ void pMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	if(tree){
 		//glBegin(GL_QUADS);
-		glClearDepth(1.0);
-	    glEnable(GL_BLEND);
-	    glDepthFunc(GL_LEQUAL);
-	    glShadeModel(GL_SMOOTH);
-	    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-		tree->draw(pview,facing,"disk");
+		//glClearDepth(1.0);
+	    //glEnable(GL_BLEND);
+	    //glDepthFunc(GL_LEQUAL);
+	    //glShadeModel(GL_SMOOTH);
+	    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPointSize(2.5);
+		//tree->draw();
+		tree->drawGrid(facing);
+		XYZ ori(0,0,0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glShadeModel(GL_SMOOTH);
+		tree->testRaster(ori);
 		//glEnd();
 	}
 	glPopAttrib();
 	view.endGL();
 }
 
-MStatus pMapLocator::initialize()
+MStatus PTCMapLocator::initialize()
 //
 //	Description:
 //		This method is called to create and initialize all of the attributes
