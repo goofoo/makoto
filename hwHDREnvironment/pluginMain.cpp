@@ -20,7 +20,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 
-	MGlobal::executeCommand("source hdrviewerMenus.mel; hdrviewerCreateMenus;source slimcontrolMenus; slimcontrolCreateMenus();");
+	MGlobal::executeCommand("source hdrviewerMenus.mel; hdrviewerCreateMenus;");
 
 	return status;
 }
@@ -40,7 +40,7 @@ MStatus uninitializePlugin( MObject obj )
 		return status;
 	}
 
-	MGlobal::executeCommand("hdrviewerRemoveMenus;slimcontrolRemoveMenus;");
+	MGlobal::executeCommand("hdrviewerRemoveMenus;");
 	return status;
 }
 
