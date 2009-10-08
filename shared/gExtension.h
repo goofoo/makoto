@@ -6,10 +6,14 @@
 #endif
 
 #ifdef __APPLE__
-# include <OpenGL/gl.h>
-# include <OpenGL/glext.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <OpenGL/glext.h>
+#include <GLUT/glut.h>
 #else
-# include <GL/gl.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #include <GL/glext.h>
 #endif
 
@@ -19,21 +23,29 @@
 #include <GL/glext.h>
 #endif
 
-#ifdef LINUX
-extern "C" {
-extern void glActiveTexture(GLenum);
-extern void glClientActiveTexture(GLenum);
-extern void glMultiTexCoord2f( GLenum, GLfloat, GLfloat );	
-extern void glMultiTexCoord3f( GLenum, GLfloat, GLfloat, GLfloat );
-extern void glMultiTexCoord4f( GLenum, GLfloat, GLfloat, GLfloat, GLfloat );
-}
-#endif
+extern PFNGLISRENDERBUFFEREXTPROC glIsRenderbufferEXT;
+extern PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT;
+extern PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT;
+extern PFNGLGENRENDERBUFFERSEXTPROC glGenRenderbuffersEXT;
+extern PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT;
+extern PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC glGetRenderbufferParameterivEXT;
+extern PFNGLISFRAMEBUFFEREXTPROC glIsFramebufferEXT;
+extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT;
+extern PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT;
+extern PFNGLGENFRAMEBUFFERSEXTPROC glGenFramebuffersEXT;
+extern PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT;
+extern PFNGLFRAMEBUFFERTEXTURE1DEXTPROC glFramebufferTexture1DEXT;
+extern PFNGLFRAMEBUFFERTEXTURE2DEXTPROC glFramebufferTexture2DEXT;
+extern PFNGLFRAMEBUFFERTEXTURE3DEXTPROC glFramebufferTexture3DEXT;
+extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
+extern PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT;
+extern PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT;
 
 #ifdef WIN32
-extern PFNGLMULTITEXCOORD4FARBPROC		glMultiTexCoord4fARB;
+//extern PFNGLMULTITEXCOORD4FARBPROC		glMultiTexCoord4fARB;
 #endif
 
-char init();
+char gExtensionInit();
 const char* getExtension();
 
 #endif
