@@ -87,7 +87,7 @@ inline MStatus zCreateTypedAttr(MObject& attr, const MString& nameLong, const MS
 	return status;
 }
 
-inline MStatus zCreatePluginAttr(MObject& attr, MString& nameLong, MString& nameShort)
+inline MStatus zCreatePluginAttr(MObject& attr, const MString& nameLong, const MString& nameShort)
 {
 	MStatus status;
 	
@@ -110,7 +110,7 @@ inline MStatus zCreateMatrixAttr(MObject& attr, const MString& nameLong, const M
 	return status;
 }
 
-inline MStatus zCreateKeyableIntAttr(MObject& attr, MString& nameLong, MString& nameShort, int val)
+inline MStatus zCreateKeyableIntAttr(MObject& attr, const MString& nameLong, const MString& nameShort, int val)
 {
 	MStatus status;
 	MFnNumericAttribute fAttr;

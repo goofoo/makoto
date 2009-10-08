@@ -9,15 +9,17 @@
 #ifndef Z_DIBITMAP_H
 #define Z_DIBITMAP_H
 
+#ifdef WIN32
+# include <windows.h>
+#endif
+
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <OpenGL/glext.h>
 #else
-#include <windows.h>
 #include <GL/gl.h>
-#include <GL/glu.h>
-#include "../shared/glext.h"
+#include <GL/glext.h>
 #endif
 
 
