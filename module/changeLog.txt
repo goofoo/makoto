@@ -1,3 +1,7 @@
+25/09/09
+
+Separate RMS and RAT install
+
 29/08/09
 
 Tighter bounding box, change to linaear curves when very small. Get desnity map pixels.

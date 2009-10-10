@@ -15,12 +15,14 @@
 #endif
 
 #ifdef __APPLE__
-# include <OpenGL/gl.h>
-# include <OpenGL/glext.h>
-//# include <GLUT/glut.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <OpenGL/glext.h>
+#include <GLUT/glut.h>
 #else
-# include <GL/gl.h>
-//# include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #include <GL/glext.h>
 #endif
 
