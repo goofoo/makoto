@@ -13,11 +13,12 @@
 		7F81223310711B8A0022BF82 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81223210711B8A0022BF82 /* zWorks.cpp */; };
 		7F81223A10711C020022BF82 /* SHMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81223810711C020022BF82 /* SHMath.cpp */; };
 		7F81223B10711C020022BF82 /* SphericalHarmonics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81223910711C020022BF82 /* SphericalHarmonics.cpp */; };
-		7F81224710711C4D0022BF82 /* OcTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81224510711C4D0022BF82 /* OcTree.cpp */; };
 		7F81224810711C4D0022BF82 /* Z3DTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81224610711C4D0022BF82 /* Z3DTexture.cpp */; };
 		7F81224E10711C7C0022BF82 /* gBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81224D10711C7C0022BF82 /* gBase.cpp */; };
 		7F81227110711F040022BF82 /* PTCMapCmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81226F10711F040022BF82 /* PTCMapCmd.cpp */; };
 		7F81227210711F040022BF82 /* PTCMapViz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */; };
+		7F8BAFF71081031000FE0291 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F8BAFF61081031000FE0291 /* FNoise.cpp */; };
+		7F8D27EF107BA4E300390A46 /* OcTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */; };
 		7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */; };
 /* End PBXBuildFile section */
 
@@ -28,12 +29,13 @@
 		7F81223210711B8A0022BF82 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
 		7F81223810711C020022BF82 /* SHMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SHMath.cpp; path = ../sh_lighting/SHMath.cpp; sourceTree = SOURCE_ROOT; };
 		7F81223910711C020022BF82 /* SphericalHarmonics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SphericalHarmonics.cpp; path = ../sh_lighting/SphericalHarmonics.cpp; sourceTree = SOURCE_ROOT; };
-		7F81224510711C4D0022BF82 /* OcTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OcTree.cpp; path = ../3dtexture/OcTree.cpp; sourceTree = SOURCE_ROOT; };
 		7F81224610711C4D0022BF82 /* Z3DTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Z3DTexture.cpp; path = ../3dtexture/Z3DTexture.cpp; sourceTree = SOURCE_ROOT; };
 		7F81224D10711C7C0022BF82 /* gBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gBase.cpp; path = ../shared/gBase.cpp; sourceTree = SOURCE_ROOT; };
 		7F81226F10711F040022BF82 /* PTCMapCmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PTCMapCmd.cpp; sourceTree = "<group>"; };
 		7F81227010711F040022BF82 /* PTCMapViz.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PTCMapViz.cpp; sourceTree = "<group>"; };
 		7F812284107120470022BF82 /* particleCacheMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = particleCacheMenus.mel; path = ../module/scripts/particleCacheMenus.mel; sourceTree = SOURCE_ROOT; };
+		7F8BAFF61081031000FE0291 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
+		7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OcTree.cpp; path = ../3dtexture/OcTree.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
 		D2AAC0630554660B00DB518D /* ParticleMap.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ParticleMap.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -63,10 +65,11 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F8BAFF61081031000FE0291 /* FNoise.cpp */,
+				7F8D27EE107BA4E300390A46 /* OcTree.cpp */,
 				7F81226F10711F040022BF82 /* PTCMapCmd.cpp */,
 				7F81227010711F040022BF82 /* PTCMapViz.cpp */,
 				7F81224D10711C7C0022BF82 /* gBase.cpp */,
-				7F81224510711C4D0022BF82 /* OcTree.cpp */,
 				7F81224610711C4D0022BF82 /* Z3DTexture.cpp */,
 				7F81223810711C020022BF82 /* SHMath.cpp */,
 				7F81223910711C020022BF82 /* SphericalHarmonics.cpp */,
@@ -160,12 +163,13 @@
 				7F81223310711B8A0022BF82 /* zWorks.cpp in Sources */,
 				7F81223A10711C020022BF82 /* SHMath.cpp in Sources */,
 				7F81223B10711C020022BF82 /* SphericalHarmonics.cpp in Sources */,
-				7F81224710711C4D0022BF82 /* OcTree.cpp in Sources */,
 				7F81224810711C4D0022BF82 /* Z3DTexture.cpp in Sources */,
 				7F81224E10711C7C0022BF82 /* gBase.cpp in Sources */,
 				7F81227110711F040022BF82 /* PTCMapCmd.cpp in Sources */,
 				7F81227210711F040022BF82 /* PTCMapViz.cpp in Sources */,
 				7F7C14B710726A860029D454 /* CubeRaster.cpp in Sources */,
+				7F8D27EF107BA4E300390A46 /* OcTree.cpp in Sources */,
+				7F8BAFF71081031000FE0291 /* FNoise.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

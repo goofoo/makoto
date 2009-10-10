@@ -11,6 +11,8 @@
 #define _CUBERASTER_H
 
 #include "../shared/zData.h"
+#define CUBERASTER_MAXANGLE 0.05
+#define CUBERASTER_MAXANGLEINV 20
 
 class CubeRaster
 {
@@ -19,7 +21,8 @@ public:
 	~CubeRaster();
 	
 	void clear();
-	void write(XYZ& ray);
+	//void write(XYZ& ray);
+	//void write(XYZ& ray, float val, float angle);
 	void write(XYZ& ray, float val);
 	void draw() const;
 	void getLight(const float& opacity, float& lighting) const;

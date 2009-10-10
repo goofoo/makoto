@@ -103,10 +103,9 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		ps.velocity( velarr );
        
 		for(unsigned i=0; i<positions.length(); i++,acc++ ) {
-			MVector p = positions[i];
-			buf[acc].pos.x = p[0];
-			buf[acc].pos.y = p[1];
-			buf[acc].pos.z = p[2];
+			buf[acc].pos.x = positions[i].x;
+			buf[acc].pos.y = positions[i].y;
+			buf[acc].pos.z = positions[i].z;
 		    buf[acc].nor.x = velarr[i].x;
 			buf[acc].nor.y = velarr[i].y;
 			buf[acc].nor.z = velarr[i].z;
@@ -121,7 +120,10 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	MGlobal::displayInfo(MString(" num grid ")+ tree->getNumGrid());
 	MGlobal::displayInfo(MString(" num voxel ")+ tree->getNumVoxel());
 	MGlobal::displayInfo(MString(" max level ")+ tree->getMaxLevel());
-	MGlobal::displayInfo(" updating distance to neighbour...");
+	MGlobal::displayInfo(" calculating voxel volume occlusion...");
+	tree->occlusionVolume();
+	MGlobal::displayInfo(" done");
+	MGlobal::displayInfo(" updating grid distance to neighbour...");
 	tree->distanceToNeighbour(cache_mindist, cache_maxdist);
 	MGlobal::displayInfo(" done");
 /*

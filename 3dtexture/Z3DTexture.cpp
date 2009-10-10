@@ -56,6 +56,28 @@ char Z3DTexture::load(const char* filename)
 	m_pTree->setGrid(m_pGrid, ngrid);
 	m_pTree->load(infile);
 	
+// recover voxle arributes
+	int datatype;
+	int namelength;
+	
+	infile.read((char*)&datatype, 4);
+	while(!infile.eof()) {
+		if(datatype == 108) {
+			infile.read((char*)&namelength, 4);
+			char *attrname = new char[namelength];
+			infile.read((char*)attrname, namelength);
+			
+			NamedSHCOEFF* attr = new NamedSHCOEFF();
+			
+			attr->name = attrname;
+			attr->data = new SHB3COEFF[m_pTree->getNumVoxel()];
+			
+			infile.read((char*)attr->data, 108*m_pTree->getNumVoxel());
+			attrib_sh.push_back(attr);
+		}
+		infile.read((char*)&datatype, 4);
+	}
+
 	infile.close();
 	
 	return 1;
@@ -66,11 +88,6 @@ void Z3DTexture::constructTree()
 	m_pTree->construct();
 }
 
-void Z3DTexture::computePower()
-{
-	m_pTree->computePower(m_sh);
-}
-
 void Z3DTexture::draw() const
 {
 	if(m_pTree) m_pTree->draw();
@@ -78,22 +95,14 @@ void Z3DTexture::draw() const
 
 void Z3DTexture::drawGrid(const XYZ& viewdir) const
 {
-	if(!m_pTree) return;
+	if(m_pTree) m_pTree->draw(viewdir);
+	/*if(!m_pTree) return;
 	int ngrid = m_pTree->getNumGrid();
 	for(int i=0; i<ngrid; i++) {
 		glColor3f(m_pGrid[i].col.x, m_pGrid[i].col.y, m_pGrid[i].col.z);
 		float r = sqrt(m_pGrid[i].area/4);
 		gBase::drawSplatAt(m_pGrid[i].pos, viewdir, r);
-	}
-}
-
-void Z3DTexture::doOcclusion()
-{
-	NamedSHCOEFF* attr = new NamedSHCOEFF();
-	attr->name = "occlusion";
-	attr->data = new SHB3COEFF[m_pTree->getNumVoxel()];
-	m_pTree->doOcclusion(attr->data);
-	attrib_sh.push_back(attr);
+	}*/
 }
 
 void Z3DTexture::save(const char* filename)
@@ -108,6 +117,16 @@ void Z3DTexture::save(const char* filename)
 	outfile.write((char*)m_pGrid,sizeof(RGRID)*ngrid);
 	
 	m_pTree->save(outfile);
+	
+// record voxel arributes	
+	int datatype = 108, namelength;
+	for(unsigned i=0; i < attrib_sh.size(); i++) {
+		outfile.write((char*)&datatype, 4);
+		namelength = attrib_sh[i]->name.size();
+		outfile.write((char*)&namelength, 4);
+		outfile.write((char*)attrib_sh[i]->name.c_str(), namelength);
+		outfile.write((char*)attrib_sh[i]->data, 108*m_pTree->getNumVoxel());
+	}
 	
 	outfile.close();
 }
@@ -131,29 +150,75 @@ void Z3DTexture::distanceToNeighbour(float min, float max)
 	if(!m_pTree) return;
 	int ngrid = m_pTree->getNumGrid();
 	for(int i=0; i<ngrid; i++) {
-
 		XYZ to = m_pGrid[i].pos;
 		float dist = max;
-		float max2 = max*2;
-		m_pTree->nearestGrid(to, min, max2, dist);
+		XYZ vneib;
+		m_pTree->nearestGrid(to, min, dist, vneib);
 		m_pGrid[i].area = dist*dist*4;
 	}
 }
 
-void Z3DTexture::testRaster(const XYZ& ori)
+void Z3DTexture::occlusionVolume()
 {
 	if(!m_pTree) return;
 	raster->clear();
-	m_pTree->setSampleOpacity(0.04f);
-	m_pTree->occlusionAccum(ori, raster);
+	m_pTree->setSampleOpacity(0.05f);
+	
+	NamedSHCOEFF* attr = new NamedSHCOEFF();
+	attr->name = "volume_occlusion";
+	attr->data = new SHB3COEFF[m_pTree->getNumVoxel()];
+	
+	m_pTree->setSH(m_sh);
+	m_pTree->setRaster(raster);
+	m_pTree->setSHBuf(attr->data);
+	
+	m_pTree->voxelOcclusionAccum();
+	
+	attrib_sh.push_back(attr);
+}
+
+XYZ Z3DTexture::testRaster(const XYZ& ori)
+{
+	if(!m_pTree) return XYZ(0);
+	raster->clear();
+	m_pTree->setSampleOpacity(0.05f);
+	
+	m_pTree->setRaster(raster);
+	m_pTree->occlusionAccum(ori);
 	raster->draw();
 	XYZ coe[SH_N_BASES];
 	m_sh->zeroCoeff(coe);
-	float l;
+	float l, vl;
+	XYZ vn(0,1,0);
 	for(unsigned int j=0; j<SH_N_SAMPLES; j++) {
 		SHSample s = m_sh->getSample(j);
-		raster->readLight(s.vector, l);
-		m_sh->projectASample(coe, j, l);
+		vl = vn.dot(s.vector);
+		if(vl>0) {
+			raster->readLight(s.vector, l);
+			l *= vl;
+			m_sh->projectASample(coe, j, l);
+		}
 	}
 	m_sh->reconstructAndDraw(coe);
+	
+	return m_sh->integrate(m_sh->constantCoeff, coe);
+}
+
+char Z3DTexture::hasAttrib(const char* name) const
+{
+	for(unsigned i=0; i < attrib_sh.size(); i++) {
+		if(attrib_sh[i]->name == name) return 1;
+	}
+	return 0;
+}
+
+void Z3DTexture::setDraw(const char* name)
+{
+	m_pTree->setSH(m_sh);
+	m_pTree->setSHBuf(NULL);
+	//for(unsigned i=0; i < attrib_sh.size(); i++) {
+		//if(attrib_sh[i]->name == name) {
+			m_pTree->setSHBuf(attrib_sh[0]->data);
+		//}
+	//}
 }

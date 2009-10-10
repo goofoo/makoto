@@ -155,12 +155,15 @@ void QuickSort::sortX(RGRID *array, unsigned *idx, int first,int last)
 		if(low<=high)
 		{
 			temp = array[low];
+			tmpidx = idx[low];
+			idx[low] = idx[high];
 			array[low++] = array[high];
+			idx[high] = tmpidx;
 			array[high--]=temp;
 			
-			tmpidx = idx[low];
-			idx[low++] = idx[high];
-			idx[high--] = tmpidx;
+			//
+			//idx[low++] = idx[high];
+			//idx[high--] = tmpidx;
 		}
 	}while(low<=high);
 	if(first<high)
@@ -187,12 +190,10 @@ void QuickSort::sortY(RGRID *array, unsigned *idx, int first,int last)
 		if(low<=high)
 		{
 			temp = array[low];
-			array[low++] = array[high];
-			array[high--]=temp;
-			
 			tmpidx = idx[low];
-			idx[low++] = idx[high];
-			idx[high--] = tmpidx;
+			array[low++] = array[high];
+			idx[high] = tmpidx;
+			array[high--]=temp;
 		}
 	}while(low<=high);
 	if(first<high)
@@ -219,12 +220,10 @@ void QuickSort::sortZ(RGRID *array, unsigned *idx, int first,int last)
 		if(low<=high)
 		{
 			temp = array[low];
-			array[low++] = array[high];
-			array[high--]=temp;
-			
 			tmpidx = idx[low];
-			idx[low++] = idx[high];
-			idx[high--] = tmpidx;
+			array[low++] = array[high];
+			idx[high] = tmpidx;
+			array[high--]=temp;
 		}
 	}while(low<=high);
 	if(first<high)

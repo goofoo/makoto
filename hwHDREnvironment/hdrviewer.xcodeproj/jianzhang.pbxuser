@@ -72,9 +72,51 @@
 			PBXPerProjectTemplateStateSaveDate = 276678522;
 			PBXWorkspaceStateSaveDate = 276678522;
 		};
+		perUserProjectItems = {
+			7FA55B00107DCB6300661BFF /* PBXBookmark */ = 7FA55B00107DCB6300661BFF /* PBXBookmark */;
+			7FA55B03107DCD6100661BFF /* PBXBookmark */ = 7FA55B03107DCD6100661BFF /* PBXBookmark */;
+			7FA55B08107DD0A300661BFF /* PBXTextBookmark */ = 7FA55B08107DD0A300661BFF /* PBXTextBookmark */;
+			7FA55B0B107DD0A300661BFF /* PBXTextBookmark */ = 7FA55B0B107DD0A300661BFF /* PBXTextBookmark */;
+		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	7FA55AF0107DC8D900661BFF /* hdrEnvNode.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {710, 4634}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{3739, 1212}";
+			sepNavWindowFrame = "{{480, 52}, {596, 697}}";
+		};
+	};
+	7FA55B00107DCB6300661BFF /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */;
+	};
+	7FA55B03107DCD6100661BFF /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7FA55AF0107DC8D900661BFF /* hdrEnvNode.cpp */;
+	};
+	7FA55B08107DD0A300661BFF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FA55AF0107DC8D900661BFF /* hdrEnvNode.cpp */;
+		name = "hdrEnvNode.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1212;
+		vrLoc = 3739;
+	};
+	7FA55B0B107DD0A300661BFF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */;
+		name = "pluginMain.cpp: 19";
+		rLen = 0;
+		rLoc = 635;
+		rType = 0;
+		vrLen = 1130;
+		vrLoc = 79;
 	};
 	7FCE44001022DF9900F025DA /* gBase.cpp */ = {
 		uiCtxt = {
@@ -97,9 +139,9 @@
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {788, 644}}";
-			sepNavSelRange = "{318, 64}";
-			sepNavVisRange = "{0, 1189}";
+			sepNavIntBoundsRect = "{{0, 0}, {691, 658}}";
+			sepNavSelRange = "{635, 0}";
+			sepNavVisRange = "{79, 1130}";
 			sepNavWindowFrame = "{{446, 54}, {750, 714}}";
 		};
 	};

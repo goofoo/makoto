@@ -69,151 +69,59 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 276423408;
-			PBXWorkspaceStateSaveDate = 276423408;
+			PBXPerProjectTemplateStateSaveDate = 276861521;
+			PBXWorkspaceStateSaveDate = 276861521;
 		};
 		perUserProjectItems = {
-			7F6E673A1079F190005A7BD5 /* PBXBookmark */ = 7F6E673A1079F190005A7BD5 /* PBXBookmark */;
-			7F6E67451079F420005A7BD5 /* PBXTextBookmark */ = 7F6E67451079F420005A7BD5 /* PBXTextBookmark */;
-			7F6E67491079F420005A7BD5 /* PBXTextBookmark */ = 7F6E67491079F420005A7BD5 /* PBXTextBookmark */;
-			7F6E67501079F4EA005A7BD5 /* PBXBookmark */ = 7F6E67501079F4EA005A7BD5 /* PBXBookmark */;
-			7F6E67671079F655005A7BD5 /* PBXTextBookmark */ = 7F6E67671079F655005A7BD5 /* PBXTextBookmark */;
-			7F6E67681079F655005A7BD5 /* PBXTextBookmark */ = 7F6E67681079F655005A7BD5 /* PBXTextBookmark */;
-			7F6E67691079F655005A7BD5 /* PBXTextBookmark */ = 7F6E67691079F655005A7BD5 /* PBXTextBookmark */;
-			7F6E676A1079F655005A7BD5 /* PBXTextBookmark */ = 7F6E676A1079F655005A7BD5 /* PBXTextBookmark */;
+			7F8BAF311080A50A00FE0291 /* PBXBookmark */ = 7F8BAF311080A50A00FE0291 /* PBXBookmark */;
+			7F8BAF851080E85C00FE0291 /* PBXTextBookmark */ = 7F8BAF851080E85C00FE0291 /* PBXTextBookmark */;
+			7F8BAF931080ECDF00FE0291 /* PBXTextBookmark */ = 7F8BAF931080ECDF00FE0291 /* PBXTextBookmark */;
+			7F8BAFCC1080F4F900FE0291 /* PBXTextBookmark */ = 7F8BAFCC1080F4F900FE0291 /* PBXTextBookmark */;
+			7F8BAFFC1081074900FE0291 /* PBXTextBookmark */ = 7F8BAFFC1081074900FE0291 /* PBXTextBookmark */;
+			7F8BB0001081074900FE0291 /* PBXTextBookmark */ = 7F8BB0001081074900FE0291 /* PBXTextBookmark */;
+			7F8BB01110810E9B00FE0291 /* PBXTextBookmark */ = 7F8BB01110810E9B00FE0291 /* PBXTextBookmark */;
+			7F8BB01210810E9B00FE0291 /* PBXTextBookmark */ = 7F8BB01210810E9B00FE0291 /* PBXTextBookmark */;
+			7F8BB01310810E9B00FE0291 /* PBXTextBookmark */ = 7F8BB01310810E9B00FE0291 /* PBXTextBookmark */;
+			7F8BB01510810E9B00FE0291 /* PBXTextBookmark */ = 7F8BB01510810E9B00FE0291 /* PBXTextBookmark */;
+			7F8BB01610810E9B00FE0291 /* PBXTextBookmark */ = 7F8BB01610810E9B00FE0291 /* PBXTextBookmark */;
+			7F8BB01710810E9B00FE0291 /* PBXTextBookmark */ = 7F8BB01710810E9B00FE0291 /* PBXTextBookmark */;
+			7F8BB01910810E9B00FE0291 /* PBXTextBookmark */ = 7F8BB01910810E9B00FE0291 /* PBXTextBookmark */;
+			7FD6C365108091A2005D1AA5 /* PBXTextBookmark */ = 7FD6C365108091A2005D1AA5 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
 		};
 	};
-	7F6E66FD1079E598005A7BD5 /* CubeRaster.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = CubeRaster.h;
-		path = /Users/jianzhang/Documents/plankton/3dtexture/CubeRaster.h;
-		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {546, 569}}";
-			sepNavSelRange = "{426, 48}";
-			sepNavVisRange = "{0, 514}";
-			sepNavWindowFrame = "{{15, 76}, {605, 697}}";
-		};
-	};
-	7F6E673A1079F190005A7BD5 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 7F81224610711C4D0022BF82 /* Z3DTexture.cpp */;
-	};
-	7F6E67451079F420005A7BD5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F7C14B510726A860029D454 /* CubeRaster.cpp */;
-		name = "CubeRaster.cpp: 227";
-		rLen = 1;
-		rLoc = 5576;
-		rType = 0;
-		vrLen = 863;
-		vrLoc = 5012;
-	};
-	7F6E67491079F420005A7BD5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F6E66FD1079E598005A7BD5 /* CubeRaster.h */;
-		rLen = 0;
-		rLoc = 2147483697;
-		rType = 0;
-	};
-	7F6E67501079F4EA005A7BD5 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
-	};
-	7F6E67671079F655005A7BD5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F81224610711C4D0022BF82 /* Z3DTexture.cpp */;
-		name = "Z3DTexture.cpp: 147";
-		rLen = 0;
-		rLoc = 3043;
-		rType = 0;
-		vrLen = 827;
-		vrLoc = 2517;
-	};
-	7F6E67681079F655005A7BD5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
-		name = "PTCMapViz.cpp: 181";
-		rLen = 0;
-		rLoc = 4654;
-		rType = 0;
-		vrLen = 852;
-		vrLoc = 3933;
-	};
-	7F6E67691079F655005A7BD5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F7C14B510726A860029D454 /* CubeRaster.cpp */;
-		name = "CubeRaster.cpp: 274";
-		rLen = 0;
-		rLoc = 6758;
-		rType = 0;
-		vrLen = 1097;
-		vrLoc = 5732;
-	};
-	7F6E676A1079F655005A7BD5 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F6E676B1079F655005A7BD5 /* CubeRaster.h */;
-		name = "CubeRaster.h: 26";
-		rLen = 48;
-		rLoc = 426;
-		rType = 0;
-		vrLen = 514;
-		vrLoc = 0;
-	};
-	7F6E676B1079F655005A7BD5 /* CubeRaster.h */ = {
-		isa = PBXFileReference;
-		name = CubeRaster.h;
-		path = /Users/jianzhang/Documents/plankton/3dtexture/CubeRaster.h;
-		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {546, 569}}";
-			sepNavSelRange = "{426, 48}";
-			sepNavVisRange = "{0, 514}";
-			sepNavWindowFrame = "{{15, 76}, {605, 697}}";
-		};
-	};
 	7F7C14B510726A860029D454 /* CubeRaster.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {596, 3864}}";
-			sepNavSelRange = "{6758, 0}";
-			sepNavVisRange = "{5732, 1097}";
-			sepNavWindowFrame = "{{85, 70}, {655, 697}}";
+			sepNavIntBoundsRect = "{{0, 0}, {634, 5390}}";
+			sepNavSelRange = "{2649, 3}";
+			sepNavVisRange = "{1998, 1247}";
+			sepNavWindowFrame = "{{121, 56}, {693, 709}}";
 		};
 	};
 	7F81222D10711B660022BF82 /* QuickSort.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {546, 3304}}";
-			sepNavSelRange = "{3205, 0}";
-			sepNavVisRange = "{3756, 785}";
+			sepNavIntBoundsRect = "{{0, 0}, {546, 3276}}";
+			sepNavSelRange = "{4407, 0}";
+			sepNavVisRange = "{3729, 804}";
 			sepNavWindowFrame = "{{15, 76}, {605, 697}}";
 		};
 	};
 	7F81223910711C020022BF82 /* SphericalHarmonics.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {602, 10374}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{10417, 1220}";
-			sepNavWindowFrame = "{{12, 29}, {605, 697}}";
-		};
-	};
-	7F81224510711C4D0022BF82 /* OcTree.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {944, 15736}}";
-			sepNavSelRange = "{25448, 0}";
-			sepNavVisRange = "{24988, 1140}";
-			sepNavWindowFrame = "{{376, 71}, {655, 697}}";
+			sepNavIntBoundsRect = "{{0, 0}, {537, 11032}}";
+			sepNavSelRange = "{991, 0}";
+			sepNavVisRange = "{63, 869}";
+			sepNavWindowFrame = "{{485, 81}, {596, 697}}";
 		};
 	};
 	7F81224610711C4D0022BF82 /* Z3DTexture.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {692, 2226}}";
-			sepNavSelRange = "{3043, 0}";
-			sepNavVisRange = "{2517, 827}";
-			sepNavWindowFrame = "{{624, 65}, {607, 660}}";
+			sepNavIntBoundsRect = "{{0, 0}, {692, 3178}}";
+			sepNavSelRange = "{4168, 0}";
+			sepNavVisRange = "{4054, 888}";
+			sepNavWindowFrame = "{{18, 107}, {607, 660}}";
 		};
 	};
 	7F81224D10711C7C0022BF82 /* gBase.cpp */ = {
@@ -221,23 +129,23 @@
 			sepNavIntBoundsRect = "{{0, 0}, {564, 16716}}";
 			sepNavSelRange = "{8527, 11}";
 			sepNavVisRange = "{8171, 757}";
-			sepNavWindowFrame = "{{602, 130}, {623, 592}}";
+			sepNavWindowFrame = "{{61, 117}, {623, 592}}";
 		};
 	};
 	7F81226F10711F040022BF82 /* PTCMapCmd.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {564, 3206}}";
-			sepNavSelRange = "{3454, 0}";
-			sepNavVisRange = "{2956, 1005}";
-			sepNavWindowFrame = "{{135, 99}, {623, 592}}";
+			sepNavIntBoundsRect = "{{0, 0}, {564, 2982}}";
+			sepNavSelRange = "{3476, 154}";
+			sepNavVisRange = "{2691, 1119}";
+			sepNavWindowFrame = "{{409, 156}, {623, 592}}";
 		};
 	};
 	7F81227010711F040022BF82 /* PTCMapViz.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {566, 3724}}";
-			sepNavSelRange = "{4654, 0}";
-			sepNavVisRange = "{3933, 852}";
-			sepNavWindowFrame = "{{308, 108}, {607, 660}}";
+			sepNavIntBoundsRect = "{{0, 0}, {560, 3738}}";
+			sepNavSelRange = "{4639, 0}";
+			sepNavVisRange = "{4279, 867}";
+			sepNavWindowFrame = "{{509, 71}, {607, 660}}";
 		};
 	};
 	7F812284107120470022BF82 /* particleCacheMenus.mel */ = {
@@ -246,6 +154,196 @@
 			sepNavSelRange = "{17290, 4}";
 			sepNavVisRange = "{16834, 1272}";
 			sepNavWindowFrame = "{{557, 115}, {772, 627}}";
+		};
+	};
+	7F8BAF311080A50A00FE0291 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
+	};
+	7F8BAF851080E85C00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7C14B510726A860029D454 /* CubeRaster.cpp */;
+		name = "CubeRaster.cpp: 98";
+		rLen = 30;
+		rLoc = 2576;
+		rType = 0;
+		vrLen = 1129;
+		vrLoc = 2016;
+	};
+	7F8BAF931080ECDF00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FD6C375108091A2005D1AA5 /* CubeRaster.h */;
+		name = "CubeRaster.h: 8";
+		rLen = 0;
+		rLoc = 135;
+		rType = 0;
+		vrLen = 630;
+		vrLoc = 0;
+	};
+	7F8BAFCC1080F4F900FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81226F10711F040022BF82 /* PTCMapCmd.cpp */;
+		name = "PTCMapCmd.cpp: 126";
+		rLen = 0;
+		rLoc = 3630;
+		rType = 0;
+		vrLen = 1119;
+		vrLoc = 2691;
+	};
+	7F8BAFF61081031000FE0291 /* FNoise.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {634, 770}}";
+			sepNavSelRange = "{866, 0}";
+			sepNavVisRange = "{135, 877}";
+			sepNavWindowFrame = "{{15, 64}, {693, 709}}";
+		};
+	};
+	7F8BAFFC1081074900FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81223910711C020022BF82 /* SphericalHarmonics.cpp */;
+		name = "SphericalHarmonics.cpp: 371";
+		rLen = 0;
+		rLoc = 7727;
+		rType = 0;
+		vrLen = 847;
+		vrLoc = 7190;
+	};
+	7F8BB0001081074900FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8BB0011081074900FE0291 /* SphericalHarmonics.h */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F8BB0011081074900FE0291 /* SphericalHarmonics.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = SphericalHarmonics.h;
+		path = /Users/jianzhang/Documents/plankton/sh_lighting/SphericalHarmonics.h;
+		sourceTree = "<absolute>";
+	};
+	7F8BB01110810E9B00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 935";
+		rLen = 0;
+		rLoc = 26608;
+		rType = 0;
+		vrLen = 1274;
+		vrLoc = 26543;
+	};
+	7F8BB01210810E9B00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81223910711C020022BF82 /* SphericalHarmonics.cpp */;
+		name = "SphericalHarmonics.cpp: 47";
+		rLen = 0;
+		rLoc = 991;
+		rType = 0;
+		vrLen = 869;
+		vrLoc = 63;
+	};
+	7F8BB01310810E9B00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8BB01410810E9B00FE0291 /* SphericalHarmonics.h */;
+		name = "SphericalHarmonics.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 733;
+		vrLoc = 0;
+	};
+	7F8BB01410810E9B00FE0291 /* SphericalHarmonics.h */ = {
+		isa = PBXFileReference;
+		name = SphericalHarmonics.h;
+		path = /Users/jianzhang/Documents/plankton/sh_lighting/SphericalHarmonics.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {634, 2184}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 733}";
+			sepNavWindowFrame = "{{15, 64}, {693, 709}}";
+		};
+	};
+	7F8BB01510810E9B00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7C14B510726A860029D454 /* CubeRaster.cpp */;
+		name = "CubeRaster.cpp: 102";
+		rLen = 3;
+		rLoc = 2649;
+		rType = 0;
+		vrLen = 1247;
+		vrLoc = 1998;
+	};
+	7F8BB01610810E9B00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81226F10711F040022BF82 /* PTCMapCmd.cpp */;
+		name = "PTCMapCmd.cpp: 126";
+		rLen = 154;
+		rLoc = 3476;
+		rType = 0;
+		vrLen = 1119;
+		vrLoc = 2691;
+	};
+	7F8BB01710810E9B00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8BB01810810E9B00FE0291 /* CubeRaster.h */;
+		name = "CubeRaster.h: 25";
+		rLen = 0;
+		rLoc = 382;
+		rType = 0;
+		vrLen = 632;
+		vrLoc = 0;
+	};
+	7F8BB01810810E9B00FE0291 /* CubeRaster.h */ = {
+		isa = PBXFileReference;
+		name = CubeRaster.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/CubeRaster.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {537, 569}}";
+			sepNavSelRange = "{382, 0}";
+			sepNavVisRange = "{0, 632}";
+			sepNavWindowFrame = "{{15, 76}, {596, 697}}";
+		};
+	};
+	7F8BB01910810E9B00FE0291 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
+		name = "PTCMapViz.cpp: 182";
+		rLen = 0;
+		rLoc = 4639;
+		rType = 0;
+		vrLen = 867;
+		vrLoc = 4279;
+	};
+	7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {656, 16226}}";
+			sepNavSelRange = "{26608, 0}";
+			sepNavVisRange = "{26543, 1274}";
+			sepNavWindowFrame = "{{354, 99}, {621, 675}}";
+		};
+	};
+	7FD6C365108091A2005D1AA5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 932";
+		rLen = 0;
+		rLoc = 26811;
+		rType = 0;
+		vrLen = 1101;
+		vrLoc = 26351;
+	};
+	7FD6C375108091A2005D1AA5 /* CubeRaster.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = CubeRaster.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/CubeRaster.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {537, 569}}";
+			sepNavSelRange = "{382, 0}";
+			sepNavVisRange = "{0, 632}";
 		};
 	};
 	7FE58B990FB61EA800187112 /* Source Control */ = {
@@ -262,7 +360,7 @@
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {566, 966}}";
-			sepNavSelRange = "{536, 0}";
+			sepNavSelRange = "{533, 0}";
 			sepNavVisRange = "{212, 967}";
 			sepNavWindowFrame = "{{133, 133}, {453, 583}}";
 		};

@@ -23,7 +23,7 @@ struct NamedSHCOEFF
 	SHB3COEFF* data;
 };
 
-typedef vector<NamedSHCOEFF*>TriDTexSHList;
+typedef vector<NamedSHCOEFF*>TRIDTexSHList;
 
 class Z3DTexture
 {
@@ -34,7 +34,7 @@ public:
 	void setGrid(RGRID* data, int n_data);
 	char load(const char* filename);
 	void constructTree();
-	void computePower();
+	//void computePower();
 	void draw() const;
 	void drawGrid(const XYZ& viewdir) const;
 	
@@ -44,15 +44,19 @@ public:
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	
 	void distanceToNeighbour(float min, float max);
-	void doOcclusion();
+	void occlusionVolume();
 	
 	void save(const char* filename);
 	
-	void testRaster(const XYZ& ori);
+	XYZ testRaster(const XYZ& ori);
+	
+	void setDraw(const char* name);
+	char hasAttrib(const char* name) const;
+	const char* fisrtattrib() const {return attrib_sh[0]->name.c_str();}
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
-	TriDTexSHList attrib_sh;
+	TRIDTexSHList attrib_sh;
 	RGRID* m_pGrid;
 	CubeRaster* raster;
 };

@@ -14,10 +14,15 @@
 #endif
 
 #include "../sh_lighting/SphericalHarmonics.h"
-#include "gBase.h"
+#include "../shared/gBase.h"
 #include "CubeRaster.h"
+#include "../shared/QuickSort.h"
 
-OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),m_pPower(0),idBuf(0),sample_opacity(0.04f)
+const float constantCoeff[9] = { 3.543211, 
+								0.000605, 0.000152, -0.003217, 
+								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
+
+OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),idBuf(0),sample_opacity(0.04f)
 {
 }
 
@@ -29,7 +34,6 @@ OcTree::~OcTree()
 void OcTree::release()
 {
 	if(idBuf) delete[] idBuf;
-	if(m_pPower) delete[] m_pPower;
 	if(root) release(root);
 	for(unsigned i=0; i<dSingle.size(); i++) delete[] dSingle[i]->data;
 	for(unsigned i=0; i<dThree.size(); i++) delete[] dThree[i]->data;
@@ -85,7 +89,10 @@ char OcTree::loadGrid(const char* filename)
 void OcTree::setGrid(RGRID* data, int n_data)
 {
 	num_grid = n_data;
-	m_pGrid = data;
+	m_pGrid =data;
+
+	//m_pGrid = new RGRID[n_data];
+	//for(int i=0; i<n_data; i++) m_pGrid[i] = data[i];
 }
 
 void OcTree::construct()
@@ -110,9 +117,11 @@ void OcTree::construct()
 		max_level++;
 		minboxsize /=2;
 	}
+	
+	max_level = 6;
 
 	root = new OCTNode();
-	root->parent = NULL;
+	//root->parent = NULL;
 	num_voxel = 0;
 	create(root, 0, num_grid-1, rootCenter, rootSize, 0, num_voxel);
 	
@@ -125,7 +134,13 @@ void OcTree::create(OCTNode *node, int low, int high, const XYZ& center, const f
 	node->center = center;
 	node->size = size;
 	combineSurfel(m_pGrid, low, high, node->mean, node->col, node->dir, node->area);
+	node->area = size*size*4;
 	node->index = count;
+	
+	float noi0 = float(rand()%111)/111.f;
+	float noi1 = float(rand()%91)/91.f;
+	float noi2 = float(rand()%131)/131.f;
+	node->col = XYZ(noi0, noi1, noi2);
 	count++;
 	
 	if(level == max_level) {
@@ -137,96 +152,81 @@ void OcTree::create(OCTNode *node, int low, int high, const XYZ& center, const f
 	float halfsize = size/2;
 	XYZ acen;
 	
-	
-	int xindex,yindex1,yindex2,zindex1,zindex2,zindex3,zindex4;	
+	node->child000 = node->child001 = node->child010 = node->child011 = node->child100 = node->child101 = node->child110 = node->child111 = NULL;
+	int midx, yindex1, yindex2,zindex1,zindex2,zindex3,zindex4;	
 
-		QuickSort::sortX(m_pGrid, idBuf, low,high);
-		for( xindex = low; (m_pGrid[xindex].pos.x < center.x)&&(xindex<=high);xindex++ );
+	QuickSort::sortX(m_pGrid, idBuf, low,high);
+	for( midx = low; (m_pGrid[midx].pos.x < center.x)&&(midx<=high);midx++ );
 
-		QuickSort::sortY(m_pGrid, idBuf, low,xindex-1);
-		for( yindex1 = low; (m_pGrid[yindex1].pos.y < center.y)&&(yindex1<=xindex-1);yindex1++ );
+		QuickSort::sortY(m_pGrid, idBuf, low,midx-1);
+		for( yindex1 = low; (m_pGrid[yindex1].pos.y < center.y)&&(yindex1<= midx-1);yindex1++ );
 
-		QuickSort::sortY(m_pGrid, idBuf, xindex,high);
-		for( yindex2 = xindex; (m_pGrid[yindex2].pos.y < center.y)&&(yindex2<=high);yindex2++ );
-       
+		QuickSort::sortY(m_pGrid, idBuf, midx,high);
+		for( yindex2 = midx; (m_pGrid[yindex2].pos.y < center.y)&&(yindex2<=high);yindex2++ );
+     
 		QuickSort::sortZ(m_pGrid, idBuf, low,yindex1-1);
 		for( zindex1 = low; (m_pGrid[zindex1].pos.z < center.z)&&(zindex1<=yindex1-1);zindex1++ );
 
-		QuickSort::sortZ(m_pGrid, idBuf, yindex1,xindex-1);
-		for( zindex2 = yindex1; (m_pGrid[zindex2].pos.z < center.z)&&(zindex2<=xindex-1);zindex2++ );
+		QuickSort::sortZ(m_pGrid, idBuf, yindex1, midx-1);
+		for( zindex2 = yindex1; (m_pGrid[zindex2].pos.z < center.z)&&(zindex2<= midx-1);zindex2++ );
 
-		QuickSort::sortZ(m_pGrid, idBuf, xindex,yindex2-1);
-		for( zindex3 = xindex; (m_pGrid[zindex3].pos.z < center.z)&&(zindex3<=yindex2-1);zindex3++ );
+		QuickSort::sortZ(m_pGrid, idBuf, midx,yindex2-1);
+		for( zindex3 = midx; (m_pGrid[zindex3].pos.z < center.z)&&(zindex3<=yindex2-1);zindex3++ );
 
 		QuickSort::sortZ(m_pGrid, idBuf, yindex2,high);
 		for( zindex4 = yindex2; (m_pGrid[zindex4].pos.z < center.z)&&(zindex4<=high);zindex4++ );
 	
-		if(low <= zindex1-1)
-		{
-			node->child000 = new OCTNode(); node->child000->parent = node;
+		if(low <= zindex1-1) {
+			node->child000 = new OCTNode();//node->child000->parent = node;
 			acen = center + XYZ(-halfsize, -halfsize, -halfsize);
-			create(node->child000, low,zindex1-1,acen,halfsize,level, count);
+			create(node->child000, low, zindex1-1,acen,halfsize,level, count);
 		}
-		else node->child000 = NULL;
+		
 
-		if(zindex1 <= yindex1-1)
-		{
-			node->child001 = new OCTNode(); node->child001->parent = node;
+		if(zindex1 <= yindex1-1) {
+			node->child001 = new OCTNode();//node->child001->parent = node;
 			acen = center + XYZ(-halfsize, -halfsize, halfsize);
 			create(node->child001, zindex1,yindex1-1,acen,halfsize,level, count);
 		}
-		else node->child001 = NULL;
+		
 
-		if(yindex1<=zindex2-1)
-		{
-			node->child010 = new OCTNode(); node->child010->parent = node;
+		if(yindex1<=zindex2-1) {
+			node->child010 = new OCTNode();//node->child010->parent = node;
 			acen = center + XYZ(-halfsize, halfsize, -halfsize);
 			create(node->child010, yindex1,zindex2-1,acen,halfsize,level, count);
 		}
-		else node->child010 = NULL;
 
-		if(zindex2<=xindex-1)
-		{
-			node->child011 = new OCTNode(); node->child011->parent = node;
+		if(zindex2<=midx-1) {
+			node->child011 = new OCTNode();//node->child011->parent = node;
 			acen = center + XYZ(-halfsize, halfsize, halfsize);
-			create(node->child011, zindex2,xindex-1,acen,halfsize,level, count);
+			create(node->child011, zindex2, midx-1,acen,halfsize,level, count);
 		}
-		else node->child011 = NULL;
 
-		if(xindex<=zindex3-1)
-		{
-			node->child100 = new OCTNode(); node->child100->parent = node;
+		if(midx<=zindex3-1) {
+			node->child100 = new OCTNode();//node->child100->parent = node;
 			acen = center + XYZ(halfsize, -halfsize, -halfsize);
-			create(node->child100, xindex,zindex3-1,acen,halfsize,level, count);
+			create(node->child100, midx,zindex3-1,acen,halfsize,level, count);
 		}
-		else node->child100 = NULL;
 
-		if(zindex3<=yindex2-1)
-		{
-			node->child101 = new OCTNode(); node->child101->parent = node;
+		if(zindex3<=yindex2-1) {
+			node->child101 = new OCTNode();//node->child101->parent = node;
 			acen = center + XYZ(halfsize, -halfsize, halfsize);
 			create(node->child101, zindex3,yindex2-1,acen,halfsize,level, count);
 		}
-		else node->child101 = NULL;
 
-		if(yindex2<=zindex4-1)
-		{
-			node->child110 = new OCTNode(); node->child110->parent = node;
+		if(yindex2<=zindex4-1) {
+			node->child110 = new OCTNode();//node->child110->parent = node;
 			acen = center + XYZ(halfsize, halfsize, -halfsize);
 			create(node->child110, yindex2,zindex4-1,acen,halfsize,level, count);
 		}
-		else node->child110 = NULL;
 
-		if(zindex4<=high)
-		{
-			node->child111 = new OCTNode(); node->child111->parent = node;
+		if(zindex4<=high) {
+			node->child111 = new OCTNode();//node->child111->parent = node;
 			acen = center + XYZ(halfsize, halfsize, halfsize);
 			create(node->child111, zindex4,high,acen,halfsize,level, count);
 		}
-		else node->child111 = NULL;
-
 }
-
+/*
 void OcTree::computePower(sphericalHarmonics* _sh)
 {
 	m_pPower = new SHB3COEFF[num_voxel];
@@ -269,12 +269,12 @@ void OcTree::computePower(OCTNode *node)
 		if(node->child111) sh->addCoeff(m_pPower[node->index].value, m_pPower[node->child111->index].value);
 	}
 }
+*/
+//void OcTree::doOcclusion(SHB3COEFF* res) const
+//{
 
-void OcTree::doOcclusion(SHB3COEFF* res) const
-{
-
-}
-
+//}
+/*
 void OcTree::addSingle(const float *rawdata, const char* name, const PosAndId *index)
 {
 	NamedSingle* attr = new NamedSingle();
@@ -341,7 +341,7 @@ void OcTree::setThree(XYZ *res, OCTNode *node, const XYZ *rawdata, const PosAndI
 		setThree(res, node->child111, rawdata, index);
 	}
 }
-
+*/
 void OcTree::save(ofstream& file) const
 {
 	file.write((char*)&num_voxel,sizeof(unsigned));
@@ -403,7 +403,7 @@ char OcTree::load(ifstream& file)
 	file.read((char*)&num_voxel, sizeof(unsigned));
 	if(num_voxel>0) {   
 		root = new OCTNode();
-		root->parent = NULL;
+		//root->parent = NULL;
 		num_voxel = 0;
 		load(file, root);
 		/*
@@ -463,49 +463,49 @@ void OcTree::load(ifstream& file, OCTNode *node)
 	file.read((char*)&node->child111,sizeof(node->child111));
 	
 	if(node->child000) {
-		node->child000 = new OCTNode(); node->child000->parent = node;
+		node->child000 = new OCTNode();//node->child000->parent = node;
 		load(file, node->child000);
 	}
 	else node->child000 = NULL;
 	
 	if(node->child001) {
-		node->child001 = new OCTNode(); node->child001->parent = node;
+		node->child001 = new OCTNode();//node->child001->parent = node;
 		load(file, node->child001);
 	}
 	else node->child001 = NULL;
 	
 	if(node->child010) {
-		node->child010 = new OCTNode(); node->child010->parent = node;
+		node->child010 = new OCTNode();//node->child010->parent = node;
 		load(file, node->child010);
 	}
 	else node->child010 = NULL;
 	
 	if(node->child011) {
-		node->child011 = new OCTNode(); node->child011->parent = node;
+		node->child011 = new OCTNode();//node->child011->parent = node;
 		load(file, node->child011);
 	}
 	else node->child011 = NULL;
 	
 	if(node->child100) {
-		node->child100 = new OCTNode(); node->child100->parent = node;
+		node->child100 = new OCTNode();//node->child100->parent = node;
 		load(file, node->child100);
 	}
 	else node->child100 = NULL;
 	
 	if(node->child101) {
-		node->child101 = new OCTNode(); node->child101->parent = node;
+		node->child101 = new OCTNode();//node->child101->parent = node;
 		load(file, node->child101);
 	}
 	else node->child101 = NULL;
 	
 	if(node->child110) {
-		node->child110 = new OCTNode(); node->child110->parent = node;
+		node->child110 = new OCTNode();//node->child110->parent = node;
 		load(file, node->child110);
 	}
 	else node->child110 = NULL;
 	
 	if(node->child111) {
-		node->child111 = new OCTNode(); node->child111->parent = node;
+		node->child111 = new OCTNode();//node->child111->parent = node;
 		load(file, node->child111);
 	}
 	else node->child111 = NULL;
@@ -513,7 +513,40 @@ void OcTree::load(ifstream& file, OCTNode *node)
 
 void OcTree::draw()
 {
-	drawSurfel(root);
+	drawCube(root);
+}
+
+void OcTree::draw(const XYZ& viewdir)
+{
+	drawSurfel(root, viewdir);
+}
+
+void OcTree::drawNeighbour(const OCTNode *node)
+{
+	if(!node) return;
+	if(node->isLeaf) {
+		for(unsigned i= node->low; i<= node->high; i++) {
+			glColor3f(node->col.x, node->col.y, node->col.z);
+			glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
+			
+			XYZ vneib(0,1,0);
+			float dist = 16.1f;
+			
+			glColor3f(0,1,0);
+			nearestGrid(m_pGrid[i].pos, 0.1, dist, vneib);
+			glVertex3f(vneib.x, vneib.y, vneib.z);
+		}
+	}
+	else {
+		drawNeighbour(node->child000 );
+		drawNeighbour(node->child001 );
+		drawNeighbour(node->child010 );
+		drawNeighbour(node->child011 );
+		drawNeighbour(node->child100 );
+		drawNeighbour(node->child101 );
+		drawNeighbour(node->child110 );
+		drawNeighbour(node->child111 );
+	}
 }
 
 void OcTree::drawCube(const OCTNode *node)
@@ -522,8 +555,13 @@ void OcTree::drawCube(const OCTNode *node)
 	if(node->isLeaf) {
 		XYZ cen = node->center;
 		float size = node->size;
-		//glColor3f(node->col.x, node->col.y, node->col.z);
-	
+		
+		if(m_pSHBuf) {
+			float ov  = 0;
+			for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
+			ov /= 3.14;
+			glColor3f(ov, ov, ov);
+		}
 		gBase::drawBox(cen, size);
 	}
 	else {
@@ -538,31 +576,41 @@ void OcTree::drawCube(const OCTNode *node)
 	}
 }
 
-void OcTree::drawSurfel(const OCTNode *node)
+void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 {
 	if(!node) return;
-	float r = sqrt(node->area/3.14);
-			//gBase::drawSplatAt(node->mean, node->col, r);
+	float r;
 	if(node->isLeaf) {
-		//glColor3f(node->col.x, node->col.y, node->col.z);
-		//float r = sqrt(node->area/3.14);
-		//gBase::drawSplatAt(node->mean, node->dir, r);
+		if(m_pSHBuf) {
+			/*glPushMatrix();
+			glTranslatef(node->mean.x, node->mean.y, node->mean.z);
+			
+			sh->reconstructAndDraw(m_pSHBuf[node->index].value);
+			
+			glPopMatrix();
+			return;
+			*/
+			float ov  = 0;
+			for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
+			ov /= 3.14;
+			glColor3f(ov, ov, ov);
+		}
 		for(unsigned i= node->low; i<= node->high; i++) {
-			r = sqrt(m_pGrid[i].area/3.14);
-			gBase::drawSplatAt(m_pGrid[i].pos, m_pGrid[i].col, r);
+			r = sqrt(m_pGrid[i].area * 0.25);
+			gBase::drawSplatAt(m_pGrid[i].pos, viewdir, r);
 			//glVertex3f(origin.x, origin.y, origin.z);
 			//glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
 		}
 	}
 	else {
-		drawSurfel(node->child000 );
-		drawSurfel(node->child001 );
-		drawSurfel(node->child010 );
-		drawSurfel(node->child011 );
-		drawSurfel(node->child100 );
-		drawSurfel(node->child101 );
-		drawSurfel(node->child110 );
-		drawSurfel(node->child111 );
+		drawSurfel(node->child000, viewdir);
+		drawSurfel(node->child001, viewdir);
+		drawSurfel(node->child010, viewdir);
+		drawSurfel(node->child011, viewdir);
+		drawSurfel(node->child100, viewdir);
+		drawSurfel(node->child101, viewdir);
+		drawSurfel(node->child110, viewdir);
+		drawSurfel(node->child111, viewdir);
 	}
 }
 /*
@@ -716,7 +764,7 @@ void OcTree::getBBox(const RGRID* data, const int num_data, XYZ& center, float& 
 	ts = bbmax.z - center.z;
 	if(ts > size) size = ts;
 }
-
+/*
 void OcTree::splitX(const XYZ *data, const int low, const int high, const float center, int& cutat)
 {
 	if(data[low].x > center) {
@@ -794,7 +842,7 @@ char OcTree::isInBox(const XYZ& data, const XYZ& center, float size)
 	
 	return 1;
 }
-
+*/
 void OcTree::combineSurfel(const RGRID *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const
 {
 	center.x = center.y = center.z = 0.f;
@@ -823,86 +871,151 @@ void OcTree::combineSurfel(const RGRID *data, const int low, const int high, XYZ
 		if(dist > maxdist) maxdist = dist;
 	}
 	dist = maxdist * maxdist *4;
-	if(dist> area) area = dist;
+	area = dist + data[low].area;
 }
 
-void OcTree::nearestGrid(const XYZ& to, float min, float max, float& dist)
+void OcTree::nearestGrid(const XYZ& to, float min, float& dist, XYZ& res)
 {
-	nearestGrid(root, to, min, max, dist);
+	nearestGrid(root, to, min, dist, res);
 }
 
-void OcTree::nearestGrid(OCTNode *node, const XYZ& to, float min, float max, float& dist)
+void OcTree::nearestGrid(OCTNode *node, const XYZ& to, float min, float& dist, XYZ& res)
 {
 	if(!node) return;
 	
 	float delta;
 	delta = node->center.x - to.x;
-	if(delta < 0) delta *= -1;
+	if(delta < 0) delta = -delta;
 	delta -= node->size;
-	if(delta > max) return;
+	if(delta > dist) return;
 	
 	delta = node->center.y - to.y;
-	if(delta < 0) delta *= -1;
+	if(delta < 0) delta = -delta;
 	delta -= node->size;
-	if(delta > max) return;
+	if(delta > dist) return;
 	
 	delta = node->center.z - to.z;
-	if(delta < 0) delta *= -1;
+	if(delta < 0) delta = -delta;
 	delta -= node->size;
-	if(delta > max) return;
+	if(delta > dist) return;
 	
 	if(node->isLeaf) {
 		
 		for(unsigned i= node->low; i<= node->high; i++) {
 			XYZ disp = m_pGrid[i].pos - to;
 			delta = disp.length();
-			if(delta < dist && delta > min) dist = delta;
+			if(delta < dist && delta > min) {
+				dist = delta;
+				res = m_pGrid[i].pos;
+			}
 		}
 	}
 	else {
-		nearestGrid(node->child000, to, min, max, dist );
-		nearestGrid(node->child001, to, min, max, dist);
-		nearestGrid(node->child010, to, min, max, dist);
-		nearestGrid(node->child011, to, min, max, dist);
-		nearestGrid(node->child100, to, min, max, dist);
-		nearestGrid(node->child101, to, min, max, dist);
-		nearestGrid(node->child110, to, min, max, dist);
-		nearestGrid(node->child111, to, min, max, dist);
+		nearestGrid(node->child000, to, min, dist, res);
+		nearestGrid(node->child001, to, min, dist, res);
+		nearestGrid(node->child010, to, min, dist, res);
+		nearestGrid(node->child011, to, min, dist, res);
+		nearestGrid(node->child100, to, min, dist, res);
+		nearestGrid(node->child101, to, min, dist, res);
+		nearestGrid(node->child110, to, min, dist, res);
+		nearestGrid(node->child111, to, min, dist, res);
 	}
 }
 
-void OcTree::occlusionAccum(const XYZ& origin, CubeRaster* raster)
+void OcTree::occlusionAccum(const XYZ& origin)
 {
-	occlusionAccum(root, origin, raster);
+	occlusionAccum(root, origin);
 }
 
-void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin, CubeRaster* raster)
+void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 {
 	if(!node) return;
 	XYZ ray;
+	float solidangle;
+	ray = node->mean - origin;
+	solidangle = node->area/(ray.lengthSquare() + 0.00001);
+	if(solidangle < CUBERASTER_MAXANGLE) {
+		raster->write(ray, sample_opacity*(node->high-node->low+1));
+		return;
+	}
 	if(node->isLeaf) {
 		for(unsigned i= node->low; i<= node->high; i++) {
 			ray = m_pGrid[i].pos - origin;
-			raster->write(ray, sample_opacity);
+			if(ray.lengthSquare() < node->area) return;
+			
+			solidangle = m_pGrid[i].area/(ray.lengthSquare() + 0.00001);
+			
+			int nsamp = 1.5+solidangle*CUBERASTER_MAXANGLEINV;
+			nsamp *= nsamp;
+			float r = sqrt(m_pGrid[i].area);
+			XYZ vnoi;
+			for(int j=0; j<nsamp; j++) {
+				vnoi.x = float(random()%197)/197.f - 0.5;
+				vnoi.y = float(random()%203)/203.f - 0.5;
+				vnoi.z = float(random()%337)/337.f - 0.5;
+				vnoi *= r;
+				ray = m_pGrid[i].pos + vnoi - origin;
+				if(ray.lengthSquare() < node->area) continue;
+				raster->write(ray, sample_opacity/nsamp);
+			}
+			//raster->write(ray, sample_opacity);
 		}
 	}
 	else {
-		ray = node->mean - origin;
-		float distance = ray.length() + 0.0001;
-		float solidangle = node->area/distance/distance;
-		if(solidangle < 0.09) {
-			raster->write(ray, sample_opacity);
-			return;
-		}
+		occlusionAccum(node->child000, origin);
+		occlusionAccum(node->child001, origin);
+		occlusionAccum(node->child010, origin);
+		occlusionAccum(node->child011, origin);
+		occlusionAccum(node->child100, origin);
+		occlusionAccum(node->child101, origin);
+		occlusionAccum(node->child110, origin);
+		occlusionAccum(node->child111, origin);
+	}
+}
+
+void OcTree::voxelOcclusionAccum()
+{
+	voxelOcclusionAccum(root);
+}
+
+void OcTree::voxelOcclusionAccum(OCTNode *node)
+{
+	if(!node) return;
+	sh->zeroCoeff(m_pSHBuf[node->index].value);
+	if(node->isLeaf) {
+		raster->clear();
+		occlusionAccum(node->mean);
 		
-		occlusionAccum(node->child000, origin, raster);
-		occlusionAccum(node->child001, origin, raster);
-		occlusionAccum(node->child010, origin, raster);
-		occlusionAccum(node->child011, origin, raster);
-		occlusionAccum(node->child100, origin, raster);
-		occlusionAccum(node->child101, origin, raster);
-		occlusionAccum(node->child110, origin, raster);
-		occlusionAccum(node->child111, origin, raster);
+		float l, vl;
+		XYZ vn(0,0,1);
+		for(unsigned int j=0; j<SH_N_SAMPLES; j++) {
+			SHSample s = sh->getSample(j);
+			vl = vn.dot(s.vector);
+			if(vl>0) {
+				raster->readLight(s.vector, l);
+				l *= vl;
+				sh->projectASample(m_pSHBuf[node->index].value, j, l);
+			}
+		}
+	}
+	else {
+		voxelOcclusionAccum(node->child000);
+		voxelOcclusionAccum(node->child001);
+		voxelOcclusionAccum(node->child010);
+		voxelOcclusionAccum(node->child011);
+		voxelOcclusionAccum(node->child100);
+		voxelOcclusionAccum(node->child101);
+		voxelOcclusionAccum(node->child110);
+		voxelOcclusionAccum(node->child111);
+		
+		if(node->child000) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child000->index].value);
+		if(node->child001) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child001->index].value);
+		if(node->child010) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child010->index].value);
+		if(node->child011) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child011->index].value);
+		if(node->child100) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child100->index].value);
+		if(node->child101) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child101->index].value);
+		if(node->child110) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child110->index].value);
+		if(node->child111) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child111->index].value);
 	}
 }
 /*

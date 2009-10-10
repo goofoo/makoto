@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "QuickSort.h"
+#include "../shared/zData.h"
 using namespace std;
 
 class sphericalHarmonics;
@@ -38,7 +38,7 @@ struct OCTNode
 	float size, area;
 	char isLeaf;
 	
-	OCTNode *parent;
+//OCTNode *parent;
 	OCTNode *child000;
 	OCTNode *child001;
 	OCTNode *child010;
@@ -63,19 +63,19 @@ public:
 	void construct();
 	void create(OCTNode *node, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	
-	void nearestGrid(const XYZ& to, float min, float max, float& dist);
-	void nearestGrid(OCTNode *node, const XYZ& to, float min, float max, float& dist);
+	void nearestGrid(const XYZ& to, float min, float& dist, XYZ& res);
+	void nearestGrid(OCTNode *node, const XYZ& to, float min, float& dist, XYZ& res);
 	
-	void computePower(sphericalHarmonics* sh);
-	void computePower(OCTNode *node);
+	//void computePower(sphericalHarmonics* sh);
+	//void computePower(OCTNode *node);
 	
-	void doOcclusion(SHB3COEFF* res) const;
-	
+	//void doOcclusion(SHB3COEFF* res) const;
+	/*
 	void addSingle(const float *rawdata, const char* name, const PosAndId *index);
 	void setSingle(float *res, OCTNode *node, const float *rawdata, const PosAndId *index);
 	void addThree(const XYZ *rawdata, const char* name, const PosAndId *index);
 	void setThree(XYZ *res, OCTNode *node, const XYZ *rawdata, const PosAndId *index);
-	
+	*/
 	void save(ofstream& file) const;
 	void save(ofstream& file, OCTNode *node) const;
 	
@@ -90,9 +90,10 @@ public:
 	int hasColor() const;
 	
 	void draw();
-	//void drawGrid();
+	void draw(const XYZ& viewdir);
 	void drawCube(const OCTNode *node);
-	void drawSurfel(const OCTNode *node);
+	void drawSurfel(const OCTNode *node, const XYZ& viewdir);
+	void drawNeighbour(const OCTNode *node);
 	//void draw(const PerspectiveView *pview,XYZ facing,string drawType);
 	//void drawCube(const OCTNode *node, const PerspectiveView *pview);
 	//void getDrawList(const OCTNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
@@ -102,17 +103,24 @@ public:
 	//void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
 	//void searchNearVoxel(OCTNode *node,const XYZ position,int & treeindex);
 
-	static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
-	static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
-	static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
+	//static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
+	//static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
+	//static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
 	static void getBBox(const RGRID* data, const int num_data, XYZ& center, float& size);
-	static char isInBox(const XYZ& data, const XYZ& center, float size);
+	//static char isInBox(const XYZ& data, const XYZ& center, float size);
 	void combineSurfel(const RGRID *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
 	
-	void occlusionAccum(const XYZ& origin, CubeRaster* raster);
-	void occlusionAccum(OCTNode *node, const XYZ& origin, CubeRaster* raster);
+	void occlusionAccum(const XYZ& origin);
+	void occlusionAccum(OCTNode *node, const XYZ& origin);
 	
 	void setSampleOpacity(const float& val) {sample_opacity = val;}
+	
+	void setSH(sphericalHarmonics* _sh) {sh = _sh;}
+	void setRaster(CubeRaster* _raster) {raster = _raster;}
+	void setSHBuf(SHB3COEFF* _buf) {m_pSHBuf = _buf;}
+	
+	void voxelOcclusionAccum();
+	void voxelOcclusionAccum(OCTNode *node);
 	
 private:
 	
@@ -126,9 +134,12 @@ private:
 	VoxSingleList dSingle;
 	VoxThreeList dThree;
 	
-	SHB3COEFF* m_pPower;
+	//SHB3COEFF* m_pPower;
 	sphericalHarmonics* sh;
+	CubeRaster* raster;
 	
 	unsigned *idBuf;
 	float sample_opacity;
+	
+	SHB3COEFF* m_pSHBuf;
 };

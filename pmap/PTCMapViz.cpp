@@ -68,8 +68,9 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		if(tree) delete tree;
 	    tree = new Z3DTexture();
 		if(!tree->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
-		//MGlobal::displayInfo(MString(" num grid ") + tree->getNumGrid());
-		//MGlobal::displayInfo(MString(" num voxel ") + tree->getNumVoxel());
+		//if(!tree->hasAttrib("volume_occlusion")) MGlobal::displayInfo("has no volume occlusion");
+		tree->setDraw("volume_occlusion");
+		//MGlobal::displayInfo(tree->fisrtattrib());
 	}
 	
 	return MS::kUnknownParameter;
@@ -172,14 +173,19 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	    //glDepthFunc(GL_LEQUAL);
 	    //glShadeModel(GL_SMOOTH);
 	    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		//
+		glPointSize(2.5);
+		glShadeModel(GL_SMOOTH);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		//glPointSize(2.5);
+		
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		//tree->draw();
 		tree->drawGrid(facing);
+		
+		//
 		XYZ ori(0,0,0);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glShadeModel(GL_SMOOTH);
 		tree->testRaster(ori);
+		//MGlobal::displayInfo(MString("r; ")+ori.x);
 		//glEnd();
 	}
 	glPopAttrib();

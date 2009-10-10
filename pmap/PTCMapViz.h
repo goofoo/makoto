@@ -23,7 +23,6 @@
 #include <maya/MFnCamera.h>
 #include <maya/MDagPath.h>
 #include "../3dtexture/Z3DTexture.h"
-//#include "view.h"
  
 class PTCMapLocator : public MPxLocatorNode
 {
