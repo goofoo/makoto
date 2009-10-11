@@ -95,30 +95,11 @@ void OcTree::setGrid(RGRID* data, int n_data)
 	//for(int i=0; i<n_data; i++) m_pGrid[i] = data[i];
 }
 
-void OcTree::construct()
+void OcTree::construct(const XYZ& rootCenter, float rootSize, int maxLevel)
 {
 	idBuf = new unsigned[num_grid];
-	float mean_r = 0;
-	for(int i=0; i<num_grid; i++) {
-		idBuf[i] = i;
-		mean_r += m_pGrid[i].area;
-	}
-	mean_r /= num_grid;
 	
-	XYZ rootCenter;
-	float rootSize;
-    getBBox(m_pGrid, num_grid, rootCenter, rootSize);
-	rootSize += mean_r;
-	
-	max_level = 0;
-	
-	float minboxsize = rootSize;
-	while(minboxsize > mean_r*4.1) {
-		max_level++;
-		minboxsize /=2;
-	}
-	
-	max_level = 6;
+	max_level = maxLevel;
 
 	root = new OCTNode();
 	//root->parent = NULL;
@@ -932,7 +913,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 	if(!node) return;
 	XYZ ray;
 	float solidangle;
-	ray = node->mean - origin;
+	ray = node->center - origin;
 	solidangle = node->area/(ray.lengthSquare() + 0.00001);
 	if(solidangle < CUBERASTER_MAXANGLE) {
 		raster->write(ray, sample_opacity*(node->high-node->low+1));

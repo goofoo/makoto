@@ -26,11 +26,12 @@ MObject     PTCMapLocator::frame;
 MObject     PTCMapLocator::aresolution;
 MObject     PTCMapLocator::amaxframe;
 MObject     PTCMapLocator::aminframe;
-MObject     PTCMapLocator::aposition;
+//MObject     PTCMapLocator::aposition;
+MObject     PTCMapLocator::adrawtype;
 MObject     PTCMapLocator::input;
 MObject     PTCMapLocator::aoutval;
 
-PTCMapLocator::PTCMapLocator() :tree(0)
+PTCMapLocator::PTCMapLocator() :tree(0),f_type(0)
 {
 }
 
@@ -56,9 +57,10 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		MString path =  data.inputValue( input ).asString();
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
-	    f_rez = 2.f/data.inputValue( aresolution ).asFloat();
+		f_type = data.inputValue( adrawtype ).asInt();
+	    //f_rez = 2.f/data.inputValue( aresolution ).asFloat();
 		
-		XYZ pos = data.inputValue(aposition).asFloat3();
+		//XYZ pos = data.inputValue(aposition).asFloat3();
 		
 	    if( time < minfrm ) time = minfrm;
 	    int frame_lo = time;
@@ -149,44 +151,24 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
-	
-	//particleView *pview = new particleView(); 
-	//double signal = 0.01;
-	//pview->set(h_fov, v_fov, clipNear, clipFar, mat, f_rez); 
-	//string drawType;
-	/*
-	glPointSize(3);
-	if(num_raw_data > 0 && raw_data) {
-		glBegin(GL_POINTS);
-		
-		for(unsigned i=0; i<num_raw_data; i++) {
-			
-			glVertex3f(raw_data[i].x, raw_data[i].y, raw_data[i].z);
-		}
-		glEnd();
-	 	*/
 
 	if(tree){
-		//glBegin(GL_QUADS);
 		//glClearDepth(1.0);
 	    //glEnable(GL_BLEND);
 	    //glDepthFunc(GL_LEQUAL);
 	    //glShadeModel(GL_SMOOTH);
 	    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 		//
-		glPointSize(2.5);
-		glShadeModel(GL_SMOOTH);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPointSize(2.5);
+		//glShadeModel(GL_SMOOTH);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		//tree->draw();
-		tree->drawGrid(facing);
-		
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		if(f_type == 1) tree->draw();
+		else tree->draw(facing);		
 		//
-		XYZ ori(0,0,0);
-		tree->testRaster(ori);
-		//MGlobal::displayInfo(MString("r; ")+ori.x);
-		//glEnd();
+		//XYZ ori(0,0,0);
+		//tree->testRaster(ori);
 	}
 	glPopAttrib();
 	view.endGL();
@@ -209,14 +191,14 @@ MStatus PTCMapLocator::initialize()
 	//
     MStatus stat;
 	MFnNumericAttribute nAttr;
-
+/*
 	aposition = nAttr.create("aposition","apo",MFnNumericData::k3Float);
 	nAttr.setDefault( 0 );
 	nAttr.setKeyable( true ); 
     nAttr.setReadable( true ); 
     nAttr.setWritable( true ); 
     nAttr.setStorable( true ); 
-	stat = addAttribute(aposition);
+	stat = addAttribute(aposition);*/
 
 	MFnUnitAttribute uAttr;
 	frame = uAttr.create("currentTime", "ct", MFnUnitAttribute::kTime, 1.0);
@@ -246,6 +228,11 @@ MStatus PTCMapLocator::initialize()
  	stringAttr.setStorable(true);
 	addAttribute( input );
 	
+	adrawtype = nAttr.create( "drawType", "dt", MFnNumericData::kInt, 0 );
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute( adrawtype );
+	
 	//MFnTypedAttribute   meshAttr;
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);
@@ -257,7 +244,7 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( aminframe, aoutval );
 	attributeAffects( amaxframe, aoutval );
 	attributeAffects( aresolution, aoutval );
-	attributeAffects( aposition, aoutval );
+	attributeAffects( adrawtype, aoutval );
 	return MS::kSuccess;
 
 }

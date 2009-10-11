@@ -33,10 +33,10 @@ public:
 	
 	void setGrid(RGRID* data, int n_data);
 	char load(const char* filename);
-	void constructTree();
-	//void computePower();
+	void constructTree(const XYZ& rootCenter, float rootSize, int maxLevel);
+
 	void draw() const;
-	void drawGrid(const XYZ& viewdir) const;
+	void draw(const XYZ& viewdir) const;
 	
 	int getNumGrid() const { if(m_pTree) return m_pTree->getNumGrid(); else return -1; }
 	int getNumVoxel() const {if(m_pTree) return m_pTree->getNumVoxel(); else return -1;}

@@ -83,9 +83,9 @@ char Z3DTexture::load(const char* filename)
 	return 1;
 }
 
-void Z3DTexture::constructTree()
+void Z3DTexture::constructTree(const XYZ& rootCenter, float rootSize, int maxLevel)
 {
-	m_pTree->construct();
+	m_pTree->construct(rootCenter, rootSize, maxLevel);
 }
 
 void Z3DTexture::draw() const
@@ -93,16 +93,9 @@ void Z3DTexture::draw() const
 	if(m_pTree) m_pTree->draw();
 }
 
-void Z3DTexture::drawGrid(const XYZ& viewdir) const
+void Z3DTexture::draw(const XYZ& viewdir) const
 {
 	if(m_pTree) m_pTree->draw(viewdir);
-	/*if(!m_pTree) return;
-	int ngrid = m_pTree->getNumGrid();
-	for(int i=0; i<ngrid; i++) {
-		glColor3f(m_pGrid[i].col.x, m_pGrid[i].col.y, m_pGrid[i].col.z);
-		float r = sqrt(m_pGrid[i].area/4);
-		gBase::drawSplatAt(m_pGrid[i].pos, viewdir, r);
-	}*/
 }
 
 void Z3DTexture::save(const char* filename)

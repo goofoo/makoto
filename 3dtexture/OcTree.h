@@ -60,7 +60,7 @@ public:
 	void release();
 	void release(OCTNode *node);
 	
-	void construct();
+	void construct(const XYZ& rootCenter, float rootSize, int maxLevel);
 	void create(OCTNode *node, int low, int high, const XYZ& center, const float size, short level, unsigned &count);
 	
 	void nearestGrid(const XYZ& to, float min, float& dist, XYZ& res);

@@ -64,6 +64,7 @@ global proc particleCacheMakeMenus()
 global proc particleMapAppendMenuItems()
 {
 	menuItem -p zTools -l "Particle Map" -subMenu true particleMapItems;
+	menuItem -l "Create Cache Dimension" -c "createNode pmapDem";
 	menuItem -l "Save" -c "openExportParticleCacheWin";
 	menuItem -l "Load" -c "openImportParticleCacheWin";
 	setParent -menu ..;
@@ -98,8 +99,17 @@ global proc doExportParticleCache()
 
 global proc exportParticleCacheSingleFrame()
 {
+	int $idem = `optionMenuGrp -q -select savePMAPOptDem`;
+	string $dems[] = `ls -type pmapDem`;
+	string $dem = $dems[$idem - 1];
+	string $transdem[] = `listRelatives -p $dem`;
+	
+	float $rootsize = `getAttr ($dem+".boxSize")`;
+	int $maxlevel = `getAttr ($dem+".maxLevel")`;
+	
   string $attr[];
   int $index = 0;
+  /*
   if(`columnLayout -q -nch basicAttriColumnLyt`)
   {
     string $arrayBasic[] = `columnLayout -q -ca basicAttriColumnLyt`;
@@ -129,15 +139,14 @@ global proc exportParticleCacheSingleFrame()
       $attr[$index] = $arrayAppend[$i];
     }
   }
-
+*/
 
   string $attribute = stringArrayToString($attr,".");
   
   float $mindist = `floatSliderGrp -q -v SliderRadiusMin`;
   float $maxdist = `floatSliderGrp -q -v SliderRadiusMax`;
-  float $defdist = `floatSliderGrp -q -v SliderRadiusDef`;
 
-  string $sdist = " -mnd "+$mindist + " -mxd " + $maxdist + " -dfd " + $defdist;    
+  string $sdist = " -mnd "+$mindist + " -mxd " + $maxdist + " -t " + $transdem[0] + " -ml " + $maxlevel + " -rs "+ $rootsize;    
   string $cmd;
   //for($i = 0;$i<size($attr);$i++,$index++)
        if($attribute == ""){
@@ -164,10 +173,6 @@ global proc openExportParticleCacheWin()
 //Create the window.
  window -title "particleCache 1.0 - Save Particle Cache Options" -wh 400 300  -menuBar true -retain exportParticleCacheWin;
 
- menu -label "Attributes" ;
-        menuItem -l "Add Attributes..." -c "openAddAttrWin";
-        menuItem -l "Delete Attributes..." -c "openDeleteAttrWin";
-
 formLayout  -numberOfDivisions 100 windowLyt;
 $scrollLayout = `scrollLayout -childResizable true `;
 $form = `formLayout`;
@@ -192,10 +197,15 @@ textFieldButtonGrp
 intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
 floatSliderGrp -cw 1 110 -label "Min Radius" -field true -minValue 0.001 -maxValue 10.0 -value 0.1 SliderRadiusMin;
 floatSliderGrp -cw 1 110 -label "Max Radius" -field true -minValue 0.1 -maxValue 10.0 -value 4.0 SliderRadiusMax;
-floatSliderGrp -cw 1 110 -label "Default Radius" -field true -minValue 0.1 -maxValue 10.0 -value 1.0 SliderRadiusDef;
+optionMenuGrp -label "Dimension Box" -cw 1 120 -columnWidth 2 180 savePMAPOptDem;
+
+	string $dems[] = `ls -type pmapDem`;
+	string $ad;
+	for($ad in $dems) menuItem -label $ad;
 
 setParent ..;
 setParent ..;
+/*
 $frameBasic = `frameLayout -label "Basic Attribute" -borderVisible true
 		-collapsable true -borderStyle "etchedIn"`;
 columnLayout -adjustableColumn true basicAttriColumnLyt;
@@ -203,6 +213,7 @@ checkBox -al "left" -l "velocity:vectorArray" velocity:vectorArray;
 
 setParent ..;
 setParent ..;
+
 $frameAppended = `frameLayout -label "Appended Attribute" -borderVisible true
 		-collapsable true -borderStyle "etchedIn"`;
 columnLayout -adjustableColumn true appendedAttriColumnLyt;
@@ -215,6 +226,7 @@ columnLayout -adjustableColumn true extraAttriColumnLyt;
 
 setParent ..;
 setParent ..;
+*/
 setParent ..;
 setParent ..;
 
@@ -228,20 +240,20 @@ formLayout -edit
         //-attachForm	$frame     "bottom" 2
         -attachForm 	$frameSetting     "right"  1
         
-        -ac             $frameBasic     "top"    1  $frameSetting
-        -attachForm     $frameBasic     "left"   1
+       // -ac             $frameBasic     "top"    1  $frameSetting
+       // -attachForm     $frameBasic     "left"   1
         //-attachForm	$frame     "bottom" 2
-        -attachForm 	$frameBasic     "right"  1
+       // -attachForm 	$frameBasic     "right"  1
         
-        -ac             $frameAppended     "top"    1  $frameBasic
-        -attachForm     $frameAppended     "left"   1
+       // -ac             $frameAppended     "top"    1  $frameBasic
+       // -attachForm     $frameAppended     "left"   1
         //-attachForm	$frame     "bottom" 2
-        -attachForm 	$frameAppended     "right"  1
+       // -attachForm 	$frameAppended     "right"  1
         
-        -ac             $frameExtra     "top"    1  $frameAppended
-        -attachForm     $frameExtra     "left"   1
+       // -ac             $frameExtra     "top"    1  $frameAppended
+       // -attachForm     $frameExtra     "left"   1
         //-attachForm	$frame     "bottom" 2
-        -attachForm 	$frameExtra     "right"  1
+       // -attachForm 	$frameExtra     "right"  1
     $form;
 
 formLayout -edit
@@ -266,226 +278,6 @@ formLayout -edit
 
  showWindow exportParticleCacheWin;
 
-}
-
-global proc openAddAttrWin()
-{   
-  if ( (`window -exists addAttrWin`) == true ) deleteUI addAttrWin;
-   window -title "Add Attribute"
-	  -minimizeButton false
-	  -maximizeButton false
-	  -width 350
-	  -height 400  addAttrWin;
-
-   formLayout -nd 100 addAttrFormLyt;
-   button -l "OK" -h 26 -c "doAddAttr;deleteUI addAttrWin" okBtn;
-   button -l "Add" -h 26 -c "doAddAttr" addBtn;
-   button -l "Cancel" -h 26 -c "deleteUI addAttrWin" cancelBtn;
-   separator -style "in" -horizontal true sep1;
-   
-   	formLayout -e
-	      -af okBtn left 5
-	      -ap okBtn right 3 33
-	      -af okBtn bottom 5
-
-              -ap addBtn left 2 33
-              -ap addBtn right 3 66
-              -af addBtn bottom 5
-		
-		-ap cancelBtn left 2 66
-		-af cancelBtn right 5
-		-af cancelBtn bottom 5
-
-		-af sep1 left 0
-		-af sep1 right 0
-		-ac sep1 bottom 5 okBtn
-                addAttrFormLyt;
-  
-       tabLayout tabLyt;
-        formLayout -e
-		-af tabLyt left 0
-		-af tabLyt top 0
-		-af tabLyt right 0
-		-ac tabLyt bottom 4 sep1
-		addAttrFormLyt;
-        makeNewAttr( "tabLyt" );
-	makeParticleAttr( "tabLyt" );
-	showWindow addAttrWin;
-}
-
-global proc makeNewAttr( string $parent )
-{
-  setParent $parent;
-  $scrollLayout = `scrollLayout -childResizable true`;
-  $form = `formLayout`;
-  text -label "Attribute Name" nameLbl;
-  formLayout -e -af nameLbl left 4 -af nameLbl top 14 $form;
-  
-  textField nameFld;
-  formLayout -e -ac nameFld left 6 nameLbl -aoc nameFld top -5 nameLbl -af nameFld right 4 $form;
-  
-  frameLayout -l "Data Type" -bv true -cll false -bs "etchedIn" dataTypeLyt;
-  formLayout -e -af dataTypeLyt left 4 -ac dataTypeLyt top 4 nameFld -af dataTypeLyt right 4 $form;
-
-    formLayout -nd 100 typeLyt;
-    radioCollection dataTypeCol;
-
-    radioButton -l "Vector Array" -h 24 vectorBtn;
-    formLayout -e -af vectorBtn left 4 -af vectorBtn top 0 typeLyt;
-    
-    radioButton -l "Float Array" -h 24 -select floatBtn;
-    formLayout -e -af floatBtn left 160 -af floatBtn top 0 typeLyt;
-    
-    setParent $form;
-    tabLayout -edit -tabLabel $scrollLayout "New" $parent;
-
-}
-
-global proc makeParticleAttr( string $parent )
-{
-  setParent $parent;
-  formLayout ParticleLyt;
-  //text -label "Per Voxel(Array) Attributes" nameLbl;
-
-        textScrollList -allowMultiSelection true attrLst;
-        string	$attrAry[] = getAttrList();
-
-	for ($i = 0; $i < size( $attrAry ); $i++)
-	{
-              // string $tokenAry[];
-              // tokenize( $attrAry[$i], ":", $tokenAry );
-
-               textScrollList -e -a $attrAry[$i]  attrLst;
-	}
-	formLayout -e 
-                   -af attrLst left 0 
-                   -af attrLst top 0 
-                   -af attrLst right 0
-                   -af attrLst bottom 0 ParticleLyt;
-        setParent $parent;
-	tabLayout -e -tl ParticleLyt "Particle" $parent;
-}
-
-global proc openAddAttrWin1()
-{
-  //global string $gAddAttrWin;
-   if ( (`window -exists addAttrWin`) == true ) deleteUI addAttrWin;
-   window -title "Add Attribute"
-	  -minimizeButton false
-	  -maximizeButton false
-	  -width 350
-	  -height 400  addAttrWin;
-
-   formLayout -nd 100 addAttrFormLyt;
-
-   button -l "OK" -h 26 -c "doAddAttr;deleteUI addAttrWin" okBtn;
-   button -l "Add" -h 26 -c "doAddAttr" addBtn;
-   button -l "Cancel" -h 26 -c "deleteUI addAttrWin" cancelBtn;
-
-
-   separator -style "in" -horizontal true sep1;
-
-
-        text -label "Per Voxel(Array) Attributes" nameLbl;
-
-        $attrLst = `textScrollList -allowMultiSelection true`;
-        string	$attrAry[] = getAttrList();
-
-	for ($i = 0; $i < size( $attrAry ); $i++)
-	{
-              // string $tokenAry[];
-              // tokenize( $attrAry[$i], ":", $tokenAry );
-
-               textScrollList -e -a $attrAry[$i]  $attrLst;
-	}
-
-	formLayout -e
-        	-af nameLbl top 1
-                -af nameLbl left 1
-                -an nameLbl right
-                -an nameLbl bottom
-
-	      -af okBtn left 5
-	      -ap okBtn right 3 33
-	      -af okBtn bottom 5
-
-              -ap addBtn left 2 33
-              -ap addBtn right 3 66
-              -af addBtn bottom 5
-		
-		-ap cancelBtn left 2 66
-		-af cancelBtn right 5
-		-af cancelBtn bottom 5
-
-		-af sep1 left 0
-		-af sep1 right 0
-		-ac sep1 bottom 5 okBtn
-		
-		-ac attrLst top 1 nameLbl
-                -af attrLst left 1
-                -af attrLst right 1
-                -ac attrLst bottom 1 addBtn
-                addAttrFormLyt;
-
-	showWindow addAttrWin;
-}
-
-global proc int doAddAttr()
-{
-  int	$activeTab = `tabLayout -q -sti tabLyt`;
-  switch ($activeTab)
-  {
-    case 1 :
-    {
-      string	$attrName = `textField -q -text nameFld`;
-      string $aName = `substitute " " $attrName ""`;
-      while ( $aName != $attrName ){
-        $attrName = $aName;
-        $aName = `substitute " " $attrName ""`;
-        }
-
-        if (size( $attrName ) == 0)
-        {
-          error( "Must specify an attribute name." );
-          return( 0 );
-        }
-        string $dataType = `radioCollection -q -select dataTypeCol`;
-        if($dataType == "vectorBtn")
-        $attrName = $attrName+":vectorArray";
-        if($dataType == "floatBtn")
-        $attrName = $attrName+":floatArray";
-        //print($dataType);
-        if(findAttr($attrName))
-        {
-          error( "Attribute name is exit." );
-          return( 0 );
-        }
-       // int $d = findAttr(appendedAttriColumnLyt,$attrName);
-
-        checkBox -al "left" -l $attrName -v 1 -p extraAttriColumnLyt $attrName;
-        textField -e -text "" nameFld;
-
-    } break;
-
-    case 2 :
-    {
-      string $itemAry[] = `textScrollList -q -si attrLst`;
-      if(size( $itemAry ) == 0)
-        return( 0 );
-      for ($i = 0; $i < size( $itemAry ); $i++)
-      {
-        //textScrollList -e -removeItem `textScrollList -q -si attrLst` attrLst;
-        checkBox -al "left" -l $itemAry[$i] -v 1 -p appendedAttriColumnLyt $itemAry[$i];
-      }
-    } break;
-
-    default :
-    {
-      error( "Unknown mode in dynAddAttrWin:doItDAA()." );
-      return( 0 );
-   }
-  }
-  return( 1 );
 }
 
 global proc int setParticleCachePath(string $path, string $type)
@@ -558,229 +350,15 @@ setKeyframe -t `intFieldGrp -q -v2 importParticleCacheRange` -v `intFieldGrp -q 
 
 setAttr ( $node + ".minFrame") `intFieldGrp -q -v1 importParticleCacheRange`;
 setAttr ( $node + ".maxFrame") `intFieldGrp -q -v2 importParticleCacheRange`;
+
+playbackOptions -min `intFieldGrp -q -v1 importParticleCacheRange` -max `intFieldGrp -q -v2 importParticleCacheRange`;
 }
 
 global proc string findImportParticleCachePath()
 {
 	string $proj = `workspace -q -rd`;
-	string $path = `fileDialog -dm ($proj+"*.dat")`;
+	string $path = `fileDialog -dm ($proj+"*.pmap")`;
 	return $path;
 }
-
-global proc int  findAttr( string $attr )
-{
-	string	$basicAttrAry[] = `columnLayout -q -ca basicAttriColumnLyt`;
-
-
-	for ($i = 0; $i < size( $basicAttrAry ); $i++)
-	{
-		if ($attr == $basicAttrAry[$i])
-		{
-			return( 1 );
-		}
-	}
-	
-	string	$appendedAttrAry[] = `columnLayout -q -ca appendedAttriColumnLyt`;
-
-
-	for ($i = 0; $i < size( $appendedAttrAry ); $i++)
-	{
-		if ($attr == $appendedAttrAry[$i])
-		{
-			return( 1 );
-		}
-	}
-	
-	string	$itemsAttrAry[] = `textScrollList -q -allItems attrLst`;
-
-
-	for ($i = 0; $i < size( $itemsAttrAry ); $i++)
-	{
-		if ($attr == $itemsAttrAry[$i])
-		{
-			return( 1 );
-		}
-	}
-
-	return( 0 );
-}
-
-
-global proc string[]  getAttrList( )
-{
-
-        string	$attrAry[];
-
-	int		$i = 0;
-	$attrAry[$i] = "incandescencePP:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "radiusPP:floatArray";
-	$i++;
-	
-	$attrAry[$i] = "spriteNumPP:floatArray";
-	$i++;
-	
-	$attrAry[$i] = "spriteScaleXPP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "spriteScaleYPP:floatArray";
-	$i++;
-	
-	$attrAry[$i] = "spriteTwistPP:floatArray";
-	$i++;
-	
-	$attrAry[$i] = "position:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "rgbPP:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "rampPosition:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "rampVelocity:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "rampAcceleration:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "acceleration:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "mass:floatArray";
-	$i++;
-	
-	$attrAry[$i] = "lifespanPP:floatArray";
-	$i++;
-	
-	$attrAry[$i] = "worldVelocity:vectorArray";
-	$i++;
-	
-	$attrAry[$i] = "opacityPP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "parentU:floatArray";
-	$i++;
-
-	$attrAry[$i] = "parentV:floatArray";
-	$i++;
-
-	$attrAry[$i] = "parentId:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalU:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalV:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalWeight0PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalWeight1PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalWeight2PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalWeight3PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalWeight4PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "goalOffset:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionU:floatArray";
-	$i++;
-
-	$attrAry[$i] = "collisionV:floatArray";
-	$i++;
-
-	$attrAry[$i] = "collisionGeometryIndex:floatArray";
-	$i++;
-
-	$attrAry[$i] = "collisionPosition:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionWorldPosition:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionNormal:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionWorldNormal:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionIncomingVelocity:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionWorldIncomingVelocity:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionOutgoingVelocity:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionWorldOutgoingVelocity:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionForce:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionWorldForce:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "collisionComponentId:floatArray";
-	$i++;
-
-	$attrAry[$i] = "collisionTime:floatArray";
-	$i++;
-
-	$attrAry[$i] = "traceDepthPP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "birthWorldPosition:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "birthPosition:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "userScalar1PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "userScalar2PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "userScalar3PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "userScalar4PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "userScalar5PP:floatArray";
-	$i++;
-
-	$attrAry[$i] = "userVector1PP:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "userVector2PP:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "userVector3PP:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "userVector4PP:vectorArray";
-	$i++;
-
-	$attrAry[$i] = "userVector5PP:vectorArray";
-	$i++;
-
-	$attrAry = sort( $attrAry );
-
-	return( $attrAry);
-}
-
 
 

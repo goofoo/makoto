@@ -3,6 +3,7 @@
 #include <maya/MGlobal.h>
 #include <string>
 #include "../3dtexture/Z3DTexture.h"
+#include "../shared/zWorks.h"
 
 PTCMapCmd::PTCMapCmd()
 {
@@ -22,6 +23,9 @@ MSyntax PTCMapCmd::newSyntax()
 	syntax.addFlag("-mnd","-mindist",MSyntax::kDouble);
 	syntax.addFlag("-mxd","-maxdist",MSyntax::kDouble);
 	syntax.addFlag("-dfd","-defaultdist",MSyntax::kDouble);
+	syntax.addFlag("-t","-trans",MSyntax::kString);
+	syntax.addFlag("-ml","-maxlevel",MSyntax::kLong);
+	syntax.addFlag("-rs","-rootsize",MSyntax::kDouble);
 
 	syntax.enableQuery(false);
 	syntax.enableEdit(false);
@@ -48,15 +52,46 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	MString cache_attrib;
 	double cache_mindist = 0.1;
 	double cache_maxdist = 4.1;
-	double cache_defdist = 1.1;
+	int max_level = 3;
+	double root_size = 32;
+	MString dem_trans = "nil";
 
 	if (argData.isFlagSet("-p")) argData.getFlagArgument("-p", 0, cache_path);
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
 	if (argData.isFlagSet("-a")) argData.getFlagArgument("-a", 0, cache_attrib);
 	if (argData.isFlagSet("-mnd")) argData.getFlagArgument("-mnd", 0, cache_mindist);
 	if (argData.isFlagSet("-mxd")) argData.getFlagArgument("-mxd", 0, cache_maxdist);
-	if (argData.isFlagSet("-dfd")) argData.getFlagArgument("-dfd", 0, cache_defdist);
-
+	if (argData.isFlagSet("-ml")) argData.getFlagArgument("-ml", 0, max_level);
+	if (argData.isFlagSet("-rs")) argData.getFlagArgument("-rs", 0, root_size);
+	if (argData.isFlagSet("-t")) argData.getFlagArgument("-t", 0, dem_trans);
+	
+	float div = 1;
+	int last = max_level;
+	while(last >=0) {
+		div *=2;
+		last--;
+	}
+	
+	float def_area = root_size/div;
+	def_area *= def_area;
+	
+// get bounding box center
+	MDagPath p_bbox;
+		
+	zWorks::getTypedPathByName(MFn::kTransform, dem_trans, p_bbox);
+	MObject o_bbox = p_bbox.transform();
+	
+	float m_space[4][4];
+	m_space[0][0]=1; m_space[0][1]=0; m_space[0][2]=0;
+	m_space[1][0]=0; m_space[1][1]=1; m_space[1][2]=0;
+	m_space[2][0]=0; m_space[2][1]=0; m_space[2][2]=1;
+	m_space[3][0]=0; m_space[3][1]=0; m_space[3][2]=0;
+	
+	if(o_bbox.isNull()) MGlobal::displayWarning("Cannot find pmap dimension, use default space.");
+	else zWorks::getTransformWorldNoScale(p_bbox.partialPathName(), m_space);
+	
+	XYZ root_center(m_space[3][0], m_space[3][1], m_space[3][2]);
+	
 	MStringArray attribArray;
 	cache_attrib.split('.', attribArray);
 
@@ -109,14 +144,14 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		    buf[acc].nor.x = velarr[i].x;
 			buf[acc].nor.y = velarr[i].y;
 			buf[acc].nor.z = velarr[i].z;
-			buf[acc].area = cache_defdist;
+			buf[acc].area = def_area;
 			buf[acc].col = XYZ(1,1,0);
 		}
 	}
 
 	Z3DTexture* tree = new Z3DTexture();
 	tree->setGrid(buf, npt);
-	tree->constructTree();
+	tree->constructTree(root_center, root_size, max_level);
 	MGlobal::displayInfo(MString(" num grid ")+ tree->getNumGrid());
 	MGlobal::displayInfo(MString(" num voxel ")+ tree->getNumVoxel());
 	MGlobal::displayInfo(MString(" max level ")+ tree->getMaxLevel());
