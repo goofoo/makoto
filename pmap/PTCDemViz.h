@@ -7,7 +7,7 @@
 #include <maya/MPointArray.h>
 #include <maya/MVectorArray.h>
 #include <maya/MPoint.h>
-#include <maya/MFndagNode.h>
+#include <maya/MFnDagNode.h>
 #include <iostream>
 #include <fstream>
 #include <string>

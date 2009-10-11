@@ -1,18 +1,5 @@
 #include "OcTree.h"
 
-#ifdef WIN32
-# include <windows.h>
-#endif
-#ifdef __APPLE__
-# include <OpenGL/gl.h>
-# include <OpenGL/glext.h>
-# include <GLUT/glut.h>
-#else
-# include <GL/gl.h>
-# include <GL/glut.h>
-#include "./glext.h"
-#endif
-
 #include "../sh_lighting/SphericalHarmonics.h"
 #include "../shared/gBase.h"
 #include "CubeRaster.h"
