@@ -82,6 +82,10 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 
 		tree->setDraw(attrib2sho.asChar());
 		if(hascoe==1) tree->setHDRLighting(hdrCoeff);
+		
+		data.setClean(plug);
+		
+		return MS::kSuccess;
 	}
 	
 	return MS::kUnknownParameter;
