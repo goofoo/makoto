@@ -23,7 +23,7 @@
 
 MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
-MObject     PTCMapLocator::aresolution;
+//MObject     PTCMapLocator::aresolution;
 MObject     PTCMapLocator::amaxframe;
 MObject     PTCMapLocator::aminframe;
 //MObject     PTCMapLocator::aposition;
@@ -216,13 +216,13 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( amaxframe );
-	
+/*	
 	aresolution = nAttr.create( "resolution", "rez", MFnNumericData::kFloat, 512);
 	nAttr.setMin(32);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( aresolution );
-	
+*/	
 	MFnTypedAttribute   stringAttr;
 	input = stringAttr.create( "cachePath", "cp", MFnData::kString );
  	stringAttr.setStorable(true);
@@ -243,7 +243,7 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( frame, aoutval );
 	attributeAffects( aminframe, aoutval );
 	attributeAffects( amaxframe, aoutval );
-	attributeAffects( aresolution, aoutval );
+	//attributeAffects( aresolution, aoutval );
 	attributeAffects( adrawtype, aoutval );
 	return MS::kSuccess;
 

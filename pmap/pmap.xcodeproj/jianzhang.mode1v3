@@ -202,6 +202,86 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
+				<string>7FA6C5421081D477001479FA</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>PTCMapViz.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7FA6C5431081D477001479FA</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>PTCMapViz.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7FA6C5561081D9F3001479FA</string>
+						<key>history</key>
+						<array>
+							<string>7FA6C5551081D9F3001479FA</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {607, 563}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>113 129 607 604 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
+				<string>7FA6C5451081D477001479FA</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>PTCMapViz.h</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7FA6C5461081D477001479FA</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>PTCMapViz.h</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7FA6C5571081D9F3001479FA</string>
+						<key>history</key>
+						<array>
+							<string>7FA6C5471081D477001479FA</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {745, 559}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>458 118 745 600 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
 				<string>7FA6C5211081CF4B001479FA</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>OcTree.cpp</string>
@@ -216,7 +296,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FA6C54D1081D971001479FA</string>
+						<string>7FA6C5581081D9F3001479FA</string>
 						<key>history</key>
 						<array>
 							<string>7FA6C5181081CEAA001479FA</string>
@@ -256,7 +336,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FA6C54E1081D971001479FA</string>
+						<string>7FA6C5591081D9F3001479FA</string>
 						<key>history</key>
 						<array>
 							<string>7FA6C53D1081D477001479FA</string>
@@ -296,7 +376,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FA6C54F1081D971001479FA</string>
+						<string>7FA6C55A1081D9F3001479FA</string>
 						<key>history</key>
 						<array>
 							<string>7FA6C53F1081D477001479FA</string>
@@ -322,86 +402,6 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7FA6C5421081D477001479FA</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>PTCMapViz.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FA6C5431081D477001479FA</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>PTCMapViz.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FA6C5501081D971001479FA</string>
-						<key>history</key>
-						<array>
-							<string>7FA6C52B1081D127001479FA</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {607, 563}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>113 129 607 604 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>7FA6C5451081D477001479FA</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>PTCMapViz.h</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FA6C5461081D477001479FA</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>PTCMapViz.h</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FA6C5511081D971001479FA</string>
-						<key>history</key>
-						<array>
-							<string>7FA6C5471081D477001479FA</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {745, 559}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>458 118 745 600 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
 				<string>7F1FC5AB10817717009EA837</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>PTCMapCmd.cpp</string>
@@ -416,7 +416,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FA6C5521081D971001479FA</string>
+						<string>7FA6C55B1081D9F3001479FA</string>
 						<key>history</key>
 						<array>
 							<string>7F1FC5AD10817717009EA837</string>
@@ -472,8 +472,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -590,6 +588,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -763,13 +763,13 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>7F1FC5AB10817717009EA837</string>
-		<string>7FA6C5451081D477001479FA</string>
-		<string>7FA6C5421081D477001479FA</string>
 		<string>7FE58BA50FB61F9000187112</string>
 		<string>7FA6C5241081CF4B001479FA</string>
-		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 		<string>7FA6C53B1081D477001479FA</string>
+		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 		<string>7FA6C5211081CF4B001479FA</string>
+		<string>7FA6C5451081D477001479FA</string>
+		<string>7FA6C5421081D477001479FA</string>
 	</array>
 	<key>WindowString</key>
 	<string>477 325 690 397 0 0 1280 778 </string>
