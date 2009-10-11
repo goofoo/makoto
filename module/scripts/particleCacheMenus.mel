@@ -67,6 +67,8 @@ global proc particleMapAppendMenuItems()
 	menuItem -l "Create Cache Dimension" -c "createNode pmapDem";
 	menuItem -l "Save" -c "openExportParticleCacheWin";
 	menuItem -l "Load" -c "openImportParticleCacheWin";
+	menuItem -l "View Key Lighting" -c "particleMapSetDraw(\"key_lighting\")";
+	menuItem -l "View Back Lighting" -c "particleMapSetDraw(\"back_lighting\")";
 	setParent -menu ..;
 }
 
@@ -103,6 +105,14 @@ global proc exportParticleCacheSingleFrame()
 	string $dems[] = `ls -type pmapDem`;
 	string $dem = $dems[$idem - 1];
 	string $transdem[] = `listRelatives -p $dem`;
+	
+	string $cams[] = `ls -ca`;
+	int $ikey = `optionMenuGrp -q -select savePMAPOptKey`;
+	int $ieye = `optionMenuGrp -q -select savePMAPOptEye`;
+	string $camkey = $cams[$ikey - 1];
+	string $cameye = $cams[$ieye - 1];
+	string $transkey[] = `listRelatives -p $camkey`;
+	string $transeye[] = `listRelatives -p $cameye`;
 	
 	float $rootsize = `getAttr ($dem+".boxSize")`;
 	int $maxlevel = `getAttr ($dem+".maxLevel")`;
@@ -143,10 +153,11 @@ global proc exportParticleCacheSingleFrame()
 
   string $attribute = stringArrayToString($attr,".");
   
-  float $mindist = `floatSliderGrp -q -v SliderRadiusMin`;
-  float $maxdist = `floatSliderGrp -q -v SliderRadiusMax`;
+  float $mindist = `floatSliderGrp -q -v SliderPTCMAPRadiusMin`;
+  float $maxdist = `floatSliderGrp -q -v SliderPTCMAPRadiusMax`;
+  float $cloudos = `floatSliderGrp -q -v SliderPTCMAPDensity`;
 
-  string $sdist = " -mnd "+$mindist + " -mxd " + $maxdist + " -t " + $transdem[0] + " -ml " + $maxlevel + " -rs "+ $rootsize;    
+  string $sdist = " -mnd "+$mindist + " -mxd " + $maxdist + " -t " + $transdem[0] + " -ml " + $maxlevel + " -rs "+ $rootsize + " -o " + $cloudos + " -tk " + $transkey[0] + " -te " + $transeye[0];    
   string $cmd;
   //for($i = 0;$i<size($attr);$i++,$index++)
        if($attribute == ""){
@@ -171,7 +182,7 @@ global proc openExportParticleCacheWin()
  if ( (`window -exists exportParticleCacheWin`) == true ) deleteUI exportParticleCacheWin;
  
 //Create the window.
- window -title "particleCache 1.0 - Save Particle Cache Options" -wh 400 300  -menuBar true -retain exportParticleCacheWin;
+ window -title "particleCache 1.0 - Save Particle Cache Options" -wh 400 300 exportParticleCacheWin;
 
 formLayout  -numberOfDivisions 100 windowLyt;
 $scrollLayout = `scrollLayout -childResizable true `;
@@ -195,13 +206,24 @@ textFieldButtonGrp
      exportParticleCachePath;
 
 intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
-floatSliderGrp -cw 1 110 -label "Min Radius" -field true -minValue 0.001 -maxValue 10.0 -value 0.1 SliderRadiusMin;
-floatSliderGrp -cw 1 110 -label "Max Radius" -field true -minValue 0.1 -maxValue 10.0 -value 4.0 SliderRadiusMax;
+floatSliderGrp -cw 1 110 -label "Min Radius" -field true -minValue 0.001 -maxValue 10.0 -value 0.1 -ss 0.01 SliderPTCMAPRadiusMin;
+floatSliderGrp -cw 1 110 -label "Max Radius" -field true -minValue 0.1 -maxValue 10.0 -value 4.0 -ss 0.01 SliderPTCMAPRadiusMax;
+floatSliderGrp -cw 1 110 -label "Density" -field true -minValue 0.01 -maxValue 1.0 -value 0.21 -ss 0.01 SliderPTCMAPDensity;
 optionMenuGrp -label "Dimension Box" -cw 1 120 -columnWidth 2 180 savePMAPOptDem;
 
 	string $dems[] = `ls -type pmapDem`;
 	string $ad;
 	for($ad in $dems) menuItem -label $ad;
+
+optionMenuGrp -label "Key Camera" -cw 1 120 -columnWidth 2 180 savePMAPOptKey;
+
+	string $cams[] = `ls -ca`;
+	string $ac;
+	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
+	
+optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 180 savePMAPOptEye;
+
+	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
 
 setParent ..;
 setParent ..;
@@ -361,4 +383,9 @@ global proc string findImportParticleCachePath()
 	return $path;
 }
 
-
+global proc particleMapSetDraw(string $attrname)
+{
+	string $vizs[] = `ls -type pmapViz`;
+	string $a;
+	for($a in $vizs) setAttr -type "string" ($a + ".va") $attrname;
+}

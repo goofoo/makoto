@@ -114,10 +114,12 @@ public:
 	void occlusionAccum(OCTNode *node, const XYZ& origin);
 	
 	void setSampleOpacity(const float& val) {sample_opacity = val;}
+	void setDirs(XYZ& key, XYZ& view) {m_key = key; m_eye = view;}
 	
 	void setSH(sphericalHarmonics* _sh) {sh = _sh;}
 	void setRaster(CubeRaster* _raster) {raster = _raster;}
 	void setSHBuf(SHB3COEFF* _buf) {m_pSHBuf = _buf;}
+	void setSHBuf1(SHB3COEFF* _buf) {m_pSHBuf1 = _buf;}
 	
 	void voxelOcclusionAccum();
 	void voxelOcclusionAccum(OCTNode *node);
@@ -142,4 +144,7 @@ private:
 	float sample_opacity;
 	
 	SHB3COEFF* m_pSHBuf;
+	SHB3COEFF* m_pSHBuf1;
+	
+	XYZ m_key, m_eye;
 };

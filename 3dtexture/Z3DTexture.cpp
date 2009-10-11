@@ -64,8 +64,9 @@ char Z3DTexture::load(const char* filename)
 	while(!infile.eof()) {
 		if(datatype == 108) {
 			infile.read((char*)&namelength, 4);
-			char *attrname = new char[namelength];
+			char *attrname = new char[32];
 			infile.read((char*)attrname, namelength);
+			attrname[namelength] = '\0';
 			
 			NamedSHCOEFF* attr = new NamedSHCOEFF();
 			
@@ -151,23 +152,30 @@ void Z3DTexture::distanceToNeighbour(float min, float max)
 	}
 }
 
-void Z3DTexture::occlusionVolume()
+void Z3DTexture::occlusionVolume(float opacity, XYZ& key_dir, XYZ& view_dir)
 {
 	if(!m_pTree) return;
 	raster->clear();
-	m_pTree->setSampleOpacity(0.05f);
+	m_pTree->setSampleOpacity(opacity);
+	m_pTree->setDirs(key_dir, view_dir);
 	
 	NamedSHCOEFF* attr = new NamedSHCOEFF();
-	attr->name = "volume_occlusion";
+	attr->name = "key_lighting";
 	attr->data = new SHB3COEFF[m_pTree->getNumVoxel()];
+	
+	NamedSHCOEFF* attr1 = new NamedSHCOEFF();
+	attr1->name = "back_lighting";
+	attr1->data = new SHB3COEFF[m_pTree->getNumVoxel()];
 	
 	m_pTree->setSH(m_sh);
 	m_pTree->setRaster(raster);
 	m_pTree->setSHBuf(attr->data);
+	m_pTree->setSHBuf1(attr1->data);
 	
 	m_pTree->voxelOcclusionAccum();
 	
 	attrib_sh.push_back(attr);
+	attrib_sh.push_back(attr1);
 }
 
 XYZ Z3DTexture::testRaster(const XYZ& ori)
@@ -209,9 +217,9 @@ void Z3DTexture::setDraw(const char* name)
 {
 	m_pTree->setSH(m_sh);
 	m_pTree->setSHBuf(NULL);
-	//for(unsigned i=0; i < attrib_sh.size(); i++) {
-		//if(attrib_sh[i]->name == name) {
-			m_pTree->setSHBuf(attrib_sh[0]->data);
-		//}
-	//}
+	for(unsigned i=0; i < attrib_sh.size(); i++) {
+		if(attrib_sh[i]->name == name) {
+			m_pTree->setSHBuf(attrib_sh[i]->data);
+		}
+	}
 }

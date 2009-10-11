@@ -100,8 +100,8 @@ MStatus PTCDemViz::initialize()
 	MFnNumericAttribute nAttr;
 	
 	alevel = nAttr.create( "maxLevel", "mxl", MFnNumericData::kInt, 5 );
-	nAttr.setMin(3);
-	nAttr.setMax(8);
+	nAttr.setMin(4);
+	nAttr.setMax(10);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( alevel );

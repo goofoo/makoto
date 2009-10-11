@@ -900,7 +900,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 	if(!node) return;
 	XYZ ray;
 	float solidangle;
-	ray = node->center - origin;
+	ray = node->mean - origin;
 	solidangle = node->area/(ray.lengthSquare() + 0.00001);
 	if(solidangle < CUBERASTER_MAXANGLE) {
 		raster->write(ray, sample_opacity*(node->high-node->low+1));
@@ -950,19 +950,25 @@ void OcTree::voxelOcclusionAccum(OCTNode *node)
 {
 	if(!node) return;
 	sh->zeroCoeff(m_pSHBuf[node->index].value);
+	sh->zeroCoeff(m_pSHBuf1[node->index].value);
 	if(node->isLeaf) {
 		raster->clear();
 		occlusionAccum(node->mean);
 		
 		float l, vl;
-		XYZ vn(0,0,1);
 		for(unsigned int j=0; j<SH_N_SAMPLES; j++) {
 			SHSample s = sh->getSample(j);
-			vl = vn.dot(s.vector);
+			vl = m_key.dot(s.vector);
 			if(vl>0) {
 				raster->readLight(s.vector, l);
 				l *= vl;
 				sh->projectASample(m_pSHBuf[node->index].value, j, l);
+			}
+			vl = m_eye.dot(s.vector);
+			if(vl>0) {
+				raster->readLight(s.vector, l);
+				l *= vl;
+				sh->projectASample(m_pSHBuf1[node->index].value, j, l);
 			}
 		}
 	}
@@ -976,14 +982,38 @@ void OcTree::voxelOcclusionAccum(OCTNode *node)
 		voxelOcclusionAccum(node->child110);
 		voxelOcclusionAccum(node->child111);
 		
-		if(node->child000) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child000->index].value);
-		if(node->child001) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child001->index].value);
-		if(node->child010) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child010->index].value);
-		if(node->child011) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child011->index].value);
-		if(node->child100) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child100->index].value);
-		if(node->child101) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child101->index].value);
-		if(node->child110) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child110->index].value);
-		if(node->child111) sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child111->index].value);
+		if(node->child000) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child000->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child000->index].value);
+		}
+		if(node->child001) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child001->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child001->index].value);
+		}
+		if(node->child010) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child010->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child010->index].value);
+		}
+		if(node->child011) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child011->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child011->index].value);
+		}
+		if(node->child100) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child100->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child100->index].value);
+		}
+		if(node->child101) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child101->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child101->index].value);
+		}
+		if(node->child110) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child110->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child110->index].value);
+		}
+		if(node->child111) {
+			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child111->index].value);
+			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child111->index].value);
+		}
 	}
 }
 /*

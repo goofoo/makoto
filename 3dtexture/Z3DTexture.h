@@ -44,7 +44,7 @@ public:
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	
 	void distanceToNeighbour(float min, float max);
-	void occlusionVolume();
+	void occlusionVolume(float opacity, XYZ& key_dir, XYZ& view_dir);
 	
 	void save(const char* filename);
 	

@@ -46,7 +46,7 @@ public:
 	static  	MObject		frame;
 	static  	MObject 	aminframe;
 	static  	MObject 	amaxframe;
-	//static  	MObject 	aresolution;
+	static  	MObject 	aviewattrib;
 	static      MObject     adrawtype;
 	static      MObject     aoutval;
 	//static      MObject     aposition;

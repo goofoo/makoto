@@ -26,7 +26,7 @@ MObject     PTCMapLocator::frame;
 //MObject     PTCMapLocator::aresolution;
 MObject     PTCMapLocator::amaxframe;
 MObject     PTCMapLocator::aminframe;
-//MObject     PTCMapLocator::aposition;
+MObject 	PTCMapLocator::aviewattrib;
 MObject     PTCMapLocator::adrawtype;
 MObject     PTCMapLocator::input;
 MObject     PTCMapLocator::aoutval;
@@ -55,6 +55,8 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	{
 		MStatus stat;
 		MString path =  data.inputValue( input ).asString();
+		MString attrib2sho =  data.inputValue( aviewattrib ).asString();
+		if(attrib2sho == "") attrib2sho = "key_lighting";
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
@@ -70,9 +72,7 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		if(tree) delete tree;
 	    tree = new Z3DTexture();
 		if(!tree->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
-		//if(!tree->hasAttrib("volume_occlusion")) MGlobal::displayInfo("has no volume occlusion");
-		tree->setDraw("volume_occlusion");
-		//MGlobal::displayInfo(tree->fisrtattrib());
+		tree->setDraw(attrib2sho.asChar());
 	}
 	
 	return MS::kUnknownParameter;
@@ -228,6 +228,10 @@ MStatus PTCMapLocator::initialize()
  	stringAttr.setStorable(true);
 	addAttribute( input );
 	
+	aviewattrib = stringAttr.create( "viewAttrib", "va", MFnData::kString );
+ 	stringAttr.setStorable(true);
+	addAttribute( aviewattrib );
+	
 	adrawtype = nAttr.create( "drawType", "dt", MFnNumericData::kInt, 0 );
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
@@ -243,7 +247,7 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( frame, aoutval );
 	attributeAffects( aminframe, aoutval );
 	attributeAffects( amaxframe, aoutval );
-	//attributeAffects( aresolution, aoutval );
+	attributeAffects( aviewattrib, aoutval );
 	attributeAffects( adrawtype, aoutval );
 	return MS::kSuccess;
 
