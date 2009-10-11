@@ -18,8 +18,9 @@
 #include <maya/MVector.h>
 #include <maya/MMatrix.h>
 #include <maya/MFnMatrixData.h>
-
 #include <maya/MGlobal.h>
+
+#include "../shared/zWorks.h"
 
 MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
@@ -29,6 +30,7 @@ MObject     PTCMapLocator::aminframe;
 MObject 	PTCMapLocator::aviewattrib;
 MObject     PTCMapLocator::adrawtype;
 MObject     PTCMapLocator::input;
+MObject PTCMapLocator::aincoe;
 MObject     PTCMapLocator::aoutval;
 
 PTCMapLocator::PTCMapLocator() :tree(0),f_type(0)
@@ -60,19 +62,26 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
-	    //f_rez = 2.f/data.inputValue( aresolution ).asFloat();
+	    
+		int hascoe = 0;
+		MVectorArray vcoe = zWorks::getVectorArrayAttr(data, aincoe);
+		XYZ hdrCoeff[16];
+		if(vcoe.length() == 16) {
+			hascoe = 1;
+			for(unsigned i=0; i<16; i++) hdrCoeff[i] = XYZ(vcoe[i].x, vcoe[i].y, vcoe[i].z);
+		}
 		
-		//XYZ pos = data.inputValue(aposition).asFloat3();
-		
-	    if( time < minfrm ) time = minfrm;
-	    int frame_lo = time;
-	    char filename[512];
+		if( time < minfrm ) time = minfrm;
+		int frame_lo = time;
+		char filename[512];
 		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
 		
 		if(tree) delete tree;
-	    tree = new Z3DTexture();
+		tree = new Z3DTexture();
 		if(!tree->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
+
 		tree->setDraw(attrib2sho.asChar());
+		if(hascoe==1) tree->setHDRLighting(hdrCoeff);
 	}
 	
 	return MS::kUnknownParameter;
@@ -237,7 +246,9 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute( adrawtype );
 	
-	//MFnTypedAttribute   meshAttr;
+	zWorks::createVectorArrayAttr(aincoe, "inCoeff", "icoe");
+	addAttribute( aincoe );
+	
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);
 	nAttr.setWritable(false);
@@ -249,6 +260,7 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( amaxframe, aoutval );
 	attributeAffects( aviewattrib, aoutval );
 	attributeAffects( adrawtype, aoutval );
+	attributeAffects( aincoe, aoutval );
 	return MS::kSuccess;
 
 }

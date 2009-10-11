@@ -53,6 +53,7 @@ public:
 	void setDraw(const char* name);
 	char hasAttrib(const char* name) const;
 	const char* fisrtattrib() const {return attrib_sh[0]->name.c_str();}
+	void setHDRLighting(XYZ* coe);
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;

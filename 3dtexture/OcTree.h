@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "../shared/zData.h"
+#include "../sh_lighting/SphericalHarmonics.h"
 using namespace std;
 
 class sphericalHarmonics;
@@ -124,6 +125,8 @@ public:
 	void voxelOcclusionAccum();
 	void voxelOcclusionAccum(OCTNode *node);
 	
+	void setHDRLighting(XYZ* coe);
+	
 private:
 	
 	OCTNode *root;
@@ -147,4 +150,6 @@ private:
 	SHB3COEFF* m_pSHBuf1;
 	
 	XYZ m_key, m_eye;
+	char m_hasHdr;
+	XYZ m_hdrCoe[SH_N_BASES];
 };

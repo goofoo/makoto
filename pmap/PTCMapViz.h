@@ -48,6 +48,7 @@ public:
 	static  	MObject 	amaxframe;
 	static  	MObject 	aviewattrib;
 	static      MObject     adrawtype;
+	static MObject aincoe;
 	static      MObject     aoutval;
 	//static      MObject     aposition;
 private:

@@ -223,3 +223,9 @@ void Z3DTexture::setDraw(const char* name)
 		}
 	}
 }
+
+void Z3DTexture::setHDRLighting(XYZ* coe)
+{
+	if(!m_pTree) return;
+	m_pTree->setHDRLighting(coe);
+}

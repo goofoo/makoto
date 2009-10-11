@@ -385,7 +385,13 @@ global proc string findImportParticleCachePath()
 
 global proc particleMapSetDraw(string $attrname)
 {
+	string $viewhdr[] =`ls -type hwHDREnvViewer`;
+		
 	string $vizs[] = `ls -type pmapViz`;
 	string $a;
-	for($a in $vizs) setAttr -type "string" ($a + ".va") $attrname;
+	for($a in $vizs) {
+		setAttr -type "string" ($a + ".va") $attrname;
+		string $conn[] = `listConnections -d 1 -s 1 ( $a + ".icoe")`;
+		if(size($viewhdr)>0 && size($conn)<1) connectAttr -f ($viewhdr[0] +".output") ( $a + ".icoe");
+	}
 }

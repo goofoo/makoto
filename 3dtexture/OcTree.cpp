@@ -1,6 +1,5 @@
 #include "OcTree.h"
 
-#include "../sh_lighting/SphericalHarmonics.h"
 #include "../shared/gBase.h"
 #include "CubeRaster.h"
 #include "../shared/QuickSort.h"
@@ -9,7 +8,7 @@ const float constantCoeff[9] = { 3.543211,
 								0.000605, 0.000152, -0.003217, 
 								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
 
-OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),idBuf(0),sample_opacity(0.04f)
+OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),idBuf(0),sample_opacity(0.04f),m_hasHdr(0)
 {
 }
 
@@ -525,10 +524,21 @@ void OcTree::drawCube(const OCTNode *node)
 		float size = node->size;
 		
 		if(m_pSHBuf) {
-			float ov  = 0;
-			for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
-			ov /= 3.14;
-			glColor3f(ov, ov, ov);
+			if(m_hasHdr) {
+				XYZ inc(0);
+				for(int i = 0; i < SH_N_BASES; i++) {
+					inc.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
+					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
+					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
+				}
+				glColor3f(inc.x, inc.y, inc.z);
+			}
+			else {
+				float ov  = 0;
+				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
+				ov /= 3.14;
+				glColor3f(ov, ov, ov);
+			}
 		}
 		gBase::drawBox(cen, size);
 	}
@@ -550,18 +560,21 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 	float r;
 	if(node->isLeaf) {
 		if(m_pSHBuf) {
-			/*glPushMatrix();
-			glTranslatef(node->mean.x, node->mean.y, node->mean.z);
-			
-			sh->reconstructAndDraw(m_pSHBuf[node->index].value);
-			
-			glPopMatrix();
-			return;
-			*/
-			float ov  = 0;
-			for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
-			ov /= 3.14;
-			glColor3f(ov, ov, ov);
+			if(m_hasHdr) {
+				XYZ inc(0);
+				for(int i = 0; i < SH_N_BASES; i++) {
+					inc.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
+					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
+					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
+				}
+				glColor3f(inc.x, inc.y, inc.z);
+			}
+			else {
+				float ov  = 0;
+				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
+				ov /= 3.14;
+				glColor3f(ov, ov, ov);
+			}
 		}
 		for(unsigned i= node->low; i<= node->high; i++) {
 			r = sqrt(m_pGrid[i].area * 0.25);
@@ -1015,6 +1028,12 @@ void OcTree::voxelOcclusionAccum(OCTNode *node)
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child111->index].value);
 		}
 	}
+}
+
+void OcTree::setHDRLighting(XYZ* coe)
+{
+	m_hasHdr = 1;
+	for(int i = 0; i < SH_N_BASES; i++) m_hdrCoe[i] = coe[i];
 }
 /*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)
