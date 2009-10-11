@@ -8,6 +8,7 @@
 #include <maya/MFnPlugin.h>
 #include "PTCMapCmd.h"
 #include "PTCMapViz.h"
+#include "PTCDemViz.h"
 
 MStatus initializePlugin( MObject obj )
 //
@@ -21,7 +22,7 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "ZHANG JIAN", "0.2.8 10/10/09", "Any");
+	MFnPlugin plugin( obj, "ZHANG JIAN", "0.2.8 11/10/09", "Any");
 
 	status = plugin.registerCommand( "pmapCache", PTCMapCmd::creator, PTCMapCmd::newSyntax );
 	if (!status) {
@@ -30,6 +31,13 @@ MStatus initializePlugin( MObject obj )
 	}
 	status = plugin.registerNode( "pmapViz", PTCMapLocator::id, 
                                    &PTCMapLocator::creator, &PTCMapLocator::initialize,
+                                                 MPxNode::kLocatorNode );
+   if (!status) {
+		status.perror("registerNode");
+		return status;
+	}
+	status = plugin.registerNode( "pmapDem", PTCDemViz::id, 
+                                   &PTCDemViz::creator, &PTCDemViz::initialize,
                                                  MPxNode::kLocatorNode );
    if (!status) {
 		status.perror("registerNode");
@@ -61,6 +69,12 @@ MStatus uninitializePlugin( MObject obj )
 	}
 
 	status = plugin.deregisterNode( PTCMapLocator::id );
+	if (!status) {
+		status.perror("deregisterNode");
+		return status;
+	}
+	
+	status = plugin.deregisterNode( PTCDemViz::id );
 	if (!status) {
 		status.perror("deregisterNode");
 		return status;
