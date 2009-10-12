@@ -371,7 +371,7 @@ char OcTree::load(ifstream& file)
 	if(num_voxel>0) {   
 		root = new OCTNode();
 		//root->parent = NULL;
-		num_voxel = 0;
+		num_voxel = num_leaf = 0;
 		load(file, root);
 		/*
 		int datatype;
@@ -428,6 +428,7 @@ void OcTree::load(ifstream& file, OCTNode *node)
 	file.read((char*)&node->child101,sizeof(node->child101));
 	file.read((char*)&node->child110,sizeof(node->child110));
 	file.read((char*)&node->child111,sizeof(node->child111));
+	if(node->isLeaf) num_leaf++;
 	
 	if(node->child000) {
 		node->child000 = new OCTNode();//node->child000->parent = node;
@@ -1034,6 +1035,32 @@ void OcTree::setHDRLighting(XYZ* coe)
 {
 	m_hasHdr = 1;
 	for(int i = 0; i < SH_N_BASES; i++) m_hdrCoe[i] = coe[i];
+}
+
+void OcTree::leafHighLow(HighNLow* res) const
+{
+	int count = 0;
+	leafHighLow(root, count, res);
+}
+
+void OcTree::leafHighLow(const OCTNode *node, int& count, HighNLow* res) const
+{
+	if(!node) return;
+	if(node->isLeaf) {
+		res[count].low = node->low;
+		res[count].high = node->high;
+		count++;
+	}
+	else {
+		leafHighLow(node->child000, count, res);
+		leafHighLow(node->child001, count, res);
+		leafHighLow(node->child010, count, res);
+		leafHighLow(node->child011, count, res);
+		leafHighLow(node->child100, count, res);
+		leafHighLow(node->child101, count, res);
+		leafHighLow(node->child110, count, res);
+		leafHighLow(node->child111, count, res);
+	}
 }
 /*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)

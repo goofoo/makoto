@@ -40,6 +40,7 @@ public:
 	
 	int getNumGrid() const { if(m_pTree) return m_pTree->getNumGrid(); else return -1; }
 	int getNumVoxel() const {if(m_pTree) return m_pTree->getNumVoxel(); else return -1;}
+	int getNumLeaf() const {if(m_pTree) return m_pTree->getNumLeaf(); else return -1;}
 	short getMaxLevel() const {if(m_pTree) return m_pTree->getMaxLevel(); else return -1;}
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	
@@ -54,6 +55,8 @@ public:
 	char hasAttrib(const char* name) const;
 	const char* fisrtattrib() const {return attrib_sh[0]->name.c_str();}
 	void setHDRLighting(XYZ* coe);
+	void getLeaIndex(HighNLow* data) const;
+	void getGridById(unsigned idx, RGRID& data) const;
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;

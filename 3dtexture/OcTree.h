@@ -13,6 +13,11 @@ using namespace std;
 
 class sphericalHarmonics;
 
+struct HighNLow
+{
+	unsigned high, low;
+};
+
 struct NamedSingle
 {
 	string name;
@@ -87,6 +92,7 @@ public:
 	
 	unsigned getNumGrid() const {return num_grid;}
 	unsigned getNumVoxel() const {return num_voxel;}
+	unsigned getNumLeaf() const {return num_leaf;}
 	short getMaxLevel() const {return max_level;}
 	int hasColor() const;
 	
@@ -127,11 +133,14 @@ public:
 	
 	void setHDRLighting(XYZ* coe);
 	
+	void leafHighLow(HighNLow* res) const;
+	void leafHighLow(const OCTNode *node, int& count, HighNLow* res) const;
+	
 private:
 	
 	OCTNode *root;
 	short max_level;
-	unsigned num_voxel;
+	unsigned num_voxel, num_leaf;
 	
 	int num_grid;
 	RGRID* m_pGrid;
