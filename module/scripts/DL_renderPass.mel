@@ -16,6 +16,10 @@ global string $g_DL_geoOutputCommands[];
 
 // store name of camera for output geo
 global string $ZHANG_curcamera;
+global string $ZHANG_curpass;
+global int $ZHANG_curframe;
+global float $ZHANG_shutterOpen;
+global float $ZHANG_shutterClose;
 
 // ----------------------------------------------------------------------------
 // Utility procedures
@@ -5963,6 +5967,12 @@ outputGeometry(string $render_pass,
 	int $fps = 24;
 	if(`currentUnit -q -time` == "pal") $fps = 25;
 	if(`currentUnit -q -time` == "ntsc") $fps = 30;
+// get pass
+	global string $ZHANG_curpass;
+// get frame and motion
+	global int $ZHANG_curframe;
+	global float $ZHANG_shutterOpen;
+	global float $ZHANG_shutterClose;
 	
   int $output_geo_shaders;
   int $output_geo_attribs;
@@ -6129,21 +6139,13 @@ outputGeometry(string $render_pass,
           if( !canUseObjectInstance( $curr_geo, $geo_type ) )
           {
 // emit custom procedural instead read archive here
-//            RiReadArchive -archiveName $geo_to_output;
-
 		string $zh_cmd;
 		
-		$zh_cmd = $geo_type+"CacheGeo -emit \""+$curr_geo+" "+`delightRenderState -qrn`+" "+`delightRenderState -qf`+" "+`delightRenderState -qso`+" "+`delightRenderState -qsc`+" "+$is_shadow_render+" "+$fps+" "+$ZHANG_curcamera+"\"";
+		$zh_cmd = $geo_type+"CacheGeo -emit \""+$curr_geo+" "+ $ZHANG_curpass +" "+ $ZHANG_curframe +" "+ $ZHANG_shutterOpen +" "+ $ZHANG_shutterClose +" "+$is_shadow_render+" "+$fps+" "+$ZHANG_curcamera+"\"";
 		outputRIBcomment($geo_type+"CacheGeo emits "+$curr_geo);
 		eval($zh_cmd);
-		
-		//$zh_cmd = $geo_type+"CacheGeo -pass "+`delightRenderState -qrn`;
-		//outputRIBcomment("calls "+$zh_cmd);
-		//eval($zh_cmd);
-		//print(`delightRenderState -qrn`+"\n");
-		//print(`delightRenderState -qf`+"\n");
-		//print(`delightRenderState -qso`+"\n");
-		//print(`delightRenderState -qsc`+"\n");
+// no read archive		
+//            RiReadArchive -archiveName $geo_to_output;		
           }
           else if ($geo_type == "instancer")
           {
@@ -9970,6 +9972,16 @@ DRP_render(string $render_pass)
     }
     
     DRP_executePreFrameMelScript($render_pass);
+    
+// update frame and motion
+global string $ZHANG_curpass;
+	$ZHANG_curpass = `delightRenderState -qrn`;
+global int $ZHANG_curframe;
+	$ZHANG_curframe = $curr_frame;
+global float $ZHANG_shutterOpen;	
+	$ZHANG_shutterOpen = `delightRenderState -qso`;
+global float $ZHANG_shutterClose;
+	$ZHANG_shutterClose =`delightRenderState -qsc`;
     
     // Proceed with rendering only if the render pass is not in RIB archiving
     // mode, or if the archive file requires writing.

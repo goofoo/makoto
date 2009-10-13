@@ -1,0 +1,4 @@
+global proc int DL_pmapVizCanUseObjectInstance( string $geo )
+{
+    return 0;
+}

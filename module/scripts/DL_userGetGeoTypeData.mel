@@ -9,8 +9,8 @@ DL_userGetGeoTypeData(string $types[],
   clear($cache_commands);
   clear($output_commands);
 
-  $types[0] = "fooNode";
-  $plugin_requirements[0] = "fooNodeRIBGenDL";
-  $cache_commands[0] = "fooNodeCacheGeo";
+  $types[0] = "pmapViz";
+  $plugin_requirements[0] = "ParticleMapRIBGenDL";
+  $cache_commands[0] = "pmapVizCacheGeo";
   $output_commands[0] = "nil";
 }
