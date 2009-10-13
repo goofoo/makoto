@@ -161,11 +161,21 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	mat.v[3][1] = eyePos.y;
 	mat.v[3][2] = eyePos.z;
 	mat.inverse();
+	
+	double fov = fnCamera.horizontalFieldOfView();
+	fov = fov/PI*180;
+	int ispersp = 1;
+	
+	if(fnCamera.isOrtho()) {
+		ispersp = 0;
+		fov = fnCamera.orthoWidth();
+	}
 
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if(tree){
+		tree->setProjection(mat, fov, ispersp);
 		//glClearDepth(1.0);
 	    //glEnable(GL_BLEND);
 	    //glDepthFunc(GL_LEQUAL);

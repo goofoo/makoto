@@ -135,7 +135,7 @@ public:
 	
 	void leafHighLow(HighNLow* res) const;
 	void leafHighLow(const OCTNode *node, int& count, HighNLow* res) const;
-	
+	void setProjection(MATRIX44F mat, float fov, int iperspective);
 private:
 	
 	OCTNode *root;
@@ -161,4 +161,7 @@ private:
 	XYZ m_key, m_eye;
 	char m_hasHdr;
 	XYZ m_hdrCoe[SH_N_BASES];
+	MATRIX44F f_cameraSpaceInv;
+	float f_fieldOfView;
+	char f_isPersp;
 };

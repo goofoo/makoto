@@ -520,10 +520,21 @@ void OcTree::drawNeighbour(const OCTNode *node)
 void OcTree::drawCube(const OCTNode *node)
 {
 	if(!node) return;
-	if(node->isLeaf) {
-		XYZ cen = node->center;
-		float size = node->size;
-		
+	XYZ cen = node->center;
+	float size = node->size;
+	
+	XYZ pcam = cen;
+	f_cameraSpaceInv.transform(pcam);
+	
+	if(pcam.z + size*2 < 0) return;
+	if(pcam.z < 0) pcam.z = -pcam.z;
+	
+	int detail;
+	
+	if(f_isPersp) detail = size/(pcam.z*f_fieldOfView)*1024;
+	else detail = size/f_fieldOfView*1024;
+	
+	if(detail < 9 || node->isLeaf) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
 				XYZ inc(0);
@@ -542,23 +553,65 @@ void OcTree::drawCube(const OCTNode *node)
 			}
 		}
 		gBase::drawBox(cen, size);
+		return;
 	}
-	else {
-		drawCube(node->child000 );
-		drawCube(node->child001 );
-		drawCube(node->child010 );
-		drawCube(node->child011 );
-		drawCube(node->child100 );
-		drawCube(node->child101 );
-		drawCube(node->child110 );
-		drawCube(node->child111 );
-	}
+	
+	drawCube(node->child000 );
+	drawCube(node->child001 );
+	drawCube(node->child010 );
+	drawCube(node->child011 );
+	drawCube(node->child100 );
+	drawCube(node->child101 );
+	drawCube(node->child110 );
+	drawCube(node->child111 );
 }
 
 void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 {
 	if(!node) return;
+	XYZ cen = node->center;
+	float size = node->size;
+	
+	XYZ pcam = cen;
+	f_cameraSpaceInv.transform(pcam);
+	
+	if(pcam.z + size*2 < 0) return;
+	if(pcam.z < 0) pcam.z = -pcam.z;
+	
+	int detail;
+	
+	if(f_isPersp) detail = size/(pcam.z*f_fieldOfView)*1024;
+	else detail = size/f_fieldOfView*1024;
+
 	float r;
+	
+	if(detail < 9) {
+		if(m_pSHBuf) {
+			if(m_hasHdr) {
+				XYZ inc(0);
+				for(int i = 0; i < SH_N_BASES; i++) {
+					inc.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
+					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
+					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
+				}
+				glColor3f(inc.x, inc.y, inc.z);
+			}
+			else {
+				float ov  = 0;
+				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
+				ov /= 3.14;
+				glColor3f(ov, ov, ov);
+			}
+		}
+// sum of grid
+		float sumarea =0;
+		for(unsigned i= node->low; i<= node->high; i++) sumarea += m_pGrid[i].area;
+
+		r = sqrt(sumarea * 0.25);
+		gBase::drawSplatAt(node->mean, viewdir, r);
+		return;
+	}
+	
 	if(node->isLeaf) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
@@ -996,37 +1049,53 @@ void OcTree::voxelOcclusionAccum(OCTNode *node)
 		voxelOcclusionAccum(node->child110);
 		voxelOcclusionAccum(node->child111);
 		
+		int nchd = 0;
 		if(node->child000) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child000->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child000->index].value);
 		}
 		if(node->child001) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child001->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child001->index].value);
 		}
 		if(node->child010) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child010->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child010->index].value);
 		}
 		if(node->child011) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child011->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child011->index].value);
 		}
 		if(node->child100) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child100->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child100->index].value);
 		}
 		if(node->child101) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child101->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child101->index].value);
 		}
 		if(node->child110) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child110->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child110->index].value);
 		}
 		if(node->child111) {
+			nchd++;
 			sh->addCoeff(m_pSHBuf[node->index].value, m_pSHBuf[node->child111->index].value);
 			sh->addCoeff(m_pSHBuf1[node->index].value, m_pSHBuf1[node->child111->index].value);
+		}
+		
+		if(nchd > 1) {
+			for (int j = 0; j < SH_N_BASES; j++) {
+				m_pSHBuf[node->index].value[j] /= float(nchd);
+				m_pSHBuf1[node->index].value[j] /= float(nchd);
+			}
 		}
 	}
 }
@@ -1060,6 +1129,20 @@ void OcTree::leafHighLow(const OCTNode *node, int& count, HighNLow* res) const
 		leafHighLow(node->child101, count, res);
 		leafHighLow(node->child110, count, res);
 		leafHighLow(node->child111, count, res);
+	}
+}
+
+void OcTree::setProjection(MATRIX44F mat, float fov, int iperspective)
+{
+	f_cameraSpaceInv = mat;
+	f_fieldOfView = fov;
+	if(iperspective == 1) {
+		f_isPersp = 1;
+		f_fieldOfView = tan(fov*0.5*PI/180);
+	}
+	else {
+		f_isPersp = 0;
+		f_fieldOfView = fov/2;
 	}
 }
 /*
