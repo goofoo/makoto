@@ -18,6 +18,7 @@ all:
 
 linux:
 	$(LD) -o particleCacheProcedural.so $(DSOSRC) $(DLINCS) $(DLLIBS)
+	cp particleCacheProcedural.so $(DELIGHT)/lib/
 	
 mac:
 	g++ -dynamiclib -o particleCacheProcedural.so -O3 $(DSOSRC) $(DLINCS) $(DLLIBS) -framework OpenGL

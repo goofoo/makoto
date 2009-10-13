@@ -7,6 +7,7 @@ kPluginCmdName="pmapVizCacheGeo"
 # command
 class scriptedCommand(OpenMayaMPx.MPxCommand):
 	def __init__(self):
+		self.onode = OpenMaya.MObject()
 		OpenMayaMPx.MPxCommand.__init__(self)
 	
 	def doIt(self, args):
@@ -19,15 +20,44 @@ class scriptedCommand(OpenMayaMPx.MPxCommand):
 			argData.getObjects( oname )
 			spl = oname[0].split(' ',8)
 			print kPluginCmdName,' emits ',spl[0]
+			self.findNode(spl[0])
+			fnode = OpenMaya.MFnDependencyNode(self.onode)
+			# get bounding box
+			bbox = [-1,1,-1,1,-1,1]
+			plg = fnode.findPlug('boundingBoxMinX')
+			bbox[0] = plg.asFloat()
+			plg = fnode.findPlug('boundingBoxMaxX')
+			bbox[1] = plg.asFloat()
+			plg = fnode.findPlug('boundingBoxMinY')
+			bbox[2] = plg.asFloat()
+			plg = fnode.findPlug('boundingBoxMaxY')
+			bbox[3] = plg.asFloat()
+			plg = fnode.findPlug('boundingBoxMinZ')
+			bbox[4] = plg.asFloat()
+			plg = fnode.findPlug('boundingBoxMaxZ')
+			bbox[5] = plg.asFloat()
+			# get cache path
+			plg = fnode.findPlug('cachePath')
+			scache = plg.asString()
 			print '  render pass: ',spl[1]
 			print '  frame: ',spl[2]
 			print '  shutters: ',spl[3],' ',spl[4]
 			print '  is shadow pass: ',spl[5]
 			print '  fps: ',spl[6]
 			print '  camera: ',spl[7]
-			sp = 'Procedural \\"DynamicLoad\\" [\\"spheres\\" \\"21\\"] [-3 3 -3 3 -3 3]\\n'
+			sp = 'Procedural \\"DynamicLoad\\" [\\"particleCacheProcedural.so\\" \\"%s.%s.pmap\\"] [%f %f %f %f %f %f]\\n' % (scache, spl[2], bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5])
 			asp = 'RiArchiveRecord -m "verbatim" -t "'+sp+'"'
 			OpenMaya.MGlobal.executeCommand(asp)
+	
+	def findNode(self, name):
+		it = OpenMaya.MItDag(OpenMaya.MItDag.kDepthFirst)
+		while it.isDone() == 0:
+			self.onode = it.item()
+        		fnode = OpenMaya.MFnDagNode(self.onode)
+			if(fnode.fullPathName()==name):
+				return;
+			it.next()
+
 			
 # Creator
 def cmdCreator():

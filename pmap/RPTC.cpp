@@ -1,11 +1,12 @@
 #include "RPTC.h"
 
-RPTC::RPTC(const char* parameter):pCache(0)
+RPTC::RPTC(const char* parameter):pCache(0),m_density(1.f)
 {
 	float val;
 	float m[4][4];
-	int n = sscanf(parameter, "%s %f %f %d %d %f %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f", 
+	int n = sscanf(parameter, "%s %f %f %f %d %d %f %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f", 
 	m_cachename, 
+	&m_density,
 	&m_shutter_open, &m_shutter_close,
 	&m_is_blur, &m_is_shd,
 	&val, &m_type_projection,

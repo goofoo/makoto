@@ -44,6 +44,8 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 		for(unsigned j=range[i].low; j<=range[i].high; j++) {
 			realdata = new RCloud();
 			
+			realdata->setDensity(data->getDensity());
+			
 			data->sampleById(j, aptc);
 			
 			r = sqrt(aptc.area*0.25);
@@ -64,12 +66,13 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 			RiTransformEnd();
 		}
 	}
+	delete[] range;
 } 
 
 export RtVoid Subdivide_real(RtPointer blinddata, RtFloat detailsize) 
 { 
-	RCloud *data = static_cast<RCloud*>(blinddata); 
-	data->emit();
+	RCloud *data = static_cast<RCloud*>(blinddata);
+	data->emit(detailsize);
 }
  
 export RtVoid Free(RtPointer blinddata) 
