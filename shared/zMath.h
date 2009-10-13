@@ -591,5 +591,12 @@ inline void sph2vec(const float theta, const float phi, float& x, float& y, floa
     z = cos(theta);
 }
 
+inline void sph2xyz(const float r, const double theta, const double phi, float& x, float& y, float& z)
+{
+    x = r*sin(theta) * cos(phi);
+    y = r*sin(theta) * sin(phi);
+    z = r*cos(theta);
+}
+
 
 #endif /* ZMATH_H */

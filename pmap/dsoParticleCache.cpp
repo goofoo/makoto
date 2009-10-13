@@ -49,6 +49,7 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 			r = sqrt(aptc.area*0.25);
 			
 			realdata->setRadius(r);
+			r+= r;
 			
 			RiTransformBegin(); 
 			
