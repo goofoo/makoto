@@ -55,7 +55,7 @@ public:
 	char hasAttrib(const char* name) const;
 	const char* fisrtattrib() const {return attrib_sh[0]->name.c_str();}
 	void setHDRLighting(XYZ* coe);
-	void getLeaIndex(HighNLow* data) const;
+	void getLODGrid(GRIDNId* data, unsigned& n_data) const;
 	void getGridById(unsigned idx, RGRID& data) const;
 	void setProjection(MATRIX44F cameraspace, float fov, int iperspective);
 private:

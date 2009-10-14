@@ -13,9 +13,11 @@ using namespace std;
 
 class sphericalHarmonics;
 
-struct HighNLow
+struct GRIDNId
 {
-	unsigned high, low;
+	RGRID grid;
+	unsigned idx;
+	int detail;
 };
 
 struct NamedSingle
@@ -133,8 +135,8 @@ public:
 	
 	void setHDRLighting(XYZ* coe);
 	
-	void leafHighLow(HighNLow* res) const;
-	void leafHighLow(const OCTNode *node, int& count, HighNLow* res) const;
+	void LODGrid(GRIDNId* res, unsigned& n_data) const;
+	void LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const;
 	void setProjection(MATRIX44F mat, float fov, int iperspective);
 private:
 	

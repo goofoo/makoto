@@ -62,6 +62,9 @@ class scriptedCommand(OpenMayaMPx.MPxCommand):
 			# get density
 			plg = fnode.findPlug('density')
 			density = plg.asFloat()
+			# get dusty
+			plg = fnode.findPlug('dusty')
+			dusty = plg.asFloat()
 			
 			print '  render pass: ',spl[1]
 			print '  frame: ',spl[2]
@@ -85,7 +88,7 @@ class scriptedCommand(OpenMayaMPx.MPxCommand):
 				ipersp = 0
 				fov = fcam.orthoWidth()
 			
-			sp = 'Procedural \\"DynamicLoad\\" [\\"particleCacheProcedural.so\\" \\"%s.%s.pmap %f %s %s 0 %s %f %d %f %f %f 0 %f %f %f 0 %f %f %f 0 %f %f %f 1\\"] [%f %f %f %f %f %f]\\n' % (scache, spl[2], density, spl[3], spl[4], spl[5], fov, ipersp, -rightDir.x, -rightDir.y, -rightDir.z, upDir.x, upDir.y, upDir.z, viewDir.x, viewDir.y, viewDir.z, eyePos.x, eyePos.y, eyePos.z, bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5])
+			sp = 'Procedural \\"DynamicLoad\\" [\\"particleCacheProcedural.so\\" \\"%s.%s.pmap %f %f %s %s 0 %s %f %d %f %f %f 0 %f %f %f 0 %f %f %f 0 %f %f %f 1\\"] [%f %f %f %f %f %f]\\n' % (scache, spl[2], density, dusty, spl[3], spl[4], spl[5], fov, ipersp, -rightDir.x, -rightDir.y, -rightDir.z, upDir.x, upDir.y, upDir.z, viewDir.x, viewDir.y, viewDir.z, eyePos.x, eyePos.y, eyePos.z, bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5])
 			asp = 'RiArchiveRecord -m "verbatim" -t "'+sp+'"'
 			OpenMaya.MGlobal.executeCommand(asp)
 

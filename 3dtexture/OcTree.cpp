@@ -1118,29 +1118,80 @@ void OcTree::setHDRLighting(XYZ* coe)
 	for(int i = 0; i < SH_N_BASES; i++) m_hdrCoe[i] = coe[i];
 }
 
-void OcTree::leafHighLow(HighNLow* res) const
+void OcTree::LODGrid(GRIDNId* res, unsigned& n_data) const
 {
-	int count = 0;
-	leafHighLow(root, count, res);
+	n_data = 0;
+	LODGrid(root, n_data, res);
 }
 
-void OcTree::leafHighLow(const OCTNode *node, int& count, HighNLow* res) const
+void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 {
 	if(!node) return;
-	if(node->isLeaf) {
-		res[count].low = node->low;
-		res[count].high = node->high;
+		XYZ cen = node->center;
+	float size = node->size;
+	
+	XYZ pcam = cen;
+	f_cameraSpaceInv.transform(pcam);
+	
+	if(pcam.z + size*2 < 0) return;
+	if(pcam.z < 0) pcam.z = -pcam.z;
+	
+	float portWidth;
+	if(f_isPersp) portWidth = (pcam.z+0.000001)*f_fieldOfView;
+	else portWidth = f_fieldOfView;
+	
+	if(pcam.x - size > portWidth) return;
+	if(pcam.x + size < -portWidth) return;
+	if(pcam.y - size > portWidth) return;
+	if(pcam.y + size < -portWidth) return;
+	
+	// sum of grid and biggest one
+	float sumarea =0;
+	unsigned ibig = node->low;
+	float fbig = m_pGrid[ibig].area;
+	for(unsigned i= node->low; i<= node->high; i++) {
+		sumarea += m_pGrid[i].area;
+		if(m_pGrid[i].area > fbig) {
+			ibig = i;
+			fbig = m_pGrid[i].area;
+		}
+	}
+
+	float r = sqrt(sumarea * 0.25);
+	
+	int detail;
+	
+	if(f_isPersp) detail = r/portWidth*1024;
+	else detail = r/portWidth*1024;
+	
+	if(detail < 8) {
+		res[count].grid.pos = node->mean;
+		res[count].grid.nor = node->dir;
+		res[count].grid.col = node->col;
+		res[count].grid.area = sumarea;
+		res[count].idx = node->index;
+		res[count].detail = detail;
 		count++;
+		return;
+	}
+	
+	if(node->isLeaf) {
+		for(unsigned i= node->low; i<= node->high; i++) {
+			res[count].grid = m_pGrid[i];
+			res[count].idx = node->index;
+			res[count].detail = detail;
+			count++;
+		}
 	}
 	else {
-		leafHighLow(node->child000, count, res);
-		leafHighLow(node->child001, count, res);
-		leafHighLow(node->child010, count, res);
-		leafHighLow(node->child011, count, res);
-		leafHighLow(node->child100, count, res);
-		leafHighLow(node->child101, count, res);
-		leafHighLow(node->child110, count, res);
-		leafHighLow(node->child111, count, res);
+		LODGrid(node->child000, count, res);
+		LODGrid(node->child001, count, res);
+		LODGrid(node->child010, count, res);
+		LODGrid(node->child011, count, res);
+		LODGrid(node->child100, count, res);
+		LODGrid(node->child101, count, res);
+		LODGrid(node->child110, count, res);
+		LODGrid(node->child111, count, res);
 	}
 }
 

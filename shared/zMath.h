@@ -576,12 +576,14 @@ inline void quick_sort(XYZ* a, int lo, int hi, short axis)
 */
 inline void xyz2sph(const XYZ& normal, double& theta, double& phi)
 {
-		theta = acos(normal.z);
-	if(normal.x==0 && normal.y >=0) phi = 0;
-		else if(normal.x==0 && normal.y <0) phi = PI*1.5;
-		else if(normal.x>0 && normal.y >=0) phi = atan(normal.y/normal.x);
-			else if(normal.x>0 && normal.y <0) phi = 2*PI + atan(normal.y/normal.x);
-				else phi = PI + atan(normal.y/normal.x);
+	theta = acos(normal.z);
+	if(normal.x==0 ) {
+		if( normal.y >0) phi = 0;
+		else phi = PI*1.5;
+	}
+	else if(normal.x>0 && normal.y >0) phi = atan(normal.y/normal.x);
+	else if(normal.x>0 && normal.y <0) phi = 2*PI + atan(normal.y/normal.x);
+	else phi = PI + atan(normal.y/normal.x);
 }
 
 inline void sph2vec(const float theta, const float phi, float& x, float& y, float& z)

@@ -230,10 +230,10 @@ void Z3DTexture::setHDRLighting(XYZ* coe)
 	m_pTree->setHDRLighting(coe);
 }
 
-void Z3DTexture::getLeaIndex(HighNLow* data) const
+void Z3DTexture::getLODGrid(GRIDNId* data, unsigned& n_data) const
 {
 	if(!m_pTree) return;
-	m_pTree->leafHighLow(data);
+	m_pTree->LODGrid(data, n_data);
 }
 
 void Z3DTexture::getGridById(unsigned idx, RGRID& data) const
