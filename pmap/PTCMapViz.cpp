@@ -24,7 +24,8 @@
 
 MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
-//MObject     PTCMapLocator::aresolution;
+MObject     PTCMapLocator::adensity;
+MObject     PTCMapLocator::adusty;
 MObject     PTCMapLocator::amaxframe;
 MObject     PTCMapLocator::aminframe;
 MObject 	PTCMapLocator::aviewattrib;
@@ -62,6 +63,7 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
+		float dens = data.inputValue( adensity ).asFloat();
 	    
 		int hascoe = 0;
 		MVectorArray vcoe = zWorks::getVectorArrayAttr(data, aincoe);
@@ -72,7 +74,7 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		}
 		
 		if( time < minfrm ) time = minfrm;
-		int frame_lo = time;
+		int frame_lo = time + 0.005;
 		char filename[512];
 		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
 		
@@ -160,7 +162,6 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	mat.v[3][0] = eyePos.x;
 	mat.v[3][1] = eyePos.y;
 	mat.v[3][2] = eyePos.z;
-	mat.inverse();
 	
 	double fov = fnCamera.horizontalFieldOfView();
 	fov = fov/PI*180;
@@ -239,13 +240,19 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( amaxframe );
-/*	
-	aresolution = nAttr.create( "resolution", "rez", MFnNumericData::kFloat, 512);
-	nAttr.setMin(32);
+	
+	adensity = nAttr.create( "density", "den", MFnNumericData::kFloat, 0.4);
+	nAttr.setMin(0.01);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
-	addAttribute( aresolution );
-*/	
+	addAttribute( adensity );
+	
+	adusty = nAttr.create( "dusty", "dsy", MFnNumericData::kFloat, 0.5);
+	nAttr.setMin(0.01);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute( adusty );
+	
 	MFnTypedAttribute   stringAttr;
 	input = stringAttr.create( "cachePath", "cp", MFnData::kString );
  	stringAttr.setStorable(true);
@@ -275,6 +282,8 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( aviewattrib, aoutval );
 	attributeAffects( adrawtype, aoutval );
 	attributeAffects( aincoe, aoutval );
+	attributeAffects( adensity, aoutval );
+	attributeAffects( adusty, aoutval );
 	return MS::kSuccess;
 
 }

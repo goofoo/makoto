@@ -487,6 +487,9 @@ void OcTree::draw()
 void OcTree::draw(const XYZ& viewdir)
 {
 	drawSurfel(root, viewdir);
+	//glBegin(GL_LINES);
+	//drawNeighbour(root);
+	//glEnd();
 }
 
 void OcTree::drawNeighbour(const OCTNode *node)
@@ -494,7 +497,7 @@ void OcTree::drawNeighbour(const OCTNode *node)
 	if(!node) return;
 	if(node->isLeaf) {
 		for(unsigned i= node->low; i<= node->high; i++) {
-			glColor3f(node->col.x, node->col.y, node->col.z);
+			glColor3f(1,0,0);
 			glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
 			
 			XYZ vneib(0,1,0);
@@ -534,7 +537,7 @@ void OcTree::drawCube(const OCTNode *node)
 	if(f_isPersp) detail = size/(pcam.z*f_fieldOfView)*1024;
 	else detail = size/f_fieldOfView*1024;
 	
-	if(detail < 9 || node->isLeaf) {
+	if(detail < 8 || node->isLeaf) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
 				XYZ inc(0);
@@ -578,14 +581,26 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 	if(pcam.z + size*2 < 0) return;
 	if(pcam.z < 0) pcam.z = -pcam.z;
 	
+	// sum of grid and biggest one
+	float sumarea =0;
+	unsigned ibig = node->low;
+	float fbig = m_pGrid[ibig].area;
+	for(unsigned i= node->low; i<= node->high; i++) {
+		sumarea += m_pGrid[i].area;
+		if(m_pGrid[i].area > fbig) {
+			ibig = i;
+			fbig = m_pGrid[i].area;
+		}
+	}
+
+	float r = sqrt(sumarea * 0.25);
+	
 	int detail;
 	
-	if(f_isPersp) detail = size/(pcam.z*f_fieldOfView)*1024;
-	else detail = size/f_fieldOfView*1024;
-
-	float r;
+	if(f_isPersp) detail = r/((pcam.z+0.000001)*f_fieldOfView)*1024;
+	else detail = r/f_fieldOfView*1024;
 	
-	if(detail < 9) {
+	if(detail < 8) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
 				XYZ inc(0);
@@ -603,12 +618,9 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 				glColor3f(ov, ov, ov);
 			}
 		}
-// sum of grid
-		float sumarea =0;
-		for(unsigned i= node->low; i<= node->high; i++) sumarea += m_pGrid[i].area;
 
-		r = sqrt(sumarea * 0.25);
 		gBase::drawSplatAt(node->mean, viewdir, r);
+
 		return;
 	}
 	

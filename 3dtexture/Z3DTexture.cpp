@@ -241,8 +241,10 @@ void Z3DTexture::getGridById(unsigned idx, RGRID& data) const
 	data = m_pGrid[idx];
 }
 
-void Z3DTexture::setProjection(MATRIX44F cameraspaceinv, float fov, int iperspective)
+void Z3DTexture::setProjection(MATRIX44F cameraspace, float fov, int iperspective)
 {
 	if(!m_pTree) return;
+	MATRIX44F cameraspaceinv = cameraspace;
+	cameraspaceinv.inverse();
 	m_pTree->setProjection(cameraspaceinv, fov, iperspective);
 }
