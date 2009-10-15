@@ -191,6 +191,7 @@ void QuickSort::sortY(RGRID *array, unsigned *idx, int first,int last)
 		{
 			temp = array[low];
 			tmpidx = idx[low];
+			idx[low] = idx[high];
 			array[low++] = array[high];
 			idx[high] = tmpidx;
 			array[high--]=temp;
@@ -221,6 +222,7 @@ void QuickSort::sortZ(RGRID *array, unsigned *idx, int first,int last)
 		{
 			temp = array[low];
 			tmpidx = idx[low];
+			idx[low] = idx[high];
 			array[low++] = array[high];
 			idx[high] = tmpidx;
 			array[high--]=temp;

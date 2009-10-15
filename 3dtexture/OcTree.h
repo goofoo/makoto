@@ -16,7 +16,7 @@ class sphericalHarmonics;
 struct GRIDNId
 {
 	RGRID grid;
-	unsigned idx;
+	unsigned idx, gridId;
 	int detail;
 };
 
@@ -139,6 +139,9 @@ public:
 	void LODGrid(GRIDNId* res, unsigned& n_data) const;
 	void LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const;
 	void setProjection(MATRIX44F mat, float fov, int iperspective);
+	
+	void setGridId(unsigned* data) {t_grid_id = data;}
+	unsigned* getIdBuf() const {return idBuf;}
 private:
 	
 	OCTNode *root;
@@ -156,6 +159,7 @@ private:
 	CubeRaster* raster;
 	
 	unsigned *idBuf;
+	unsigned *t_grid_id;
 	float sample_opacity;
 	
 	SHB3COEFF* m_pSHBuf;

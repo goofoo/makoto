@@ -89,7 +89,7 @@ void OcTree::orderGridData(unsigned* data, int n_data)
 void OcTree::construct(const XYZ& rootCenter, float rootSize, int maxLevel)
 {
 	idBuf = new unsigned[num_grid];
-	for(int i=0; i< num_grid; i++) idBuf[i] = i;
+	for(unsigned i=0; i< num_grid; i++) idBuf[i] = i;
 	
 	max_level = maxLevel;
 
@@ -915,7 +915,7 @@ void OcTree::combineSurfel(const RGRID *data, const int low, const int high, XYZ
 	
 	center /= float(high - low + 1);
 	color /= float(high - low + 1);
-	dir.normalize();
+	dir/= float(high - low + 1);
 	
 	if(high == low) return;
 	
@@ -1180,6 +1180,7 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 		res[count].grid.area = sumarea;
 		res[count].idx = node->index;
 		res[count].detail = detail;
+		res[count].gridId = t_grid_id[ibig];
 		count++;
 		return;
 	}
@@ -1189,6 +1190,7 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 			res[count].grid = m_pGrid[i];
 			res[count].idx = node->index;
 			res[count].detail = detail;
+			res[count].gridId = t_grid_id[i];
 			count++;
 		}
 	}

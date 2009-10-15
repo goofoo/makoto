@@ -57,6 +57,7 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 		r+= r;
 		
 		realdata->setDetail(pool[i].detail);
+		realdata->setId(pool[i].gridId);
 			
 		RiTransformBegin(); 
 			

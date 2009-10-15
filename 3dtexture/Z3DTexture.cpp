@@ -39,8 +39,8 @@ void Z3DTexture::setGrid(RGRID* data, int n_data)
 
 void Z3DTexture::orderGridData(unsigned* data, int n_data)
 {
-	m_pTree->orderGridData(data, n_data);
 	m_pId = data;
+	m_pTree->orderGridData(m_pId, n_data);
 }
 
 char Z3DTexture::load(const char* filename)
@@ -88,6 +88,8 @@ char Z3DTexture::load(const char* filename)
 	}
 
 	infile.close();
+	
+	m_pTree->setGridId(m_pId);
 	
 	return 1;
 }

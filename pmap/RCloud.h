@@ -16,6 +16,7 @@ public:
 	void setDensity(float val) {density = val;}
 	void setDusty(float val) {dusty = val;}
 	void setDetail(int val) {detail = (val+1)*2;}
+	void setId(unsigned val) {idx = val;}
 	void emit();
 	
 	void sphereRand(XYZ& q, int seed);
@@ -23,5 +24,6 @@ private:
 	float radius, density, dusty;
 	FNoise noise;
 	int detail;
+	unsigned idx;
 };
 #endif
