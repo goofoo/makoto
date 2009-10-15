@@ -14,11 +14,14 @@ public:
 	~RCloud() {}
 	void setRadius(float& val) {radius = val;}
 	void setDensity(float val) {density = val;}
-	void emit(float detail);
+	void setDusty(float val) {dusty = val;}
+	void setDetail(int val) {detail = (val+1)*2;}
+	void emit();
 	
 	void sphereRand(XYZ& q, int seed);
 private:
-	float radius, density;
+	float radius, density, dusty;
 	FNoise noise;
+	int detail;
 };
 #endif

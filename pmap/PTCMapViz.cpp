@@ -247,8 +247,9 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute( adensity );
 	
-	adusty = nAttr.create( "dusty", "dsy", MFnNumericData::kFloat, 0.5);
-	nAttr.setMin(0.01);
+	adusty = nAttr.create( "dusty", "dsy", MFnNumericData::kFloat, 0.0);
+	nAttr.setMin(0.0);
+	nAttr.setMax(1.0);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( adusty );

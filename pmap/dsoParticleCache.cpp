@@ -49,11 +49,14 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 		realdata = new RCloud();
 			
 		realdata->setDensity(data->getDensity());
+		realdata->setDusty(data->getDusty());
 			
 		r = sqrt(pool[i].grid.area*0.25);
 			
 		realdata->setRadius(r);
 		r+= r;
+		
+		realdata->setDetail(pool[i].detail);
 			
 		RiTransformBegin(); 
 			
@@ -75,7 +78,7 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 export RtVoid Subdivide_real(RtPointer blinddata, RtFloat detailsize) 
 { 
 	RCloud *data = static_cast<RCloud*>(blinddata);
-	data->emit(detailsize);
+	data->emit();
 }
  
 export RtVoid Free(RtPointer blinddata) 

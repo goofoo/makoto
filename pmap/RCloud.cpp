@@ -23,9 +23,10 @@ RCloud::RCloud()
 {
 }
 
-void RCloud::emit(float detail)
+void RCloud::emit()
 {
-	int numDot = 9+sqrt(detail);
+	//int numDot = 9+sqrt(detail);
+	int numDot = 9+detail;
 
 	if(numDot > 500) numDot = 500;
 	
@@ -34,7 +35,7 @@ printf("nd %d ", numDot);
 	XYZ* po = new XYZ[numDot];
 	float* pw = new float[numDot];
 	double theta, phi;
-	float rr, noi, adens = density/numDot;
+	float rr, noi, adens = density/(numDot-7);
 	int seed;
 	
 	for(int i=0; i<numDot; i++) {
@@ -52,8 +53,8 @@ printf("nd %d ", numDot);
 		pp[i] *= rr;
 		//sph2xyz(rr, theta, phi, pp[i].x, pp[i].y, pp[i].z);
 		
-		rr = radius*48/(numDot+17);
-		rr += rr*(1-noi);
+		rr = radius*34/(numDot+17+dusty*37);
+		rr += rr*(1-noi)*(1-dusty);
 		
 		//seed++;
 		//noi = noise.randfint(seed);
@@ -61,7 +62,7 @@ printf("nd %d ", numDot);
 		pw[i] = rr;
 		
 		rr = adens;
-		rr *= sqrt(1 - noi);
+		rr += (rr*sqrt(1 - noi) - rr)*(1-dusty);
 		//seed++;
 		//noi = noise.randfint(seed);
 		//rr += (noi - 0.5f)*rr*0.1f;

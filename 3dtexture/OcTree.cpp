@@ -76,9 +76,6 @@ void OcTree::setGrid(RGRID* data, int n_data)
 {
 	num_grid = n_data;
 	m_pGrid =data;
-
-	//m_pGrid = new RGRID[n_data];
-	//for(int i=0; i<n_data; i++) m_pGrid[i] = data[i];
 }
 
 void OcTree::construct(const XYZ& rootCenter, float rootSize, int maxLevel)
@@ -101,7 +98,10 @@ void OcTree::create(OCTNode *node, int low, int high, const XYZ& center, const f
 	node->center = center;
 	node->size = size;
 	combineSurfel(m_pGrid, low, high, node->mean, node->col, node->dir, node->area);
-	node->area = size*size*4;
+// if surfel is smaller use surfel
+	float nodearea = size*size*4;
+	if(nodearea < node->area) node->area = nodearea;
+	
 	node->index = count;
 	
 	float noi0 = float(rand()%111)/111.f;

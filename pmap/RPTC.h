@@ -15,6 +15,7 @@ public:
 	void getGrid(GRIDNId* data, unsigned& n_data) const;
 	void sampleById(unsigned idx, RGRID& data) const;
 	float getDensity() const {return m_density;}
+	float getDusty() const {return m_dusty;}
 private:
 	char m_cachename[256];
 	float m_shutter_open, m_shutter_close, m_fov;
