@@ -12,7 +12,7 @@
 
 using namespace std;
 
-Z3DTexture::Z3DTexture() : m_pTree(0), m_sh(0), m_pGrid(0) 
+Z3DTexture::Z3DTexture() : m_pTree(0), m_sh(0), m_pGrid(0),m_pId(0)
 {
 	raster = new CubeRaster();
 	m_sh = new sphericalHarmonics();
@@ -25,6 +25,7 @@ Z3DTexture::~Z3DTexture()
 	if(m_pTree) delete m_pTree;
 	if(m_sh) delete m_sh;
 	if(m_pGrid) delete[] m_pGrid;
+	if(m_pId) delete[] m_pId;
 	delete raster;
 }
 
@@ -34,6 +35,12 @@ void Z3DTexture::setGrid(RGRID* data, int n_data)
 	if(m_pTree) delete m_pTree;
 	m_pTree = new OcTree();
 	m_pTree->setGrid(data, n_data);
+}
+
+void Z3DTexture::orderGridData(unsigned* data, int n_data)
+{
+	m_pTree->orderGridData(data, n_data);
+	m_pId = data;
 }
 
 char Z3DTexture::load(const char* filename)
@@ -51,7 +58,8 @@ char Z3DTexture::load(const char* filename)
 	
 	m_pGrid = new RGRID[ngrid];
 	infile.read((char*)m_pGrid, sizeof(RGRID)*ngrid);
-	
+	m_pId = new unsigned[ngrid];
+	infile.read((char*)m_pId,4*ngrid);
 	m_pTree = new OcTree();
 	m_pTree->setGrid(m_pGrid, ngrid);
 	m_pTree->load(infile);
@@ -109,7 +117,7 @@ void Z3DTexture::save(const char* filename)
 	int ngrid = m_pTree->getNumGrid();
 	outfile.write((char*)&ngrid,sizeof(int));
 	outfile.write((char*)m_pGrid,sizeof(RGRID)*ngrid);
-	
+	outfile.write((char*)m_pId,4*ngrid);
 	m_pTree->save(outfile);
 	
 // record voxel arributes	

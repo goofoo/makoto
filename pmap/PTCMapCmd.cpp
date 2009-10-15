@@ -165,6 +165,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	}
 	
 	RGRID *buf = new RGRID[npt];
+	unsigned *idxb = new unsigned[npt];
 	
 	list.reset();
 	for(;!list.isDone();list.next()) {
@@ -178,6 +179,9 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		
 		MVectorArray velarr;
 		ps.velocity( velarr );
+		
+		MIntArray ids;
+		ps.particleIds(ids);
        
 		for(unsigned i=0; i<positions.length(); i++,acc++ ) {
 			buf[acc].pos.x = positions[i].x;
@@ -188,12 +192,14 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 			buf[acc].nor.z = velarr[i].z;
 			buf[acc].area = def_area;
 			buf[acc].col = XYZ(1,1,0);
+			idxb[acc] = ids[i];
 		}
 	}
 
 	Z3DTexture* tree = new Z3DTexture();
 	tree->setGrid(buf, npt);
 	tree->constructTree(root_center, root_size, max_level);
+	tree->orderGridData(idxb, npt);
 	MGlobal::displayInfo(MString(" num grid ")+ tree->getNumGrid());
 	MGlobal::displayInfo(MString(" num voxel ")+ tree->getNumVoxel());
 	MGlobal::displayInfo(MString(" max level ")+ tree->getMaxLevel());

@@ -76,9 +76,14 @@ void OcTree::setGrid(RGRID* data, int n_data)
 {
 	num_grid = n_data;
 	m_pGrid =data;
+}
 
-	//m_pGrid = new RGRID[n_data];
-	//for(int i=0; i<n_data; i++) m_pGrid[i] = data[i];
+void OcTree::orderGridData(unsigned* data, int n_data)
+{
+	unsigned* tmp = new unsigned[n_data];
+	for(int i=0; i< n_data; i++) tmp[i] = data[i];
+	for(int i=0; i< n_data; i++) data[i] = tmp[idBuf[i]];
+	delete[] tmp;
 }
 
 void OcTree::construct(const XYZ& rootCenter, float rootSize, int maxLevel)
@@ -584,7 +589,7 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 	else detail = size/f_fieldOfView*1024;
 
 	float r;
-	
+
 	if(detail < 9) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
@@ -611,7 +616,7 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 		gBase::drawSplatAt(node->mean, viewdir, r);
 		return;
 	}
-	
+
 	if(node->isLeaf) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {

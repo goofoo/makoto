@@ -32,6 +32,7 @@ public:
 	~Z3DTexture();
 	
 	void setGrid(RGRID* data, int n_data);
+	void orderGridData(unsigned* data, int n_data);
 	char load(const char* filename);
 	void constructTree(const XYZ& rootCenter, float rootSize, int maxLevel);
 
@@ -63,5 +64,6 @@ private:
 	OcTree* m_pTree;
 	TRIDTexSHList attrib_sh;
 	RGRID* m_pGrid;
+	unsigned* m_pId;
 	CubeRaster* raster;
 };

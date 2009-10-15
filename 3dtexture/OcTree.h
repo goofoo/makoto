@@ -89,6 +89,7 @@ public:
 	void load(ifstream& file, OCTNode *node);
 	char loadGrid(const char* filename);
 	void setGrid(RGRID* data, int n_data);
+	void orderGridData(unsigned* data, int n_data);
 	
 	unsigned getNumGrid() const {return num_grid;}
 	unsigned getNumVoxel() const {return num_voxel;}
