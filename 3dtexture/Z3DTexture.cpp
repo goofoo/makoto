@@ -258,3 +258,13 @@ void Z3DTexture::setProjection(MATRIX44F cameraspace, float fov, int iperspectiv
 	cameraspaceinv.inverse();
 	m_pTree->setProjection(cameraspaceinv, fov, iperspective);
 }
+
+SHB3COEFF* Z3DTexture::getNamedSH(const char* name)
+{
+	for(unsigned i=0; i < attrib_sh.size(); i++) {
+		if(attrib_sh[i]->name == name) {
+			return attrib_sh[i]->data;
+		}
+	}
+	return 0;
+}

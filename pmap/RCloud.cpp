@@ -64,9 +64,19 @@ void RCloud::emit()
 		//rr += (noi - 0.5f)*rr*0.1f;
 		po[i] = XYZ(rr);
 	}
+	RtToken keys[32];
+	keys[0] = "P"; keys[1] = "width"; keys[2] = "Os";
 	
-	RiPoints(numDot, "P", (RtPointer)pp, "width", (RtPointer)pw, "Os", (RtPointer)po, RI_NULL);
+	RtPointer vals[32];
+	vals[0] = (RtPointer)pp; vals[1] = (RtPointer)pw; vals[2] = (RtPointer)po;
+	
+	keys[3] = "constant color keysh0";
+	RtColor keysh0 = {coe0[0].x, coe0[0].y, coe0[0].z};
+	vals[3] = (RtPointer)&keysh0;
+	
+	RiPointsV(numDot,4,keys,vals);
 	
 	delete[] pp;
+	delete[] pw;
 	delete[] po;
 }

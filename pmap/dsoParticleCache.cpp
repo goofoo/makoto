@@ -44,6 +44,9 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 	data->getGrid(pool, real_nptc);
 	printf("n ptc real %d", real_nptc);
 	
+	SHB3COEFF* keySH = data->getNamedSH("key_lighting");
+	SHB3COEFF* backSH = data->getNamedSH("back_lighting");
+	
 	for(unsigned i=0; i< real_nptc; i++) {
 		
 		realdata = new RCloud();
@@ -58,6 +61,9 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 		
 		realdata->setDetail(pool[i].detail);
 		realdata->setId(pool[i].gridId);
+		
+		realdata->setCoe0(keySH[pool[i].idx].value);
+		realdata->setCoe1(backSH[pool[i].idx].value);
 			
 		RiTransformBegin(); 
 			

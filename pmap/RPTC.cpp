@@ -54,3 +54,8 @@ void RPTC::sampleById(unsigned idx, RGRID& data) const
 {
 	pCache->getGridById(idx, data);
 }
+
+SHB3COEFF* RPTC::getNamedSH(const char* name)
+{
+	return pCache->getNamedSH(name);
+}

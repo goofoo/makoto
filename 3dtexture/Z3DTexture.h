@@ -59,6 +59,7 @@ public:
 	void getLODGrid(GRIDNId* data, unsigned& n_data) const;
 	void getGridById(unsigned idx, RGRID& data) const;
 	void setProjection(MATRIX44F cameraspace, float fov, int iperspective);
+	SHB3COEFF* getNamedSH(const char* name);
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
