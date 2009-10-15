@@ -4,10 +4,28 @@ import sys, math
 
 kPluginCmdName="pmapVizCacheGeo"
 
+def findNodeByName(name):
+	it = OpenMaya.MItDag(OpenMaya.MItDag.kDepthFirst)
+	while it.isDone() == 0:
+		res = it.item()
+		fnode = OpenMaya.MFnDagNode(res)
+		if(fnode.fullPathName()==name):
+			return res;
+		it.next()
+		
+def findPathByPartialName(name):
+	res = OpenMaya.MDagPath()
+	it = OpenMaya.MItDag(OpenMaya.MItDag.kDepthFirst)
+	while it.isDone() == 0:
+		it.getPath(res)
+		fnode = OpenMaya.MFnDagNode(res)
+		if(fnode.partialPathName()==name):
+			return res;
+		it.next()
+
 # command
 class scriptedCommand(OpenMayaMPx.MPxCommand):
 	def __init__(self):
-		self.onode = OpenMaya.MObject()
 		OpenMayaMPx.MPxCommand.__init__(self)
 	
 	def doIt(self, args):
@@ -20,8 +38,10 @@ class scriptedCommand(OpenMayaMPx.MPxCommand):
 			argData.getObjects( oname )
 			spl = oname[0].split(' ',8)
 			print kPluginCmdName,' emits ',spl[0]
-			self.findNode(spl[0])
-			fnode = OpenMaya.MFnDependencyNode(self.onode)
+			
+			oviz = findNodeByName(spl[0])
+			
+			fnode = OpenMaya.MFnDependencyNode(oviz)
 			# get bounding box
 			bbox = [-1,1,-1,1,-1,1]
 			plg = fnode.findPlug('boundingBoxMinX')
@@ -39,24 +59,38 @@ class scriptedCommand(OpenMayaMPx.MPxCommand):
 			# get cache path
 			plg = fnode.findPlug('cachePath')
 			scache = plg.asString()
+			# get density
+			plg = fnode.findPlug('density')
+			density = plg.asFloat()
+			# get dusty
+			plg = fnode.findPlug('dusty')
+			dusty = plg.asFloat()
+			
 			print '  render pass: ',spl[1]
 			print '  frame: ',spl[2]
 			print '  shutters: ',spl[3],' ',spl[4]
 			print '  is shadow pass: ',spl[5]
 			print '  fps: ',spl[6]
 			print '  camera: ',spl[7]
-			sp = 'Procedural \\"DynamicLoad\\" [\\"particleCacheProcedural.so\\" \\"%s.%s.pmap\\"] [%f %f %f %f %f %f]\\n' % (scache, spl[2], bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5])
+			
+			ocam = findPathByPartialName(spl[7])
+			fcam = OpenMaya.MFnCamera(ocam)
+			
+			viewDir = fcam.viewDirection( OpenMaya.MSpace.kWorld )
+			eyePos = fcam.eyePoint( OpenMaya.MSpace.kWorld )
+			rightDir = fcam.rightDirection( OpenMaya.MSpace.kWorld);
+			upDir = fcam.upDirection( OpenMaya.MSpace.kWorld );
+			
+			ipersp = 1
+			fov = fcam.horizontalFieldOfView()
+			fov = fov/3.1415927*180;
+			if fcam.isOrtho():
+				ipersp = 0
+				fov = fcam.orthoWidth()
+			
+			sp = 'Procedural \\"DynamicLoad\\" [\\"particleCacheProcedural.so\\" \\"%s.%s.pmap %f %f %s %s 0 %s %f %d %f %f %f 0 %f %f %f 0 %f %f %f 0 %f %f %f 1\\"] [%f %f %f %f %f %f]\\n' % (scache, spl[2], density, dusty, spl[3], spl[4], spl[5], fov, ipersp, -rightDir.x, -rightDir.y, -rightDir.z, upDir.x, upDir.y, upDir.z, viewDir.x, viewDir.y, viewDir.z, eyePos.x, eyePos.y, eyePos.z, bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5])
 			asp = 'RiArchiveRecord -m "verbatim" -t "'+sp+'"'
 			OpenMaya.MGlobal.executeCommand(asp)
-	
-	def findNode(self, name):
-		it = OpenMaya.MItDag(OpenMaya.MItDag.kDepthFirst)
-		while it.isDone() == 0:
-			self.onode = it.item()
-        		fnode = OpenMaya.MFnDagNode(self.onode)
-			if(fnode.fullPathName()==name):
-				return;
-			it.next()
 
 			
 # Creator

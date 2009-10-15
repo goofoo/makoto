@@ -7,6 +7,8 @@
 		addToTargets = (
 			D2AAC0620554660B00DB518D /* ParticleMap */,
 		);
+		breakpoints = (
+		);
 		codeSenseManager = 7FE58B9A0FB61EA800187112 /* Code sense */;
 		perUserDictionary = {
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -116,6 +118,11 @@
 			7F7DC2CE1086EF6100A86AAE /* PBXTextBookmark */ = 7F7DC2CE1086EF6100A86AAE /* PBXTextBookmark */;
 			7F7DC2CF1086EF6100A86AAE /* PBXTextBookmark */ = 7F7DC2CF1086EF6100A86AAE /* PBXTextBookmark */;
 			7F7DC2D01086EF6100A86AAE /* PBXTextBookmark */ = 7F7DC2D01086EF6100A86AAE /* PBXTextBookmark */;
+			7F7DC2D61086F83500A86AAE /* PBXTextBookmark */ = 7F7DC2D61086F83500A86AAE /* PBXTextBookmark */;
+			7F7DC2D71086F83500A86AAE /* PBXTextBookmark */ = 7F7DC2D71086F83500A86AAE /* PBXTextBookmark */;
+			7F7DC2D81086F83500A86AAE /* PBXTextBookmark */ = 7F7DC2D81086F83500A86AAE /* PBXTextBookmark */;
+			7F7DC2D91086F83500A86AAE /* PBXTextBookmark */ = 7F7DC2D91086F83500A86AAE /* PBXTextBookmark */;
+			7F7DC2DA1086F83500A86AAE /* PBXTextBookmark */ = 7F7DC2DA1086F83500A86AAE /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -153,7 +160,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 82";
 		rLen = 0;
-		rLoc = 1843;
+		rLoc = 1810;
 		rType = 0;
 		vrLen = 833;
 		vrLoc = 1275;
@@ -193,7 +200,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 618";
 		rLen = 0;
-		rLoc = 17693;
+		rLoc = 17397;
 		rType = 0;
 		vrLen = 1108;
 		vrLoc = 16952;
@@ -273,7 +280,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 618";
 		rLen = 0;
-		rLoc = 17693;
+		rLoc = 17397;
 		rType = 0;
 		vrLen = 1108;
 		vrLoc = 16952;
@@ -343,7 +350,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 618";
 		rLen = 0;
-		rLoc = 17693;
+		rLoc = 17397;
 		rType = 0;
 		vrLen = 1108;
 		vrLoc = 16952;
@@ -393,7 +400,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 618";
 		rLen = 0;
-		rLoc = 17693;
+		rLoc = 17397;
 		rType = 0;
 		vrLen = 1108;
 		vrLoc = 16952;
@@ -433,7 +440,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 86";
 		rLen = 0;
-		rLoc = 1841;
+		rLoc = 1808;
 		rType = 0;
 		vrLen = 867;
 		vrLoc = 1454;
@@ -483,7 +490,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 86";
 		rLen = 0;
-		rLoc = 1841;
+		rLoc = 1808;
 		rType = 0;
 		vrLen = 867;
 		vrLoc = 1454;
@@ -523,7 +530,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 86";
 		rLen = 0;
-		rLoc = 1841;
+		rLoc = 1808;
 		rType = 0;
 		vrLen = 867;
 		vrLoc = 1454;
@@ -533,7 +540,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 619";
 		rLen = 0;
-		rLoc = 17693;
+		rLoc = 17397;
 		rType = 0;
 		vrLen = 1190;
 		vrLoc = 16982;
@@ -578,6 +585,56 @@
 		vrLen = 1420;
 		vrLoc = 491;
 	};
+	7F7DC2D61086F83500A86AAE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 611";
+		rLen = 0;
+		rLoc = 17397;
+		rType = 0;
+		vrLen = 886;
+		vrLoc = 17121;
+	};
+	7F7DC2D71086F83500A86AAE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FA793B71085004600627692 /* OcTree.h */;
+		name = "OcTree.h: 170";
+		rLen = 0;
+		rLoc = 4779;
+		rType = 0;
+		vrLen = 1941;
+		vrLoc = 2084;
+	};
+	7F7DC2D81086F83500A86AAE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81224610711C4D0022BF82 /* Z3DTexture.cpp */;
+		name = "Z3DTexture.cpp: 258";
+		rLen = 0;
+		rLoc = 5877;
+		rType = 0;
+		vrLen = 889;
+		vrLoc = 873;
+	};
+	7F7DC2D91086F83500A86AAE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81226F10711F040022BF82 /* PTCMapCmd.cpp */;
+		name = "PTCMapCmd.cpp: 202";
+		rLen = 0;
+		rLoc = 6112;
+		rType = 0;
+		vrLen = 1197;
+		vrLoc = 5634;
+	};
+	7F7DC2DA1086F83500A86AAE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FA793C11085004600627692 /* Z3DTexture.h */;
+		name = "Z3DTexture.h: 69";
+		rLen = 0;
+		rLoc = 1926;
+		rType = 0;
+		vrLen = 1427;
+		vrLoc = 499;
+	};
 	7F81222D10711B660022BF82 /* QuickSort.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {546, 3276}}";
@@ -596,9 +653,9 @@
 	};
 	7F81224610711C4D0022BF82 /* Z3DTexture.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {692, 3528}}";
-			sepNavSelRange = "{1293, 0}";
-			sepNavVisRange = "{772, 912}";
+			sepNavIntBoundsRect = "{{0, 0}, {495, 3640}}";
+			sepNavSelRange = "{5877, 0}";
+			sepNavVisRange = "{873, 889}";
 			sepNavWindowFrame = "{{509, 103}, {554, 661}}";
 		};
 	};
@@ -644,10 +701,9 @@
 	};
 	7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {
 		uiCtxt = {
-			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{18815, 4314}\";\n        },\n                {\n            r = \"{24118, 1682}\";\n        },\n                {\n            r = \"{33182, 3999}\";\n        }\n    );\n    r = \"{0, 37188}\";\n}";
-			sepNavIntBoundsRect = "{{0, 0}, {878, 13272}}";
-			sepNavSelRange = "{17693, 0}";
-			sepNavVisRange = "{16982, 1190}";
+			sepNavIntBoundsRect = "{{0, 0}, {692, 18942}}";
+			sepNavSelRange = "{17397, 0}";
+			sepNavVisRange = "{17121, 886}";
 			sepNavWindowFrame = "{{354, 99}, {621, 675}}";
 		};
 	};
@@ -658,9 +714,9 @@
 		path = /Users/jianzhang/Documents/plankton/3dtexture/OcTree.h;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {710, 2338}}";
-			sepNavSelRange = "{2066, 46}";
-			sepNavVisRange = "{1448, 1729}";
+			sepNavIntBoundsRect = "{{0, 0}, {770, 2002}}";
+			sepNavSelRange = "{4779, 0}";
+			sepNavVisRange = "{2084, 1941}";
 		};
 	};
 	7FA793C11085004600627692 /* Z3DTexture.h */ = {
@@ -671,8 +727,8 @@
 		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {650, 966}}";
-			sepNavSelRange = "{1883, 5}";
-			sepNavVisRange = "{491, 1420}";
+			sepNavSelRange = "{1926, 0}";
+			sepNavVisRange = "{499, 1427}";
 		};
 	};
 	7FE58B990FB61EA800187112 /* Source Control */ = {

@@ -75,7 +75,7 @@ char OcTree::loadGrid(const char* filename)
 void OcTree::setGrid(RGRID* data, int n_data)
 {
 	num_grid = n_data;
-	m_pGrid =data;
+	m_pGrid = data;
 }
 
 void OcTree::orderGridData(unsigned* data, int n_data)
@@ -106,7 +106,10 @@ void OcTree::create(OCTNode *node, int low, int high, const XYZ& center, const f
 	node->center = center;
 	node->size = size;
 	combineSurfel(m_pGrid, low, high, node->mean, node->col, node->dir, node->area);
-	node->area = size*size*4;
+// if surfel is smaller use surfel
+	float nodearea = size*size*4;
+	if(nodearea < node->area) node->area = nodearea;
+	
 	node->index = count;
 	
 	float noi0 = float(rand()%111)/111.f;
@@ -492,6 +495,9 @@ void OcTree::draw()
 void OcTree::draw(const XYZ& viewdir)
 {
 	drawSurfel(root, viewdir);
+	//glBegin(GL_LINES);
+	//drawNeighbour(root);
+	//glEnd();
 }
 
 void OcTree::drawNeighbour(const OCTNode *node)
@@ -499,7 +505,7 @@ void OcTree::drawNeighbour(const OCTNode *node)
 	if(!node) return;
 	if(node->isLeaf) {
 		for(unsigned i= node->low; i<= node->high; i++) {
-			glColor3f(node->col.x, node->col.y, node->col.z);
+			glColor3f(1,0,0);
 			glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
 			
 			XYZ vneib(0,1,0);
@@ -539,7 +545,7 @@ void OcTree::drawCube(const OCTNode *node)
 	if(f_isPersp) detail = size/(pcam.z*f_fieldOfView)*1024;
 	else detail = size/f_fieldOfView*1024;
 	
-	if(detail < 9 || node->isLeaf) {
+	if(detail < 8 || node->isLeaf) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
 				XYZ inc(0);
@@ -583,14 +589,26 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 	if(pcam.z + size*2 < 0) return;
 	if(pcam.z < 0) pcam.z = -pcam.z;
 	
+	// sum of grid and biggest one
+	float sumarea =0;
+	unsigned ibig = node->low;
+	float fbig = m_pGrid[ibig].area;
+	for(unsigned i= node->low; i<= node->high; i++) {
+		sumarea += m_pGrid[i].area;
+		if(m_pGrid[i].area > fbig) {
+			ibig = i;
+			fbig = m_pGrid[i].area;
+		}
+	}
+
+	float r = sqrt(sumarea * 0.25);
+	
 	int detail;
 	
 	if(f_isPersp) detail = size/(pcam.z*f_fieldOfView)*1024;
 	else detail = size/f_fieldOfView*1024;
-
-	float r;
-
-	if(detail < 9) {
+	
+	if(detail < 8) {
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
 				XYZ inc(0);
@@ -608,12 +626,9 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 				glColor3f(ov, ov, ov);
 			}
 		}
-// sum of grid
-		float sumarea =0;
-		for(unsigned i= node->low; i<= node->high; i++) sumarea += m_pGrid[i].area;
 
-		r = sqrt(sumarea * 0.25);
 		gBase::drawSplatAt(node->mean, viewdir, r);
+
 		return;
 	}
 
@@ -1111,29 +1126,80 @@ void OcTree::setHDRLighting(XYZ* coe)
 	for(int i = 0; i < SH_N_BASES; i++) m_hdrCoe[i] = coe[i];
 }
 
-void OcTree::leafHighLow(HighNLow* res) const
+void OcTree::LODGrid(GRIDNId* res, unsigned& n_data) const
 {
-	int count = 0;
-	leafHighLow(root, count, res);
+	n_data = 0;
+	LODGrid(root, n_data, res);
 }
 
-void OcTree::leafHighLow(const OCTNode *node, int& count, HighNLow* res) const
+void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 {
 	if(!node) return;
-	if(node->isLeaf) {
-		res[count].low = node->low;
-		res[count].high = node->high;
+		XYZ cen = node->center;
+	float size = node->size;
+	
+	XYZ pcam = cen;
+	f_cameraSpaceInv.transform(pcam);
+	
+	if(pcam.z + size*2 < 0) return;
+	if(pcam.z < 0) pcam.z = -pcam.z;
+	
+	float portWidth;
+	if(f_isPersp) portWidth = (pcam.z+0.000001)*f_fieldOfView;
+	else portWidth = f_fieldOfView;
+	
+	if(pcam.x - size > portWidth) return;
+	if(pcam.x + size < -portWidth) return;
+	if(pcam.y - size > portWidth) return;
+	if(pcam.y + size < -portWidth) return;
+	
+	// sum of grid and biggest one
+	float sumarea =0;
+	unsigned ibig = node->low;
+	float fbig = m_pGrid[ibig].area;
+	for(unsigned i= node->low; i<= node->high; i++) {
+		sumarea += m_pGrid[i].area;
+		if(m_pGrid[i].area > fbig) {
+			ibig = i;
+			fbig = m_pGrid[i].area;
+		}
+	}
+
+	float r = sqrt(sumarea * 0.25);
+	
+	int detail;
+	
+	if(f_isPersp) detail = r/portWidth*1024;
+	else detail = r/portWidth*1024;
+	
+	if(detail < 8) {
+		res[count].grid.pos = node->mean;
+		res[count].grid.nor = node->dir;
+		res[count].grid.col = node->col;
+		res[count].grid.area = sumarea;
+		res[count].idx = node->index;
+		res[count].detail = detail;
 		count++;
+		return;
+	}
+	
+	if(node->isLeaf) {
+		for(unsigned i= node->low; i<= node->high; i++) {
+			res[count].grid = m_pGrid[i];
+			res[count].idx = node->index;
+			res[count].detail = detail;
+			count++;
+		}
 	}
 	else {
-		leafHighLow(node->child000, count, res);
-		leafHighLow(node->child001, count, res);
-		leafHighLow(node->child010, count, res);
-		leafHighLow(node->child011, count, res);
-		leafHighLow(node->child100, count, res);
-		leafHighLow(node->child101, count, res);
-		leafHighLow(node->child110, count, res);
-		leafHighLow(node->child111, count, res);
+		LODGrid(node->child000, count, res);
+		LODGrid(node->child001, count, res);
+		LODGrid(node->child010, count, res);
+		LODGrid(node->child011, count, res);
+		LODGrid(node->child100, count, res);
+		LODGrid(node->child101, count, res);
+		LODGrid(node->child110, count, res);
+		LODGrid(node->child111, count, res);
 	}
 }
 

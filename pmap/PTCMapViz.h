@@ -46,11 +46,12 @@ public:
 	static  	MObject		frame;
 	static  	MObject 	aminframe;
 	static  	MObject 	amaxframe;
+	static      MObject     adensity;
+	static      MObject     adusty;
 	static  	MObject 	aviewattrib;
 	static      MObject     adrawtype;
 	static MObject aincoe;
 	static      MObject     aoutval;
-	//static      MObject     aposition;
 private:
 	int f_type;
 	Z3DTexture* tree;

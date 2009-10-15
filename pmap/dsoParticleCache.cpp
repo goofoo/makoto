@@ -33,46 +33,52 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 
 	RCloud* realdata;
 	RtBound bound = {-.5, .5, -.5, .5, -.5, .5}; 
-	RGRID aptc;
+	//RGRID aptc;
 	float r;
 	
-	unsigned num_range = data->getNumData();
-	HighNLow* range = new HighNLow[num_range];
-	data->getIndex(range);
+	unsigned num_ptc = data->getNumGrid();
+	printf("n ptc %d", num_ptc);
 	
-	for(unsigned i=0; i< num_range; i++) {
-		for(unsigned j=range[i].low; j<=range[i].high; j++) {
-			realdata = new RCloud();
+	GRIDNId* pool = new GRIDNId[num_ptc];
+	unsigned real_nptc;
+	data->getGrid(pool, real_nptc);
+	printf("n ptc real %d", real_nptc);
+	
+	for(unsigned i=0; i< real_nptc; i++) {
+		
+		realdata = new RCloud();
 			
-			realdata->setDensity(data->getDensity());
+		realdata->setDensity(data->getDensity());
+		realdata->setDusty(data->getDusty());
 			
-			data->sampleById(j, aptc);
+		r = sqrt(pool[i].grid.area*0.25);
 			
-			r = sqrt(aptc.area*0.25);
+		realdata->setRadius(r);
+		r+= r;
+		
+		realdata->setDetail(pool[i].detail);
 			
-			realdata->setRadius(r);
-			r+= r;
+		RiTransformBegin(); 
 			
-			RiTransformBegin(); 
+		RiTranslate(pool[i].grid.pos.x, pool[i].grid.pos.y, pool[i].grid.pos.z);
 			
-			RiTranslate(aptc.pos.x, aptc.pos.y, aptc.pos.z);
+		bound[0] = -r; bound[1] = r;
+		bound[2] = -r; bound[3] = r;
+		bound[4] = -r; bound[5] = r;
 			
-			bound[0] = -r; bound[1] = r;
-			bound[2] = -r; bound[3] = r;
-			bound[4] = -r; bound[5] = r;
+		RiProcedural(realdata, bound, Subdivide_real, Free_real); 
 			
-			RiProcedural(realdata, bound, Subdivide_real, Free_real); 
-			
-			RiTransformEnd();
-		}
+		RiTransformEnd();
+
 	}
-	delete[] range;
+	delete[] pool;
+	
 } 
 
 export RtVoid Subdivide_real(RtPointer blinddata, RtFloat detailsize) 
 { 
 	RCloud *data = static_cast<RCloud*>(blinddata);
-	data->emit(detailsize);
+	data->emit();
 }
  
 export RtVoid Free(RtPointer blinddata) 

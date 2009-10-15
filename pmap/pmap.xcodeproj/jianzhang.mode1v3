@@ -216,7 +216,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7DC2CC1086EF6100A86AAE</string>
+						<string>7F7DC2D61086F83500A86AAE</string>
 						<key>history</key>
 						<array>
 							<string>7F7DC2CB1086EF6100A86AAE</string>
@@ -256,7 +256,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7DC2CD1086EF6100A86AAE</string>
+						<string>7F7DC2D71086F83500A86AAE</string>
 						<key>history</key>
 						<array>
 							<string>7F1A05F11086A08500B0AFD2</string>
@@ -296,7 +296,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7DC2CE1086EF6100A86AAE</string>
+						<string>7F7DC2D81086F83500A86AAE</string>
 						<key>history</key>
 						<array>
 							<string>7F7DC2B11086E8AC00A86AAE</string>
@@ -336,7 +336,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7DC2CF1086EF6100A86AAE</string>
+						<string>7F7DC2D91086F83500A86AAE</string>
 						<key>history</key>
 						<array>
 							<string>7F7DC2AF1086E8AC00A86AAE</string>
@@ -376,7 +376,7 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7DC2D01086EF6100A86AAE</string>
+						<string>7F7DC2DA1086F83500A86AAE</string>
 						<key>history</key>
 						<array>
 							<string>7F1A05F31086A08500B0AFD2</string>
@@ -722,13 +722,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7FE58BA50FB61F9000187112</string>
 		<string>7F1A05D21086995600B0AFD2</string>
 		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 		<string>7F1A05D61086995600B0AFD2</string>
 		<string>7F1A05CE1086995600B0AFD2</string>
 		<string>7F1A05DE1086995600B0AFD2</string>
 		<string>7F1A05DA1086995600B0AFD2</string>
+		<string>7FE58BA50FB61F9000187112</string>
 	</array>
 	<key>WindowString</key>
 	<string>553 178 690 397 0 0 1280 778 </string>
@@ -747,12 +747,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>OcTree.cpp</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -819,7 +821,7 @@
 			<key>WindowToolGUID</key>
 			<string>7FE58BA50FB61F9000187112</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
