@@ -63,7 +63,6 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
-		float dens = data.inputValue( adensity ).asFloat();
 	    
 		int hascoe = 0;
 		MVectorArray vcoe = zWorks::getVectorArrayAttr(data, aincoe);

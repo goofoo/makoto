@@ -89,6 +89,7 @@ void OcTree::orderGridData(unsigned* data, int n_data)
 void OcTree::construct(const XYZ& rootCenter, float rootSize, int maxLevel)
 {
 	idBuf = new unsigned[num_grid];
+	for(int i=0; i< num_grid; i++) idBuf[i] = i;
 	
 	max_level = maxLevel;
 
