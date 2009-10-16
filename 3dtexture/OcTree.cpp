@@ -112,11 +112,12 @@ void OcTree::create(OCTNode *node, int low, int high, const XYZ& center, const f
 	if(nodearea < node->area) node->area = nodearea;
 	
 	node->index = count;
-	
+/*	
 	float noi0 = float(rand()%111)/111.f;
 	float noi1 = float(rand()%91)/91.f;
 	float noi2 = float(rand()%131)/131.f;
 	node->col = XYZ(noi0, noi1, noi2);
+*/
 	count++;
 	
 	if(level == max_level) {
@@ -353,6 +354,8 @@ void OcTree::save(ofstream& file, OCTNode *node) const
 	file.write((char*)&node->high,sizeof(unsigned));
 	file.write((char*)&node->center,sizeof(XYZ));
 	file.write((char*)&node->mean,sizeof(XYZ));
+	file.write((char*)&node->col,sizeof(XYZ));
+	file.write((char*)&node->dir,sizeof(XYZ));
 	file.write((char*)&node->size,sizeof(float));
 	file.write((char*)&node->area,sizeof(float));
 	file.write((char*)&node->child000,sizeof(node->child000));
@@ -427,6 +430,8 @@ void OcTree::load(ifstream& file, OCTNode *node)
 	file.read((char*)&node->high,sizeof(unsigned));
 	file.read((char*)&node->center,sizeof(XYZ));
 	file.read((char*)&node->mean,sizeof(XYZ));
+	file.read((char*)&node->col,sizeof(XYZ));
+	file.read((char*)&node->dir,sizeof(XYZ));
 	file.read((char*)&node->size,sizeof(float));
 	file.read((char*)&node->area,sizeof(float));
 	file.read((char*)&node->child000,sizeof(node->child000));

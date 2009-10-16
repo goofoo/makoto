@@ -58,6 +58,7 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 			
 		realdata->setRadius(r);
 		r *= 2.2;
+		realdata->setColor(pool[i].grid.col);
 		
 		realdata->setDetail(pool[i].detail);
 		realdata->setId(pool[i].gridId);

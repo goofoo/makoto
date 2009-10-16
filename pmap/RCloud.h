@@ -17,6 +17,7 @@ public:
 	void setDusty(float val) {dusty = val;}
 	void setDetail(int val) {detail = (val+1)*2;}
 	void setId(unsigned val) {idx = val;}
+	void setColor(XYZ& val) {col=val;}
 	void emit();
 	void setCoe0(const XYZ* data);
 	void setCoe1(const XYZ* data);
@@ -29,5 +30,6 @@ private:
 	unsigned idx;
 	const XYZ* coe0;
 	const XYZ* coe1;
+	XYZ col;
 };
 #endif

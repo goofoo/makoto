@@ -31,6 +31,7 @@ void RCloud::emit()
 
 	XYZ* pp = new XYZ[numDot];
 	XYZ* po = new XYZ[numDot];
+	XYZ* pc = new XYZ[numDot];
 	float* pw = new float[numDot];
 	double theta, phi;
 	float rr, noi, adens = density*5/(numDot-17);
@@ -56,15 +57,17 @@ void RCloud::emit()
 		
 		rr = adens;
 		rr += (rr*(1 - noi) - rr)*(1-dusty);
-		po[i] = XYZ(rr);
+		po[i].x = po[i].y = po[i].z = rr;
+		
+		pc[i] = col;
 	}
 	RtToken nams[32];
-	nams[0] = "P"; nams[1] = "width"; nams[2] = "Os";
+	nams[0] = "P"; nams[1] = "width"; nams[2] = "Os";nams[3] = "Cs";
 	
 	RtPointer vals[32];
-	vals[0] = (RtPointer)pp; vals[1] = (RtPointer)pw; vals[2] = (RtPointer)po;
+	vals[0] = (RtPointer)pp; vals[1] = (RtPointer)pw; vals[2] = (RtPointer)po;vals[3] = (RtPointer)pc;
 	
-	int nparam = 3;
+	int nparam = 4;
 
 	nams[nparam] = "constant color keysh0";
 	RtFloat keysh0[3] = {coe0[0].x, coe0[0].y, coe0[0].z};
@@ -146,6 +149,7 @@ void RCloud::emit()
 	delete[] pp;
 	delete[] pw;
 	delete[] po;
+	delete[] pc;
 }
 
 void RCloud::setCoe0(const XYZ* data)
