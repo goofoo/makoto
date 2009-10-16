@@ -1,5 +1,5 @@
 surface
-dusty(float Kd = 0.5;string hdrname = "/home/pan/Public/kitchen.hdr";string spacename = "object";float exposure = -4;
+dusty(uniform float Kd = 0.5;uniform string hdrname = "/home/pan/Public/kitchen.hdr";uniform string spacename = "object";uniform float exposure = 0;
 varying color keysh0 = color(1,1,1);
 varying color keysh1 = color(1,1,1);
 varying color keysh2 = color(1,1,1);

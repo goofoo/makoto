@@ -22,4 +22,4 @@ linux:
 	
 mac:
 	g++ -dynamiclib -o particleCacheProcedural.so -O3 $(DSOSRC) $(DLINCS) $(DLLIBS) -framework OpenGL
-	renderdl foo.rib
+	sudo cp particleCacheProcedural.so $(DELIGHT)/lib/
