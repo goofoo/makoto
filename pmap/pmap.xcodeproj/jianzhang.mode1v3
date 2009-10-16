@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7F045910879DCC00A93799</string>
+						<string>7F7F0483108923B000A93799</string>
 						<key>history</key>
 						<array>
-							<string>7F7DC2DE1087256500A86AAE</string>
+							<string>7F7F046910890DA700A93799</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -242,6 +242,46 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
+				<string>7F7F047910891F5800A93799</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>PTCMapViz.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7F7F047A10891F5800A93799</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>PTCMapViz.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7F7F0484108923B000A93799</string>
+						<key>history</key>
+						<array>
+							<string>7F7F047510891F4200A93799</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {607, 563}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>3 174 607 604 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
 				<string>7F1A05DA1086995600B0AFD2</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>OcTree.cpp</string>
@@ -256,10 +296,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7F045A10879DCC00A93799</string>
+						<string>7F7F0485108923B000A93799</string>
 						<key>history</key>
 						<array>
-							<string>7F7DC2DF1087256500A86AAE</string>
+							<string>7F7F046810890DA700A93799</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -296,10 +336,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7F045B10879DCC00A93799</string>
+						<string>7F7F0486108923B000A93799</string>
 						<key>history</key>
 						<array>
-							<string>7F7DC2E01087256500A86AAE</string>
+							<string>7F7F046A10890DA700A93799</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -336,10 +376,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7F045D10879DCC00A93799</string>
+						<string>7F7F0488108923B000A93799</string>
 						<key>history</key>
 						<array>
-							<string>7F7DC2E21087256500A86AAE</string>
+							<string>7F7F046C10890DA700A93799</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -376,10 +416,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F7F045E10879DCC00A93799</string>
+						<string>7F7F0489108923B000A93799</string>
 						<key>history</key>
 						<array>
-							<string>7F7DC2E31087256500A86AAE</string>
+							<string>7F7F046D10890DA700A93799</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -432,8 +472,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -480,7 +518,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>5</integer>
+									<integer>6</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -550,6 +588,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -586,9 +626,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F7F045110879D9800A93799</string>
+				<string>7F7F047710891F5800A93799</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F7F045210879D9800A93799</string>
+				<string>7F7F047810891F5800A93799</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -727,6 +767,7 @@
 		<string>7F1A05CE1086995600B0AFD2</string>
 		<string>7F1A05DE1086995600B0AFD2</string>
 		<string>7F1A05DA1086995600B0AFD2</string>
+		<string>7F7F047910891F5800A93799</string>
 		<string>7F1A05D61086995600B0AFD2</string>
 		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 	</array>
@@ -808,7 +849,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FE58BA50FB61F9000187112</string>
-				<string>7F7F045810879D9800A93799</string>
+				<string>7F7F048110891F5800A93799</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

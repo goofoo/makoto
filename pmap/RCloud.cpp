@@ -27,7 +27,7 @@ void RCloud::emit()
 {
 	int numDot = 29+detail;
 
-	if(numDot > 500) numDot = 500;
+	if(numDot > 1000) numDot = 1000;
 
 	XYZ* pp = new XYZ[numDot];
 	XYZ* po = new XYZ[numDot];

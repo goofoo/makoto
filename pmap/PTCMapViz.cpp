@@ -240,7 +240,7 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute( amaxframe );
 	
-	adensity = nAttr.create( "density", "den", MFnNumericData::kFloat, 0.4);
+	adensity = nAttr.create( "density", "den", MFnNumericData::kFloat, 1.0);
 	nAttr.setMin(0.01);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
