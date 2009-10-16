@@ -19,3 +19,8 @@ mac:
 	$(CC) -dynamiclib -o zPRT.so $(DLSRC) -I$(DELIGHT)/include -framework OpenGL
 	sudo cp zPRT.so $(DELIGHT)/shaders/
 	rm zPRT.so
+	
+linux:
+	$(CC) $(FLAG) -o zPRT.so -shared $(DLSRC) -I$(DELIGHT)/include -lGL
+	cp zPRT.so $(DELIGHT)/shaders/
+	rm zPRT.so

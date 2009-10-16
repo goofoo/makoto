@@ -44,8 +44,8 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 	data->getGrid(pool, real_nptc);
 	printf("n ptc real %d", real_nptc);
 	
-	SHB3COEFF* keySH = data->getNamedSH("key_lighting");
-	SHB3COEFF* backSH = data->getNamedSH("back_lighting");
+	const SHB3COEFF* keySH = data->getNamedSH("key_lighting");
+	const SHB3COEFF* backSH = data->getNamedSH("back_lighting");
 	
 	for(unsigned i=0; i< real_nptc; i++) {
 		

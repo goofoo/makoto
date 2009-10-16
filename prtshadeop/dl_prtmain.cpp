@@ -37,15 +37,18 @@ extern "C" SHADEOP(shl_hdr)
 	
 	XYZ* light = db->getLight();
 	
-	XYZ coeff[SH_N_BASES];
-	for(int i =0; i<SH_N_BASES; i++) coeff[i] = XYZ((float *)argv[5+i]);
+	XYZ coeff[9];
+	for(int i =0; i<9; i++) coeff[i] = XYZ((float *)argv[5+i]);
 	
 	float r=0, g=0, b=0;
-	for(int i =0; i<SH_N_BASES; i++) {
+	for(int i =0; i<9; i++) {
 		r += coeff[i].x * light[i].x;
 		g += coeff[i].y * light[i].y;
 		b += coeff[i].z * light[i].z;
 	}
+	
+	//float *in_ce = (float *)argv[5];
+	//printf("getl: %f\n", *in_ce);
 	
 	// output
 	result[0] = r; 

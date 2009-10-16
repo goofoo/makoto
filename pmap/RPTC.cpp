@@ -28,8 +28,6 @@ RPTC::RPTC(const char* parameter):pCache(0),m_density(1.f),m_dusty(.5f)
 	cameraspace.v[3][0] = m[3][0];
 	cameraspace.v[3][1] = m[3][1];
 	cameraspace.v[3][2] = m[3][2];
-	
-	printf("%f %f %f ", cameraspace.v[3][0], cameraspace.v[3][1], cameraspace.v[3][2]);
 }
 
 void RPTC::init()

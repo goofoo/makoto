@@ -18,8 +18,8 @@ public:
 	void setDetail(int val) {detail = (val+1)*2;}
 	void setId(unsigned val) {idx = val;}
 	void emit();
-	void setCoe0(XYZ* data) {coe0 = data;}
-	void setCoe1(XYZ* data) {coe1 = data;}
+	void setCoe0(const XYZ* data);
+	void setCoe1(const XYZ* data);
 	
 	void sphereRand(XYZ& q, int seed);
 private:
@@ -27,7 +27,7 @@ private:
 	FNoise noise;
 	int detail;
 	unsigned idx;
-	XYZ* coe0;
-	XYZ* coe1;
+	const XYZ* coe0;
+	const XYZ* coe1;
 };
 #endif
