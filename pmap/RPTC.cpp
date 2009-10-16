@@ -3,7 +3,7 @@
 RPTC::RPTC(const char* parameter):pCache(0),m_density(1.f),m_dusty(.5f)
 {
 	float m[4][4];
-	int n = sscanf(parameter, "%s %f %f %f %f %d %d %f %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f", 
+	sscanf(parameter, "%s %f %f %f %f %d %d %f %d %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f", 
 	m_cachename, 
 	&m_density,
 	&m_dusty,
