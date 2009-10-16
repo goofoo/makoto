@@ -797,7 +797,7 @@ void OcTree::getRootCenterNSize(XYZ& center, float&size) const
 		size = root->size;
 	}
 }
-
+/*
 void OcTree::getBBox(const RGRID* data, const int num_data, XYZ& center, float& size)
 {
 	XYZ bbmin(10000000);
@@ -820,7 +820,7 @@ void OcTree::getBBox(const RGRID* data, const int num_data, XYZ& center, float& 
 	ts = bbmax.z - center.z;
 	if(ts > size) size = ts;
 }
-/*
+
 void OcTree::splitX(const XYZ *data, const int low, const int high, const float center, int& cutat)
 {
 	if(data[low].x > center) {
