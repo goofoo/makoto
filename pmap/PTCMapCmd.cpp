@@ -182,6 +182,9 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		
 		MIntArray ids;
 		ps.particleIds(ids);
+		
+		MVectorArray cols;
+		ps.rgb(cols);
        
 		for(unsigned i=0; i<positions.length(); i++,acc++ ) {
 			buf[acc].pos.x = positions[i].x;
@@ -191,7 +194,12 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 			buf[acc].nor.y = velarr[i].y;
 			buf[acc].nor.z = velarr[i].z;
 			buf[acc].area = def_area;
-			buf[acc].col = XYZ(1,1,0);
+			if(ps.hasRgb()) {
+				buf[acc].col.x = cols[i].x;
+				buf[acc].col.y = cols[i].y;
+				buf[acc].col.z = cols[i].z;
+			}
+			else buf[acc].col = XYZ(1,1,1);
 			idxb[acc] = ids[i];
 		}
 	}
