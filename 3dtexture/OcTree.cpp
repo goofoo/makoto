@@ -1010,7 +1010,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 			
 			solidangle = m_pGrid[i].area/(ray.lengthSquare() + 0.00001);
 			
-			int nsamp = 1.5+solidangle*CUBERASTER_MAXANGLEINV;
+			int nsamp = 1+solidangle*CUBERASTER_MAXANGLEINV;
 			nsamp *= nsamp;
 			float r = sqrt(m_pGrid[i].area);
 			XYZ vnoi;
@@ -1023,7 +1023,6 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 				if(ray.lengthSquare() < node->area) continue;
 				raster->write(ray, sample_opacity/nsamp);
 			}
-			//raster->write(ray, sample_opacity);
 		}
 	}
 	else {

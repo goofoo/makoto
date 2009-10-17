@@ -21,8 +21,6 @@ public:
 	~CubeRaster();
 	
 	void clear();
-	//void write(XYZ& ray);
-	//void write(XYZ& ray, float val, float angle);
 	void write(XYZ& ray, float val);
 	void draw() const;
 	void getLight(const float& opacity, float& lighting) const;
