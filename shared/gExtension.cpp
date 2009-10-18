@@ -20,10 +20,10 @@ PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = NULL;
 PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT = NULL;
 PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT = NULL;
 
-#ifdef WIN32
+//#ifdef WIN32
 
-//PFNGLMULTITEXCOORD4FARBPROC glMultiTexCoord4fARB = NULL;
-#endif
+PFNGLMULTITEXCOORD4FARBPROC glMultiTexCoord4fARB = NULL;
+PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB = NULL;
 
 #if defined(WIN32)
 #  include <windows.h>
@@ -65,10 +65,10 @@ char gExtensionInit()
 		printf( "ERROR: One or more EXT_framebuffer_object functions were not found");
 		return 0;
 	}
-#ifdef WIN32
+//#ifdef WIN32
 	
-	//GET_EXT_POINTER(glMultiTexCoord4fARB, PFNGLMULTITEXCOORD4FARBPROC);
-#endif
+	GET_EXT_POINTER(glMultiTexCoord4fARB, PFNGLMULTITEXCOORD4FARBPROC);
+	GET_EXT_POINTER(glMultiTexCoord2fARB, PFNGLMULTITEXCOORD2FARBPROC);
 	return 1;
 }
 

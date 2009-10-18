@@ -41,9 +41,9 @@ extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT;
 extern PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT;
 extern PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT;
 
-#ifdef WIN32
-//extern PFNGLMULTITEXCOORD4FARBPROC		glMultiTexCoord4fARB;
-#endif
+
+extern PFNGLMULTITEXCOORD4FARBPROC		glMultiTexCoord4fARB;
+extern PFNGLMULTITEXCOORD2FARBPROC		glMultiTexCoord2fARB;
 
 char gExtensionInit();
 const char* getExtension();
