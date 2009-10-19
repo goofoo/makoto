@@ -1193,8 +1193,9 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 			fbig = m_pGrid[i].area;
 		}
 	}
-
+	
 	float r = sqrt(sumarea * 0.25);
+	//float avg_r = r/(node->high - node->low + 1);
 	
 	int detail;
 	
@@ -1218,6 +1219,7 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 			res[count].grid = m_pGrid[i];
 			res[count].idx = node->index;
 			res[count].detail = detail;
+			//res[count].detail = sqrt(m_pGrid[i].area * 0.25)/avg_r*detail;
 			res[count].gridId = t_grid_id[i];
 			count++;
 		}
