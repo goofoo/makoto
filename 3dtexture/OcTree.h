@@ -97,7 +97,7 @@ public:
 	unsigned getNumVoxel() const {return num_voxel;}
 	unsigned getNumLeaf() const {return num_leaf;}
 	short getMaxLevel() const {return max_level;}
-	int hasColor() const;
+	//int hasColor() const;
 	
 	void draw();
 	void draw(const XYZ& viewdir);

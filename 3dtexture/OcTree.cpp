@@ -538,20 +538,29 @@ void OcTree::drawCube(const OCTNode *node)
 {
 	if(!node) return;
 	XYZ cen = node->center;
-	float size = node->size;
+	float size2 = node->size*2;
 	
 	XYZ pcam = cen;
 	f_cameraSpaceInv.transform(pcam);
 	
-	if(pcam.z + size*2 < 0) return;
+	if(pcam.z + size2 < 0) return;
 
-	float depthz = pcam.z - size;
+	float depthz = pcam.z - node->size;
 	if(depthz < 0.01) depthz = 0.01;
+	
+	float portWidth;
+	if(f_isPersp) portWidth = depthz*f_fieldOfView;
+	else portWidth = f_fieldOfView;
+	
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
 	
 	int detail;
 	
-	if(f_isPersp) detail = size/(depthz*f_fieldOfView)*1024;
-	else detail = size/f_fieldOfView*1024;
+	if(f_isPersp) detail = node->size/portWidth*1024;
+	else detail = node->size/portWidth*1024;
 	
 	if(detail < 8 || node->isLeaf) {
 		if(m_pSHBuf) {
@@ -571,7 +580,7 @@ void OcTree::drawCube(const OCTNode *node)
 				glColor3f(ov, ov, ov);
 			}
 		}
-		gBase::drawBox(cen, size);
+		gBase::drawBox(cen, node->size);
 		return;
 	}
 	
@@ -589,15 +598,24 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 {
 	if(!node) return;
 	XYZ cen = node->center;
-	float size = node->size;
+	float size2 = node->size*2;
 	
 	XYZ pcam = cen;
 	f_cameraSpaceInv.transform(pcam);
 	
-	if(pcam.z + size*2 < 0) return;
+	if(pcam.z + size2 < 0) return;
 	
-	float depthz = pcam.z - size;
+	float depthz = pcam.z - node->size;
 	if(depthz < 0.01) depthz = 0.01;
+	
+	float portWidth;
+	if(f_isPersp) portWidth = depthz*f_fieldOfView;
+	else portWidth = f_fieldOfView;
+	
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
 	
 	// sum of grid and biggest one
 	float sumarea =0;
@@ -615,8 +633,8 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 	
 	int detail;
 	
-	if(f_isPersp) detail = size/(depthz*f_fieldOfView)*1024;
-	else detail = size/f_fieldOfView*1024;
+	if(f_isPersp) detail = r/portWidth*1024;
+	else detail = r/portWidth*1024;
 	
 	if(detail < 8) {
 		if(m_pSHBuf) {
@@ -789,7 +807,7 @@ void OcTree::drawCube(const OCTNode *node, const PerspectiveView *pview)
 		drawCube(node->child111,pview);
 	}
 }
-*/
+
 int OcTree::hasColor() const
 {
 	if(dThree.size()) 
@@ -798,7 +816,7 @@ int OcTree::hasColor() const
 				return i;
 	return -1;
 }
-
+*/
 void OcTree::getRootCenterNSize(XYZ& center, float&size) const
 {
 	if(root) {
@@ -1144,25 +1162,25 @@ void OcTree::LODGrid(GRIDNId* res, unsigned& n_data) const
 void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 {
 	if(!node) return;
-		XYZ cen = node->center;
-	float size = node->size;
+	XYZ cen = node->center;
+	float size2 = node->size*2;
 	
 	XYZ pcam = cen;
 	f_cameraSpaceInv.transform(pcam);
 	
-	if(pcam.z + size*2 < 0) return;
+	if(pcam.z + size2 < 0) return;
 	
-	float depthz = pcam.z - size;
+	float depthz = pcam.z - node->size;
 	if(depthz < 0.01) depthz = 0.01;
 	
 	float portWidth;
 	if(f_isPersp) portWidth = depthz*f_fieldOfView;
 	else portWidth = f_fieldOfView;
 	
-	if(pcam.x - size > portWidth) return;
-	if(pcam.x + size < -portWidth) return;
-	if(pcam.y - size > portWidth) return;
-	if(pcam.y + size < -portWidth) return;
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
 	
 	// sum of grid and biggest one
 	float sumarea =0;
