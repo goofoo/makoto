@@ -11,7 +11,7 @@
 #define OPENGL_BASE_H
 
 #ifdef WIN32
-# include <windows.h>
+#include <windows.h>
 #endif
 
 #ifdef __APPLE__

@@ -1,17 +1,21 @@
 #pragma once
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #if defined(__APPLE__)
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else
-//#include <windows.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
+
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 
-using namespace std;
+//using namespace std;
 
 class FnCg
 {

@@ -1027,9 +1027,15 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 			float r = sqrt(m_pGrid[i].area);
 			XYZ vnoi;
 			for(int j=0; j<nsamp; j++) {
+#ifdef WIN32
+				vnoi.x = float(rand()%197)/197.f - 0.5;
+				vnoi.y = float(rand()%203)/203.f - 0.5;
+				vnoi.z = float(rand()%337)/337.f - 0.5;
+#else
 				vnoi.x = float(random()%197)/197.f - 0.5;
 				vnoi.y = float(random()%203)/203.f - 0.5;
 				vnoi.z = float(random()%337)/337.f - 0.5;
+#endif
 				vnoi *= r;
 				ray = m_pGrid[i].pos + vnoi - origin;
 				if(ray.lengthSquare() < node->area) continue;
