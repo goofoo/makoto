@@ -557,10 +557,7 @@ void OcTree::drawCube(const OCTNode *node)
 	if(pcam.y - size2 > portWidth) return;
 	if(pcam.y + size2 < -portWidth) return;
 	
-	int detail;
-	
-	if(f_isPersp) detail = node->size/portWidth*1024;
-	else detail = node->size/portWidth*1024;
+	int detail = node->size/portWidth*1024;
 	
 	if(detail < 8 || node->isLeaf) {
 		if(m_pSHBuf) {
@@ -631,10 +628,7 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 
 	float r = sqrt(sumarea * 0.25);
 	
-	int detail;
-	
-	if(f_isPersp) detail = r/portWidth*1024;
-	else detail = r/portWidth*1024;
+	int detail = r/portWidth*1024;
 	
 	if(detail < 8) {
 		if(m_pSHBuf) {
@@ -1195,12 +1189,8 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 	}
 	
 	float r = sqrt(sumarea * 0.25);
-	//float avg_r = r/(node->high - node->low + 1);
-	
-	int detail;
-	
-	if(f_isPersp) detail = r/portWidth*1024;
-	else detail = r/portWidth*1024;
+
+	int detail = r/portWidth*1024;
 	
 	if(detail < 8) {
 		res[count].grid.pos = node->mean;
@@ -1218,8 +1208,8 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 		for(unsigned i= node->low; i<= node->high; i++) {
 			res[count].grid = m_pGrid[i];
 			res[count].idx = node->index;
-			res[count].detail = detail;
-			//res[count].detail = sqrt(m_pGrid[i].area * 0.25)/avg_r*detail;
+			//res[count].detail = detail;
+			res[count].detail = sqrt(m_pGrid[i].area * 0.25)/portWidth*1024;
 			res[count].gridId = t_grid_id[i];
 			count++;
 		}

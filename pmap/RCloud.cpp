@@ -25,7 +25,7 @@ RCloud::RCloud()
 
 void RCloud::emit()
 {
-	int numDot = 11+detail*detail*0.25;
+	int numDot = 9+detail*detail*0.25;
 
 	if(numDot > 900) numDot = 900;
 
@@ -34,7 +34,7 @@ void RCloud::emit()
 	XYZ* pc = new XYZ[numDot];
 	float* pw = new float[numDot];
 	double theta, phi;
-	float rr, noi, adens = density*5/(numDot-10);
+	float rr, noi, adens = density*5/(numDot-8);
 	if(adens < 0.008) adens = 0.008;
 	
 	for(int i=0; i<numDot; i++) {
