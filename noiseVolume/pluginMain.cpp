@@ -5,7 +5,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang Jian", "1.5.1 05/14/09", "Any");
+	MFnPlugin plugin( obj, "Zhang Jian", "1.5.1 Fri Oct 23 2009", "Any");
 
 	status = plugin.registerNode( "noiseVolumeViz", noiseVolumeNode::id, 
 						 &noiseVolumeNode::creator, &noiseVolumeNode::initialize,
@@ -15,7 +15,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 	
-	MGlobal::executeCommand("source noiseVolumeMenus.mel; noiseVolumeVizCreateMenus;");
+	//MGlobal::executeCommand("source noiseVolumeMenus.mel; noiseVolumeVizCreateMenus;");
 
 	return status;
 }
@@ -31,6 +31,6 @@ MStatus uninitializePlugin( MObject obj)
 		return status;
 	}
 
-	MGlobal::executeCommand("noiseVolumeVizRemoveMenus;");
+	//MGlobal::executeCommand("noiseVolumeVizRemoveMenus;");
 	return status;
 }

@@ -19,11 +19,11 @@
 #include <maya/MString.h> 
 #include <maya/MItMeshPolygon.h>
 #include <maya/MFnNurbsSurfaceData.h>
-#include "../shared/pdcFile.h"
 #include "noiseVolumeNode.h"
 #include "../shared/zAttrWorks.h"
 #include "../shared/zWorks.h"
 #include "../shared/gBase.h"
+#include "../shared/FNoise.h"
 
 MTypeId noiseVolumeNode::id( 0x0003018 );
 
@@ -40,14 +40,12 @@ MObject noiseVolumeNode::avapeture;
 MObject noiseVolumeNode::afocallength;
 MObject noiseVolumeNode::amaxage;
 
-noiseVolumeNode::noiseVolumeNode():m_num_fish(0), m_num_bone(20)
+noiseVolumeNode::noiseVolumeNode():m_num_fish(0), m_num_bone(20),m_offset(0)
 {
-	f_bac = new FNoiseVolume();
 }
 
 noiseVolumeNode::~noiseVolumeNode() 
 {
-	delete f_bac;
 }
 
 MStatus noiseVolumeNode::compute( const MPlug& plug, MDataBlock& data )
@@ -55,83 +53,8 @@ MStatus noiseVolumeNode::compute( const MPlug& plug, MDataBlock& data )
     MStatus status;
 	if(plug == aoutput)
 	{
-		MObject mat_obj = data.inputValue(amatrix, &status).data();
-		MFnMatrixData mat_data( mat_obj );
-		MMatrix cammat = mat_data.matrix();
-
-		MATRIX44F eyespace;
-		eyespace.setIdentity();
-		eyespace.v[0][0] = cammat.matrix[0][0];
-		eyespace.v[0][1] = cammat.matrix[0][1];
-		eyespace.v[0][2] = cammat.matrix[0][2];
-		eyespace.v[1][0] = cammat.matrix[1][0];
-		eyespace.v[1][1] = cammat.matrix[1][1];
-		eyespace.v[1][2] = cammat.matrix[1][2];
-		eyespace.v[2][0] = cammat.matrix[2][0];
-		eyespace.v[2][1] = cammat.matrix[2][1];
-		eyespace.v[2][2] = cammat.matrix[2][2];
-		eyespace.v[3][0] = cammat.matrix[3][0];
-		eyespace.v[3][1] = cammat.matrix[3][1];
-		eyespace.v[3][2] = cammat.matrix[3][2];
-		
-		f_bac->setSpace(eyespace);
-		
-		float fsize;
-		fsize = data.inputValue(aFrequency, &status).asDouble();
-		f_bac->setGlobal(fsize);
-		
-		float nearClip, farClip, h_apeture, v_apeture, fl;
-		nearClip = data.inputValue(anear, &status).asFloat();
-		farClip = data.inputValue(afar, &status).asFloat();
-		h_apeture = data.inputValue(ahapeture, &status).asFloat();
-		v_apeture = data.inputValue(avapeture, &status).asFloat();
-		fl = data.inputValue(afocallength, &status).asFloat();
-		maxage = data.inputValue(amaxage, &status).asFloat();
-		
-		f_bac->updateCamera(nearClip, farClip, h_apeture, v_apeture, fl);
-		
-		MTime currentTime = data.inputValue(atime, &status).asTime();
-		MString cacheName = data.inputValue(acachename, &status).asString();
-		cacheName = cacheName+"."+250*int(currentTime.value())+".pdc";
-		
-		MVectorArray ptc_positions, ptc_velocities;
-		MDoubleArray ptc_ages;
-		pdcFile* fpdc = new pdcFile();
-		if(fpdc->load(cacheName.asChar())==1)
-		{
-			fpdc->readPositionAndAge(ptc_positions,ptc_velocities,ptc_ages);
-		}
-		else MGlobal::displayWarning(MString("NoiseVolume cannot open cache file: ")+cacheName);
-		delete fpdc;
-		
-		unsigned num_ptc = ptc_positions.length();
-		XYZ* pp = new XYZ[num_ptc];
-		XYZ* pv = new XYZ[num_ptc];
-		float* pa = new float[num_ptc];
-		for(unsigned i=0; i<num_ptc; i++)
-		{
-			pp[i].x = ptc_positions[i].x;
-			pp[i].y = ptc_positions[i].y;
-			pp[i].z = ptc_positions[i].z;
-			pv[i].x = ptc_velocities[i].x;
-			pv[i].y = ptc_velocities[i].y;
-			pv[i].z = ptc_velocities[i].z;
-			pa[i] = ptc_ages[i];
-		}
-		
-		f_bac->updateData(num_ptc, pp, pv, pa);
-		
-		delete[] pp;
-		delete[] pv;
-		delete[] pa;
-		ptc_positions.clear();
-		ptc_velocities.clear();
-		ptc_ages.clear();
-		//ptc_positions = zWorks::getVectorArrayAttr(data, apos);
-		//MGlobal::displayInfo("get pos");
-		//MDataHandle outputHandle = data.outputValue(aoutput, &status);
-		//zCheckStatus(status, "ERROR getting polygon data handle\n");
-		
+		double time = data.inputValue(atime).asTime().value();
+		m_offset = time;
 		data.setClean( plug );
 	}
 	
@@ -236,77 +159,18 @@ void noiseVolumeNode::draw( M3dView & view, const MDagPath & /*path*/,
 {
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
-	unsigned num_ptc = f_bac->getNumNoiseVolume();
-	XYZ cen;
-	float size;
-/*
-	glBegin(GL_POINTS);
 	
-	for(unsigned i=0; i<num_ptc; i++) 
-	{
-		cen = f_bac->getPositionById(i);
-		glVertex3f(cen.x, cen.y, cen.z);
-	}
-	glEnd();
-*/
-	MDagPath camera;
-	view = M3dView::active3dView();
-	view.getCamera(camera);
-	MFnCamera fnCamera( camera );
-	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
-	XYZ facing;
-	facing.x = viewDir[0];facing.y = viewDir[1];facing.z = viewDir[2];
-
-	XYZ xvec, yvec, vert;
-	size = f_bac->getGlobalSize();
-	for(unsigned i=0; i<num_ptc; i++)
-	{
-		if(f_bac->isInViewFrustum(i))
-		{
-			cen =  f_bac->getPositionById(i);
-			double age= f_bac->getAgeById(i)/maxage;	
-			glColor3f(1-age,age,0.0);
-			gBase::drawLineCircleAt(cen,facing,size);
-		}
-	}
-	
-	glPopAttrib();
-	//XYZ center = f_bac->getBCenter();
-	//float boxsize = f_bac->getBSize();
-	//cout<<boxsize<<"  "<<center.x<<"  "<<center.y<<"  "<<center.z<<endl;
-    XYZ center;
-	float boxsize;
-	f_bac->getBBox(center,boxsize);
-	cout<<boxsize<<"  "<<center.x<<"  "<<center.y<<"  "<<center.z<<endl;
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glBegin(GL_LINES);
-		glVertex3f(center.x - boxsize,center.y - boxsize,center.z - boxsize );
-	    glVertex3f(center.x + boxsize,center.y - boxsize,center.z - boxsize );
-		glVertex3f(center.x + boxsize,center.y - boxsize,center.z - boxsize );
-		glVertex3f(center.x + boxsize,center.y + boxsize,center.z - boxsize );
-		glVertex3f(center.x + boxsize,center.y + boxsize,center.z - boxsize );
-		glVertex3f(center.x - boxsize,center.y + boxsize,center.z - boxsize );
-		glVertex3f(center.x - boxsize,center.y + boxsize,center.z - boxsize );
-		glVertex3f(center.x - boxsize,center.y - boxsize,center.z - boxsize );
-
-		glVertex3f(center.x - boxsize,center.y - boxsize,center.z + boxsize );
-	    glVertex3f(center.x + boxsize,center.y - boxsize,center.z + boxsize );
-		glVertex3f(center.x + boxsize,center.y - boxsize,center.z + boxsize );
-		glVertex3f(center.x + boxsize,center.y + boxsize,center.z + boxsize );
-		glVertex3f(center.x + boxsize,center.y + boxsize,center.z + boxsize );
-		glVertex3f(center.x - boxsize,center.y + boxsize,center.z + boxsize );
-		glVertex3f(center.x - boxsize,center.y + boxsize,center.z + boxsize );
-		glVertex3f(center.x - boxsize,center.y - boxsize,center.z + boxsize );
-
-		glVertex3f(center.x - boxsize,center.y - boxsize,center.z - boxsize );
-	    glVertex3f(center.x - boxsize,center.y - boxsize,center.z + boxsize );
-		glVertex3f(center.x + boxsize,center.y - boxsize,center.z - boxsize );
-		glVertex3f(center.x + boxsize,center.y - boxsize,center.z + boxsize );
-		glVertex3f(center.x + boxsize,center.y + boxsize,center.z - boxsize );
-		glVertex3f(center.x + boxsize,center.y + boxsize,center.z + boxsize );
-		glVertex3f(center.x - boxsize,center.y + boxsize,center.z - boxsize );
-		glVertex3f(center.x - boxsize,center.y + boxsize,center.z + boxsize );
+	FNoise fnoi;
+	float noi;
+	for(int i=0; i< 512; i++) {
+		noi = fnoi.randfint(i+m_offset);
+		glVertex3f(0.08*i,0,0);
+		glVertex3f(0.08*i, noi*2,0);
+	}
+	
 	glEnd();
+
 	glPopAttrib();
 	view.endGL();
 }

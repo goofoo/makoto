@@ -7,39 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7F1FC56210815DDC009EA837 /* PTCDemViz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1FC56110815DDC009EA837 /* PTCDemViz.cpp */; };
-		7F7C14B710726A860029D454 /* CubeRaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F7C14B510726A860029D454 /* CubeRaster.cpp */; };
-		7F81222910711B440022BF82 /* zGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81222810711B440022BF82 /* zGlobal.cpp */; };
 		7F81222E10711B660022BF82 /* QuickSort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81222D10711B660022BF82 /* QuickSort.cpp */; };
 		7F81223310711B8A0022BF82 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81223210711B8A0022BF82 /* zWorks.cpp */; };
-		7F81223A10711C020022BF82 /* SHMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81223810711C020022BF82 /* SHMath.cpp */; };
-		7F81223B10711C020022BF82 /* SphericalHarmonics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81223910711C020022BF82 /* SphericalHarmonics.cpp */; };
-		7F81224810711C4D0022BF82 /* Z3DTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81224610711C4D0022BF82 /* Z3DTexture.cpp */; };
 		7F81224E10711C7C0022BF82 /* gBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81224D10711C7C0022BF82 /* gBase.cpp */; };
-		7F81227110711F040022BF82 /* PTCMapCmd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81226F10711F040022BF82 /* PTCMapCmd.cpp */; };
-		7F81227210711F040022BF82 /* PTCMapViz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */; };
 		7F8BAFF71081031000FE0291 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F8BAFF61081031000FE0291 /* FNoise.cpp */; };
-		7F8D27EF107BA4E300390A46 /* OcTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */; };
+		7FBF45EF1090C58500AE9E25 /* noiseVolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FBF45EE1090C58500AE9E25 /* noiseVolumeNode.cpp */; };
 		7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7F1FC56110815DDC009EA837 /* PTCDemViz.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PTCDemViz.cpp; sourceTree = "<group>"; };
-		7F7C14B510726A860029D454 /* CubeRaster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CubeRaster.cpp; path = ../3dtexture/CubeRaster.cpp; sourceTree = SOURCE_ROOT; };
-		7F81222810711B440022BF82 /* zGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zGlobal.cpp; path = ../shared/zGlobal.cpp; sourceTree = SOURCE_ROOT; };
 		7F81222D10711B660022BF82 /* QuickSort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickSort.cpp; path = ../shared/QuickSort.cpp; sourceTree = SOURCE_ROOT; };
 		7F81223210711B8A0022BF82 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
-		7F81223810711C020022BF82 /* SHMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SHMath.cpp; path = ../sh_lighting/SHMath.cpp; sourceTree = SOURCE_ROOT; };
-		7F81223910711C020022BF82 /* SphericalHarmonics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SphericalHarmonics.cpp; path = ../sh_lighting/SphericalHarmonics.cpp; sourceTree = SOURCE_ROOT; };
-		7F81224610711C4D0022BF82 /* Z3DTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Z3DTexture.cpp; path = ../3dtexture/Z3DTexture.cpp; sourceTree = SOURCE_ROOT; };
 		7F81224D10711C7C0022BF82 /* gBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gBase.cpp; path = ../shared/gBase.cpp; sourceTree = SOURCE_ROOT; };
-		7F81226F10711F040022BF82 /* PTCMapCmd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PTCMapCmd.cpp; sourceTree = "<group>"; };
-		7F81227010711F040022BF82 /* PTCMapViz.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PTCMapViz.cpp; sourceTree = "<group>"; };
 		7F812284107120470022BF82 /* particleCacheMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = particleCacheMenus.mel; path = ../module/scripts/particleCacheMenus.mel; sourceTree = SOURCE_ROOT; };
 		7F8BAFF61081031000FE0291 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
-		7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OcTree.cpp; path = ../3dtexture/OcTree.cpp; sourceTree = SOURCE_ROOT; };
+		7FBF45EE1090C58500AE9E25 /* noiseVolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = noiseVolumeNode.cpp; sourceTree = "<group>"; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
-		D2AAC0630554660B00DB518D /* ParticleMap.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ParticleMap.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2AAC0630554660B00DB518D /* noisetest.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = noisetest.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,20 +51,12 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				7F1FC56110815DDC009EA837 /* PTCDemViz.cpp */,
+				7FBF45EE1090C58500AE9E25 /* noiseVolumeNode.cpp */,
 				7F8BAFF61081031000FE0291 /* FNoise.cpp */,
-				7F8D27EE107BA4E300390A46 /* OcTree.cpp */,
-				7F81226F10711F040022BF82 /* PTCMapCmd.cpp */,
-				7F81227010711F040022BF82 /* PTCMapViz.cpp */,
 				7F81224D10711C7C0022BF82 /* gBase.cpp */,
-				7F81224610711C4D0022BF82 /* Z3DTexture.cpp */,
-				7F81223810711C020022BF82 /* SHMath.cpp */,
-				7F81223910711C020022BF82 /* SphericalHarmonics.cpp */,
 				7F81223210711B8A0022BF82 /* zWorks.cpp */,
 				7F81222D10711B660022BF82 /* QuickSort.cpp */,
-				7F81222810711B440022BF82 /* zGlobal.cpp */,
 				7FE58BA00FB61F6700187112 /* pluginMain.cpp */,
-				7F7C14B510726A860029D454 /* CubeRaster.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -88,7 +64,7 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC0630554660B00DB518D /* ParticleMap.bundle */,
+				D2AAC0630554660B00DB518D /* noisetest.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -121,9 +97,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D2AAC0620554660B00DB518D /* ParticleMap */ = {
+		D2AAC0620554660B00DB518D /* noisetest */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "ParticleMap" */;
+			buildConfigurationList = 8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "noisetest" */;
 			buildPhases = (
 				D2AAC0600554660B00DB518D /* Headers */,
 				D2AAC0610554660B00DB518D /* Sources */,
@@ -133,9 +109,9 @@
 			);
 			dependencies = (
 			);
-			name = ParticleMap;
+			name = noisetest;
 			productName = footPrintNodePlugin;
-			productReference = D2AAC0630554660B00DB518D /* ParticleMap.bundle */;
+			productReference = D2AAC0630554660B00DB518D /* noisetest.bundle */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -143,14 +119,14 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 8A7F05F1086863A70064D097 /* Build configuration list for PBXProject "pmap" */;
+			buildConfigurationList = 8A7F05F1086863A70064D097 /* Build configuration list for PBXProject "noisetest" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* footPrintNodePlugin */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D2AAC0620554660B00DB518D /* ParticleMap */,
+				D2AAC0620554660B00DB518D /* noisetest */,
 			);
 		};
 /* End PBXProject section */
@@ -161,19 +137,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */,
-				7F81222910711B440022BF82 /* zGlobal.cpp in Sources */,
 				7F81222E10711B660022BF82 /* QuickSort.cpp in Sources */,
 				7F81223310711B8A0022BF82 /* zWorks.cpp in Sources */,
-				7F81223A10711C020022BF82 /* SHMath.cpp in Sources */,
-				7F81223B10711C020022BF82 /* SphericalHarmonics.cpp in Sources */,
-				7F81224810711C4D0022BF82 /* Z3DTexture.cpp in Sources */,
 				7F81224E10711C7C0022BF82 /* gBase.cpp in Sources */,
-				7F81227110711F040022BF82 /* PTCMapCmd.cpp in Sources */,
-				7F81227210711F040022BF82 /* PTCMapViz.cpp in Sources */,
-				7F7C14B710726A860029D454 /* CubeRaster.cpp in Sources */,
-				7F8D27EF107BA4E300390A46 /* OcTree.cpp in Sources */,
 				7F8BAFF71081031000FE0291 /* FNoise.cpp in Sources */,
-				7F1FC56210815DDC009EA837 /* PTCDemViz.cpp in Sources */,
+				7FBF45EF1090C58500AE9E25 /* noiseVolumeNode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,7 +167,7 @@
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
 				PREBINDING = NO;
-				PRODUCT_NAME = ParticleMap;
+				PRODUCT_NAME = noisetest;
 				ZERO_LINK = YES;
 			};
 			name = Debug;
@@ -221,7 +189,7 @@
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
 				PREBINDING = NO;
-				PRODUCT_NAME = ParticleMap;
+				PRODUCT_NAME = noisetest;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -240,7 +208,7 @@
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
 				PREBINDING = NO;
-				PRODUCT_NAME = ParticleMap;
+				PRODUCT_NAME = noisetest;
 			};
 			name = Default;
 		};
@@ -272,6 +240,7 @@
 					OpenGL,
 					"-lOpenMayaFX",
 				);
+				PRODUCT_NAME = "";
 			};
 			name = Debug;
 		};
@@ -301,6 +270,7 @@
 					"-framework",
 					OpenGL,
 				);
+				PRODUCT_NAME = "";
 			};
 			name = Release;
 		};
@@ -329,13 +299,14 @@
 					"-framework",
 					OpenGL,
 				);
+				PRODUCT_NAME = "";
 			};
 			name = Default;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "ParticleMap" */ = {
+		8A7F05ED086863A70064D097 /* Build configuration list for PBXNativeTarget "noisetest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A7F05EE086863A70064D097 /* Debug */,
@@ -345,7 +316,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		8A7F05F1086863A70064D097 /* Build configuration list for PBXProject "pmap" */ = {
+		8A7F05F1086863A70064D097 /* Build configuration list for PBXProject "noisetest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A7F05F2086863A70064D097 /* Debug */,

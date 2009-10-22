@@ -59,13 +59,9 @@ public:
     
     // Output
     static  MObject aoutput;
-	
-	const FNoiseVolume* getBase() const {return f_bac;}
 
 private:
 	unsigned int m_num_fish, m_num_bone;
-
+	int m_offset;
 	float m_fish_length, maxage;
-	
-	FNoiseVolume* f_bac;
 };
