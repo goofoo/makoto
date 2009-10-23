@@ -25,7 +25,7 @@ RCloud::RCloud()
 
 void RCloud::emit()
 {
-	int numDot = 9+detail*detail*0.25;
+	int numDot = 1+detail*detail*0.25;
 
 	if(numDot > 1000) numDot = 1000;
 
@@ -33,31 +33,31 @@ void RCloud::emit()
 	XYZ* po = new XYZ[numDot];
 	XYZ* pc = new XYZ[numDot];
 	float* pw = new float[numDot];
-	double theta, phi;
-	float rr, noi, adens = density*5/(numDot-8);
-	if(adens < 0.008) adens = 0.008;
+	//double theta, phi;
+	float rr, noi, adens = density*23/numDot;
+	if(adens < 0.01) adens = 0.01;
 	
 	for(int i=0; i<numDot; i++) {
 		sphereRand(pp[i], i);
 		
-		xyz2sph(pp[i], theta, phi);
+		//xyz2sph(pp[i], theta, phi);
 		
 		noi = noise.randfint(i);
-		noi = 0.03 + noi*0.969;
+		noi = 0.03 + noi*0.9699;
 		rr = sqrt(noi);
 		
-		rr *= radius*2;
+		rr *= radius*2.9;
 		
 		pp[i] *= rr;
 		
-		rr = radius*29/(detail+17+dusty*37);
-		if(noi<0.4) rr += rr*(0.95-noi)*(1-dusty);
-		else rr -= rr*1.3*(noi-0.3)*(1-dusty);
+		rr = radius*47/(detail*1.5+31+dusty*71);
+		if(noi<0.5) rr += rr*0.5*(.5-noi)*(1-dusty);
+		else rr -= rr*1.5*(noi-0.5)*(1-dusty);
 		
 		pw[i] = rr;
 		
 		rr = adens;
-		rr += (rr*(1 - noi) - rr)*(1-dusty);
+		rr -= rr*sqrt(noi)*(1-dusty);
 		po[i].x = po[i].y = po[i].z = rr;
 		
 		pc[i] = col;
