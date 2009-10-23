@@ -538,20 +538,26 @@ void OcTree::drawCube(const OCTNode *node)
 {
 	if(!node) return;
 	XYZ cen = node->center;
-	float size = node->size;
+	float size2 = node->size*2;
 	
 	XYZ pcam = cen;
 	f_cameraSpaceInv.transform(pcam);
 	
-	if(pcam.z + size*2 < 0) return;
+	if(pcam.z + size2 < 0) return;
 
-	float depthz = pcam.z - size;
+	float depthz = pcam.z - node->size;
 	if(depthz < 0.01) depthz = 0.01;
 	
-	int detail;
+	float portWidth;
+	if(f_isPersp) portWidth = depthz*f_fieldOfView;
+	else portWidth = f_fieldOfView;
 	
-	if(f_isPersp) detail = size/(depthz*f_fieldOfView)*1024;
-	else detail = size/f_fieldOfView*1024;
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
+	
+	int detail = node->size/portWidth*1024;
 	
 	if(detail < 8 || node->isLeaf) {
 		if(m_pSHBuf) {
@@ -571,7 +577,7 @@ void OcTree::drawCube(const OCTNode *node)
 				glColor3f(ov, ov, ov);
 			}
 		}
-		gBase::drawBox(cen, size);
+		gBase::drawBox(cen, node->size);
 		return;
 	}
 	
@@ -589,15 +595,24 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 {
 	if(!node) return;
 	XYZ cen = node->center;
-	float size = node->size;
+	float size2 = node->size*2;
 	
 	XYZ pcam = cen;
 	f_cameraSpaceInv.transform(pcam);
 	
-	if(pcam.z + size*2 < 0) return;
+	if(pcam.z + size2 < 0) return;
 	
-	float depthz = pcam.z - size;
+	float depthz = pcam.z - node->size;
 	if(depthz < 0.01) depthz = 0.01;
+	
+	float portWidth;
+	if(f_isPersp) portWidth = depthz*f_fieldOfView;
+	else portWidth = f_fieldOfView;
+	
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
 	
 	// sum of grid and biggest one
 	float sumarea =0;
@@ -613,10 +628,7 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 
 	float r = sqrt(sumarea * 0.25);
 	
-	int detail;
-	
-	if(f_isPersp) detail = size/(depthz*f_fieldOfView)*1024;
-	else detail = size/f_fieldOfView*1024;
+	int detail = r/portWidth*1024;
 	
 	if(detail < 8) {
 		if(m_pSHBuf) {
@@ -789,7 +801,7 @@ void OcTree::drawCube(const OCTNode *node, const PerspectiveView *pview)
 		drawCube(node->child111,pview);
 	}
 }
-*/
+
 int OcTree::hasColor() const
 {
 	if(dThree.size()) 
@@ -798,7 +810,7 @@ int OcTree::hasColor() const
 				return i;
 	return -1;
 }
-
+*/
 void OcTree::getRootCenterNSize(XYZ& center, float&size) const
 {
 	if(root) {
@@ -1015,9 +1027,15 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 			float r = sqrt(m_pGrid[i].area);
 			XYZ vnoi;
 			for(int j=0; j<nsamp; j++) {
+#ifdef WIN32
+				vnoi.x = float(rand()%197)/197.f - 0.5;
+				vnoi.y = float(rand()%203)/203.f - 0.5;
+				vnoi.z = float(rand()%337)/337.f - 0.5;
+#else
 				vnoi.x = float(random()%197)/197.f - 0.5;
 				vnoi.y = float(random()%203)/203.f - 0.5;
 				vnoi.z = float(random()%337)/337.f - 0.5;
+#endif
 				vnoi *= r;
 				ray = m_pGrid[i].pos + vnoi - origin;
 				if(ray.lengthSquare() < node->area) continue;
@@ -1144,25 +1162,25 @@ void OcTree::LODGrid(GRIDNId* res, unsigned& n_data) const
 void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 {
 	if(!node) return;
-		XYZ cen = node->center;
-	float size = node->size;
+	XYZ cen = node->center;
+	float size2 = node->size*2;
 	
 	XYZ pcam = cen;
 	f_cameraSpaceInv.transform(pcam);
 	
-	if(pcam.z + size*2 < 0) return;
+	if(pcam.z + size2 < 0) return;
 	
-	float depthz = pcam.z - size;
+	float depthz = pcam.z - node->size;
 	if(depthz < 0.01) depthz = 0.01;
 	
 	float portWidth;
 	if(f_isPersp) portWidth = depthz*f_fieldOfView;
 	else portWidth = f_fieldOfView;
 	
-	if(pcam.x - size > portWidth) return;
-	if(pcam.x + size < -portWidth) return;
-	if(pcam.y - size > portWidth) return;
-	if(pcam.y + size < -portWidth) return;
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
 	
 	// sum of grid and biggest one
 	float sumarea =0;
@@ -1175,13 +1193,10 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 			fbig = m_pGrid[i].area;
 		}
 	}
-
+	
 	float r = sqrt(sumarea * 0.25);
-	
-	int detail;
-	
-	if(f_isPersp) detail = r/portWidth*1024;
-	else detail = r/portWidth*1024;
+
+	int detail = r/portWidth*1024;
 	
 	if(detail < 8) {
 		res[count].grid.pos = node->mean;
@@ -1199,7 +1214,8 @@ void OcTree::LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const
 		for(unsigned i= node->low; i<= node->high; i++) {
 			res[count].grid = m_pGrid[i];
 			res[count].idx = node->index;
-			res[count].detail = detail;
+			//res[count].detail = detail;
+			res[count].detail = sqrt(m_pGrid[i].area * 0.25)/portWidth*1024;
 			res[count].gridId = t_grid_id[i];
 			count++;
 		}

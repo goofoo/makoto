@@ -33,7 +33,6 @@ export RtVoid Subdivide(RtPointer blinddata, RtFloat detailsize)
 
 	RCloud* realdata;
 	RtBound bound = {-.5, .5, -.5, .5, -.5, .5}; 
-	//RGRID aptc;
 	float r;
 	
 	unsigned num_ptc = data->getNumGrid();
