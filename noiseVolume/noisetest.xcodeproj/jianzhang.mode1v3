@@ -197,88 +197,7 @@
 	<key>Notifications</key>
 	<array/>
 	<key>OpenEditors</key>
-	<array>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>7FBF46091090C72A00AE9E25</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>noiseVolumeNode.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FBF460A1090C72A00AE9E25</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>noiseVolumeNode.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FBF46461090CAF300AE9E25</string>
-						<key>history</key>
-						<array>
-							<string>7FBF463B1090CAD600AE9E25</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {631, 583}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>399 137 631 624 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>7FBF46341090C9DD00AE9E25</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>PTCMapViz.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7FBF46351090C9DD00AE9E25</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>PTCMapViz.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7FBF46471090CAF300AE9E25</string>
-						<key>history</key>
-						<array>
-							<string>7FBF463C1090CAD600AE9E25</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {631, 583}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>645 121 631 624 0 0 1280 778 </string>
-			</dict>
-		</dict>
-	</array>
+	<array/>
 	<key>PerspectiveWidths</key>
 	<array>
 		<integer>-1</integer>
@@ -385,7 +304,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>45 242 690 397 0 0 1280 778 </string>
+						<string>416 297 690 397 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -422,7 +341,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {482, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>45 242 690 397 0 0 1280 778 </string>
+								<string>416 297 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -442,7 +361,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {482, 351}}</string>
 								<key>RubberWindowFrame</key>
-								<string>45 242 690 397 0 0 1280 778 </string>
+								<string>416 297 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -602,13 +521,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>7FBF464D1090CC1000AE9E25</string>
 		<string>7FE58BA50FB61F9000187112</string>
-		<string>7FBF46341090C9DD00AE9E25</string>
-		<string>/Users/jianzhang/Documents/plankton/noiseVolume/noisetest.xcodeproj</string>
 		<string>7FBF46091090C72A00AE9E25</string>
+		<string>/Users/jianzhang/Documents/plankton/noiseVolume/noisetest.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>45 242 690 397 0 0 1280 778 </string>
+	<string>416 297 690 397 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -646,6 +565,8 @@
 							<string>313pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>

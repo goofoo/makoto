@@ -24,11 +24,11 @@ float FNoise::randomd()
     yRand = (132 * d - 35 * c) % 30313;
     zRand = (130 * f - 63 * e) % 30329;
 
-    result = (float) xRand/30269.0f + yRand/30307.0f + zRand/30323.0f;
+    result = (float) xRand/30269.0f +(float) yRand/30307.0f +(float) zRand/30323.0f;
     return result - ((int) result);
 }
 
-void FNoise::seedd(unsigned char nx, unsigned char ny, unsigned char nz)
+void FNoise::seedd(unsigned int nx, unsigned int ny, unsigned int nz)
 {
 	xRand = nx;
     yRand = ny;
@@ -43,9 +43,9 @@ float FNoise::randfint( int i )
 {
 	int atoi = i;
 	
-	unsigned char seed = (unsigned char)atoi;
+	unsigned int seed = (unsigned int)atoi;
 		
-	seedd( seed, seed * 31, seed * 71 );
+	seedd( seed, seed * 13, seed * 61 );
 		
 	float r = randomd();
 	

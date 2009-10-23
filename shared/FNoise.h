@@ -21,7 +21,7 @@ public:
 private:
 	static unsigned int xRand, yRand, zRand;     /* seed */
 	float randomd();
-	void seedd(unsigned char nx, unsigned char ny, unsigned char nz);
+	void seedd(unsigned int nx, unsigned int ny, unsigned int nz);
 };
 
 #endif
