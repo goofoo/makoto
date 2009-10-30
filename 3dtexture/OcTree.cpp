@@ -4,6 +4,19 @@
 #include "CubeRaster.h"
 #include "../shared/QuickSort.h"
 
+#include <vector>
+using namespace std;
+
+struct NodeNDistance
+{
+	NodeNDistance() {}
+	NodeNDistance(const OCTNode *ptr, float& dist) {node = ptr; distance = dist;}
+	const OCTNode *node;
+	float distance;
+};
+
+typedef vector<NodeNDistance>ChildList;
+
 const float constantCoeff[9] = { 3.543211, 
 								0.000605, 0.000152, -0.003217, 
 								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
@@ -639,13 +652,13 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
 					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
 				}
-				glColor3f(inc.x, inc.y, inc.z);
+				glColor4f(inc.x, inc.y, inc.z, 0.125);
 			}
 			else {
 				float ov  = 0;
 				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
 				ov /= 3.14;
-				glColor3f(ov, ov, ov);
+				glColor4f(ov, ov, ov, 0.125);
 			}
 		}
 
@@ -663,13 +676,13 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
 					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
 				}
-				glColor3f(inc.x, inc.y, inc.z);
+				glColor4f(inc.x, inc.y, inc.z, 0.125);
 			}
 			else {
 				float ov  = 0;
 				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
 				ov /= 3.14;
-				glColor3f(ov, ov, ov);
+				glColor4f(ov, ov, ov, 0.125);
 			}
 		}
 		for(unsigned i= node->low; i<= node->high; i++) {
@@ -680,6 +693,75 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 		}
 	}
 	else {
+		ChildList todraw;
+		float dist =0.f;
+		if(node->child000) {
+			pcam = node->child000->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child000, dist));
+		}
+		if(node->child001) {
+			pcam = node->child001->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child001, dist));
+		}
+		if(node->child010) {
+			pcam = node->child010->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child010, dist));
+		}
+		if(node->child011) {
+			pcam = node->child011->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child011, dist));
+		}
+		if(node->child100) {
+			pcam = node->child100->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child100, dist));
+		}
+		if(node->child101) {
+			pcam = node->child101->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child101, dist));
+		}
+		if(node->child110) {
+			pcam = node->child110->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child110, dist));
+		}
+		if(node->child111) {
+			pcam = node->child111->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child111, dist));
+		}
+		
+		NodeNDistance tmp;
+		for(int j = 0; j < todraw.size()-1; j++) {
+			for(int i = j+1; i < todraw.size(); i++) {
+				if(todraw[i].distance > todraw[j].distance) {
+					tmp = todraw[i];
+					todraw[i] = todraw[j];
+					todraw[j] = tmp;
+				}
+			}
+		}
+		
+		vector<NodeNDistance>::iterator iter = todraw.begin();
+		while( iter != todraw.end() ) {
+			drawSurfel((*iter).node, viewdir);
+			++iter;
+		}
+		todraw.clear();
+		/*
 		drawSurfel(node->child000, viewdir);
 		drawSurfel(node->child001, viewdir);
 		drawSurfel(node->child010, viewdir);
@@ -687,7 +769,7 @@ void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
 		drawSurfel(node->child100, viewdir);
 		drawSurfel(node->child101, viewdir);
 		drawSurfel(node->child110, viewdir);
-		drawSurfel(node->child111, viewdir);
+		drawSurfel(node->child111, viewdir);*/
 	}
 }
 /*

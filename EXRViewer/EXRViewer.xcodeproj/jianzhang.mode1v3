@@ -268,6 +268,9 @@
 							<array>
 								<string>29B97314FDCFA39411CA2CEA</string>
 								<string>080E96DDFE201D6D7F000001</string>
+								<string>29B97323FDCFA39411CA2CEA</string>
+								<string>1058C7A0FEA54F0111CA2CBB</string>
+								<string>1058C7A2FEA54F0111CA2CBB</string>
 								<string>1C37FBAC04509CD000000102</string>
 								<string>1C37FAAC04509CD000000102</string>
 								<string>1C37FABC05509CD000000102</string>
@@ -300,7 +303,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>53 300 690 397 0 0 1280 778 </string>
+						<string>43 284 690 397 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -337,7 +340,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {482, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>53 300 690 397 0 0 1280 778 </string>
+								<string>43 284 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -359,7 +362,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {482, 351}}</string>
 								<key>RubberWindowFrame</key>
-								<string>53 300 690 397 0 0 1280 778 </string>
+								<string>43 284 690 397 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -383,9 +386,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F6922801029FB860065E2D6</string>
+				<string>7FC82D751092452100DDA036</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F6922811029FB860065E2D6</string>
+				<string>7FC82D761092452100DDA036</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -519,10 +522,16 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>7FC82D7F1092452100DDA036</string>
+		<string>7FC82D801092452100DDA036</string>
+		<string>7FC82D811092452100DDA036</string>
+		<string>1C78EAAD065D492600B07095</string>
+		<string>1CD10A99069EF8BA00B06720</string>
+		<string>7FAB701F0FE80CEE00A0E472</string>
 		<string>/Users/jianzhang/Documents/plankton/EXRViewer/EXRViewer.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>53 300 690 397 0 0 1280 778 </string>
+	<string>43 284 690 397 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -543,7 +552,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>&lt;No Editor&gt;</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -599,7 +608,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FAB701F0FE80CEE00A0E472</string>
-				<string>7FCEB0070FEC1DD300B6D045</string>
+				<string>7FC82D771092452100DDA036</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -719,13 +728,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>7FCEB0080FEC1DD300B6D045</string>
+				<string>7FC82D781092452100DDA036</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>7FCEB0090FEC1DD300B6D045</string>
-				<string>7FCEB00A0FEC1DD300B6D045</string>
-				<string>7FCEB00B0FEC1DD300B6D045</string>
-				<string>7FCEB00C0FEC1DD300B6D045</string>
-				<string>7FCEB00D0FEC1DD300B6D045</string>
+				<string>7FC82D791092452100DDA036</string>
+				<string>7FC82D7A1092452100DDA036</string>
+				<string>7FC82D7B1092452100DDA036</string>
+				<string>7FC82D7C1092452100DDA036</string>
+				<string>7FC82D7D1092452100DDA036</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -879,7 +888,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>7FCEB00E0FEC1DD300B6D045</string>
+				<string>7FC82D7E1092452100DDA036</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>

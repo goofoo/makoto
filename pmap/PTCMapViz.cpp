@@ -176,19 +176,28 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	if(tree){
 		tree->setProjection(mat, fov, ispersp);
-		//glClearDepth(1.0);
-	    //glEnable(GL_BLEND);
-	    //glDepthFunc(GL_LEQUAL);
-	    //glShadeModel(GL_SMOOTH);
-	    //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+		
+		
 		//
 		//glPointSize(2.5);
-		//glShadeModel(GL_SMOOTH);
+		
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		if(f_type == 1) tree->draw();
-		else tree->draw(facing);		
+		else {
+			glClearDepth(1.0);
+			glEnable(GL_BLEND);
+			glDepthFunc(GL_LEQUAL);
+			glShadeModel(GL_SMOOTH);
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+			glDepthMask( GL_FALSE );
+			
+			tree->draw(facing);
+		
+			glDisable(GL_BLEND);	
+			glDepthMask( GL_TRUE );	
+		}
 		//
 		//XYZ ori(0,0,0);
 		//tree->testRaster(ori);

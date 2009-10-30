@@ -74,6 +74,14 @@
 			PBXPerProjectTemplateStateSaveDate = 277980704;
 			PBXWorkspaceStateSaveDate = 277980704;
 		};
+		perUserProjectItems = {
+			7FC82BE11091A62700DDA036 /* PBXBookmark */ = 7FC82BE11091A62700DDA036 /* PBXBookmark */;
+			7FC82BF11091AF1F00DDA036 /* PBXTextBookmark */ = 7FC82BF11091AF1F00DDA036 /* PBXTextBookmark */;
+			7FC82BF21091AF1F00DDA036 /* PBXTextBookmark */ = 7FC82BF21091AF1F00DDA036 /* PBXTextBookmark */;
+			7FC82BF51091AF1F00DDA036 /* PBXTextBookmark */ = 7FC82BF51091AF1F00DDA036 /* PBXTextBookmark */;
+			7FC82BF71091AF1F00DDA036 /* PBXTextBookmark */ = 7FC82BF71091AF1F00DDA036 /* PBXTextBookmark */;
+			7FC82BFB1091AF1F00DDA036 /* PBXTextBookmark */ = 7FC82BFB1091AF1F00DDA036 /* PBXTextBookmark */;
+		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
 		};
@@ -105,18 +113,91 @@
 	7F8BAFF61081031000FE0291 /* FNoise.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {634, 770}}";
-			sepNavSelRange = "{853, 17}";
-			sepNavVisRange = "{212, 803}";
+			sepNavSelRange = "{968, 0}";
+			sepNavVisRange = "{212, 812}";
 			sepNavWindowFrame = "{{15, 64}, {693, 709}}";
 		};
 	};
 	7FBF45EE1090C58500AE9E25 /* noiseVolumeNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {614, 7966}}";
-			sepNavSelRange = "{12790, 0}";
-			sepNavVisRange = "{12416, 743}";
+			sepNavIntBoundsRect = "{{0, 0}, {614, 7980}}";
+			sepNavSelRange = "{12981, 0}";
+			sepNavVisRange = "{12429, 729}";
 			sepNavWindowFrame = "{{399, 81}, {631, 680}}";
 		};
+	};
+	7FC82BE11091A62700DDA036 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7FBF45EE1090C58500AE9E25 /* noiseVolumeNode.cpp */;
+	};
+	7FC82BF11091AF1F00DDA036 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8BAFF61081031000FE0291 /* FNoise.cpp */;
+		name = "FNoise.cpp: 31";
+		rLen = 0;
+		rLoc = 733;
+		rType = 0;
+		vrLen = 867;
+		vrLoc = 155;
+	};
+	7FC82BF21091AF1F00DDA036 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8BAFF61081031000FE0291 /* FNoise.cpp */;
+		name = "FNoise.cpp: 48";
+		rLen = 0;
+		rLoc = 968;
+		rType = 0;
+		vrLen = 812;
+		vrLoc = 212;
+	};
+	7FC82BF51091AF1F00DDA036 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FC82BF61091AF1F00DDA036 /* FNoise.h */;
+		name = "FNoise.h: 24";
+		rLen = 0;
+		rLoc = 394;
+		rType = 0;
+		vrLen = 410;
+		vrLoc = 0;
+	};
+	7FC82BF61091AF1F00DDA036 /* FNoise.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = FNoise.h;
+		path = /Users/jianzhang/Documents/plankton/shared/FNoise.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {572, 552}}";
+			sepNavSelRange = "{394, 0}";
+			sepNavVisRange = "{0, 410}";
+			sepNavWindowFrame = "{{15, 93}, {631, 680}}";
+		};
+	};
+	7FC82BF71091AF1F00DDA036 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FC82BF81091AF1F00DDA036 /* FNoise.h */;
+		name = "FNoise.h: 24";
+		rLen = 0;
+		rLoc = 394;
+		rType = 0;
+		vrLen = 410;
+		vrLoc = 0;
+	};
+	7FC82BF81091AF1F00DDA036 /* FNoise.h */ = {
+		isa = PBXFileReference;
+		name = FNoise.h;
+		path = /Users/jianzhang/Documents/plankton/shared/FNoise.h;
+		sourceTree = "<absolute>";
+	};
+	7FC82BFB1091AF1F00DDA036 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FBF45EE1090C58500AE9E25 /* noiseVolumeNode.cpp */;
+		name = "noiseVolumeNode.cpp: 559";
+		rLen = 0;
+		rLoc = 12981;
+		rType = 0;
+		vrLen = 729;
+		vrLoc = 12429;
 	};
 	7FE58B990FB61EA800187112 /* Source Control */ = {
 		isa = PBXSourceControlManager;
