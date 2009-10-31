@@ -52,3 +52,26 @@ float FNoise::randfint( int i )
 	return r;
 
 }
+
+void FNoise::sphereRand(float& x, float& y, float& z, float r, unsigned int &i)
+{
+	unsigned int seed = i;
+		
+	seedd( seed, seed * 13, seed * 61 );
+	
+	float theta = randomd() * 2.f * 3.1415927f;
+	
+	seedd( seed, seed * 23, seed * 41 );
+	
+	float u = randomd() * 2.f - 1.0f;
+	
+	x = cos(theta) * sqrt(1.0-(u*u)) * r;
+	y = sin(theta) * sqrt(1.0-(u*u)) * r;
+	z = u * r;
+	
+	seedd( seed, seed * 13, seed * 29 );
+	
+	float s = randomd();
+	
+	x *= s; y *= s; z *= s;
+}

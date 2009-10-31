@@ -99,14 +99,14 @@ void Z3DTexture::constructTree(const XYZ& rootCenter, float rootSize, int maxLev
 	m_pTree->construct(rootCenter, rootSize, maxLevel);
 }
 
-void Z3DTexture::draw() const
+void Z3DTexture::drawCube() const
 {
-	if(m_pTree) m_pTree->draw();
+	if(m_pTree) m_pTree->drawCube();
 }
 
-void Z3DTexture::draw(const XYZ& viewdir) const
+void Z3DTexture::drawSprite() const
 {
-	if(m_pTree) m_pTree->draw(viewdir);
+	if(m_pTree) m_pTree->drawSprite();
 }
 
 void Z3DTexture::save(const char* filename)
@@ -257,6 +257,7 @@ void Z3DTexture::setProjection(MATRIX44F cameraspace, float fov, int iperspectiv
 	MATRIX44F cameraspaceinv = cameraspace;
 	cameraspaceinv.inverse();
 	m_pTree->setProjection(cameraspaceinv, fov, iperspective);
+	m_pTree->setSpriteSpace(cameraspace);
 }
 
 SHB3COEFF* Z3DTexture::getNamedSH(const char* name)

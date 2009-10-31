@@ -36,6 +36,7 @@ MObject     PTCMapLocator::aoutval;
 
 PTCMapLocator::PTCMapLocator() :tree(0),f_type(0)
 {
+	tree = new Voltex();
 }
 
 PTCMapLocator::~PTCMapLocator() 
@@ -77,8 +78,8 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		char filename[512];
 		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
 		
-		if(tree) delete tree;
-		tree = new Z3DTexture();
+		//if(tree) delete tree;
+		//tree = new Z3DTexture();
 		if(!tree->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
 
 		tree->setDraw(attrib2sho.asChar());
@@ -175,6 +176,12 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if(tree){
+		if(!tree->isDiagnosed()) {
+			string log;
+			tree->diagnose(log);
+			MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());
+		}
+		
 		tree->setProjection(mat, fov, ispersp);
 		
 		
@@ -184,7 +191,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		if(f_type == 1) tree->draw();
+		if(f_type == 1) tree->drawCube();
 		else {
 			glClearDepth(1.0);
 			glEnable(GL_BLEND);
@@ -193,7 +200,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glDepthMask( GL_FALSE );
 			
-			tree->draw(facing);
+			tree->drawSprite();
 		
 			glDisable(GL_BLEND);	
 			glDepthMask( GL_TRUE );	

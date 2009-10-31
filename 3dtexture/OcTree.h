@@ -99,9 +99,11 @@ public:
 	short getMaxLevel() const {return max_level;}
 	//int hasColor() const;
 	
-	void draw();
+	void drawCube();
+	void drawSprite();
 	void draw(const XYZ& viewdir);
 	void drawCube(const OCTNode *node);
+	void drawSprite(const OCTNode *node);
 	void drawSurfel(const OCTNode *node, const XYZ& viewdir);
 	void drawNeighbour(const OCTNode *node);
 	//void draw(const PerspectiveView *pview,XYZ facing,string drawType);
@@ -139,9 +141,12 @@ public:
 	void LODGrid(GRIDNId* res, unsigned& n_data) const;
 	void LODGrid(const OCTNode *node, unsigned& count, GRIDNId* res) const;
 	void setProjection(MATRIX44F mat, float fov, int iperspective);
+	void setSpriteSpace(MATRIX44F mat);
 	
 	void setGridId(unsigned* data) {t_grid_id = data;}
 	unsigned* getIdBuf() const {return idBuf;}
+	
+	void setProgram(GLhandleARB obj) { program_object = obj; }
 private:
 	
 	OCTNode *root;
@@ -171,4 +176,7 @@ private:
 	MATRIX44F f_cameraSpaceInv;
 	float f_fieldOfView;
 	char f_isPersp;
+	float fMatSprite[16];
+	XYZ fSpriteX, fSpriteY;
+	GLhandleARB program_object;
 };

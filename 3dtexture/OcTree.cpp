@@ -3,6 +3,7 @@
 #include "../shared/gBase.h"
 #include "CubeRaster.h"
 #include "../shared/QuickSort.h"
+#include "../shared/FNoise.h"
 
 #include <vector>
 using namespace std;
@@ -20,6 +21,8 @@ typedef vector<NodeNDistance>ChildList;
 const float constantCoeff[9] = { 3.543211, 
 								0.000605, 0.000152, -0.003217, 
 								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
+								
+static FNoise noise;
 
 OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),idBuf(0),sample_opacity(0.04f),m_hasHdr(0)
 {
@@ -506,9 +509,18 @@ void OcTree::load(ifstream& file, OCTNode *node)
 	else node->child111 = NULL;
 }
 
-void OcTree::draw()
+void OcTree::drawCube()
 {
 	drawCube(root);
+}
+
+void OcTree::drawSprite()
+{
+	glUseProgramObjectARB(program_object);
+	glUniformMatrix4fvARB(glGetUniformLocationARB(program_object, "objspace"), 1, 0, (float*)fMatSprite);
+	
+	drawSprite(root);
+	glUseProgramObjectARB(NULL);
 }
 
 void OcTree::draw(const XYZ& viewdir)
@@ -602,6 +614,218 @@ void OcTree::drawCube(const OCTNode *node)
 	drawCube(node->child101 );
 	drawCube(node->child110 );
 	drawCube(node->child111 );
+}
+
+void OcTree::drawSprite(const OCTNode *node)
+{
+	if(!node) return;
+	XYZ cen = node->center;
+	float size2 = node->size*2;
+	
+	XYZ pcam = cen;
+	f_cameraSpaceInv.transform(pcam);
+	
+	if(pcam.z + size2 < 0) return;
+	
+	float depthz = pcam.z - node->size;
+	if(depthz < 0.01) depthz = 0.01;
+	
+	float portWidth;
+	if(f_isPersp) portWidth = depthz*f_fieldOfView;
+	else portWidth = f_fieldOfView;
+	
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
+	
+	// sum of grid and biggest one
+	float sumarea =0;
+	unsigned ibig = node->low;
+	float fbig = m_pGrid[ibig].area;
+	for(unsigned i= node->low; i<= node->high; i++) {
+		sumarea += m_pGrid[i].area;
+		if(m_pGrid[i].area > fbig) {
+			ibig = i;
+			fbig = m_pGrid[i].area;
+		}
+	}
+
+	float r = sqrt(sumarea * 0.25)*2;
+	
+	int detail = r/portWidth*1024;
+	
+	XYZ pw, ox, oy;
+	if(detail < 8) {
+		if(m_pSHBuf) {
+			if(m_hasHdr) {
+				XYZ inc(0);
+				for(int i = 0; i < SH_N_BASES; i++) {
+					inc.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
+					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
+					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
+				}
+				glColor4f(inc.x, inc.y, inc.z, 0.25);
+			}
+			else {
+				float ov  = 0;
+				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
+				ov /= 3.14;
+				glColor4f(ov, ov, ov, 0.25);
+			}
+		}
+		noise.sphereRand(pw.x, pw.y, pw.z, 19.1f, t_grid_id[ibig]);
+		glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
+		ox = fSpriteX*r;
+		oy = fSpriteY*r;
+		glBegin(GL_QUADS);
+			//glMultiTexCoord2d(GL_TEXTURE0, 0, 0);
+			glMultiTexCoord3d(GL_TEXTURE0, -.5f, -.5f, 0.f);
+			
+			pw = node->mean - ox - oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+			
+			//glMultiTexCoord2d(GL_TEXTURE0, 1, 0);
+			glMultiTexCoord3d(GL_TEXTURE0, .5f, -.5f, 0.f);
+			pw = node->mean + ox - oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+			
+			//glMultiTexCoord2d(GL_TEXTURE0, 1, 1);
+			glMultiTexCoord3d(GL_TEXTURE0, .5f, .5f, 0.f);
+			pw = node->mean + ox + oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+			
+			//glMultiTexCoord2d(GL_TEXTURE0, 0, 1);
+			glMultiTexCoord3d(GL_TEXTURE0, -.5f, .5f, 0.f);
+			pw = node->mean - ox + oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+			
+		glEnd();
+
+		return;
+	}
+
+	if(node->isLeaf) {
+		if(m_pSHBuf) {
+			if(m_hasHdr) {
+				XYZ inc(0);
+				for(int i = 0; i < SH_N_BASES; i++) {
+					inc.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
+					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
+					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
+				}
+				glColor4f(inc.x, inc.y, inc.z, 0.25);
+			}
+			else {
+				float ov  = 0;
+				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
+				ov /= 3.14;
+				glColor4f(ov, ov, ov, 0.25);
+			}
+		}
+		for(unsigned i= node->low; i<= node->high; i++) {
+			r = sqrt(m_pGrid[i].area * 0.25)*2;
+			noise.sphereRand(pw.x, pw.y, pw.z, 19.1f, t_grid_id[i]);
+			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
+			ox = fSpriteX*r;
+			oy = fSpriteY*r;
+			//glVertex3f(origin.x, origin.y, origin.z);
+			//glVertex3f(m_pGrid[i].pos.x, m_pGrid[i].pos.y, m_pGrid[i].pos.z);
+			glBegin(GL_QUADS);
+				//glMultiTexCoord2d(GL_TEXTURE0, 0, 0);
+				glMultiTexCoord3d(GL_TEXTURE0, -.5f, -.5f, 0.f);
+				
+				pw = m_pGrid[i].pos - ox - oy;
+				glVertex3f(pw.x, pw.y, pw.z);
+				
+				//glMultiTexCoord2d(GL_TEXTURE0, 1, 0);
+				glMultiTexCoord3d(GL_TEXTURE0, .5f, -.5f, 0.f);
+				pw = m_pGrid[i].pos + ox - oy;
+				glVertex3f(pw.x, pw.y, pw.z);
+				
+				//glMultiTexCoord2d(GL_TEXTURE0, 1, 1);
+				glMultiTexCoord3d(GL_TEXTURE0, .5f, .5f, 0.f);
+				pw = m_pGrid[i].pos + ox + oy;
+				glVertex3f(pw.x, pw.y, pw.z);
+				
+				//glMultiTexCoord2d(GL_TEXTURE0, 0, 1);
+				glMultiTexCoord3d(GL_TEXTURE0, -.5f, .5f, 0.f);
+				pw = m_pGrid[i].pos - ox + oy;
+				glVertex3f(pw.x, pw.y, pw.z);
+				
+			glEnd();
+		}
+	}
+	else {
+		ChildList todraw;
+		float dist =0.f;
+		if(node->child000) {
+			pcam = node->child000->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child000, dist));
+		}
+		if(node->child001) {
+			pcam = node->child001->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child001, dist));
+		}
+		if(node->child010) {
+			pcam = node->child010->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child010, dist));
+		}
+		if(node->child011) {
+			pcam = node->child011->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child011, dist));
+		}
+		if(node->child100) {
+			pcam = node->child100->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child100, dist));
+		}
+		if(node->child101) {
+			pcam = node->child101->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child101, dist));
+		}
+		if(node->child110) {
+			pcam = node->child110->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child110, dist));
+		}
+		if(node->child111) {
+			pcam = node->child111->center;
+			f_cameraSpaceInv.transform(pcam);
+			dist = pcam.length();
+			todraw.push_back(NodeNDistance(node->child111, dist));
+		}
+		
+		NodeNDistance tmp;
+		for(int j = 0; j < todraw.size()-1; j++) {
+			for(int i = j+1; i < todraw.size(); i++) {
+				if(todraw[i].distance > todraw[j].distance) {
+					tmp = todraw[i];
+					todraw[i] = todraw[j];
+					todraw[j] = tmp;
+				}
+			}
+		}
+		
+		vector<NodeNDistance>::iterator iter = todraw.begin();
+		while( iter != todraw.end() ) {
+			drawSprite((*iter).node);
+			++iter;
+		}
+		todraw.clear();
+	}
 }
 
 void OcTree::drawSurfel(const OCTNode *node, const XYZ& viewdir)
@@ -1326,6 +1550,29 @@ void OcTree::setProjection(MATRIX44F mat, float fov, int iperspective)
 		f_isPersp = 0;
 		f_fieldOfView = fov/2;
 	}
+}
+
+void OcTree::setSpriteSpace(MATRIX44F mat)
+{
+	fMatSprite[0] = mat.v[0][0];
+	fMatSprite[1] = mat.v[0][1];
+	fMatSprite[2] = mat.v[0][2];
+	fMatSprite[3] = mat.v[0][3];
+	fMatSprite[4] = mat.v[1][0];
+	fMatSprite[5] = mat.v[1][1];
+	fMatSprite[6] = mat.v[1][2];
+	fMatSprite[7] = mat.v[1][3];
+	fMatSprite[8] = mat.v[2][0];
+	fMatSprite[9] = mat.v[2][1];
+	fMatSprite[10] = mat.v[2][2];
+	fMatSprite[11] = mat.v[2][3];
+	fMatSprite[12] = mat.v[3][0];
+	fMatSprite[13] = mat.v[3][1];
+	fMatSprite[14] = mat.v[3][2];
+	fMatSprite[15] = mat.v[3][3];
+	
+	fSpriteX = XYZ(fMatSprite[0], fMatSprite[1], fMatSprite[2]);
+	fSpriteY = XYZ(fMatSprite[4], fMatSprite[5], fMatSprite[6]);
 }
 /*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)

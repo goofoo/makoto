@@ -17,6 +17,7 @@ public:
 	~FNoise() {}
 	
 	float randfint( int i );
+	void sphereRand(float& x, float& y, float& z, float r, unsigned int &i);
 	
 private:
 	static unsigned int xRand, yRand, zRand;     /* seed */

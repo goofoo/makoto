@@ -22,7 +22,7 @@
 #include <string>
 #include <maya/MFnCamera.h>
 #include <maya/MDagPath.h>
-#include "../3dtexture/Z3DTexture.h"
+#include "../3dtexture/Voltex.h"
  
 class PTCMapLocator : public MPxLocatorNode
 {
@@ -54,7 +54,7 @@ public:
 	static      MObject     aoutval;
 private:
 	int f_type;
-	Z3DTexture* tree;
+	Voltex* tree;
 };
 
 #endif

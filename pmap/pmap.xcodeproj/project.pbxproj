@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7F1FC56210815DDC009EA837 /* PTCDemViz.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F1FC56110815DDC009EA837 /* PTCDemViz.cpp */; };
+		7F7C0868109C17C1004AD163 /* Voltex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F7C0866109C17C1004AD163 /* Voltex.cpp */; };
 		7F7C14B710726A860029D454 /* CubeRaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F7C14B510726A860029D454 /* CubeRaster.cpp */; };
 		7F81222910711B440022BF82 /* zGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81222810711B440022BF82 /* zGlobal.cpp */; };
 		7F81222E10711B660022BF82 /* QuickSort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81222D10711B660022BF82 /* QuickSort.cpp */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		7F1FC56110815DDC009EA837 /* PTCDemViz.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PTCDemViz.cpp; sourceTree = "<group>"; };
+		7F7C0866109C17C1004AD163 /* Voltex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Voltex.cpp; path = ../3dtexture/Voltex.cpp; sourceTree = SOURCE_ROOT; };
 		7F7C14B510726A860029D454 /* CubeRaster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CubeRaster.cpp; path = ../3dtexture/CubeRaster.cpp; sourceTree = SOURCE_ROOT; };
 		7F81222810711B440022BF82 /* zGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zGlobal.cpp; path = ../shared/zGlobal.cpp; sourceTree = SOURCE_ROOT; };
 		7F81222D10711B660022BF82 /* QuickSort.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickSort.cpp; path = ../shared/QuickSort.cpp; sourceTree = SOURCE_ROOT; };
@@ -67,6 +69,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F7C0866109C17C1004AD163 /* Voltex.cpp */,
 				7F1FC56110815DDC009EA837 /* PTCDemViz.cpp */,
 				7F8BAFF61081031000FE0291 /* FNoise.cpp */,
 				7F8D27EE107BA4E300390A46 /* OcTree.cpp */,
@@ -174,6 +177,7 @@
 				7F8D27EF107BA4E300390A46 /* OcTree.cpp in Sources */,
 				7F8BAFF71081031000FE0291 /* FNoise.cpp in Sources */,
 				7F1FC56210815DDC009EA837 /* PTCDemViz.cpp in Sources */,
+				7F7C0868109C17C1004AD163 /* Voltex.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

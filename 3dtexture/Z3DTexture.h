@@ -36,8 +36,8 @@ public:
 	char load(const char* filename);
 	void constructTree(const XYZ& rootCenter, float rootSize, int maxLevel);
 
-	void draw() const;
-	void draw(const XYZ& viewdir) const;
+	void drawCube() const;
+	void drawSprite() const;
 	
 	int getNumGrid() const { if(m_pTree) return m_pTree->getNumGrid(); else return -1; }
 	int getNumVoxel() const {if(m_pTree) return m_pTree->getNumVoxel(); else return -1;}
@@ -60,6 +60,7 @@ public:
 	void getGridById(unsigned idx, RGRID& data) const;
 	void setProjection(MATRIX44F cameraspace, float fov, int iperspective);
 	SHB3COEFF* getNamedSH(const char* name);
+	void setProgram(GLhandleARB obj) { m_pTree->setProgram(obj); }
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;
