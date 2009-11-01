@@ -16,20 +16,10 @@ public:
 	Voltex();
 	~Voltex();
 	
-	char load(const char* filename);
-	
-	void setDraw(const char* name);
-	void setHDRLighting(XYZ* coe);
-	void setProjection(MATRIX44F cameraspace, float fov, int iperspective);
-	
-	void drawCube() const;
-	void drawSprite() const;
-	
-	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
+	void start(Z3DTexture* db) const;
 	
 	char isDiagnosed() const { return fHasDiagnosis; }
 	void diagnose(string& log);
 private:
-	Z3DTexture* db;
 	char fHasDiagnosis, fHasExtensions;
 };

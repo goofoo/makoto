@@ -34,14 +34,15 @@ MObject     PTCMapLocator::input;
 MObject PTCMapLocator::aincoe;
 MObject     PTCMapLocator::aoutval;
 
-PTCMapLocator::PTCMapLocator() :tree(0),f_type(0)
+PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
 {
-	tree = new Voltex();
+	fRenderer = new Voltex();
 }
 
 PTCMapLocator::~PTCMapLocator() 
 {
-	if(tree) delete tree;
+	if(fRenderer) delete fRenderer;
+	if(fData) delete fData;
 }
 
 MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
@@ -78,12 +79,12 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		char filename[512];
 		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
 		
-		//if(tree) delete tree;
-		//tree = new Z3DTexture();
-		if(!tree->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
+		if(fData) delete fData;
+		fData = new Z3DTexture();
+		if(!fData->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
 
-		tree->setDraw(attrib2sho.asChar());
-		if(hascoe==1) tree->setHDRLighting(hdrCoeff);
+		fData->setDraw(attrib2sho.asChar());
+		if(hascoe==1) fData->setHDRLighting(hdrCoeff);
 		
 		data.setClean(plug);
 		
@@ -116,7 +117,7 @@ MBoundingBox PTCMapLocator::boundingBox() const
 	MPoint corner1( -1,-1,-1 );
 	MPoint corner2( 1,1,1 );
 	
-	if(tree) tree->getBBox(corner1.x, corner2.x, corner1.y, corner2.y, corner1.z, corner2.z);
+	if(fData) fData->getBBox(corner1.x, corner2.x, corner1.y, corner2.y, corner1.z, corner2.z);
 	
 	return MBoundingBox( corner1, corner2 ); 
 } 
@@ -173,25 +174,20 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	}
 
 	view.beginGL(); 
+	
+	if(!fRenderer->isDiagnosed()) {
+		string log;
+		fRenderer->diagnose(log);
+		MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());
+	}
+		
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	if(tree){
-		if(!tree->isDiagnosed()) {
-			string log;
-			tree->diagnose(log);
-			MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());
-		}
+	if(fData){
+// update camera
+		fData->setProjection(mat, fov, ispersp);
 		
-		tree->setProjection(mat, fov, ispersp);
-		
-		
-		//
-		//glPointSize(2.5);
-		
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		if(f_type == 1) tree->drawCube();
+		if(f_type == 1) fData->drawCube();
 		else {
 			glClearDepth(1.0);
 			glEnable(GL_BLEND);
@@ -200,15 +196,14 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glDepthMask( GL_FALSE );
 			
-			tree->drawSprite();
+			fRenderer->start(fData);
+			fData->drawSprite();
 		
 			glDisable(GL_BLEND);	
 			glDepthMask( GL_TRUE );	
 		}
-		//
-		//XYZ ori(0,0,0);
-		//tree->testRaster(ori);
 	}
+	
 	glPopAttrib();
 	view.endGL();
 }

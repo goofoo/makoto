@@ -54,7 +54,8 @@ public:
 	static      MObject     aoutval;
 private:
 	int f_type;
-	Voltex* tree;
+	Voltex* fRenderer;
+	Z3DTexture* fData;
 };
 
 #endif

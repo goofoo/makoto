@@ -104,8 +104,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 278021353;
-			PBXWorkspaceStateSaveDate = 278021353;
+			PBXPerProjectTemplateStateSaveDate = 278705845;
+			PBXWorkspaceStateSaveDate = 278705845;
 		};
 		sourceControlManager = 7FAB70280FE80CEE00A0E472 /* Source Control */;
 		userBuildSettings = {
@@ -137,18 +137,18 @@
 	};
 	7F60EF780FEBF1070030E0B5 /* GUIControl.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {603, 441}}";
-			sepNavSelRange = "{208, 30}";
+			sepNavIntBoundsRect = "{{0, 0}, {603, 464}}";
+			sepNavSelRange = "{280, 0}";
 			sepNavVisRange = "{0, 280}";
-			sepNavWindowFrame = "{{442, 113}, {662, 592}}";
+			sepNavWindowFrame = "{{458, 136}, {662, 592}}";
 		};
 	};
 	7F60EF790FEBF1070030E0B5 /* GUIControl.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {603, 1148}}";
-			sepNavSelRange = "{1765, 0}";
-			sepNavVisRange = "{1017, 750}";
-			sepNavWindowFrame = "{{549, 92}, {662, 592}}";
+			sepNavSelRange = "{1725, 0}";
+			sepNavVisRange = "{0, 944}";
+			sepNavWindowFrame = "{{72, 87}, {662, 592}}";
 		};
 	};
 	7FAB700F0FE80CDD00A0E472 /* EXRViewer */ = {
@@ -211,8 +211,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 4;
-		modificationTime = 278021663.892282;
-		state = 1;
+		modificationTime = 278705854.649084;
+		state = 0;
 	};
 	7FFB7FAD0FEAA84A00AD20C9 /* image.h */ = {
 		uiCtxt = {

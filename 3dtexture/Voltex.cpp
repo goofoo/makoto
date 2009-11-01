@@ -114,55 +114,17 @@ static GLuint noisepool;
 
 static FNoise noise;
 
-Voltex::Voltex() : db(0), fHasDiagnosis(0), fHasExtensions(0) {}
+Voltex::Voltex() : fHasDiagnosis(0), fHasExtensions(0) {}
 Voltex::~Voltex() 
 {
-	if(db) delete db;
+	if (program_object) glDeleteObjectARB(program_object);
 }
 
-char Voltex::load(const char* filename)
-{
-	if(db) delete db;
-	db = new Z3DTexture();
-	if(!db->load(filename)) return 0;
-	return 1;
-}
-
-void Voltex::setDraw(const char* name)
-{
-	if(db) db->setDraw(name);
-}
-
-void Voltex::setHDRLighting(XYZ* coe)
-{
-	if(db) db->setHDRLighting(coe);
-}
-
-void Voltex::setProjection(MATRIX44F cameraspace, float fov, int iperspective)
-{
-	if(db) db->setProjection(cameraspace, fov, iperspective);
-}
-
-void Voltex::drawCube() const
-{
-	if(db) db->drawCube();
-}
-
-void Voltex::drawSprite() const
+void Voltex::start(Z3DTexture* db) const
 {
 	glBindTexture(GL_TEXTURE_3D, noisepool);
 		
-	if(db) {
-		db->setProgram(program_object);
-		db->drawSprite();
-	}
-	
-	
-}
-
-void Voltex::getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const
-{
-	if(db) db->getBBox(xmin, xmax, ymin, ymax, zmin, zmax);
+	db->setProgram(program_object);
 }
 
 void Voltex::diagnose(string& log)
