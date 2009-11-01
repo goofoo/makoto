@@ -200,12 +200,16 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		fRenderer->diagnose(log);
 		MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());
 	}
+	
+	int port[4];
+	glGetIntegerv(GL_VIEWPORT, port);
 		
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if(fData) {
 // update camera
 		fData->setProjection(mat, fov, ispersp);
+		fData->setPortWidth(port[2]);
 		
 		if(f_type == 1) fData->drawCube();
 		else {

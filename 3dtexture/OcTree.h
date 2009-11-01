@@ -104,7 +104,7 @@ public:
 	void draw(const XYZ& viewdir);
 	void drawCube(const OCTNode *node);
 	void drawSprite(const OCTNode *node);
-	void drawSurfel(const OCTNode *node, const XYZ& viewdir);
+	//void drawSurfel(const OCTNode *node, const XYZ& viewdir);
 	void drawNeighbour(const OCTNode *node);
 	//void draw(const PerspectiveView *pview,XYZ facing,string drawType);
 	//void drawCube(const OCTNode *node, const PerspectiveView *pview);
@@ -147,6 +147,8 @@ public:
 	unsigned* getIdBuf() const {return idBuf;}
 	
 	void setProgram(GLhandleARB obj) { program_object = obj; }
+	
+	void setHalfPortWidth(int &val) {fHalfPortWidth = val;}
 private:
 	
 	OCTNode *root;
@@ -179,4 +181,5 @@ private:
 	float fMatSprite[16];
 	XYZ fSpriteX, fSpriteY, fEye;
 	GLhandleARB program_object;
+	int fHalfPortWidth;
 };

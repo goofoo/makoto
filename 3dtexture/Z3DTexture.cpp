@@ -260,6 +260,12 @@ void Z3DTexture::setProjection(MATRIX44F cameraspace, float fov, int iperspectiv
 	m_pTree->setSpriteSpace(cameraspace);
 }
 
+void Z3DTexture::setPortWidth(int& val)
+{
+	val /= 2;
+	m_pTree->setHalfPortWidth(val);
+}
+
 SHB3COEFF* Z3DTexture::getNamedSH(const char* name)
 {
 	for(unsigned i=0; i < attrib_sh.size(); i++) {

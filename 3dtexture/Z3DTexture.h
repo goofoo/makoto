@@ -59,6 +59,7 @@ public:
 	void getLODGrid(GRIDNId* data, unsigned& n_data) const;
 	void getGridById(unsigned idx, RGRID& data) const;
 	void setProjection(MATRIX44F cameraspace, float fov, int iperspective);
+	void setPortWidth(int& val);
 	SHB3COEFF* getNamedSH(const char* name);
 	void setProgram(GLhandleARB obj) { m_pTree->setProgram(obj); }
 private:
