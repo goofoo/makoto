@@ -33,29 +33,35 @@ glExtensionEntry entriesNeeded[] = {
 GLhandleARB vertex_shader, fragment_shader, program_object;
 
 const char *vert_source =
-"varying vec3  TexCoord;"
-"varying vec3  TexCoordNoise;"
-"varying vec3 SurfaceColor;"
+"uniform vec3 LightPosition;"
 "uniform vec3 Origin;"
 "uniform mat4 objspace;"
+
+"varying vec3  TexCoord;"
+"varying vec3  TexCoordNoise;"
+"varying vec3  LightVec;"
+
 "void main(void)"
 "{"
-//"    TexCoord        = gl_MultiTexCoord1.xyz*1.5;"
-//"    TexCoordNoise  = gl_MultiTexCoord0.xyz;"
+"	vec3 ecPos      = vec3 (gl_ModelViewMatrix * gl_Vertex);"
+"	LightVec   = normalize(LightPosition - ecPos);"
 "	vec4 pw = vec4(gl_MultiTexCoord0.xyz, 0.0);"
 "	TexCoordNoise = vec3(objspace * pw);"
 "    TexCoord        =  TexCoordNoise*1.5;"
 "    TexCoordNoise  = (TexCoordNoise)/16.0+Origin;"
-"	SurfaceColor = vec3(gl_Color);"
 "    gl_Position     = ftransform();"
 "}";
 
 const char *frag_source =
 "uniform sampler3D EarthNight;"
+"uniform float KNoise;"
+"uniform float KDiffuse;"
+"uniform vec3 CIBL;"
 
 "varying vec3  TexCoord;"
 "varying vec3  TexCoordNoise;"
-"varying vec3 SurfaceColor;"
+"varying vec3  LightVec;"
+
 "void main (void)"
 "{" 
 "	vec3 pcoord = TexCoordNoise;"
@@ -105,16 +111,27 @@ const char *frag_source =
 //"	i++;"
 //"	freq *= 2.0;"
 
-"	float dist = length(TexCoord + (fractal.xyz - vec3(0.5))*0.5);"
+"	vec3 volnormal = TexCoord + (fractal.xyz - vec3(0.5))*0.5*KNoise;"
+"	float dist = length(volnormal);"
 "	if(dist > 0.5) dist = 0.5;"
-"    gl_FragColor = vec4 (SurfaceColor, turbulence*(1.0 - dist/0.5*dist/0.5));"
+
+"	vec3 nn = normalize(volnormal);"
+"	float NdotL           = (dot(LightVec, nn) + 1.0) * 0.5;"
+"	vec3 cdiff   = mix(vec3(0.0), vec3(0.2), smoothstep(0.4, 0.9, NdotL));"
+
+"    gl_FragColor = vec4 (cdiff*KDiffuse+CIBL, turbulence*(1.0 - dist/0.5*dist/0.5));"
 "}";
 
 static GLuint noisepool;
 
 static FNoise noise;
 
-Voltex::Voltex() : fHasDiagnosis(0), fHasExtensions(0) {}
+Voltex::Voltex() : fHasDiagnosis(0), fHasExtensions(0), 
+fKNoise(0.5), fKDiffuse(0.5) 
+{
+	fLightPos.x = fLightPos.y = fLightPos.z = 100.f;
+}
+
 Voltex::~Voltex() 
 {
 	if (program_object) glDeleteObjectARB(program_object);
@@ -123,16 +140,26 @@ Voltex::~Voltex()
 void Voltex::start(Z3DTexture* db) const
 {
 	glBindTexture(GL_TEXTURE_3D, noisepool);
-		
+	glUseProgramObjectARB(program_object);	
+// set global values
+	glUniform1fARB(glGetUniformLocationARB(program_object, "KNoise"), fKNoise);
+	glUniform3fARB(glGetUniformLocationARB(program_object, "LightPosition"), fLightPos.x, fLightPos.y, fLightPos.z);
+	glUniform1fARB(glGetUniformLocationARB(program_object, "KDiffuse"), fKDiffuse);
 	db->setProgram(program_object);
 }
+
+void Voltex::end() const
+{
+	glUseProgramObjectARB(NULL);
+}
+
 
 void Voltex::diagnose(string& log)
 {
 	float core_version;
 	sscanf((char *)glGetString(GL_VERSION), "%f", &core_version);
 	char sbuf[64];
-	sprintf(sbuf, "%s version %s", (char *)glGetString(GL_RENDERER), (char *)glGetString(GL_VERSION));
+	sprintf(sbuf, "%s version %s\n", (char *)glGetString(GL_RENDERER), (char *)glGetString(GL_VERSION));
 	log = sbuf;
 	
 	const GLubyte * strExt = glGetString (GL_EXTENSIONS);
@@ -236,7 +263,10 @@ void Voltex::diagnose(string& log)
 		glUseProgramObjectARB(program_object);
 		
 		glUniform1iARB(glGetUniformLocationARB(program_object, "EarthNight"), 0);
-		
+		glUniform1fARB(glGetUniformLocationARB(program_object, "KNoise"), fKNoise);
+		glUniform1fARB(glGetUniformLocationARB(program_object, "KDiffuse"), fKDiffuse);
+		glUniform3fARB(glGetUniformLocationARB(program_object, "LightPosition"), fLightPos.x, fLightPos.y, fLightPos.z);
+
 		glUseProgramObjectARB(NULL);
 	}
 	

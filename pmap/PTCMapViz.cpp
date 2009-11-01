@@ -32,6 +32,11 @@ MObject 	PTCMapLocator::aviewattrib;
 MObject     PTCMapLocator::adrawtype;
 MObject     PTCMapLocator::input;
 MObject PTCMapLocator::aincoe;
+MObject PTCMapLocator::anoise;
+MObject     PTCMapLocator::adiffuse;
+MObject     PTCMapLocator::alightposx;
+MObject     PTCMapLocator::alightposy;
+MObject     PTCMapLocator::alightposz;
 MObject     PTCMapLocator::aoutval;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
@@ -85,6 +90,21 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 
 		fData->setDraw(attrib2sho.asChar());
 		if(hascoe==1) fData->setHDRLighting(hdrCoeff);
+		
+		float kwei = data.inputValue(anoise).asFloat();
+		
+		fRenderer->setKNoise(kwei);
+		
+		kwei = data.inputValue(adiffuse).asFloat();
+		
+		fRenderer->setKDiffuse(kwei);
+		
+		float r, g, b;
+		r = data.inputValue(alightposx).asFloat();
+		g = data.inputValue(alightposy).asFloat();
+		b = data.inputValue(alightposz).asFloat();
+		
+		fRenderer->setLightPos(r,g,b);
 		
 		data.setClean(plug);
 		
@@ -183,21 +203,23 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
-	if(fData){
+	if(fData) {
 // update camera
 		fData->setProjection(mat, fov, ispersp);
 		
 		if(f_type == 1) fData->drawCube();
 		else {
 			glClearDepth(1.0);
-			glEnable(GL_BLEND);
+			
 			glDepthFunc(GL_LEQUAL);
+			glEnable(GL_DEPTH_TEST);
 			glShadeModel(GL_SMOOTH);
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glDepthMask( GL_FALSE );
-			
+			glEnable(GL_BLEND);
 			fRenderer->start(fData);
 			fData->drawSprite();
+			fRenderer->end();
 		
 			glDisable(GL_BLEND);	
 			glDepthMask( GL_TRUE );	
@@ -281,6 +303,35 @@ MStatus PTCMapLocator::initialize()
 	zWorks::createVectorArrayAttr(aincoe, "inCoeff", "icoe");
 	addAttribute( aincoe );
 	
+	anoise = nAttr.create( "KNoise", "knoi", MFnNumericData::kFloat, 0.5);
+	nAttr.setMin(0.0);
+	nAttr.setMax(1.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(anoise);
+	
+	adiffuse = nAttr.create( "KDiffuse", "kdif", MFnNumericData::kFloat, 0.5);
+	nAttr.setMin(0.0);
+	nAttr.setMax(1.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(adiffuse);
+	
+	alightposx = nAttr.create( "LightPosX", "lposx", MFnNumericData::kFloat, 100.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(alightposx);
+	
+	alightposy = nAttr.create( "LightPosY", "lposy", MFnNumericData::kFloat, 100.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(alightposy);
+	
+	alightposz = nAttr.create( "LightPosZ", "lposz", MFnNumericData::kFloat, 100.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(alightposz);
+	
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);
 	nAttr.setWritable(false);
@@ -294,7 +345,11 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( adrawtype, aoutval );
 	attributeAffects( aincoe, aoutval );
 	attributeAffects( adensity, aoutval );
-	attributeAffects( adusty, aoutval );
+	attributeAffects( anoise, aoutval );
+	attributeAffects( adiffuse, aoutval );
+	attributeAffects( alightposx, aoutval );
+	attributeAffects( alightposy, aoutval );
+	attributeAffects( alightposz, aoutval );
 	return MS::kSuccess;
 
 }

@@ -48,6 +48,11 @@ public:
 	static  	MObject 	amaxframe;
 	static      MObject     adensity;
 	static      MObject     adusty;
+	static      MObject     anoise;
+	static      MObject     adiffuse;
+	static      MObject     alightposx;
+	static      MObject     alightposy;
+	static      MObject     alightposz;
 	static  	MObject 	aviewattrib;
 	static      MObject     adrawtype;
 	static MObject aincoe;

@@ -177,6 +177,6 @@ private:
 	float f_fieldOfView;
 	char f_isPersp;
 	float fMatSprite[16];
-	XYZ fSpriteX, fSpriteY;
+	XYZ fSpriteX, fSpriteY, fEye;
 	GLhandleARB program_object;
 };
