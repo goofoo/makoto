@@ -47,7 +47,7 @@ const char *vert_source =
 "	LightVec   = normalize(LightPosition - ecPos);"
 "	vec4 pw = vec4(gl_MultiTexCoord0.xyz, 0.0);"
 "	TexCoordNoise = vec3(objspace * pw);"
-"    TexCoord        =  TexCoordNoise*1.5;"
+"    TexCoord        =  TexCoordNoise*2.0;"
 "    TexCoordNoise  = (TexCoordNoise)/16.0+Origin;"
 "    gl_Position     = ftransform();"
 "}";
@@ -62,14 +62,65 @@ const char *frag_source =
 "varying vec3  TexCoordNoise;"
 "varying vec3  LightVec;"
 
-"void main (void)"
-"{" 
-"	vec3 pcoord = TexCoordNoise;"
+"vec3 fractal_func(vec3 pcoord, float H)"
+"{"
 "	float lacunarity = 2.0;"
 "	float i=0.0;"
-"	float freq= 1.0;"
-"	float H = 1.0;"
+"	vec3 fractal = texture3D(EarthNight, pcoord).rgb*pow(lacunarity, -H*i);" 
+"	pcoord *= lacunarity; "
+"	i++;"
 
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
+"	pcoord *= lacunarity; " 
+"	i++;"
+
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
+"	pcoord *= lacunarity; "
+"	i++;"
+
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
+"	pcoord *= lacunarity; "
+"	i++;"
+
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
+"	pcoord *= lacunarity; " 
+"	i++;"
+
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
+"	return fractal;"
+"}"
+
+"float density_func(vec3 coord)"
+"{"
+"	float freq= 1.0;"
+"	float turbulence = abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+"	coord *= 2.0;"
+"	freq *= 2.0;"
+"	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+"	coord *= 2.0; " 
+"	freq *= 2.0;"
+"	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+"	coord *= 2.0; " 
+"	freq *= 2.0;"
+"	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+"	coord *= 2.0; " 
+"	freq *= 2.0;"
+"	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+"	coord *= 2.0; " 
+"	freq *= 2.0;"
+"	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+"return turbulence;"
+"}"
+
+"void main (void)"
+"{" 
+//"	vec3 pcoord = TexCoordNoise;"
+//"	float lacunarity = 2.0;"
+//"	float i=0.0;"
+//"	float freq= 1.0;"
+"	float H = 1.0;"
+"	vec3 fractal = fractal_func(TexCoordNoise, H);"
+/*
 "	vec3 fractal = texture3D(EarthNight, pcoord).rgb*pow(lacunarity, -H*i);" 
 "	float turbulence = abs(texture3D(EarthNight, pcoord).a - 0.5)/freq;"
 "	pcoord *= lacunarity; "
@@ -110,6 +161,9 @@ const char *frag_source =
 //"	pcoord *= lacunarity; " 
 //"	i++;"
 //"	freq *= 2.0;"
+*/
+
+"	float dens = density_func(TexCoordNoise+(fractal-vec3(0.5))/31.0*KNoise);"
 
 "	vec3 volnormal = TexCoord + (fractal.xyz - vec3(0.5))*0.5*KNoise;"
 "	float dist = length(volnormal);"
@@ -117,9 +171,9 @@ const char *frag_source =
 
 "	vec3 nn = normalize(volnormal);"
 "	float NdotL           = (dot(LightVec, nn) + 1.0) * 0.5;"
-"	vec3 cdiff   = mix(vec3(0.0), vec3(0.2), smoothstep(0.4, 0.9, NdotL));"
+"	vec3 cdiff   = mix(vec3(0.0), vec3(1.0), smoothstep(0.0, 1.0, NdotL));"
 
-"    gl_FragColor = vec4 (cdiff*KDiffuse+CIBL, turbulence*(1.0 - dist/0.5*dist/0.5));"
+"    gl_FragColor = vec4 (cdiff*KDiffuse+CIBL, (1.0-dens)*(1.0 - dist/0.5*dist/0.5));"
 "}";
 
 static GLuint noisepool;

@@ -67,6 +67,7 @@ global proc particleMapAppendMenuItems()
 	menuItem -l "Create Cache Dimension" -c "createNode pmapDem";
 	menuItem -l "Save" -c "openExportParticleCacheWin";
 	menuItem -l "Load" -c "openImportParticleCacheWin";
+	menuItem -l "View Tool" -c "znebula_view";
 	menuItem -l "View Key Lighting" -c "particleMapSetDraw(\"key_lighting\")";
 	menuItem -l "View Back Lighting" -c "particleMapSetDraw(\"back_lighting\")";
 	setParent -menu ..;
@@ -394,4 +395,9 @@ global proc particleMapSetDraw(string $attrname)
 		string $conn[] = `listConnections -d 1 -s 1 ( $a + ".icoe")`;
 		if(size($viewhdr)>0 && size($conn)<1) connectAttr -f ($viewhdr[0] +".output") ( $a + ".icoe");
 	}
+}
+
+global proc znebula_view()
+{
+	setToolTo `viewVolumeToolContext`;
 }

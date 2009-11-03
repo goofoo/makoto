@@ -727,6 +727,7 @@ void OcTree::drawSprite(const OCTNode *node)
 				//glColor4f(ov, ov, ov, 0.25);
 			}
 		}
+		
 		for(unsigned i= node->low; i<= node->high; i++) {
 			r = sqrt(m_pGrid[i].area * 0.25)*2;
 			noise.sphereRand(pw.x, pw.y, pw.z, 19.1f, t_grid_id[i]);
@@ -841,6 +842,18 @@ void OcTree::drawSprite(const OCTNode *node)
 		}
 		else todraw[7].distance = -1;
 		
+		ValueAndId* tosort = new ValueAndId[8];
+		for(int i = 0; i < 8; i++) {
+			tosort[i].val = todraw[i].distance;
+			tosort[i].idx = i;
+		}
+		
+		QuickSort::sort(tosort,0,7);
+		
+		for(int i = 0; i < 8; i++) drawSprite(todraw[tosort[7-i].idx].node);
+		
+		delete[] tosort;
+		/*
 		NodeNDistance tmp;
 		for(int j = 0; j < 7; j++) {
 			for(int i = j+1; i < 8; i++) {
@@ -853,13 +866,7 @@ void OcTree::drawSprite(const OCTNode *node)
 		}
 		
 		for(int i = 0; i < 8; i++) drawSprite(todraw[i].node);
-		
-		//vector<NodeNDistance>::iterator iter = todraw.begin();
-		//while( iter != todraw.end() ) {
-			//drawSprite((*iter).node);
-			//++iter;
-		//}
-		//todraw.clear();
+		*/
 	}
 }
 /*
