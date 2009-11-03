@@ -309,7 +309,7 @@ MStatus PTCMapLocator::initialize()
 	
 	anoise = nAttr.create( "KNoise", "knoi", MFnNumericData::kFloat, 0.5);
 	nAttr.setMin(0.0);
-	nAttr.setMax(1.0);
+	//nAttr.setMax(1.0);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute(anoise);

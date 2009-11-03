@@ -47,7 +47,7 @@ const char *vert_source =
 "	LightVec   = normalize(LightPosition - ecPos);"
 "	vec4 pw = vec4(gl_MultiTexCoord0.xyz, 0.0);"
 "	TexCoordNoise = vec3(objspace * pw);"
-"    TexCoord        =  TexCoordNoise*2.0;"
+"    TexCoord        =  TexCoordNoise*1.5;"
 "    TexCoordNoise  = (TexCoordNoise)/16.0+Origin;"
 "    gl_Position     = ftransform();"
 "}";
@@ -57,6 +57,7 @@ const char *frag_source =
 "uniform float KNoise;"
 "uniform float KDiffuse;"
 "uniform vec3 CIBL;"
+"uniform float OScale;"
 
 "varying vec3  TexCoord;"
 "varying vec3  TexCoordNoise;"
@@ -163,7 +164,7 @@ const char *frag_source =
 //"	freq *= 2.0;"
 */
 
-"	float dens = density_func(TexCoordNoise+(fractal-vec3(0.5))/31.0*KNoise);"
+"	float dens = density_func(TexCoordNoise+(fractal-vec3(0.5))/48.0*KNoise);"
 
 "	vec3 volnormal = TexCoord + (fractal.xyz - vec3(0.5))*0.5*KNoise;"
 "	float dist = length(volnormal);"
@@ -171,9 +172,9 @@ const char *frag_source =
 
 "	vec3 nn = normalize(volnormal);"
 "	float NdotL           = (dot(LightVec, nn) + 1.0) * 0.5;"
-"	vec3 cdiff   = mix(vec3(0.0), vec3(1.0), smoothstep(0.0, 1.0, NdotL));"
+//"	vec3 cdiff   = mix(vec3(0.1), vec3(1.0), smoothstep(0.6, 1.0, NdotL));"
 
-"    gl_FragColor = vec4 (cdiff*KDiffuse+CIBL, (1.0-dens)*(1.0 - dist/0.5*dist/0.5));"
+"    gl_FragColor = vec4 (vec3(0.03)+CIBL*(1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), OScale*(1.0-dens)*(1.0 - dist/0.5*dist/0.5));"
 "}";
 
 static GLuint noisepool;

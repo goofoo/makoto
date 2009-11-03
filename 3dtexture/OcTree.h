@@ -149,6 +149,8 @@ public:
 	void setProgram(GLhandleARB obj) { program_object = obj; }
 	
 	void setHalfPortWidth(int &val) {fHalfPortWidth = val;}
+	
+	void drawAParticle(const XYZ& center, const float& radius, const int& detail);
 private:
 	
 	OCTNode *root;
@@ -179,7 +181,7 @@ private:
 	float f_fieldOfView;
 	char f_isPersp;
 	float fMatSprite[16];
-	XYZ fSpriteX, fSpriteY, fEye;
+	XYZ fSpriteX, fSpriteY, fSpriteZ, fEye;
 	GLhandleARB program_object;
 	int fHalfPortWidth;
 };

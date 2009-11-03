@@ -652,9 +652,11 @@ void OcTree::drawSprite(const OCTNode *node)
 		}
 	}
 
-	float r = sqrt(sumarea * 0.25)*2;
+	float r = sqrt(sumarea * 0.25);
 	
 	int detail = r/portWidth*fHalfPortWidth;
+	
+	r *= 2;
 	
 	XYZ pw, ox, oy;
 	float cr,cg,cb;
@@ -682,6 +684,9 @@ void OcTree::drawSprite(const OCTNode *node)
 		noise.sphereRand(pw.x, pw.y, pw.z, 19.1f, t_grid_id[ibig]);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
+		
+		drawAParticle(node->mean, r, detail);
+		/*
 		ox = fSpriteX*r;
 		oy = fSpriteY*r;
 		glBegin(GL_QUADS);
@@ -703,6 +708,7 @@ void OcTree::drawSprite(const OCTNode *node)
 			glVertex3f(pw.x, pw.y, pw.z);
 			
 		glEnd();
+		*/
 
 		return;
 	}
@@ -729,11 +735,18 @@ void OcTree::drawSprite(const OCTNode *node)
 		}
 		
 		for(unsigned i= node->low; i<= node->high; i++) {
-			r = sqrt(m_pGrid[i].area * 0.25)*2;
+			r = sqrt(m_pGrid[i].area * 0.25);
+			
+			detail = r/portWidth*fHalfPortWidth;
+			
+			r *= 2;
+			
 			noise.sphereRand(pw.x, pw.y, pw.z, 19.1f, t_grid_id[i]);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
-			ox = fSpriteX*r;
+			
+			drawAParticle(m_pGrid[i].pos, r, detail);
+			/*ox = fSpriteX*r;
 			oy = fSpriteY*r;
 			
 			glBegin(GL_QUADS);
@@ -754,7 +767,7 @@ void OcTree::drawSprite(const OCTNode *node)
 				pw = m_pGrid[i].pos - ox + oy;
 				glVertex3f(pw.x, pw.y, pw.z);
 				
-			glEnd();
+			glEnd();*/
 		}
 	}
 	else {
@@ -1606,10 +1619,52 @@ void OcTree::setSpriteSpace(MATRIX44F mat)
 	
 	fSpriteX = XYZ(fMatSprite[0], fMatSprite[1], fMatSprite[2]);
 	fSpriteY = XYZ(fMatSprite[4], fMatSprite[5], fMatSprite[6]);
+	fSpriteZ = XYZ(fMatSprite[8], fMatSprite[9], fMatSprite[10]);
 	
 	fEye.x = fMatSprite[12];
 	fEye.y = fMatSprite[13];
 	fEye.z = fMatSprite[14];
+}
+
+void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& detail)
+{
+	XYZ pw, ox, oy, oz;
+	ox = fSpriteX * radius;
+	oy = fSpriteY * radius;
+	oz = fSpriteZ * radius;
+	
+	int nslice = 5 + detail/7;
+	if(nslice > 39) nslice = 39;
+	float delta = 1.f / nslice;
+	glUniform1fARB(glGetUniformLocationARB(program_object, "OScale"), delta * 1.f);
+	
+	XYZ start;
+	
+	float z;
+	
+	glBegin(GL_QUADS);
+	for(int i=0; i<nslice; i++) {
+			z = -0.5 + delta * (i+0.5f);
+			start = center + oz * z * 2.f;
+			
+			glMultiTexCoord3d(GL_TEXTURE0, -.5f, -.5f, z);
+			
+			pw = start - ox - oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+			
+			glMultiTexCoord3d(GL_TEXTURE0, .5f, -.5f, z);
+			pw = start + ox - oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+			
+			glMultiTexCoord3d(GL_TEXTURE0, .5f, .5f, z);
+			pw = start + ox + oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+			
+			glMultiTexCoord3d(GL_TEXTURE0, -.5f, .5f, z);
+			pw = start - ox + oy;
+			glVertex3f(pw.x, pw.y, pw.z);
+	}		
+	glEnd();
 }
 /*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)
