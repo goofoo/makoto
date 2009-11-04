@@ -26,7 +26,7 @@ static FNoise noise;
 
 OcTree::OcTree():root(0),num_voxel(0), m_pGrid(0), num_grid(0),idBuf(0),sample_opacity(0.04f),m_hasHdr(0),
 program_object(NULL),
-fHalfPortWidth(1024)
+fHalfPortWidth(1024),fMeanRadius(1.f)
 {
 }
 
@@ -656,8 +656,6 @@ void OcTree::drawSprite(const OCTNode *node)
 	
 	int detail = r/portWidth*fHalfPortWidth;
 	
-	r *= 2;
-	
 	XYZ pw, ox, oy;
 	float cr,cg,cb;
 	
@@ -681,35 +679,11 @@ void OcTree::drawSprite(const OCTNode *node)
 				//glColor4f(ov, ov, ov, 0.25);
 			}
 		}
-		noise.sphereRand(pw.x, pw.y, pw.z, 19.1f, t_grid_id[ibig]);
+		noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[ibig]);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
 		
 		drawAParticle(node->mean, r, detail);
-		/*
-		ox = fSpriteX*r;
-		oy = fSpriteY*r;
-		glBegin(GL_QUADS);
-			glMultiTexCoord3d(GL_TEXTURE0, -.5f, -.5f, 0.f);
-			
-			pw = node->mean - ox - oy;
-			glVertex3f(pw.x, pw.y, pw.z);
-			
-			glMultiTexCoord3d(GL_TEXTURE0, .5f, -.5f, 0.f);
-			pw = node->mean + ox - oy;
-			glVertex3f(pw.x, pw.y, pw.z);
-			
-			glMultiTexCoord3d(GL_TEXTURE0, .5f, .5f, 0.f);
-			pw = node->mean + ox + oy;
-			glVertex3f(pw.x, pw.y, pw.z);
-			
-			glMultiTexCoord3d(GL_TEXTURE0, -.5f, .5f, 0.f);
-			pw = node->mean - ox + oy;
-			glVertex3f(pw.x, pw.y, pw.z);
-			
-		glEnd();
-		*/
-
 		return;
 	}
 
@@ -734,41 +708,53 @@ void OcTree::drawSprite(const OCTNode *node)
 			}
 		}
 		
+		if(node->low == node->high) {
+			r = sqrt(m_pGrid[node->low].area * 0.25);
+			
+			detail = r/portWidth*fHalfPortWidth;
+			
+			noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[node->low]);
+			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
+			glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
+			
+			drawAParticle(m_pGrid[node->low].pos, r, detail);
+		}
+		else {
+			int npt = node->high - node->low + 1;
+			ValueAndId* lssort = new ValueAndId[npt];
+			for(int i = 0; i < npt; i++) {
+				pcam = m_pGrid[node->low + i].pos - fEye;
+				lssort[i].val = pcam.lengthSquare();
+				lssort[i].idx = node->low + i;
+			}
+			
+			QuickSort::sort(lssort,0,npt-1);
+			
+			for(int i = 0; i < npt; i++) {
+				r = sqrt(m_pGrid[lssort[i].idx].area * 0.25);
+			
+				detail = r/portWidth*fHalfPortWidth;
+				
+				noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[lssort[i].idx]);
+				glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
+				glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
+				
+				drawAParticle(m_pGrid[lssort[i].idx].pos, r, detail);
+			}
+			delete[] lssort;
+		}
+		/*
 		for(unsigned i= node->low; i<= node->high; i++) {
 			r = sqrt(m_pGrid[i].area * 0.25);
 			
 			detail = r/portWidth*fHalfPortWidth;
 			
-			r *= 2;
-			
-			noise.sphereRand(pw.x, pw.y, pw.z, 19.1f, t_grid_id[i]);
+			noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[i]);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
 			
 			drawAParticle(m_pGrid[i].pos, r, detail);
-			/*ox = fSpriteX*r;
-			oy = fSpriteY*r;
-			
-			glBegin(GL_QUADS);
-				glMultiTexCoord3d(GL_TEXTURE0, -.5f, -.5f, 0.f);
-				
-				pw = m_pGrid[i].pos - ox - oy;
-				glVertex3f(pw.x, pw.y, pw.z);
-				
-				glMultiTexCoord3d(GL_TEXTURE0, .5f, -.5f, 0.f);
-				pw = m_pGrid[i].pos + ox - oy;
-				glVertex3f(pw.x, pw.y, pw.z);
-				
-				glMultiTexCoord3d(GL_TEXTURE0, .5f, .5f, 0.f);
-				pw = m_pGrid[i].pos + ox + oy;
-				glVertex3f(pw.x, pw.y, pw.z);
-				
-				glMultiTexCoord3d(GL_TEXTURE0, -.5f, .5f, 0.f);
-				pw = m_pGrid[i].pos - ox + oy;
-				glVertex3f(pw.x, pw.y, pw.z);
-				
-			glEnd();*/
-		}
+		}*/
 	}
 	else {
 		//ChildList todraw;
@@ -1628,15 +1614,20 @@ void OcTree::setSpriteSpace(MATRIX44F mat)
 
 void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& detail)
 {
-	XYZ pw, ox, oy, oz;
-	ox = fSpriteX * radius;
-	oy = fSpriteY * radius;
-	oz = fSpriteZ * radius;
+	XYZ pw, ox, oy;
+	ox = fSpriteX * radius * 2.5;
+	oy = fSpriteY * radius * 2.5;
 	
-	int nslice = 5 + detail/7;
-	if(nslice > 39) nslice = 39;
+	int nslice = 3 + detail/5*2;
+	if(nslice > 19) nslice = 19;
 	float delta = 1.f / nslice;
-	glUniform1fARB(glGetUniformLocationARB(program_object, "OScale"), delta * 1.f);
+	glUniform1fARB(glGetUniformLocationARB(program_object, "OScale"), delta);
+	
+	float freq_mul = radius/fMeanRadius;
+	if(freq_mul > 2.f) freq_mul = 2.f;
+	else if(freq_mul < .2f) freq_mul = .2f;
+	
+	glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freq_mul);
 	
 	XYZ start;
 	
@@ -1644,8 +1635,10 @@ void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& de
 	
 	glBegin(GL_QUADS);
 	for(int i=0; i<nslice; i++) {
-			z = -0.5 + delta * (i+0.5f);
-			start = center + oz * z * 2.f;
+			z = -1.0 + delta * (i+0.5f);
+			start = center - fSpriteZ * z;
+			
+			z += 0.5;
 			
 			glMultiTexCoord3d(GL_TEXTURE0, -.5f, -.5f, z);
 			

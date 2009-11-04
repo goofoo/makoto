@@ -24,9 +24,10 @@ public:
 	
 	void setKNoise(float& val) {fKNoise = val;}
 	void setKDiffuse(float& val) {fKDiffuse = val;}
+	void setDensity(float& val) {fDensity = val;}
 	void setLightPos(float& x, float& y, float& z) {fLightPos.x = x; fLightPos.y = y; fLightPos.z = z;}
 private:
 	char fHasDiagnosis, fHasExtensions;
-	float fKNoise, fKDiffuse;
+	float fKNoise, fKDiffuse, fDensity;
 	XYZ fLightPos;
 };

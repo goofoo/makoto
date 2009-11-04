@@ -62,6 +62,7 @@ public:
 	void setPortWidth(int& val);
 	SHB3COEFF* getNamedSH(const char* name);
 	void setProgram(GLhandleARB obj) { m_pTree->setProgram(obj); }
+	void setMeanRadius(const float& val) { m_pTree->setMeanRadius(val); }
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;

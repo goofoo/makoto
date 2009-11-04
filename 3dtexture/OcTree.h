@@ -149,7 +149,7 @@ public:
 	void setProgram(GLhandleARB obj) { program_object = obj; }
 	
 	void setHalfPortWidth(int &val) {fHalfPortWidth = val;}
-	
+	void setMeanRadius(const float& val) {fMeanRadius = val;}
 	void drawAParticle(const XYZ& center, const float& radius, const int& detail);
 private:
 	
@@ -184,4 +184,5 @@ private:
 	XYZ fSpriteX, fSpriteY, fSpriteZ, fEye;
 	GLhandleARB program_object;
 	int fHalfPortWidth;
+	float fMeanRadius;
 };

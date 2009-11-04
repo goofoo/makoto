@@ -55,6 +55,7 @@ public:
 	static      MObject     alightposz;
 	static  	MObject 	aviewattrib;
 	static      MObject     adrawtype;
+	static      MObject     ameanradius;
 	static MObject aincoe;
 	static      MObject     aoutval;
 private:

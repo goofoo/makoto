@@ -37,6 +37,7 @@ MObject     PTCMapLocator::adiffuse;
 MObject     PTCMapLocator::alightposx;
 MObject     PTCMapLocator::alightposy;
 MObject     PTCMapLocator::alightposz;
+MObject     PTCMapLocator::ameanradius;
 MObject     PTCMapLocator::aoutval;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
@@ -98,6 +99,14 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		kwei = data.inputValue(adiffuse).asFloat();
 		
 		fRenderer->setKDiffuse(kwei);
+		
+		kwei = data.inputValue(adensity).asFloat();
+		
+		fRenderer->setDensity(kwei);
+		
+		kwei = data.inputValue(ameanradius).asFloat();
+		
+		if(fData) fData->setMeanRadius(kwei);
 		
 		float r, g, b;
 		r = data.inputValue(alightposx).asFloat();
@@ -278,7 +287,7 @@ MStatus PTCMapLocator::initialize()
 	addAttribute( amaxframe );
 	
 	adensity = nAttr.create( "density", "den", MFnNumericData::kFloat, 1.0);
-	nAttr.setMin(0.01);
+	nAttr.setMin(0.1);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( adensity );
@@ -314,7 +323,7 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(anoise);
 	
-	adiffuse = nAttr.create( "KDiffuse", "kdif", MFnNumericData::kFloat, 0.5);
+	adiffuse = nAttr.create( "KDiffuse", "kdif", MFnNumericData::kFloat, 0.2);
 	nAttr.setMin(0.0);
 	nAttr.setMax(1.0);
 	nAttr.setStorable(true);
@@ -336,6 +345,11 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(alightposz);
 	
+	ameanradius = nAttr.create( "MeanRadius", "mnr", MFnNumericData::kFloat, 4.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(ameanradius);
+	
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);
 	nAttr.setWritable(false);
@@ -354,6 +368,7 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( alightposx, aoutval );
 	attributeAffects( alightposy, aoutval );
 	attributeAffects( alightposz, aoutval );
+	attributeAffects( ameanradius, aoutval );
 	return MS::kSuccess;
 
 }
