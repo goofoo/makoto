@@ -70,6 +70,7 @@ global proc particleMapAppendMenuItems()
 	menuItem -l "View Tool" -c "znebula_view";
 	menuItem -l "View Key Lighting" -c "particleMapSetDraw(\"key_lighting\")";
 	menuItem -l "View Back Lighting" -c "particleMapSetDraw(\"back_lighting\")";
+	menuItem -l "Existing Caches" -subMenu true -postMenuCommand zsmoke_findexisting zsmoke_existingccache;
 	setParent -menu ..;
 }
 
@@ -400,4 +401,16 @@ global proc particleMapSetDraw(string $attrname)
 global proc znebula_view()
 {
 	setToolTo `viewVolumeToolContext`;
+}
+
+global proc zsmoke_findexisting()
+{
+	string $existing[] = `ls -type pmapViz`;
+	string $an;
+	for($an in $existing) 
+	{
+		string $mnu = $an+"_mnu";
+		if(`menuItem -exists $mnu` ) deleteUI $mnu;
+		menuItem -l $an -c ("select -tgl "+$an) -p zsmoke_existingccache $mnu;
+	}
 }
