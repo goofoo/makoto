@@ -74,16 +74,6 @@ public:
 	void nearestGrid(const XYZ& to, float min, float& dist, XYZ& res);
 	void nearestGrid(OCTNode *node, const XYZ& to, float min, float& dist, XYZ& res);
 	
-	//void computePower(sphericalHarmonics* sh);
-	//void computePower(OCTNode *node);
-	
-	//void doOcclusion(SHB3COEFF* res) const;
-	/*
-	void addSingle(const float *rawdata, const char* name, const PosAndId *index);
-	void setSingle(float *res, OCTNode *node, const float *rawdata, const PosAndId *index);
-	void addThree(const XYZ *rawdata, const char* name, const PosAndId *index);
-	void setThree(XYZ *res, OCTNode *node, const XYZ *rawdata, const PosAndId *index);
-	*/
 	void save(ofstream& file) const;
 	void save(ofstream& file, OCTNode *node) const;
 	
@@ -97,29 +87,16 @@ public:
 	unsigned getNumVoxel() const {return num_voxel;}
 	unsigned getNumLeaf() const {return num_leaf;}
 	short getMaxLevel() const {return max_level;}
-	//int hasColor() const;
 	
 	void drawCube();
 	void drawSprite();
 	void draw(const XYZ& viewdir);
 	void drawCube(const OCTNode *node);
 	void drawSprite(const OCTNode *node);
-	//void drawSurfel(const OCTNode *node, const XYZ& viewdir);
 	void drawNeighbour(const OCTNode *node);
-	//void draw(const PerspectiveView *pview,XYZ facing,string drawType);
-	//void drawCube(const OCTNode *node, const PerspectiveView *pview);
-	//void getDrawList(const OCTNode *node, const PerspectiveView *pview,int &index,DataAndId* drawList);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
-	//void searchNearVoxel(OcTree* tree,const XYZ position,int & treeindex);
-	//void searchNearVoxel(OCTNode *node,const XYZ position,int & treeindex);
-
-	//static void splitX(const XYZ *data, const int low, const int high, const float center, int& cutat);
-	//static void splitY(const XYZ *data, const int low, const int high, const float center, int& cutat);
-	//static void splitZ(const XYZ *data, const int low, const int high, const float center, int& cutat);
-	//static void getBBox(const RGRID* data, const int num_data, XYZ& center, float& size);
-	//static char isInBox(const XYZ& data, const XYZ& center, float size);
 	void combineSurfel(const RGRID *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
 	
 	void occlusionAccum(const XYZ& origin);
@@ -150,7 +127,11 @@ public:
 	
 	void setHalfPortWidth(int &val) {fHalfPortWidth = val;}
 	void setMeanRadius(const float& val) {fMeanRadius = val;}
+	void setKeyScale(const float& val) { fKeyLight = val; }
+	void setBackScale(const float& val) { fBackLight = val; }
 	void drawAParticle(const XYZ& center, const float& radius, const int& detail);
+	void reconstructColor(const unsigned& idx, XYZ& res);
+	
 private:
 	
 	OCTNode *root;
@@ -163,7 +144,6 @@ private:
 	VoxSingleList dSingle;
 	VoxThreeList dThree;
 	
-	//SHB3COEFF* m_pPower;
 	sphericalHarmonics* sh;
 	CubeRaster* raster;
 	
@@ -184,5 +164,5 @@ private:
 	XYZ fSpriteX, fSpriteY, fSpriteZ, fEye;
 	GLhandleARB program_object;
 	int fHalfPortWidth;
-	float fMeanRadius;
+	float fMeanRadius, fKeyLight, fBackLight;
 };

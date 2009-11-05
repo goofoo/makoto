@@ -52,7 +52,7 @@ public:
 	
 	XYZ testRaster(const XYZ& ori);
 	
-	void setDraw(const char* name);
+	void setDraw();
 	char hasAttrib(const char* name) const;
 	const char* fisrtattrib() const {return attrib_sh[0]->name.c_str();}
 	void setHDRLighting(XYZ* coe);
@@ -63,6 +63,8 @@ public:
 	SHB3COEFF* getNamedSH(const char* name);
 	void setProgram(GLhandleARB obj) { m_pTree->setProgram(obj); }
 	void setMeanRadius(const float& val) { m_pTree->setMeanRadius(val); }
+	void setKeyScale(const float& val) { m_pTree->setKeyScale(val); }
+	void setBackScale(const float& val) { m_pTree->setBackScale(val); }
 private:
 	sphericalHarmonics* m_sh;
 	OcTree* m_pTree;

@@ -39,6 +39,8 @@ MObject     PTCMapLocator::alightposy;
 MObject     PTCMapLocator::alightposz;
 MObject     PTCMapLocator::ameanradius;
 MObject     PTCMapLocator::aoutval;
+MObject     PTCMapLocator::akkey;
+MObject     PTCMapLocator::akback;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
 {
@@ -66,8 +68,8 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	{
 		MStatus stat;
 		MString path =  data.inputValue( input ).asString();
-		MString attrib2sho =  data.inputValue( aviewattrib ).asString();
-		if(attrib2sho == "") attrib2sho = "key_lighting";
+		//MString attrib2sho =  data.inputValue( aviewattrib ).asString();
+		//if(attrib2sho == "") attrib2sho = "key_lighting";
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
@@ -89,7 +91,8 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		fData = new Z3DTexture();
 		if(!fData->load(filename)) MGlobal::displayInfo("PTCMap cannot load file");
 
-		fData->setDraw(attrib2sho.asChar());
+		fData->setDraw();
+		
 		if(hascoe==1) fData->setHDRLighting(hdrCoeff);
 		
 		float kwei = data.inputValue(anoise).asFloat();
@@ -107,6 +110,12 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		kwei = data.inputValue(ameanradius).asFloat();
 		
 		if(fData) fData->setMeanRadius(kwei);
+		
+		kwei = data.inputValue(akkey).asFloat();
+		if(fData) fData->setKeyScale(kwei);
+		
+		kwei = data.inputValue(akback).asFloat();
+		if(fData) fData->setBackScale(kwei);
 		
 		float r, g, b;
 		r = data.inputValue(alightposx).asFloat();
@@ -350,6 +359,18 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(ameanradius);
 	
+	akkey = nAttr.create( "KKey", "kky", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(akkey);
+	
+	akback = nAttr.create( "KBack", "kbc", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(akback);
+	
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);
 	nAttr.setWritable(false);
@@ -369,6 +390,8 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( alightposy, aoutval );
 	attributeAffects( alightposz, aoutval );
 	attributeAffects( ameanradius, aoutval );
+	attributeAffects( akkey, aoutval );
+	attributeAffects( akback, aoutval );
 	return MS::kSuccess;
 
 }

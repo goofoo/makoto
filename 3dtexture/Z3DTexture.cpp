@@ -223,14 +223,14 @@ char Z3DTexture::hasAttrib(const char* name) const
 	return 0;
 }
 
-void Z3DTexture::setDraw(const char* name)
+void Z3DTexture::setDraw()
 {
 	m_pTree->setSH(m_sh);
 	m_pTree->setSHBuf(NULL);
+	m_pTree->setSHBuf1(NULL);
 	for(unsigned i=0; i < attrib_sh.size(); i++) {
-		if(attrib_sh[i]->name == name) {
-			m_pTree->setSHBuf(attrib_sh[i]->data);
-		}
+		if(attrib_sh[i]->name == "key_lighting") m_pTree->setSHBuf(attrib_sh[i]->data);
+		if(attrib_sh[i]->name == "back_lighting") m_pTree->setSHBuf1(attrib_sh[i]->data);
 	}
 }
 

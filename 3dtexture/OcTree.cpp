@@ -5,9 +5,6 @@
 #include "../shared/QuickSort.h"
 #include "../shared/FNoise.h"
 
-//#include <vector>
-//using namespace std;
-
 struct NodeNDistance
 {
 	NodeNDistance() {}
@@ -586,23 +583,37 @@ void OcTree::drawCube(const OCTNode *node)
 	int detail = node->size/portWidth*fHalfPortWidth;
 	
 	if(detail < 8 || node->isLeaf) {
+		XYZ cs;
+		reconstructColor(node->index, cs);
+		/*
+		XYZ ckey(0.f);
+		XYZ cback(0.f);
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
-				XYZ inc(0);
 				for(int i = 0; i < SH_N_BASES; i++) {
-					inc.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
-					inc.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
-					inc.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
+					ckey.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
+					ckey.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
+					ckey.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
 				}
-				glColor3f(inc.x, inc.y, inc.z);
+				
 			}
 			else {
 				float ov  = 0;
 				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
 				ov /= 3.14;
-				glColor3f(ov, ov, ov);
+				ckey.x = ckey.y = ckey.z = ov;
 			}
 		}
+		if(m_pSHBuf1) {
+			if(m_hasHdr) {
+				for(int i = 0; i < SH_N_BASES; i++) {
+					cback.x += m_pSHBuf1[node->index].value[i].x*m_hdrCoe[i].x;
+					cback.y += m_pSHBuf1[node->index].value[i].y*m_hdrCoe[i].y;
+					cback.z += m_pSHBuf1[node->index].value[i].z*m_hdrCoe[i].z;
+				}
+			}
+		}*/
+		glColor3f(cs.x, cs.y, cs.z);
 		gBase::drawBox(cen, node->size);
 		return;
 	}
@@ -657,9 +668,12 @@ void OcTree::drawSprite(const OCTNode *node)
 	int detail = r/portWidth*fHalfPortWidth;
 	
 	XYZ pw, ox, oy;
-	float cr,cg,cb;
+	//float cr,cg,cb;
 	
 	if(detail < 8) {
+		XYZ cs;
+		reconstructColor(node->index, cs);
+		/*
 		if(m_pSHBuf) {
 			if(m_hasHdr) {
 				//XYZ inc(0);
@@ -678,36 +692,20 @@ void OcTree::drawSprite(const OCTNode *node)
 				cg = cb = cr;
 				//glColor4f(ov, ov, ov, 0.25);
 			}
-		}
+		}*/
 		noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[ibig]);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
-		glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
+		glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cs.x, cs.y, cs.z);
 		
 		drawAParticle(node->mean, r, detail);
 		return;
 	}
 
 	if(node->isLeaf) {
-		if(m_pSHBuf) {
-			if(m_hasHdr) {
-				//XYZ inc(0);
-				cr = cg = cb = 0.f;
-				for(int i = 0; i < SH_N_BASES; i++) {
-					cr += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
-					cg += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
-					cb += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
-				}
-				//glColor4f(inc.x, inc.y, inc.z, 0.25);
-			}
-			else {
-				cr  = 0;
-				for(int i = 0; i < SH_N_BASES; i++) cr += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
-				cr /= 3.14;
-				cg = cb = cr;
-				//glColor4f(ov, ov, ov, 0.25);
-			}
-		}
-		
+		XYZ cs;
+		reconstructColor(node->index, cs);
+		glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cs.x, cs.y, cs.z);
+
 		if(node->low == node->high) {
 			r = sqrt(m_pGrid[node->low].area * 0.25);
 			
@@ -715,8 +713,7 @@ void OcTree::drawSprite(const OCTNode *node)
 			
 			noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[node->low]);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
-			glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
-			
+
 			drawAParticle(m_pGrid[node->low].pos, r, detail);
 		}
 		else {
@@ -737,8 +734,7 @@ void OcTree::drawSprite(const OCTNode *node)
 				
 				noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[lssort[i].idx]);
 				glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
-				glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
-				
+
 				drawAParticle(m_pGrid[lssort[i].idx].pos, r, detail);
 			}
 			delete[] lssort;
@@ -1618,8 +1614,8 @@ void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& de
 	ox = fSpriteX * radius * 2.5;
 	oy = fSpriteY * radius * 2.5;
 	
-	int nslice = 3 + detail/5*2;
-	if(nslice > 19) nslice = 19;
+	int nslice = 5 + detail/5*2;
+	if(nslice > 21) nslice = 21;
 	float delta = 1.f / nslice;
 	glUniform1fARB(glGetUniformLocationARB(program_object, "OScale"), delta);
 	
@@ -1658,6 +1654,40 @@ void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& de
 			glVertex3f(pw.x, pw.y, pw.z);
 	}		
 	glEnd();
+}
+
+void OcTree::reconstructColor(const unsigned& idx, XYZ& res)
+{
+XYZ ckey(0.f);
+		XYZ cback(0.f);
+		if(m_pSHBuf) {
+			if(m_hasHdr) {
+				for(int i = 0; i < SH_N_BASES; i++) {
+					ckey.x += m_pSHBuf[idx].value[i].x*m_hdrCoe[i].x;
+					ckey.y += m_pSHBuf[idx].value[i].y*m_hdrCoe[i].y;
+					ckey.z += m_pSHBuf[idx].value[i].z*m_hdrCoe[i].z;
+				}
+				
+			}
+			else {
+				float ov  = 0;
+				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[idx].value[i].x*sh->constantCoeff[i].x;
+				ov /= 3.14;
+				ckey.x = ckey.y = ckey.z = ov;
+			}
+		}
+		if(m_pSHBuf1) {
+			if(m_hasHdr) {
+				for(int i = 0; i < SH_N_BASES; i++) {
+					cback.x += m_pSHBuf1[idx].value[i].x*m_hdrCoe[i].x;
+					cback.y += m_pSHBuf1[idx].value[i].y*m_hdrCoe[i].y;
+					cback.z += m_pSHBuf1[idx].value[i].z*m_hdrCoe[i].z;
+				}
+			}
+		}
+		res.x = ckey.x * fKeyLight + cback.x * fBackLight;
+		res.y = ckey.y * fKeyLight + cback.y * fBackLight;
+		res.z = ckey.z * fKeyLight + cback.z * fBackLight;
 }
 /*
 void OcTree::saveColor(const char*filename,XYZ *color,PosAndId *buf,unsigned sum)
