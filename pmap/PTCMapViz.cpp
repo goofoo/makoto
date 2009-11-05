@@ -41,6 +41,9 @@ MObject     PTCMapLocator::ameanradius;
 MObject     PTCMapLocator::aoutval;
 MObject     PTCMapLocator::akkey;
 MObject     PTCMapLocator::akback;
+MObject     PTCMapLocator::acloudr;
+MObject     PTCMapLocator::acloudg;
+MObject     PTCMapLocator::acloudb;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
 {
@@ -123,6 +126,12 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		b = data.inputValue(alightposz).asFloat();
 		
 		fRenderer->setLightPos(r,g,b);
+		
+		r = data.inputValue(acloudr).asFloat();
+		g = data.inputValue(acloudg).asFloat();
+		b = data.inputValue(acloudb).asFloat();
+		
+		fRenderer->setCloudColor(r,g,b);
 		
 		data.setClean(plug);
 		
@@ -359,6 +368,24 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(ameanradius);
 	
+	acloudr = nAttr.create( "CloudColorR", "cclr", MFnNumericData::kFloat, 0.1);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(acloudr);
+	
+	acloudg = nAttr.create( "CloudColorG", "cclg", MFnNumericData::kFloat, 0.1);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(acloudg);
+	
+	acloudb = nAttr.create( "CloudColorB", "cclb", MFnNumericData::kFloat, 0.1);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(acloudb);
+	
 	akkey = nAttr.create( "KKey", "kky", MFnNumericData::kFloat, 1.0);
 	nAttr.setMin(0.0);
 	nAttr.setStorable(true);
@@ -392,6 +419,9 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( ameanradius, aoutval );
 	attributeAffects( akkey, aoutval );
 	attributeAffects( akback, aoutval );
+	attributeAffects( acloudr, aoutval );
+	attributeAffects( acloudg, aoutval );
+	attributeAffects( acloudb, aoutval );
 	return MS::kSuccess;
 
 }

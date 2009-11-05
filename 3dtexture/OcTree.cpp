@@ -15,7 +15,7 @@ struct NodeNDistance
 
 //typedef vector<NodeNDistance>ChildList;
 
-const float constantCoeff[9] = { 3.543211, 
+const float constantCoeff[9] = {3.543211, 
 								0.000605, 0.000152, -0.003217, 
 								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
 								
@@ -585,34 +585,6 @@ void OcTree::drawCube(const OCTNode *node)
 	if(detail < 8 || node->isLeaf) {
 		XYZ cs;
 		reconstructColor(node->index, cs);
-		/*
-		XYZ ckey(0.f);
-		XYZ cback(0.f);
-		if(m_pSHBuf) {
-			if(m_hasHdr) {
-				for(int i = 0; i < SH_N_BASES; i++) {
-					ckey.x += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
-					ckey.y += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
-					ckey.z += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
-				}
-				
-			}
-			else {
-				float ov  = 0;
-				for(int i = 0; i < SH_N_BASES; i++) ov += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
-				ov /= 3.14;
-				ckey.x = ckey.y = ckey.z = ov;
-			}
-		}
-		if(m_pSHBuf1) {
-			if(m_hasHdr) {
-				for(int i = 0; i < SH_N_BASES; i++) {
-					cback.x += m_pSHBuf1[node->index].value[i].x*m_hdrCoe[i].x;
-					cback.y += m_pSHBuf1[node->index].value[i].y*m_hdrCoe[i].y;
-					cback.z += m_pSHBuf1[node->index].value[i].z*m_hdrCoe[i].z;
-				}
-			}
-		}*/
 		glColor3f(cs.x, cs.y, cs.z);
 		gBase::drawBox(cen, node->size);
 		return;
@@ -668,34 +640,15 @@ void OcTree::drawSprite(const OCTNode *node)
 	int detail = r/portWidth*fHalfPortWidth;
 	
 	XYZ pw, ox, oy;
-	//float cr,cg,cb;
-	
+
 	if(detail < 8) {
 		XYZ cs;
 		reconstructColor(node->index, cs);
-		/*
-		if(m_pSHBuf) {
-			if(m_hasHdr) {
-				//XYZ inc(0);
-				cr = cg = cb = 0.f;
-				for(int i = 0; i < SH_N_BASES; i++) {
-					cr += m_pSHBuf[node->index].value[i].x*m_hdrCoe[i].x;
-					cg += m_pSHBuf[node->index].value[i].y*m_hdrCoe[i].y;
-					cb += m_pSHBuf[node->index].value[i].z*m_hdrCoe[i].z;
-				}
-				//glColor4f(inc.x, inc.y, inc.z, 0.25);
-			}
-			else {
-				cr  = 0;
-				for(int i = 0; i < SH_N_BASES; i++) cr += m_pSHBuf[node->index].value[i].x*sh->constantCoeff[i].x;
-				cr /= 3.14;
-				cg = cb = cr;
-				//glColor4f(ov, ov, ov, 0.25);
-			}
-		}*/
+
 		noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[ibig]);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
 		glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cs.x, cs.y, cs.z);
+		glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), node->col.x, node->col.y, node->col.z);
 		
 		drawAParticle(node->mean, r, detail);
 		return;
@@ -713,6 +666,7 @@ void OcTree::drawSprite(const OCTNode *node)
 			
 			noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[node->low]);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
+			glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[node->low].col.x, m_pGrid[node->low].col.y,m_pGrid[node->low].col.z);
 
 			drawAParticle(m_pGrid[node->low].pos, r, detail);
 		}
@@ -734,35 +688,19 @@ void OcTree::drawSprite(const OCTNode *node)
 				
 				noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[lssort[i].idx]);
 				glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
+				glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[lssort[i].idx].col.x, m_pGrid[lssort[i].idx].col.y,m_pGrid[lssort[i].idx].col.z);
 
 				drawAParticle(m_pGrid[lssort[i].idx].pos, r, detail);
 			}
 			delete[] lssort;
 		}
-		/*
-		for(unsigned i= node->low; i<= node->high; i++) {
-			r = sqrt(m_pGrid[i].area * 0.25);
-			
-			detail = r/portWidth*fHalfPortWidth;
-			
-			noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[i]);
-			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
-			glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), cr,cg,cb);
-			
-			drawAParticle(m_pGrid[i].pos, r, detail);
-		}*/
 	}
 	else {
-		//ChildList todraw;
 		NodeNDistance todraw[8];
-		//float dist =0.f;
 		
 		todraw[0].node = node->child000;
 		if(node->child000) {
 			pcam = node->child000->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child000, dist));
 			todraw[0].distance = pcam.lengthSquare();
 		}
 		else todraw[0].distance = -1;
@@ -770,9 +708,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		todraw[1].node = node->child001;
 		if(node->child001) {
 			pcam = node->child001->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child001, dist));
 			todraw[1].distance = pcam.lengthSquare();
 		}
 		else todraw[1].distance = -1;
@@ -780,9 +715,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		todraw[2].node = node->child010;
 		if(node->child010) {
 			pcam = node->child010->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child010, dist));
 			todraw[2].distance = pcam.lengthSquare();
 		}
 		else todraw[2].distance = -1;
@@ -790,9 +722,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		todraw[3].node = node->child011;
 		if(node->child011) {
 			pcam = node->child011->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child011, dist));
 			todraw[3].distance = pcam.lengthSquare();
 		}
 		else todraw[3].distance = -1;
@@ -800,9 +729,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		todraw[4].node = node->child100;
 		if(node->child100) {
 			pcam = node->child100->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child100, dist));
 			todraw[4].distance = pcam.lengthSquare();
 		}
 		else todraw[4].distance = -1;
@@ -810,9 +736,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		todraw[5].node = node->child101;
 		if(node->child101) {
 			pcam = node->child101->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child101, dist));
 			todraw[5].distance = pcam.lengthSquare();
 		}
 		else todraw[5].distance = -1;
@@ -820,9 +743,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		todraw[6].node = node->child110;
 		if(node->child110) {
 			pcam = node->child110->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child110, dist));
 			todraw[6].distance = pcam.lengthSquare();
 		}
 		else todraw[6].distance = -1;
@@ -830,9 +750,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		todraw[7].node = node->child111;
 		if(node->child111) {
 			pcam = node->child111->center - fEye;
-			//f_cameraSpaceInv.transform(pcam);
-			//dist = pcam.lengthSquare();
-			//todraw.push_back(NodeNDistance(node->child111, dist));
 			todraw[7].distance = pcam.lengthSquare();
 		}
 		else todraw[7].distance = -1;
@@ -848,20 +765,6 @@ void OcTree::drawSprite(const OCTNode *node)
 		for(int i = 0; i < 8; i++) drawSprite(todraw[tosort[7-i].idx].node);
 		
 		delete[] tosort;
-		/*
-		NodeNDistance tmp;
-		for(int j = 0; j < 7; j++) {
-			for(int i = j+1; i < 8; i++) {
-				if(todraw[i].distance > todraw[j].distance) {
-					tmp = todraw[i];
-					todraw[i] = todraw[j];
-					todraw[j] = tmp;
-				}
-			}
-		}
-		
-		for(int i = 0; i < 8; i++) drawSprite(todraw[i].node);
-		*/
 	}
 }
 /*

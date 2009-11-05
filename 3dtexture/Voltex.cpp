@@ -62,6 +62,8 @@ const char *frag_source =
 "uniform vec3 CIBL;"
 "uniform float OScale;"
 "uniform float GScale;"
+"uniform vec3 CParticle;"
+"uniform vec3 CCloud;"
 
 "varying vec2 ViewCoord;"
 "varying vec3  TexCoord;"
@@ -89,10 +91,7 @@ const char *frag_source =
 "	i++;"
 
 "	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
-//"	pcoord *= lacunarity; " 
-//"	i++;"
-
-//"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
+ 
 "	return fractal;"
 "}"
 
@@ -112,9 +111,7 @@ const char *frag_source =
 "	coord *= 2.0; " 
 "	freq *= 2.0;"
 "	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
-//"	coord *= 2.0; " 
-//"	freq *= 2.0;"
-//"	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+
 "return turbulence;"
 "}"
 
@@ -132,7 +129,7 @@ const char *frag_source =
 
 "	float dist = length(TexCoord + (fractal.xyz - vec3(0.5))*1.5*KNoise);"
 
-"    gl_FragColor = vec4 (vec3(0.03)+CIBL*(1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
+"    gl_FragColor = vec4 (CCloud * CParticle + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
 "}";
 
 static GLuint noisepool;
@@ -159,6 +156,8 @@ void Voltex::start(Z3DTexture* db) const
 	glUniform3fARB(glGetUniformLocationARB(program_object, "LightPosition"), fLightPos.x, fLightPos.y, fLightPos.z);
 	glUniform1fARB(glGetUniformLocationARB(program_object, "KDiffuse"), fKDiffuse);
 	glUniform1fARB(glGetUniformLocationARB(program_object, "GScale"), fDensity);
+	glUniform3fARB(glGetUniformLocationARB(program_object, "CCloud"), fCCloud.x, fCCloud.y, fCCloud.z);
+	
 	db->setProgram(program_object);
 }
 

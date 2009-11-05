@@ -56,6 +56,9 @@ public:
 	static  	MObject 	aviewattrib;
 	static      MObject     adrawtype;
 	static      MObject     ameanradius;
+	static      MObject     acloudr;
+	static      MObject     acloudg;
+	static      MObject     acloudb;
 	static      MObject     akkey;
 	static      MObject     akback;
 	static MObject aincoe;

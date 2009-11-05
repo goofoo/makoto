@@ -121,6 +121,17 @@
 			7F6749E810A2DAAA005CA950 /* PBXTextBookmark */ = 7F6749E810A2DAAA005CA950 /* PBXTextBookmark */;
 			7F6749E910A2DAAA005CA950 /* PBXTextBookmark */ = 7F6749E910A2DAAA005CA950 /* PBXTextBookmark */;
 			7F6749EA10A2DAAA005CA950 /* PBXTextBookmark */ = 7F6749EA10A2DAAA005CA950 /* PBXTextBookmark */;
+			7F6749F010A30614005CA950 /* PBXBookmark */ = 7F6749F010A30614005CA950 /* PBXBookmark */;
+			7F6749F610A307E5005CA950 /* PBXTextBookmark */ = 7F6749F610A307E5005CA950 /* PBXTextBookmark */;
+			7F6749F910A307E5005CA950 /* PBXTextBookmark */ = 7F6749F910A307E5005CA950 /* PBXTextBookmark */;
+			7F6749FB10A30833005CA950 /* PBXTextBookmark */ = 7F6749FB10A30833005CA950 /* PBXTextBookmark */;
+			7F6749FC10A30833005CA950 /* PBXTextBookmark */ = 7F6749FC10A30833005CA950 /* PBXTextBookmark */;
+			7F674A0910A30A9D005CA950 /* PBXTextBookmark */ = 7F674A0910A30A9D005CA950 /* PBXTextBookmark */;
+			7F674A0A10A30A9D005CA950 /* PBXTextBookmark */ = 7F674A0A10A30A9D005CA950 /* PBXTextBookmark */;
+			7F674A0D10A30A9D005CA950 /* PBXTextBookmark */ = 7F674A0D10A30A9D005CA950 /* PBXTextBookmark */;
+			7F674A0F10A30A9D005CA950 /* PBXTextBookmark */ = 7F674A0F10A30A9D005CA950 /* PBXTextBookmark */;
+			7F674A1110A30A9D005CA950 /* PBXTextBookmark */ = 7F674A1110A30A9D005CA950 /* PBXTextBookmark */;
+			7F674A1210A30A9D005CA950 /* PBXTextBookmark */ = 7F674A1210A30A9D005CA950 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBookmarkGroup = 7FC97743109B472F003E8507 /* PBXBookmarkGroup */;
@@ -168,7 +179,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 92";
 		rLen = 23;
-		rLoc = 2613;
+		rLoc = 2721;
 		rType = 0;
 		vrLen = 517;
 		vrLoc = 2253;
@@ -240,7 +251,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 92";
 		rLen = 23;
-		rLoc = 2613;
+		rLoc = 2721;
 		rType = 0;
 		vrLen = 517;
 		vrLoc = 2253;
@@ -271,7 +282,7 @@
 		comments = "error: 'attrib2sho' was not declared in this scope";
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		rLen = 1;
-		rLoc = 93;
+		rLoc = 96;
 		rType = 1;
 	};
 	7F67499410A2BCA4005CA950 /* PBXTextBookmark */ = {
@@ -279,7 +290,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 92";
 		rLen = 23;
-		rLoc = 2613;
+		rLoc = 2721;
 		rType = 0;
 		vrLen = 517;
 		vrLoc = 2253;
@@ -293,7 +304,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 92";
 		rLen = 0;
-		rLoc = 2630;
+		rLoc = 2738;
 		rType = 0;
 		vrLen = 536;
 		vrLoc = 2253;
@@ -312,9 +323,10 @@
 		path = /Users/jianzhang/Documents/plankton/3dtexture/Z3DTexture.cpp;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {572, 3990}}";
+			sepNavIntBoundsRect = "{{0, 0}, {720, 3864}}";
 			sepNavSelRange = "{5385, 13}";
-			sepNavVisRange = "{4830, 844}";
+			sepNavVisRange = "{5149, 364}";
+			sepNavWindowFrame = "{{25, 89}, {631, 669}}";
 		};
 	};
 	7F67499E10A2BF74005CA950 /* PBXTextBookmark */ = {
@@ -332,7 +344,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 614";
 		rLen = 0;
-		rLoc = 17745;
+		rLoc = 16940;
 		rType = 0;
 		vrLen = 1058;
 		vrLoc = 16955;
@@ -362,7 +374,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 93";
 		rLen = 0;
-		rLoc = 2635;
+		rLoc = 2743;
 		rType = 0;
 		vrLen = 1200;
 		vrLoc = 1669;
@@ -412,7 +424,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 94";
 		rLen = 0;
-		rLoc = 2630;
+		rLoc = 2738;
 		rType = 0;
 		vrLen = 555;
 		vrLoc = 2219;
@@ -437,7 +449,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 94";
 		rLen = 0;
-		rLoc = 2630;
+		rLoc = 2738;
 		rType = 0;
 		vrLen = 555;
 		vrLoc = 2219;
@@ -478,7 +490,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 614";
 		rLen = 0;
-		rLoc = 17745;
+		rLoc = 16940;
 		rType = 0;
 		vrLen = 951;
 		vrLoc = 17156;
@@ -488,7 +500,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 616";
 		rLen = 0;
-		rLoc = 17771;
+		rLoc = 16966;
 		rType = 0;
 		vrLen = 1165;
 		vrLoc = 16903;
@@ -518,8 +530,9 @@
 		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {650, 1050}}";
-			sepNavSelRange = "{1972, 134}";
-			sepNavVisRange = "{572, 1650}";
+			sepNavSelRange = "{1971, 67}";
+			sepNavVisRange = "{1422, 823}";
+			sepNavWindowFrame = "{{576, 86}, {601, 664}}";
 		};
 	};
 	7F6749CC10A2C3B3005CA950 /* PBXTextBookmark */ = {
@@ -537,7 +550,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 80";
 		rLen = 1;
-		rLoc = 2265;
+		rLoc = 2373;
 		rType = 0;
 		vrLen = 1200;
 		vrLoc = 1669;
@@ -547,7 +560,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 118";
 		rLen = 0;
-		rLoc = 3190;
+		rLoc = 3298;
 		rType = 0;
 		vrLen = 915;
 		vrLoc = 2534;
@@ -566,7 +579,7 @@
 		isa = PBXTextBookmark;
 		fRef = 7F6749D310A2C3B3005CA950 /* PTCMapViz.h */;
 		rLen = 0;
-		rLoc = 2147483712;
+		rLoc = 1838;
 		rType = 0;
 	};
 	7F6749D310A2C3B3005CA950 /* PTCMapViz.h */ = {
@@ -581,20 +594,22 @@
 		fRef = 7F6749D510A2C3B3005CA950 /* PTCMapViz.h */;
 		name = "PTCMapViz.h: 59";
 		rLen = 51;
-		rLoc = 1553;
+		rLoc = 1655;
 		rType = 0;
 		vrLen = 1129;
 		vrLoc = 600;
 	};
 	7F6749D510A2C3B3005CA950 /* PTCMapViz.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = PTCMapViz.h;
 		path = /Users/jianzhang/Documents/plankton/pmap/PTCMapViz.h;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {560, 980}}";
-			sepNavSelRange = "{1553, 51}";
-			sepNavVisRange = "{600, 1129}";
+			sepNavIntBoundsRect = "{{0, 0}, {560, 1022}}";
+			sepNavSelRange = "{1565, 7}";
+			sepNavVisRange = "{592, 1215}";
+			sepNavWindowFrame = "{{445, 65}, {601, 664}}";
 		};
 	};
 	7F6749DF10A2D9B9005CA950 /* PBXTextBookmark */ = {
@@ -602,7 +617,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 674";
 		rLen = 0;
-		rLoc = 18975;
+		rLoc = 18167;
 		rType = 0;
 		vrLen = 1299;
 		vrLoc = 23095;
@@ -622,7 +637,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 118";
 		rLen = 0;
-		rLoc = 3190;
+		rLoc = 3298;
 		rType = 0;
 		vrLen = 915;
 		vrLoc = 2534;
@@ -642,7 +657,7 @@
 		fRef = 7F6749D510A2C3B3005CA950 /* PTCMapViz.h */;
 		name = "PTCMapViz.h: 59";
 		rLen = 51;
-		rLoc = 1553;
+		rLoc = 1655;
 		rType = 0;
 		vrLen = 1129;
 		vrLoc = 600;
@@ -652,7 +667,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 1643";
 		rLen = 0;
-		rLoc = 45757;
+		rLoc = 42981;
 		rType = 0;
 		vrLen = 1079;
 		vrLoc = 45972;
@@ -672,7 +687,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 118";
 		rLen = 0;
-		rLoc = 3190;
+		rLoc = 3298;
 		rType = 0;
 		vrLen = 915;
 		vrLoc = 2534;
@@ -692,16 +707,133 @@
 		fRef = 7F6749D510A2C3B3005CA950 /* PTCMapViz.h */;
 		name = "PTCMapViz.h: 59";
 		rLen = 51;
-		rLoc = 1553;
+		rLoc = 1655;
 		rType = 0;
 		vrLen = 1129;
 		vrLoc = 600;
 	};
+	7F6749F010A30614005CA950 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7F7C0866109C17C1004AD163 /* Voltex.cpp */;
+	};
+	7F6749F610A307E5005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 669";
+		rLen = 0;
+		rLoc = 19214;
+		rType = 0;
+		vrLen = 1474;
+		vrLoc = 18788;
+	};
+	7F6749F910A307E5005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7C0866109C17C1004AD163 /* Voltex.cpp */;
+		name = "Voltex.cpp: 65";
+		rLen = 0;
+		rLoc = 1694;
+		rType = 0;
+		vrLen = 1163;
+		vrLoc = 2636;
+	};
+	7F6749FB10A30833005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7C0866109C17C1004AD163 /* Voltex.cpp */;
+		name = "Voltex.cpp: 65";
+		rLen = 0;
+		rLoc = 1683;
+		rType = 0;
+		vrLen = 1124;
+		vrLoc = 1114;
+	};
+	7F6749FC10A30833005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 669";
+		rLen = 0;
+		rLoc = 19214;
+		rType = 0;
+		vrLen = 1474;
+		vrLoc = 18788;
+	};
+	7F674A0910A30A9D005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
+		name = "PTCMapViz.cpp: 118";
+		rLen = 0;
+		rLoc = 3298;
+		rType = 0;
+		vrLen = 837;
+		vrLoc = 2612;
+	};
+	7F674A0A10A30A9D005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
+		name = "PTCMapViz.cpp: 134";
+		rLen = 0;
+		rLoc = 3660;
+		rType = 0;
+		vrLen = 928;
+		vrLoc = 2793;
+	};
+	7F674A0D10A30A9D005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F674A0E10A30A9D005CA950 /* Voltex.h */;
+		name = "Voltex.h: 29";
+		rLen = 0;
+		rLoc = 689;
+		rType = 0;
+		vrLen = 809;
+		vrLoc = 0;
+	};
+	7F674A0E10A30A9D005CA950 /* Voltex.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = Voltex.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/Voltex.h;
+		sourceTree = "<absolute>";
+	};
+	7F674A0F10A30A9D005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F674A1010A30A9D005CA950 /* Voltex.h */;
+		name = "Voltex.h: 29";
+		rLen = 13;
+		rLoc = 607;
+		rType = 0;
+		vrLen = 809;
+		vrLoc = 0;
+	};
+	7F674A1010A30A9D005CA950 /* Voltex.h */ = {
+		isa = PBXFileReference;
+		name = Voltex.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/Voltex.h;
+		sourceTree = "<absolute>";
+	};
+	7F674A1110A30A9D005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7C0866109C17C1004AD163 /* Voltex.cpp */;
+		name = "Voltex.cpp: 159";
+		rLen = 0;
+		rLoc = 4499;
+		rType = 0;
+		vrLen = 1171;
+		vrLoc = 3741;
+	};
+	7F674A1210A30A9D005CA950 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 669";
+		rLen = 0;
+		rLoc = 19214;
+		rType = 0;
+		vrLen = 1474;
+		vrLoc = 18788;
+	};
 	7F7C0866109C17C1004AD163 /* Voltex.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {938, 4032}}";
-			sepNavSelRange = "{4503, 0}";
-			sepNavVisRange = "{3991, 1187}";
+			sepNavIntBoundsRect = "{{0, 0}, {1010, 4228}}";
+			sepNavSelRange = "{4499, 0}";
+			sepNavVisRange = "{3741, 1171}";
 			sepNavWindowFrame = "{{384, 86}, {632, 656}}";
 		};
 	};
@@ -771,10 +903,10 @@
 	};
 	7F81227010711F040022BF82 /* PTCMapViz.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {578, 5586}}";
-			sepNavSelRange = "{3190, 0}";
-			sepNavVisRange = "{2534, 915}";
-			sepNavWindowFrame = "{{371, 67}, {607, 660}}";
+			sepNavIntBoundsRect = "{{0, 0}, {578, 6006}}";
+			sepNavSelRange = "{3660, 0}";
+			sepNavVisRange = "{2793, 928}";
+			sepNavWindowFrame = "{{493, 75}, {607, 660}}";
 		};
 	};
 	7F812284107120470022BF82 /* particleCacheMenus.mel */ = {
@@ -795,10 +927,10 @@
 	};
 	7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {
 		uiCtxt = {
-			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{48427, 3999}\";\n        }\n    );\n    r = \"{0, 52433}\";\n}";
-			sepNavIntBoundsRect = "{{0, 0}, {704, 24304}}";
-			sepNavSelRange = "{46533, 0}";
-			sepNavVisRange = "{45972, 1079}";
+			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{21901, 8749}\";\n        },\n                {\n            r = \"{30781, 2357}\";\n        },\n                {\n            r = \"{44875, 3999}\";\n        }\n    );\n    r = \"{0, 48881}\";\n}";
+			sepNavIntBoundsRect = "{{0, 0}, {1052, 17024}}";
+			sepNavSelRange = "{19214, 0}";
+			sepNavVisRange = "{18788, 1474}";
 			sepNavWindowFrame = "{{514, 83}, {708, 693}}";
 		};
 	};
@@ -816,7 +948,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 693";
 		rLen = 0;
-		rLoc = 27012;
+		rLoc = 24236;
 		rType = 0;
 		vrLen = 5557;
 		vrLoc = 19197;
@@ -826,7 +958,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 693";
 		rLen = 0;
-		rLoc = 27012;
+		rLoc = 24236;
 		rType = 0;
 		vrLen = 5557;
 		vrLoc = 19197;
@@ -836,7 +968,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 693";
 		rLen = 1;
-		rLoc = 27012;
+		rLoc = 24236;
 		rType = 0;
 		vrLen = 5557;
 		vrLoc = 19197;

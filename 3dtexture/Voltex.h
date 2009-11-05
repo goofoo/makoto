@@ -26,8 +26,9 @@ public:
 	void setKDiffuse(float& val) {fKDiffuse = val;}
 	void setDensity(float& val) {fDensity = val;}
 	void setLightPos(float& x, float& y, float& z) {fLightPos.x = x; fLightPos.y = y; fLightPos.z = z;}
+	void setCloudColor(float& x, float& y, float& z) {fCCloud.x = x; fCCloud.y = y; fCCloud.z = z;}
 private:
 	char fHasDiagnosis, fHasExtensions;
 	float fKNoise, fKDiffuse, fDensity;
-	XYZ fLightPos;
+	XYZ fLightPos, fCCloud;
 };
