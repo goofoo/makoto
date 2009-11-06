@@ -130,6 +130,7 @@ const char *frag_source =
 "	float dist = length(TexCoord + (fractal.xyz - vec3(0.5))*1.5*KNoise);"
 
 "    gl_FragColor = vec4 (CCloud * CParticle + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
+//"    gl_FragColor = vec4 (CParticle, 0.05);"
 "}";
 
 static GLuint noisepool;

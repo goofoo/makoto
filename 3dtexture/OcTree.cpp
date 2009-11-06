@@ -13,8 +13,6 @@ struct NodeNDistance
 	float distance;
 };
 
-//typedef vector<NodeNDistance>ChildList;
-
 const float constantCoeff[9] = {3.543211, 
 								0.000605, 0.000152, -0.003217, 
 								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
@@ -96,6 +94,14 @@ void OcTree::setGrid(RGRID* data, int n_data)
 void OcTree::orderGridData(unsigned* data, int n_data)
 {
 	unsigned* tmp = new unsigned[n_data];
+	for(int i=0; i< n_data; i++) tmp[i] = data[i];
+	for(int i=0; i< n_data; i++) data[i] = tmp[idBuf[i]];
+	delete[] tmp;
+}
+
+void OcTree::orderGridData(float* data, int n_data)
+{
+	float* tmp = new float[n_data];
 	for(int i=0; i< n_data; i++) tmp[i] = data[i];
 	for(int i=0; i< n_data; i++) data[i] = tmp[idBuf[i]];
 	delete[] tmp;
@@ -519,6 +525,206 @@ void OcTree::drawSprite()
 	glUniformMatrix4fvARB(glGetUniformLocationARB(program_object, "objspace"), 1, 0, (float*)fMatSprite);
 	
 	drawSprite(root);
+	
+}
+
+void OcTree::sortDraw()
+{
+	glUniformMatrix4fvARB(glGetUniformLocationARB(program_object, "objspace"), 1, 0, (float*)fMatSprite);
+	
+	GRID2Draw* visgrd = new GRID2Draw[num_grid];
+	int num_draw_grid = 0, num_slice = 0;
+	
+	pushDrawList(root, num_draw_grid, num_slice, visgrd);
+
+	if(num_draw_grid > 0) {
+		SLICE2Draw* visslice = new SLICE2Draw[num_slice];
+		int slice_id = 0;
+		
+		XYZ* oribuf = new XYZ[num_draw_grid];
+		float* sizebuf = new float[num_draw_grid];
+		float* deltabuf = new float[num_draw_grid];
+		float* freqbuf = new float[num_draw_grid];
+		float r, z, freq_mul;
+		XYZ pw;
+		for(int i=0; i<num_draw_grid; i++) {
+		
+			noise.sphereRand(pw.x, pw.y, pw.z, 11.3f, t_grid_id[visgrd[i].grid_id]);
+			oribuf[i] = pw;
+			
+			r = sqrt(m_pGrid[visgrd[i].grid_id].area * 0.25);
+			sizebuf[i] = r;
+		
+			int nslice = 5 + visgrd[i].detail/5*2;
+			if(nslice > 21) nslice = 21;
+			float delta = 1.f / nslice;
+			
+			deltabuf[i] = delta;
+			
+			freq_mul = r/fMeanRadius;
+			if(freq_mul > 4.f) freq_mul = 4.f;
+			else if(freq_mul < .2f) freq_mul = .2f;
+			
+			freqbuf[i] = freq_mul;
+			
+			//glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), visgrd[i].ibl.x, visgrd[i].ibl.y, visgrd[i].ibl.z);
+			//glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
+			//glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[visgrd[i].grid_id].col.x, m_pGrid[visgrd[i].grid_id].col.y,m_pGrid[visgrd[i].grid_id].col.z);
+			
+			//drawAParticle(m_pGrid[visgrd[i].grid_id].pos, r, visgrd[i].detail);
+			
+			for(int j=0; j<nslice; j++) {
+				visslice[slice_id].draw_id = i;
+				
+				z = delta * (j+0.5f);
+				visslice[slice_id].z = z  - 0.5;
+
+				visslice[slice_id].pos = m_pGrid[visgrd[i].grid_id].pos + fSpriteZ * r  * 2.5 * ( 1.0 - z*2.f);
+
+				slice_id++;
+			}
+			
+		}
+		
+		ValueAndId* dsort = new ValueAndId[num_slice];
+		XYZ pcam;
+		for(int i = 0; i < num_slice; i++) {
+			pcam = visslice[i].pos;
+			f_cameraSpaceInv.transform(pcam);
+			dsort[i].val = pcam.z;
+			dsort[i].idx = i;
+		}
+		
+		QuickSort::sort(dsort,0,num_slice-1);
+		
+		for(int i=num_slice-1; i>=0; i--) {
+			int islice = dsort[i].idx;
+			int idraw = visslice[dsort[i].idx].draw_id;
+			glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), visgrd[idraw].ibl.x, visgrd[idraw].ibl.y, visgrd[idraw].ibl.z);
+			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), oribuf[idraw].x, oribuf[idraw].y, oribuf[idraw].z);
+			glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z);
+			
+			glUniform1fARB(glGetUniformLocationARB(program_object, "OScale"), deltabuf[idraw]);
+			glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freqbuf[idraw]);
+			
+			XYZ ox, oy, pp;
+			ox = fSpriteX * sizebuf[idraw] * 2.5;
+			oy = fSpriteY * sizebuf[idraw] * 2.5;
+		glBegin(GL_QUADS);
+			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
+			pp = visslice[islice].pos - ox - oy;
+			glVertex3f(pp.x, pp.y, pp.z);
+			
+			glMultiTexCoord3f(GL_TEXTURE0, .5f, -.5f, visslice[islice].z);
+			pp = visslice[islice].pos + ox - oy;
+			glVertex3f(pp.x, pp.y, pp.z);
+			
+			glMultiTexCoord3f(GL_TEXTURE0, .5f, .5f, visslice[islice].z);
+			pp = visslice[islice].pos + ox + oy;
+			glVertex3f(pp.x, pp.y, pp.z);
+			
+			glMultiTexCoord3f(GL_TEXTURE0, -.5f, .5f, visslice[islice].z);
+			pp = visslice[islice].pos - ox + oy;
+			glVertex3f(pp.x, pp.y, pp.z);		
+		glEnd();	
+		}
+		
+		delete[] dsort;
+		delete[] visslice;
+		delete[] oribuf;
+		delete[] sizebuf;
+		delete[] deltabuf;
+		delete[] freqbuf;
+	}
+	delete[] visgrd;
+}
+
+void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRID2Draw* res)
+{
+	if(!node) return;
+	XYZ cen = node->center;
+	float size2 = node->size*2;
+	
+	XYZ pcam = cen;
+	f_cameraSpaceInv.transform(pcam);
+	
+	if(pcam.z + size2 < 0) return;
+	
+	float depthz = pcam.z - node->size;
+	if(depthz < 0.01) depthz = 0.01;
+	
+	float portWidth;
+	if(f_isPersp) portWidth = depthz*f_fieldOfView;
+	else portWidth = f_fieldOfView;
+	
+	if(pcam.x - size2 > portWidth) return;
+	if(pcam.x + size2 < -portWidth) return;
+	if(pcam.y - size2 > portWidth) return;
+	if(pcam.y + size2 < -portWidth) return;
+	
+// sum of grid and biggest one
+	float sumarea =0;
+	unsigned ibig = node->low;
+	float fbig = m_pGrid[ibig].area;
+	for(unsigned i= node->low; i<= node->high; i++) {
+		sumarea += m_pGrid[i].area;
+		if(m_pGrid[i].area > fbig) {
+			ibig = i;
+			fbig = m_pGrid[i].area;
+		}
+	}
+
+	float r = sqrt(sumarea * 0.25);
+	
+	int detail = r/portWidth*fHalfPortWidth;
+	
+	XYZ pw, ox, oy, cs;
+
+	if(detail < 4) {
+		reconstructColor(node->index, cs);
+		
+		res[count].ibl = cs;
+		res[count].grid_id = ibig;
+		res[count].detail = detail;
+
+		count++;
+		
+		int nslice = 5 + detail/5*2;
+		if(nslice > 21) nslice = 21;
+		slice_count += nslice;
+		return;
+	}
+
+	if(node->isLeaf) {
+		reconstructColor(node->index, cs);
+					
+		for(int i = node->low; i <= node->high; i++) {
+			res[count].ibl = cs;
+			res[count].grid_id = i;
+			
+			r = sqrt(m_pGrid[i].area * 0.25);
+
+			detail = r/portWidth*fHalfPortWidth;
+			
+			res[count].detail = detail;
+
+			count++;
+			
+			int nslice = 5 + detail/5*2;
+			if(nslice > 21) nslice = 21;
+			slice_count += nslice;
+		}
+	}
+	else {
+		pushDrawList(node->child000, count, slice_count, res);
+		pushDrawList(node->child001, count, slice_count, res);
+		pushDrawList(node->child010, count, slice_count, res);
+		pushDrawList(node->child011, count, slice_count, res);
+		pushDrawList(node->child100, count, slice_count, res);
+		pushDrawList(node->child101, count, slice_count, res);
+		pushDrawList(node->child110, count, slice_count, res);
+		pushDrawList(node->child111, count, slice_count, res);
+	}
 }
 
 void OcTree::draw(const XYZ& viewdir)
@@ -582,7 +788,7 @@ void OcTree::drawCube(const OCTNode *node)
 	
 	int detail = node->size/portWidth*fHalfPortWidth;
 	
-	if(detail < 8 || node->isLeaf) {
+	if(detail < 4 || node->isLeaf) {
 		XYZ cs;
 		reconstructColor(node->index, cs);
 		glColor3f(cs.x, cs.y, cs.z);
@@ -641,7 +847,7 @@ void OcTree::drawSprite(const OCTNode *node)
 	
 	XYZ pw, ox, oy;
 
-	if(detail < 8) {
+	if(detail < 4) {
 		XYZ cs;
 		reconstructColor(node->index, cs);
 
@@ -661,35 +867,36 @@ void OcTree::drawSprite(const OCTNode *node)
 
 		if(node->low == node->high) {
 			r = sqrt(m_pGrid[node->low].area * 0.25);
-			
+
 			detail = r/portWidth*fHalfPortWidth;
 			
 			noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[node->low]);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
 			glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[node->low].col.x, m_pGrid[node->low].col.y,m_pGrid[node->low].col.z);
-
+//glColor4f(m_pGrid[node->low].col.x, m_pGrid[node->low].col.y,m_pGrid[node->low].col.z, 0.7);
 			drawAParticle(m_pGrid[node->low].pos, r, detail);
 		}
 		else {
 			int npt = node->high - node->low + 1;
 			ValueAndId* lssort = new ValueAndId[npt];
 			for(int i = 0; i < npt; i++) {
-				pcam = m_pGrid[node->low + i].pos - fEye;
-				lssort[i].val = pcam.lengthSquare();
+				pcam = m_pGrid[node->low + i].pos;
+				f_cameraSpaceInv.transform(pcam);
+				lssort[i].val = pcam.z;
 				lssort[i].idx = node->low + i;
 			}
 			
 			QuickSort::sort(lssort,0,npt-1);
 			
-			for(int i = 0; i < npt; i++) {
+			for(int i = npt-1; i >=0; i--) {
 				r = sqrt(m_pGrid[lssort[i].idx].area * 0.25);
-			
+
 				detail = r/portWidth*fHalfPortWidth;
 				
 				noise.sphereRand(pw.x, pw.y, pw.z, 7.1f, t_grid_id[lssort[i].idx]);
 				glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), pw.x, pw.y, pw.z);
 				glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[lssort[i].idx].col.x, m_pGrid[lssort[i].idx].col.y,m_pGrid[lssort[i].idx].col.z);
-
+//glColor4f(m_pGrid[lssort[i].idx].col.x, m_pGrid[lssort[i].idx].col.y,m_pGrid[lssort[i].idx].col.z, 0.7);
 				drawAParticle(m_pGrid[lssort[i].idx].pos, r, detail);
 			}
 			delete[] lssort;
@@ -700,57 +907,65 @@ void OcTree::drawSprite(const OCTNode *node)
 		
 		todraw[0].node = node->child000;
 		if(node->child000) {
-			pcam = node->child000->center - fEye;
-			todraw[0].distance = pcam.lengthSquare();
+			pcam = node->child000->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[0].distance = pcam.z;
 		}
 		else todraw[0].distance = -1;
 		
 		todraw[1].node = node->child001;
 		if(node->child001) {
-			pcam = node->child001->center - fEye;
-			todraw[1].distance = pcam.lengthSquare();
+			pcam = node->child001->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[1].distance = pcam.z;
 		}
 		else todraw[1].distance = -1;
 		
 		todraw[2].node = node->child010;
 		if(node->child010) {
-			pcam = node->child010->center - fEye;
-			todraw[2].distance = pcam.lengthSquare();
+			pcam = node->child010->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[2].distance = pcam.z;
 		}
 		else todraw[2].distance = -1;
 		
 		todraw[3].node = node->child011;
 		if(node->child011) {
-			pcam = node->child011->center - fEye;
-			todraw[3].distance = pcam.lengthSquare();
+			pcam = node->child011->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[3].distance = pcam.z;
 		}
 		else todraw[3].distance = -1;
 		
 		todraw[4].node = node->child100;
 		if(node->child100) {
-			pcam = node->child100->center - fEye;
-			todraw[4].distance = pcam.lengthSquare();
+			pcam = node->child100->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[4].distance = pcam.z;
 		}
 		else todraw[4].distance = -1;
 		
 		todraw[5].node = node->child101;
 		if(node->child101) {
-			pcam = node->child101->center - fEye;
-			todraw[5].distance = pcam.lengthSquare();
+			pcam = node->child101->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[5].distance = pcam.z;
 		}
 		else todraw[5].distance = -1;
 		
 		todraw[6].node = node->child110;
 		if(node->child110) {
-			pcam = node->child110->center - fEye;
-			todraw[6].distance = pcam.lengthSquare();
+			pcam = node->child110->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[6].distance = pcam.z;
 		}
 		else todraw[6].distance = -1;
 		
 		todraw[7].node = node->child111;
 		if(node->child111) {
-			pcam = node->child111->center - fEye;
-			todraw[7].distance = pcam.lengthSquare();
+			pcam = node->child111->center;
+			f_cameraSpaceInv.transform(pcam);
+			todraw[7].distance = pcam.z;
 		}
 		else todraw[7].distance = -1;
 		
@@ -1531,7 +1746,7 @@ void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& de
 	XYZ start;
 	
 	float z;
-	
+	/*
 	glBegin(GL_QUADS);
 	for(int i=0; i<nslice; i++) {
 			z = -1.0 + delta * (i+0.5f);
@@ -1556,6 +1771,33 @@ void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& de
 			pw = start - ox + oy;
 			glVertex3f(pw.x, pw.y, pw.z);
 	}		
+	glEnd();*/
+}
+
+void OcTree::drawASlice(const XYZ& center, const float& radius, const int& z)
+{
+	XYZ ox, oy, pw;
+	ox = fSpriteX * radius * 2.5;
+	oy = fSpriteY * radius * 2.5;
+	
+	glBegin(GL_QUADS);
+			
+	glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, z);
+	pw = center - ox - oy;
+	glVertex3f(pw.x, pw.y, pw.z);
+	
+	glMultiTexCoord3f(GL_TEXTURE0, .5f, -.5f, z);
+	pw = center + ox - oy;
+	glVertex3f(pw.x, pw.y, pw.z);
+	
+	glMultiTexCoord3f(GL_TEXTURE0, .5f, .5f, z);
+	pw = center + ox + oy;
+	glVertex3f(pw.x, pw.y, pw.z);
+	
+	glMultiTexCoord3f(GL_TEXTURE0, -.5f, .5f, z);
+	pw = center - ox + oy;
+	glVertex3f(pw.x, pw.y, pw.z);		
+	
 	glEnd();
 }
 

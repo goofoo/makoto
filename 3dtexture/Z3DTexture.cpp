@@ -9,10 +9,16 @@
 #include <stdlib.h>
 #include <fstream>
 #include "Z3DTexture.h"
+#include "../shared/QuickSort.h"
 
-using namespace std;
+struct SLICEAttrib
+{
+	XYZ pos;
+	float depth, z, r;
+	int gridId, brickId;
+};
 
-Z3DTexture::Z3DTexture() : m_pTree(0), m_sh(0), m_pGrid(0),m_pId(0)
+Z3DTexture::Z3DTexture() : m_pTree(0), m_sh(0), m_pGrid(0),m_pId(0),m_pOpacity(0),m_pAge(0)
 {
 	raster = new CubeRaster();
 	m_sh = new sphericalHarmonics();
@@ -26,6 +32,8 @@ Z3DTexture::~Z3DTexture()
 	if(m_sh) delete m_sh;
 	if(m_pGrid) delete[] m_pGrid;
 	if(m_pId) delete[] m_pId;
+	if(m_pOpacity) delete[] m_pOpacity;
+	if(m_pAge) delete[] m_pAge;
 	delete raster;
 }
 
@@ -37,12 +45,30 @@ void Z3DTexture::setGrid(RGRID* data, int n_data)
 	m_pTree->setGrid(data, n_data);
 }
 
-void Z3DTexture::orderGridData(unsigned* data, int n_data)
+void Z3DTexture::setGridIdData(unsigned* data, int n_data)
 {
 	m_pId = data;
 	m_pTree->orderGridData(m_pId, n_data);
 }
 
+void Z3DTexture::setGridOpacityData(float* data, int n_data)
+{
+	m_pOpacity = data;
+	m_pTree->orderGridData(m_pOpacity, n_data);
+}
+
+void Z3DTexture::setGridAgeData(float* data, int n_data)
+{
+	m_pAge = data;
+	m_pTree->orderGridData(m_pAge, n_data);
+}
+/*
+void Z3DTexture::orderGridData(unsigned* data, int n_data)
+{
+	m_pId = data;
+	m_pTree->orderGridData(m_pId, n_data);
+}
+*/
 char Z3DTexture::load(const char* filename)
 {
 	ifstream infile;
@@ -60,6 +86,13 @@ char Z3DTexture::load(const char* filename)
 	infile.read((char*)m_pGrid, sizeof(RGRID)*ngrid);
 	m_pId = new unsigned[ngrid];
 	infile.read((char*)m_pId,4*ngrid);
+	
+	m_pOpacity = new float[ngrid];
+	infile.read((char*)m_pOpacity,4*ngrid);
+	
+	m_pAge = new float[ngrid];
+	infile.read((char*)m_pAge,4*ngrid);
+	
 	m_pTree = new OcTree();
 	m_pTree->setGrid(m_pGrid, ngrid);
 	m_pTree->load(infile);
@@ -106,7 +139,10 @@ void Z3DTexture::drawCube() const
 
 void Z3DTexture::drawSprite() const
 {
-	if(m_pTree) m_pTree->drawSprite();
+	if(m_pTree) {
+	//m_pTree->drawSprite();
+	m_pTree->sortDraw();
+	}
 }
 
 void Z3DTexture::save(const char* filename)
@@ -120,6 +156,8 @@ void Z3DTexture::save(const char* filename)
 	outfile.write((char*)&ngrid,sizeof(int));
 	outfile.write((char*)m_pGrid,sizeof(RGRID)*ngrid);
 	outfile.write((char*)m_pId,4*ngrid);
+	outfile.write((char*)m_pOpacity,4*ngrid);
+	outfile.write((char*)m_pAge,4*ngrid);
 	m_pTree->save(outfile);
 	
 // record voxel arributes	

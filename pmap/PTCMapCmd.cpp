@@ -166,6 +166,8 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	
 	RGRID *buf = new RGRID[npt];
 	unsigned *idxb = new unsigned[npt];
+	float *opab = new float[npt];
+	float *ageb = new float[npt];
 	
 	list.reset();
 	for(;!list.isDone();list.next()) {
@@ -185,6 +187,12 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		
 		MVectorArray cols;
 		ps.rgb(cols);
+		
+		MDoubleArray opas;
+		ps.opacity(opas);
+		
+		MDoubleArray ages;
+		ps.opacity(ages);
        
 		for(unsigned i=0; i<positions.length(); i++,acc++ ) {
 			buf[acc].pos.x = positions[i].x;
@@ -194,20 +202,29 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 			buf[acc].nor.y = velarr[i].y;
 			buf[acc].nor.z = velarr[i].z;
 			buf[acc].area = def_area;
+			
 			if(ps.hasRgb()) {
 				buf[acc].col.x = cols[i].x;
 				buf[acc].col.y = cols[i].y;
 				buf[acc].col.z = cols[i].z;
 			}
 			else buf[acc].col = XYZ(1,1,1);
+			
 			idxb[acc] = ids[i];
+			
+			if(ps.hasOpacity ()) opab[acc] = opas[i];
+			else opab[acc] = 1.f;
+			
+			ageb[acc] = ages[i];
 		}
 	}
 
 	Z3DTexture* tree = new Z3DTexture();
 	tree->setGrid(buf, npt);
 	tree->constructTree(root_center, root_size, max_level);
-	tree->orderGridData(idxb, npt);
+	tree->setGridIdData(idxb, npt);
+	tree->setGridOpacityData(opab, npt);
+	tree->setGridAgeData(ageb, npt);
 	MGlobal::displayInfo(MString(" num grid ")+ tree->getNumGrid());
 	MGlobal::displayInfo(MString(" num voxel ")+ tree->getNumVoxel());
 	MGlobal::displayInfo(MString(" max level ")+ tree->getMaxLevel());
@@ -215,7 +232,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	tree->occlusionVolume(cloud_os, key_dir, view_dir);
 	MGlobal::displayInfo(" done");
 	MGlobal::displayInfo(" updating grid distance to neighbour...");
-	tree->distanceToNeighbour(cache_mindist, cache_maxdist);
+	//tree->distanceToNeighbour(cache_mindist, cache_maxdist);
 	MGlobal::displayInfo(" done");
 /*
 	XYZ* attrArray = new XYZ[npt];

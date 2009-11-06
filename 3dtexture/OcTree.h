@@ -13,6 +13,19 @@ using namespace std;
 
 class sphericalHarmonics;
 
+struct GRID2Draw
+{
+	int grid_id, detail;
+	XYZ ibl;
+};
+
+struct SLICE2Draw
+{
+	int draw_id;
+	XYZ pos;
+	float z;
+};
+
 struct GRIDNId
 {
 	RGRID grid;
@@ -82,6 +95,7 @@ public:
 	char loadGrid(const char* filename);
 	void setGrid(RGRID* data, int n_data);
 	void orderGridData(unsigned* data, int n_data);
+	void orderGridData(float* data, int n_data);
 	
 	unsigned getNumGrid() const {return num_grid;}
 	unsigned getNumVoxel() const {return num_voxel;}
@@ -90,10 +104,12 @@ public:
 	
 	void drawCube();
 	void drawSprite();
+	void sortDraw();
 	void draw(const XYZ& viewdir);
 	void drawCube(const OCTNode *node);
 	void drawSprite(const OCTNode *node);
 	void drawNeighbour(const OCTNode *node);
+	void pushDrawList(const OCTNode *node, int& count, int& slice_count, GRID2Draw* res);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 
@@ -131,6 +147,7 @@ public:
 	void setBackScale(const float& val) { fBackLight = val; }
 	void drawAParticle(const XYZ& center, const float& radius, const int& detail);
 	void reconstructColor(const unsigned& idx, XYZ& res);
+	void drawASlice(const XYZ& center, const float& radius, const int& z);
 	
 private:
 	
