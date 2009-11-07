@@ -34,24 +34,29 @@ GLhandleARB vertex_shader, fragment_shader, program_object;
 
 const char *vert_source =
 "uniform vec3 LightPosition;"
-"uniform vec3 Origin;"
 "uniform mat4 objspace;"
-"uniform float VFreq;"
+//"uniform float VFreq;"
 
+"varying vec4 CParticle;"
 "varying vec2 ViewCoord;"
 "varying vec3  TexCoord;"
 "varying vec3  TexCoordNoise;"
 "varying vec3  LightVec;"
+"varying vec3 CIBL;"
+"varying float OScale;"
 
 "void main(void)"
 "{"
+"	CParticle = gl_Color;"
 "	ViewCoord = gl_MultiTexCoord0.xy;"
 "	vec3 ecPos      = vec3 (gl_ModelViewMatrix * gl_Vertex);"
 "	LightVec   = normalize(LightPosition - ecPos);"
 "	vec4 pw = vec4(gl_MultiTexCoord0.xyz, 0.0);"
 "	TexCoordNoise = vec3(objspace * pw);"
 "    TexCoord        =  TexCoordNoise;"
-"    TexCoordNoise  = TexCoordNoise/64.0*VFreq + Origin;"
+"    TexCoordNoise  = TexCoordNoise/64.0*gl_MultiTexCoord3.y + gl_MultiTexCoord2.xyz;"
+"	CIBL = gl_MultiTexCoord1.xyz;"
+"	OScale = gl_MultiTexCoord3.x;"
 "    gl_Position     = ftransform();"
 "}";
 
@@ -59,16 +64,17 @@ const char *frag_source =
 "uniform sampler3D EarthNight;"
 "uniform float KNoise;"
 "uniform float KDiffuse;"
-"uniform vec3 CIBL;"
-"uniform float OScale;"
+
 "uniform float GScale;"
-"uniform vec3 CParticle;"
 "uniform vec3 CCloud;"
 
+"varying vec3 CIBL;"
+"varying vec4 CParticle;"
 "varying vec2 ViewCoord;"
 "varying vec3  TexCoord;"
 "varying vec3  TexCoordNoise;"
 "varying vec3  LightVec;"
+"varying float OScale;"
 
 "vec3 fractal_func(vec3 pcoord, float H)"
 "{"
@@ -129,7 +135,7 @@ const char *frag_source =
 
 "	float dist = length(TexCoord + (fractal.xyz - vec3(0.5))*1.5*KNoise);"
 
-"    gl_FragColor = vec4 (CCloud * CParticle + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
+"    gl_FragColor = vec4 (CCloud * CParticle.rgb + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
 //"    gl_FragColor = vec4 (CParticle, 0.05);"
 "}";
 

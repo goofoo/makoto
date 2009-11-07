@@ -596,22 +596,26 @@ void OcTree::sortDraw()
 		}
 		
 		QuickSort::sort(dsort,0,num_slice-1);
-		
+		glBegin(GL_QUADS);
 		for(int i=num_slice-1; i>=0; i--) {
 			int islice = dsort[i].idx;
 			int idraw = visslice[dsort[i].idx].draw_id;
-			glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), visgrd[idraw].ibl.x, visgrd[idraw].ibl.y, visgrd[idraw].ibl.z);
-			glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), oribuf[idraw].x, oribuf[idraw].y, oribuf[idraw].z);
-			glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z);
+			//glUniform3fARB(glGetUniformLocationARB(program_object, "CIBL"), visgrd[idraw].ibl.x, visgrd[idraw].ibl.y, visgrd[idraw].ibl.z);
+			//glUniform3fARB(glGetUniformLocationARB(program_object, "Origin"), oribuf[idraw].x, oribuf[idraw].y, oribuf[idraw].z);
+			//glUniform3fARB(glGetUniformLocationARB(program_object, "CParticle"), m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z);
 			
-			glUniform1fARB(glGetUniformLocationARB(program_object, "OScale"), deltabuf[idraw]);
-			glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freqbuf[idraw]);
+			//glUniform1fARB(glGetUniformLocationARB(program_object, "OScale"), deltabuf[idraw]);
+			//glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freqbuf[idraw]);
 			
 			XYZ ox, oy, pp;
 			ox = fSpriteX * sizebuf[idraw] * 2.5;
 			oy = fSpriteY * sizebuf[idraw] * 2.5;
-		glBegin(GL_QUADS);
+		
+			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, 1.f);
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
+			glMultiTexCoord3f(GL_TEXTURE1, visgrd[idraw].ibl.x, visgrd[idraw].ibl.y, visgrd[idraw].ibl.z);
+			glMultiTexCoord3f(GL_TEXTURE2, oribuf[idraw].x, oribuf[idraw].y, oribuf[idraw].z);
+			glMultiTexCoord3f(GL_TEXTURE3, deltabuf[idraw], freqbuf[idraw], 1.f);
 			pp = visslice[islice].pos - ox - oy;
 			glVertex3f(pp.x, pp.y, pp.z);
 			
@@ -626,9 +630,9 @@ void OcTree::sortDraw()
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, .5f, visslice[islice].z);
 			pp = visslice[islice].pos - ox + oy;
 			glVertex3f(pp.x, pp.y, pp.z);		
-		glEnd();	
+			
 		}
-		
+		glEnd();
 		delete[] dsort;
 		delete[] visslice;
 		delete[] oribuf;
@@ -1745,8 +1749,8 @@ void OcTree::drawAParticle(const XYZ& center, const float& radius, const int& de
 	
 	XYZ start;
 	
-	float z;
-	/*
+	/*float z;
+	
 	glBegin(GL_QUADS);
 	for(int i=0; i<nslice; i++) {
 			z = -1.0 + delta * (i+0.5f);
