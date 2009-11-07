@@ -1471,7 +1471,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 		raster->write(ray, sample_opacity*(node->high-node->low+1));
 		return;
 	}
-	if(node->isLeaf) {
+	if(node->isLeaf || node->low == node->high) {
 		for(unsigned i= node->low; i<= node->high; i++) {
 			ray = m_pGrid[i].pos - origin;
 			if(ray.lengthSquare() < node->area) return;

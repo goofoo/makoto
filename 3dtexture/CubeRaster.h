@@ -11,8 +11,8 @@
 #define _CUBERASTER_H
 
 #include "../shared/zData.h"
-#define CUBERASTER_MAXANGLE 0.05
-#define CUBERASTER_MAXANGLEINV 20
+#define CUBERASTER_MAXANGLE 0.1
+#define CUBERASTER_MAXANGLEINV 10
 
 class CubeRaster
 {

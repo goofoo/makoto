@@ -173,11 +173,9 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	for(;!list.isDone();list.next()) {
 		list.getDagPath (fDagPath, component);
 	    MFnParticleSystem ps( fDagPath );
- 
-		const unsigned int count = ps.count();
+
 	    MVectorArray positions;
 	    ps.position( positions );
-		assert( positions.length() == count);
 		
 		MVectorArray velarr;
 		ps.velocity( velarr );
