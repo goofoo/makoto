@@ -10,7 +10,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang", "2.6.5 - 13/09/09", "Any");
+	MFnPlugin plugin( obj, "Zhang", "2.6.6 - Sun Nov 7 2009", "Any");
 
 	status = plugin.registerNode( "hwHDREnvViewer", hdrEnvNode::id, 
 						 &hdrEnvNode::creator, &hdrEnvNode::initialize,

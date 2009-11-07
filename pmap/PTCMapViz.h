@@ -47,7 +47,6 @@ public:
 	static  	MObject 	aminframe;
 	static  	MObject 	amaxframe;
 	static      MObject     adensity;
-	static      MObject     adusty;
 	static      MObject     anoise;
 	static      MObject     adiffuse;
 	static      MObject     alightposx;

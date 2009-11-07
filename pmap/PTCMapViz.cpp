@@ -25,7 +25,6 @@
 MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
 MObject     PTCMapLocator::adensity;
-MObject     PTCMapLocator::adusty;
 MObject     PTCMapLocator::amaxframe;
 MObject     PTCMapLocator::aminframe;
 MObject 	PTCMapLocator::aviewattrib;
@@ -317,13 +316,6 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( adensity );
-	
-	adusty = nAttr.create( "dusty", "dsy", MFnNumericData::kFloat, 0.0);
-	nAttr.setMin(0.0);
-	nAttr.setMax(1.0);
-	nAttr.setStorable(true);
-	nAttr.setKeyable(true);
-	addAttribute( adusty );
 	
 	MFnTypedAttribute   stringAttr;
 	input = stringAttr.create( "cachePath", "cp", MFnData::kString );
