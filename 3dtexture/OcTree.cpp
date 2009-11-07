@@ -611,7 +611,7 @@ void OcTree::sortDraw()
 			ox = fSpriteX * sizebuf[idraw] * 2.5;
 			oy = fSpriteY * sizebuf[idraw] * 2.5;
 		
-			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, 1.f);
+			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, t_grid_opacity[visgrd[idraw].grid_id]);
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
 			glMultiTexCoord3f(GL_TEXTURE1, visgrd[idraw].ibl.x, visgrd[idraw].ibl.y, visgrd[idraw].ibl.z);
 			glMultiTexCoord3f(GL_TEXTURE2, oribuf[idraw].x, oribuf[idraw].y, oribuf[idraw].z);

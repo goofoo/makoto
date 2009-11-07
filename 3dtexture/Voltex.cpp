@@ -79,32 +79,25 @@ const char *frag_source =
 
 "vec3 fractal_func(vec3 pcoord)"
 "{"
-"	float i = 1.0;"
+"	float f = 1.0;"
 "	vec3 fractal = texture3D(EarthNight, pcoord).rgb;" 
-"	pcoord *= Lacunarity; "
-"	i *= Lacunarity;"
 
-"	float mag = pow(i,3.0-Dimension);"
+"	f *= Lacunarity;"
 
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
+"	fractal += (texture3D(EarthNight, pcoord*f).rgb-vec3(0.5))/pow(f,3.0-Dimension);" 
 
-"	pcoord *= Lacunarity; " 
-"	i *= Lacunarity;"
+"	f *= Lacunarity;"
 
-"	mag = pow(i,3.0-Dimension);"
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
+"	fractal += (texture3D(EarthNight, pcoord*f).rgb-vec3(0.5))/pow(f,3.0-Dimension);" 
+ 
+"	f *= Lacunarity;"
 
-"	pcoord *= Lacunarity; " 
-"	i *= Lacunarity;"
+"	fractal += (texture3D(EarthNight, pcoord*f).rgb-vec3(0.5))/pow(f,3.0-Dimension);" 
 
-"	mag = pow(i,3.0-Dimension);"
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
+//"	f *= Lacunarity;"
 
-"	pcoord *= Lacunarity; " 
-"	i *= Lacunarity;"
-
-"	mag = pow(i,3.0-Dimension);"
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
+//"	mag = pow(f,3.0-Dimension);"
+//"	fractal += (texture3D(EarthNight, pcoord*f).rgb-vec3(0.5))/mag;" 
  
 "	return fractal;"
 "}"
@@ -146,7 +139,7 @@ const char *frag_source =
 
 "	float dist = length(TexCoord + (fractal.xyz - vec3(0.5))*1.5*KNoise);"
 
-"    gl_FragColor = vec4 (CCloud * CParticle.rgb + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
+"    gl_FragColor = vec4 (CCloud * CParticle.rgb + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), CParticle.a*GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
 //"    gl_FragColor = vec4 (CParticle, 0.05);"
 "}";
 

@@ -137,6 +137,7 @@ public:
 	void setSpriteSpace(MATRIX44F mat);
 	
 	void setGridId(unsigned* data) {t_grid_id = data;}
+	void setGridOpacity(float* data) {t_grid_opacity = data;}
 	unsigned* getIdBuf() const {return idBuf;}
 	
 	void setProgram(GLhandleARB obj) { program_object = obj; }
@@ -166,6 +167,7 @@ private:
 	
 	unsigned *idBuf;
 	unsigned *t_grid_id;
+	float* t_grid_opacity;
 	float sample_opacity;
 	
 	SHB3COEFF* m_pSHBuf;

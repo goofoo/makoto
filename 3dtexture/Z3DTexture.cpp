@@ -62,13 +62,7 @@ void Z3DTexture::setGridAgeData(float* data, int n_data)
 	m_pAge = data;
 	m_pTree->orderGridData(m_pAge, n_data);
 }
-/*
-void Z3DTexture::orderGridData(unsigned* data, int n_data)
-{
-	m_pId = data;
-	m_pTree->orderGridData(m_pId, n_data);
-}
-*/
+
 char Z3DTexture::load(const char* filename)
 {
 	ifstream infile;
@@ -123,6 +117,7 @@ char Z3DTexture::load(const char* filename)
 	infile.close();
 	
 	m_pTree->setGridId(m_pId);
+	m_pTree->setGridOpacity(m_pOpacity);
 	
 	return 1;
 }
@@ -139,10 +134,7 @@ void Z3DTexture::drawCube() const
 
 void Z3DTexture::drawSprite() const
 {
-	if(m_pTree) {
-	//m_pTree->drawSprite();
-	m_pTree->sortDraw();
-	}
+	if(m_pTree) m_pTree->sortDraw();
 }
 
 void Z3DTexture::save(const char* filename)

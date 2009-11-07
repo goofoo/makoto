@@ -232,7 +232,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	tree->occlusionVolume(cloud_os, key_dir, view_dir);
 	MGlobal::displayInfo(" done");
 	MGlobal::displayInfo(" updating grid distance to neighbour...");
-	//tree->distanceToNeighbour(cache_mindist, cache_maxdist);
+	tree->distanceToNeighbour(cache_mindist, cache_maxdist);
 	MGlobal::displayInfo(" done");
 /*
 	XYZ* attrArray = new XYZ[npt];
