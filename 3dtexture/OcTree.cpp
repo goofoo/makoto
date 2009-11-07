@@ -555,8 +555,8 @@ void OcTree::sortDraw()
 			r = sqrt(m_pGrid[visgrd[i].grid_id].area * 0.25);
 			sizebuf[i] = r;
 		
-			int nslice = 5 + visgrd[i].detail/5*2;
-			if(nslice > 21) nslice = 21;
+			int nslice = 3 + visgrd[i].detail/6*2;
+			if(nslice > 17) nslice = 17;
 			float delta = 1.f / nslice;
 			
 			deltabuf[i] = delta;
@@ -693,13 +693,13 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 
 		count++;
 		
-		int nslice = 5 + detail/5*2;
-		if(nslice > 21) nslice = 21;
+		int nslice = 3 + detail/6*2;
+		if(nslice > 17) nslice = 17;
 		slice_count += nslice;
 		return;
 	}
 
-	if(node->isLeaf) {
+	if( node->isLeaf  || node->low == node->high ) {
 		reconstructColor(node->index, cs);
 					
 		for(int i = node->low; i <= node->high; i++) {
@@ -714,8 +714,8 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 
 			count++;
 			
-			int nslice = 5 + detail/5*2;
-			if(nslice > 21) nslice = 21;
+			int nslice = 3 + detail/6*2;
+			if(nslice > 17) nslice = 17;
 			slice_count += nslice;
 		}
 	}

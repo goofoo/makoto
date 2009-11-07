@@ -44,6 +44,8 @@ MObject     PTCMapLocator::akback;
 MObject     PTCMapLocator::acloudr;
 MObject     PTCMapLocator::acloudg;
 MObject     PTCMapLocator::acloudb;
+MObject     PTCMapLocator::alacunarity;
+MObject     PTCMapLocator::adimension;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
 {
@@ -119,6 +121,12 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		
 		kwei = data.inputValue(akback).asFloat();
 		if(fData) fData->setBackScale(kwei);
+		
+		kwei = data.inputValue(alacunarity).asFloat();
+		fRenderer->setLacunarity(kwei);
+		
+		kwei = data.inputValue(adimension).asFloat();
+		fRenderer->setDimension(kwei);
 		
 		float r, g, b;
 		r = data.inputValue(alightposx).asFloat();
@@ -398,6 +406,20 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(akback);
 	
+	alacunarity = nAttr.create( "Lacunarity", "lcu", MFnNumericData::kFloat, 1.25);
+	nAttr.setMin(1.25);
+	nAttr.setMax(4.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(alacunarity);
+	
+	adimension = nAttr.create( "Dimension", "dem", MFnNumericData::kFloat, 0.0);
+	nAttr.setMin(0.0);
+	nAttr.setMax(3.5);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(adimension);
+	
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);
 	nAttr.setWritable(false);
@@ -422,6 +444,8 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( acloudr, aoutval );
 	attributeAffects( acloudg, aoutval );
 	attributeAffects( acloudb, aoutval );
+	attributeAffects( alacunarity, aoutval );
+	attributeAffects( adimension, aoutval );
 	return MS::kSuccess;
 
 }

@@ -61,6 +61,8 @@ public:
 	static      MObject     acloudb;
 	static      MObject     akkey;
 	static      MObject     akback;
+	static      MObject     alacunarity;
+	static      MObject     adimension;
 	static MObject aincoe;
 	static      MObject     aoutval;
 private:

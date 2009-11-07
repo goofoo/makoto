@@ -64,7 +64,8 @@ const char *frag_source =
 "uniform sampler3D EarthNight;"
 "uniform float KNoise;"
 "uniform float KDiffuse;"
-
+"uniform float Lacunarity;"
+"uniform float Dimension;"
 "uniform float GScale;"
 "uniform vec3 CCloud;"
 
@@ -76,27 +77,34 @@ const char *frag_source =
 "varying vec3  LightVec;"
 "varying float OScale;"
 
-"vec3 fractal_func(vec3 pcoord, float H)"
+"vec3 fractal_func(vec3 pcoord)"
 "{"
-"	float lacunarity = 2.0;"
-"	float i=0.0;"
-"	vec3 fractal = texture3D(EarthNight, pcoord).rgb*pow(lacunarity, -H*i);" 
-"	pcoord *= lacunarity; "
-"	i++;"
+"	float i = 1.0;"
+"	vec3 fractal = texture3D(EarthNight, pcoord).rgb;" 
+"	pcoord *= Lacunarity; "
+"	i *= Lacunarity;"
 
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
-"	pcoord *= lacunarity; " 
-"	i++;"
+"	float mag = pow(i,3.0-Dimension);"
 
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
-"	pcoord *= lacunarity; "
-"	i++;"
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
 
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
-"	pcoord *= lacunarity; "
-"	i++;"
+"	pcoord *= Lacunarity; " 
+"	i *= Lacunarity;"
 
-"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))*pow(lacunarity, -H*i);" 
+"	mag = pow(i,3.0-Dimension);"
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
+
+"	pcoord *= Lacunarity; " 
+"	i *= Lacunarity;"
+
+"	mag = pow(i,3.0-Dimension);"
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
+
+"	pcoord *= Lacunarity; " 
+"	i *= Lacunarity;"
+
+"	mag = pow(i,3.0-Dimension);"
+"	fractal += (texture3D(EarthNight, pcoord).rgb-vec3(0.5))/mag;" 
  
 "	return fractal;"
 "}"
@@ -104,18 +112,22 @@ const char *frag_source =
 "float density_func(vec3 coord)"
 "{"
 "	float freq= 1.0;"
-"	float turbulence = abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
+"	float turbulence = abs(texture3D(EarthNight, coord).a - 0.5);"
 "	coord *= 2.0;"
 "	freq *= 2.0;"
+
 "	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
 "	coord *= 2.0; " 
 "	freq *= 2.0;"
+
 "	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
 "	coord *= 2.0; " 
 "	freq *= 2.0;"
+
 "	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
 "	coord *= 2.0; " 
 "	freq *= 2.0;"
+
 "	turbulence += abs(texture3D(EarthNight, coord).a - 0.5)/freq;"
 
 "return turbulence;"
@@ -125,8 +137,7 @@ const char *frag_source =
 "{" 
 "	float edgexy = 1.0-smoothstep(0.25, 0.5, length(ViewCoord.xy));"
 
-"	float H = 1.0;"
-"	vec3 fractal = fractal_func(TexCoordNoise, H);"
+"	vec3 fractal = fractal_func(TexCoordNoise);"
 
 "	float dens = density_func(TexCoordNoise);"
 
@@ -144,7 +155,7 @@ static GLuint noisepool;
 static FNoise noise;
 
 Voltex::Voltex() : fHasDiagnosis(0), fHasExtensions(0), 
-fKNoise(0.5), fKDiffuse(0.5) 
+fKNoise(0.5), fKDiffuse(0.5), fLacunarity(1.25), fDimension(0.0)
 {
 	fLightPos.x = fLightPos.y = fLightPos.z = 100.f;
 }
@@ -164,6 +175,8 @@ void Voltex::start(Z3DTexture* db) const
 	glUniform1fARB(glGetUniformLocationARB(program_object, "KDiffuse"), fKDiffuse);
 	glUniform1fARB(glGetUniformLocationARB(program_object, "GScale"), fDensity);
 	glUniform3fARB(glGetUniformLocationARB(program_object, "CCloud"), fCCloud.x, fCCloud.y, fCCloud.z);
+	glUniform1fARB(glGetUniformLocationARB(program_object, "Lacunarity"), fLacunarity);
+	glUniform1fARB(glGetUniformLocationARB(program_object, "Dimension"), fDimension);
 	
 	db->setProgram(program_object);
 }
