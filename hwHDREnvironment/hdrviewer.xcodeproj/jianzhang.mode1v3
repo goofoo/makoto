@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FA55B08107DD0A300661BFF</string>
+						<string>7FE6ACF310A6123B00DDE052</string>
 						<key>history</key>
 						<array>
-							<string>7FA55B03107DCD6100661BFF</string>
+							<string>7FA55B08107DD0A300661BFF</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -235,7 +235,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>480 108 596 641 0 0 1280 778 </string>
+				<string>480 129 596 641 0 0 1280 778 </string>
 			</dict>
 		</dict>
 		<dict>
@@ -256,10 +256,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FA55B0B107DD0A300661BFF</string>
+						<string>7FE6ACF410A6123B00DDE052</string>
 						<key>history</key>
 						<array>
-							<string>7FA55B00107DCB6300661BFF</string>
+							<string>7FA55B0B107DD0A300661BFF</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -275,7 +275,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>446 110 750 658 0 0 1280 778 </string>
+				<string>446 119 750 658 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -466,9 +466,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7FA55B04107DD0A300661BFF</string>
+				<string>7FE6ACF110A6123B00DDE052</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7FA55B05107DD0A300661BFF</string>
+				<string>7FE6ACF210A6123B00DDE052</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -602,10 +602,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7FE58BA50FB61F9000187112</string>
 		<string>7FA55B09107DD0A300661BFF</string>
-		<string>7FA55B06107DD0A300661BFF</string>
 		<string>/Users/jianzhang/Documents/plankton/hwHDREnvironment/hdrviewer.xcodeproj</string>
+		<string>7FA55B06107DD0A300661BFF</string>
 	</array>
 	<key>WindowString</key>
 	<string>542 224 690 397 0 0 1280 778 </string>

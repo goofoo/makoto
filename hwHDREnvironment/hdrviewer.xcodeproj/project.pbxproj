@@ -17,6 +17,7 @@
 		7FCE44011022DF9900F025DA /* gBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FCE44001022DF9900F025DA /* gBase.cpp */; };
 		7FE58BA10FB61F6700187112 /* pluginMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA00FB61F6700187112 /* pluginMain.cpp */; };
 		7FE58BAA0FB61FAC00187112 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE58BA90FB61FAC00187112 /* zWorks.cpp */; };
+		7FE6ACFB10A6128C00DDE052 /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7FE6ACFA10A6128C00DDE052 /* FNoise.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		7FCE44001022DF9900F025DA /* gBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gBase.cpp; path = ../shared/gBase.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
 		7FE58BA90FB61FAC00187112 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
+		7FE6ACFA10A6128C00DDE052 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
 		D2AAC0630554660B00DB518D /* HdrViewer.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = HdrViewer.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -60,6 +62,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7FE6ACFA10A6128C00DDE052 /* FNoise.cpp */,
 				7FA55AFB107DC9BB00661BFF /* SHMath.cpp */,
 				7FA55AFC107DC9BB00661BFF /* SphericalHarmonics.cpp */,
 				7FA55AF8107DC98C00661BFF /* FnCg.cpp */,
@@ -156,6 +159,7 @@
 				7FA55AF9107DC98C00661BFF /* FnCg.cpp in Sources */,
 				7FA55AFD107DC9BB00661BFF /* SHMath.cpp in Sources */,
 				7FA55AFE107DC9BB00661BFF /* SphericalHarmonics.cpp in Sources */,
+				7FE6ACFB10A6128C00DDE052 /* FNoise.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

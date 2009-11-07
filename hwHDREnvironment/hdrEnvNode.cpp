@@ -180,7 +180,7 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 	glEnable(GL_CULL_FACE);
 	if(ireverse==1) glFrontFace(GL_CW);
 	else glFrontFace(GL_CCW);
-
+glDepthMask( GL_FALSE );
 	m_program->voronoiBegin(m_tex, pow(2.0f, m_exposure));
 		glBegin(GL_QUADS);
 		int i1, j1;
@@ -207,6 +207,7 @@ void hdrEnvNode::draw( M3dView & view, const MDagPath & /*path*/,
 		
 		glEnd();
 	m_program->voronoiEnd();
+	glDepthMask( GL_TRUE );
 	glPopAttrib();
 	view.endGL();
 }
