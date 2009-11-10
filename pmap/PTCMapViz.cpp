@@ -68,6 +68,10 @@ Array2D<half> gPixels(TILEHEIGHT, TILEWIDTH);
 Array2D<half> bPixels(TILEHEIGHT, TILEWIDTH);
 Array2D<half> aPixels(TILEHEIGHT, TILEWIDTH);
 
+GLuint fbo;
+GLuint depthBuffer;
+GLuint img;
+
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0), fSaveImage(0),
 fImageWidth(800), fImageHeight(600)
 {
@@ -78,6 +82,10 @@ PTCMapLocator::~PTCMapLocator()
 {
 	if(fRenderer) delete fRenderer;
 	if(fData) delete fData;
+	
+	if(fbo) glDeleteFramebuffersEXT(1, &fbo);
+	if(depthBuffer) glDeleteRenderbuffersEXT(1, &fbo);
+	glDeleteTextures(1, &img);
 }
 
 MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
@@ -95,6 +103,7 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	{
 		MStatus stat;
 		MString path =  data.inputValue( input ).asString();
+		fEyeCamera = data.inputValue( acameraname ).asString();
 
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
@@ -213,9 +222,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 
 	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
 	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
-	XYZ facing;
-	facing.x = viewDir[0];facing.y = viewDir[1];facing.z = viewDir[2];
-	
+
 	double clipNear, clipFar;
 	clipNear = fnCamera.nearClippingPlane();
 	clipFar = fnCamera.farClippingPlane();
@@ -225,8 +232,8 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	v_apeture = fnCamera.verticalFilmAperture();
 	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
 	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
-	double fl;
-	fl = fnCamera.focalLength();
+	//double fl;
+	//fl = fnCamera.focalLength();
 	//double h_fov = h_apeture * 0.5*25.4 /fl;
 	//double v_fov = v_apeture * 0.5*25.4 /fl;
 
@@ -260,12 +267,41 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		string log;
 		fRenderer->diagnose(log);
 		MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());
+// setup fbo
+		glGenFramebuffersEXT(1, &fbo);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+
+// Create the render buffer for depth	
+		glGenRenderbuffersEXT(1, &depthBuffer);
+		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthBuffer);
+		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, TILEWIDTH, TILEHEIGHT);
+
+// Now setup the first texture to render to
+		glGenTextures(1, &img);
+		glBindTexture(GL_TEXTURE_2D, img);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB,  TILEWIDTH, TILEHEIGHT, 0, GL_RGBA, GL_FLOAT, 0);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+// And attach it to the FBO so we can render to it
+		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, img, 0);
+		
+// Attach the depth render buffer to the FBO as it's depth attachment
+		glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthBuffer);
+
+
+		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+		if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("Cannot create frame buffer object.");
+// Unbind the FBO for now
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);	
 	}
 	
 	int port[4];
 	glGetIntegerv(GL_VIEWPORT, port);
 		
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	//
 
 	if(fData) {
 // update camera
@@ -274,8 +310,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		
 		if(f_type == 1) fData->drawCube();
 		else {
-			glClearDepth(1.0);
-			
+			//glPushAttrib(GL_ALL_ATTRIB_BITS);
 			glDepthFunc(GL_LEQUAL);
 			glEnable(GL_DEPTH_TEST);
 			glShadeModel(GL_SMOOTH);
@@ -288,15 +323,18 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		
 			glDisable(GL_BLEND);	
 			glDepthMask( GL_TRUE );	
+			//glPopAttrib();
 		}
 		
 		if(fSaveImage==1) {
-				MGlobal::displayInfo(MString(" render particle cache to ") + exrname);
-				writeNebula(exrname);
+			MGlobal::displayInfo(MString(" render particle cache to ") + exrname);
+				
+			writeNebula(exrname);
+
 		}
 	}
 	
-	glPopAttrib();
+	
 	view.endGL();
 }
 
@@ -493,6 +531,51 @@ MStatus PTCMapLocator::initialize()
 
 void PTCMapLocator::writeNebula(const char filename[])
 {
+	MDagPath pcamera;
+	zWorks::getTypedPathByName(MFn::kCamera, fEyeCamera, pcamera);
+	
+	MFnCamera fnCamera( pcamera );
+
+	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
+	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
+
+	double clipNear, clipFar;
+	clipNear = fnCamera.nearClippingPlane();
+	clipFar = fnCamera.farClippingPlane();
+
+	double h_apeture, v_apeture;
+	h_apeture = fnCamera.horizontalFilmAperture();
+	v_apeture = fnCamera.verticalFilmAperture();
+	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
+	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
+
+	MATRIX44F mat;
+	mat.setIdentity ();
+	mat.v[0][0] = -rightDir.x;
+	mat.v[0][1] = -rightDir.y;
+	mat.v[0][2] = -rightDir.z;
+	mat.v[1][0] = upDir.x;
+	mat.v[1][1] = upDir.y;
+	mat.v[1][2] = upDir.z;
+	mat.v[2][0] = viewDir.x;
+	mat.v[2][1] = viewDir.y;
+	mat.v[2][2] = viewDir.z;
+	mat.v[3][0] = eyePos.x;
+	mat.v[3][1] = eyePos.y;
+	mat.v[3][2] = eyePos.z;
+	
+	double fov = fnCamera.horizontalFieldOfView();
+	fov = fov/PI*180;
+	int ispersp = 1;
+	
+	if(fnCamera.isOrtho()) {
+		ispersp = 0;
+		fov = fnCamera.orthoWidth();
+	}
+	
+	fData->setProjection(mat, fov, ispersp);
+	fData->setPortWidth(fImageWidth);
+	
 	Header header(fImageWidth, fImageHeight);
     header.channels().insert ("R", Channel (HALF));
     header.channels().insert ("G", Channel (HALF));
@@ -505,20 +588,102 @@ void PTCMapLocator::writeNebula(const char filename[])
 		for(int X=0; X < file.numXTiles(); ++X) {
     	     	     
 			Box2i range = file.dataWindowForTile (X, Y);
-/*
-    	     	     float bb = float(random()%17)/19.f;
-    	     	     
-				   for(int j=0; j<TILEWIDTH; j++) {
-						for(int i=0; i<TILEWIDTH; i++) {
-								rPixels[j][i] = float(TILEWIDTH-i)/TILEWIDTH*float(TILEWIDTH-j)/TILEWIDTH;
-								gPixels[j][i] = float(i)/TILEWIDTH*float(j)/TILEWIDTH;
-								bPixels[j][i] = bb;
-								aPixels[j][i] = 1.0 -bb;
-						}
-					}
-// set the pixels for a tile
-*/
 
+// First we bind the FBO so we can render to it
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+
+// Save the view port and set it to the size of the texture
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glViewport(0,0,TILEWIDTH,TILEHEIGHT);
+
+// Then render as normal
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+	glClearDepth(1.0f);		  
+	glClearColor(.0f, .0f, .0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();	
+	//gluPerspective( 35, 1.0, 0.1, 1000.0 );
+	
+	GLdouble ratio, radians, wd2;
+	GLdouble left, right, top, bottom, near, far;
+	ratio = 1.0;
+	near = 0.1;
+	
+	far = 1000.0;
+	
+	radians = 0.0174532925 * 56 / 2; // half aperture degrees to radians 
+	wd2 = near * tan(radians);
+	
+	if (ratio >= 1.0) {
+		left  = -ratio * wd2;
+		right = ratio * wd2;
+		top = wd2;
+		bottom = -wd2;	
+	} else {
+		left  = -wd2;
+		right = wd2;
+		top = wd2 / ratio;
+		bottom = -wd2 / ratio;	
+	}
+	glFrustum (left, right, bottom, top, near, far);
+	
+	glMatrixMode(GL_MODELVIEW);
+	
+	glLoadIdentity();
+	
+	gluLookAt (eyePos.x, eyePos.y, eyePos.z,
+			   eyePos.x + viewDir.x, eyePos.y + viewDir.y, eyePos.z + viewDir.z,
+			  upDir.x, upDir.y, upDir.z);
+	
+glEnable(GL_BLEND);
+glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+glDepthMask( GL_FALSE );
+glDepthFunc(GL_LEQUAL);
+glEnable(GL_DEPTH_TEST);
+	
+	fRenderer->start(fData);
+	fData->drawSprite();
+	fRenderer->end();
+	
+glDisable(GL_BLEND);
+glDepthMask( GL_TRUE );		
+	
+	glBegin(GL_LINES);
+		glColor4f(1,0,0,1);
+		glVertex3f(0, 0, 0);
+		glVertex3f(24, 0, 0);
+		
+		glColor4f(0,1,0,1);
+		glVertex3f(0, 0, 0);
+		glVertex3f(0, 24, 0);
+		
+		glColor4f(0,0,1,1);
+		glVertex3f(0, 0, 0);
+		glVertex3f(0, 0, 24);
+	glEnd();
+
+//	
+	glPopAttrib();
+// dump	
+	float *data = new float[TILEWIDTH*TILEHEIGHT*4];
+	glReadPixels( 0, 0, TILEWIDTH, TILEHEIGHT, GL_RGBA, GL_FLOAT, data );
+	
+	for(int j=0; j<TILEHEIGHT; j++) {
+		int flip_j = TILEHEIGHT-1-j;
+		for(int i=0; i<TILEWIDTH; i++) {
+				rPixels[j][i] = data[(flip_j*TILEWIDTH+i)*4];
+				gPixels[j][i] = data[(flip_j*TILEWIDTH+i)*4+1];
+				bPixels[j][i] = data[(flip_j*TILEWIDTH+i)*4+2];
+				aPixels[j][i] = data[(flip_j*TILEWIDTH+i)*4+3];
+		}
+	}
+	delete[] data;
+	
+// unbind fbo
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	
 			FrameBuffer frameBuffer;
     	     	     
 			frameBuffer.insert("R", 

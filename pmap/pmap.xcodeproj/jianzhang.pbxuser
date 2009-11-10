@@ -71,14 +71,14 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 279532809;
-			PBXWorkspaceStateSaveDate = 279532809;
+			PBXPerProjectTemplateStateSaveDate = 279546112;
+			PBXWorkspaceStateSaveDate = 279546112;
 		};
 		perUserProjectItems = {
-			7F359CD510A976C7002E49C6 /* PBXBookmark */ = 7F359CD510A976C7002E49C6 /* PBXBookmark */;
-			7F359CFE10A98054002E49C6 /* PBXTextBookmark */ = 7F359CFE10A98054002E49C6 /* PBXTextBookmark */;
-			7F359D1D10A986CD002E49C6 /* PBXTextBookmark */ = 7F359D1D10A986CD002E49C6 /* PBXTextBookmark */;
-			7F359D1E10A986CD002E49C6 /* PBXTextBookmark */ = 7F359D1E10A986CD002E49C6 /* PBXTextBookmark */;
+			7F359CD510A976C7002E49C6 = 7F359CD510A976C7002E49C6 /* PBXBookmark */;
+			7F359CFE10A98054002E49C6 = 7F359CFE10A98054002E49C6 /* PBXTextBookmark */;
+			7F359D1D10A986CD002E49C6 = 7F359D1D10A986CD002E49C6 /* PBXTextBookmark */;
+			7F359D1E10A986CD002E49C6 = 7F359D1E10A986CD002E49C6 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBookmarkGroup = 7FC97743109B472F003E8507 /* PBXBookmarkGroup */;
@@ -89,7 +89,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {634, 1988}}";
 			sepNavSelRange = "{3019, 0}";
-			sepNavVisRange = "{2211, 978}";
+			sepNavVisRange = "{2367, 1059}";
 			sepNavWindowFrame = "{{15, 64}, {693, 709}}";
 		};
 	};
@@ -104,17 +104,17 @@
 		path = /Users/jianzhang/Documents/plankton/pmap/PTCMapViz.h;
 		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {560, 1134}}";
-			sepNavSelRange = "{2004, 7}";
-			sepNavVisRange = "{1042, 1061}";
-			sepNavWindowFrame = "{{137, 88}, {539, 677}}";
+			sepNavIntBoundsRect = "{{0, 0}, {560, 1148}}";
+			sepNavSelRange = "{2101, 10}";
+			sepNavVisRange = "{1051, 1073}";
+			sepNavWindowFrame = "{{114, 95}, {539, 677}}";
 		};
 	};
 	7F359CFE10A98054002E49C6 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 7F359CEA10A97F01002E49C6 /* PTCMapViz.h */;
 		rLen = 0;
-		rLoc = 2147483668;
+		rLoc = 2124;
 		rType = 0;
 	};
 	7F359D1D10A986CD002E49C6 /* PBXTextBookmark */ = {
@@ -122,7 +122,7 @@
 		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
 		name = "PTCMapViz.cpp: 521";
 		rLen = 0;
-		rLoc = 14489;
+		rLoc = 19499;
 		rType = 0;
 		vrLen = 1289;
 		vrLoc = 13229;
@@ -139,6 +139,7 @@
 	};
 	7F359D1F10A986CD002E49C6 /* PTCMapViz.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = PTCMapViz.h;
 		path = /Users/jianzhang/Documents/plankton/pmap/PTCMapViz.h;
 		sourceTree = "<absolute>";
@@ -153,9 +154,9 @@
 	};
 	7F7C0866109C17C1004AD163 /* Voltex.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {568, 4452}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1106, 4200}}";
 			sepNavSelRange = "{1527, 0}";
-			sepNavVisRange = "{858, 1016}";
+			sepNavVisRange = "{7916, 1075}";
 			sepNavWindowFrame = "{{425, 100}, {627, 622}}";
 		};
 	};
@@ -185,9 +186,9 @@
 	};
 	7F81223210711B8A0022BF82 /* zWorks.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {872, 8456}}";
-			sepNavSelRange = "{4536, 235}";
-			sepNavVisRange = "{4192, 930}";
+			sepNavIntBoundsRect = "{{0, 0}, {980, 8274}}";
+			sepNavSelRange = "{3800, 4}";
+			sepNavVisRange = "{4774, 966}";
 			sepNavWindowFrame = "{{61, 89}, {696, 642}}";
 		};
 	};
@@ -203,8 +204,8 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {692, 4214}}";
 			sepNavSelRange = "{4979, 0}";
-			sepNavVisRange = "{4306, 925}";
-			sepNavWindowFrame = "{{320, 63}, {554, 661}}";
+			sepNavVisRange = "{6181, 824}";
+			sepNavWindowFrame = "{{579, 73}, {554, 661}}";
 		};
 	};
 	7F81224D10711C7C0022BF82 /* gBase.cpp */ = {
@@ -225,9 +226,9 @@
 	};
 	7F81227010711F040022BF82 /* PTCMapViz.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {644, 7756}}";
-			sepNavSelRange = "{14489, 0}";
-			sepNavVisRange = "{13229, 1289}";
+			sepNavIntBoundsRect = "{{0, 0}, {704, 10318}}";
+			sepNavSelRange = "{8572, 29}";
+			sepNavVisRange = "{8189, 978}";
 			sepNavWindowFrame = "{{571, 110}, {607, 660}}";
 		};
 	};
@@ -243,15 +244,15 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {634, 1078}}";
 			sepNavSelRange = "{1128, 0}";
-			sepNavVisRange = "{769, 711}";
+			sepNavVisRange = "{769, 710}";
 			sepNavWindowFrame = "{{42, 65}, {693, 709}}";
 		};
 	};
 	7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1238, 28182}}";
-			sepNavSelRange = "{19009, 0}";
-			sepNavVisRange = "{17618, 1972}";
+			sepNavIntBoundsRect = "{{0, 0}, {1184, 28140}}";
+			sepNavSelRange = "{48443, 65}";
+			sepNavVisRange = "{47912, 951}";
 			sepNavWindowFrame = "{{43, 89}, {909, 672}}";
 		};
 	};
