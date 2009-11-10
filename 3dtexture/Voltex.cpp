@@ -54,9 +54,9 @@ const char *vert_source =
 "	vec4 pw = vec4(gl_MultiTexCoord0.xyz, 0.0);"
 "	TexCoordNoise = vec3(objspace * pw);"
 "    TexCoord        =  TexCoordNoise;"
-"    TexCoordNoise  = TexCoordNoise/64.0*gl_MultiTexCoord3.y + gl_MultiTexCoord2.xyz;"
+"    TexCoordNoise  = TexCoordNoise/64.0*gl_MultiTexCoord2.w + gl_MultiTexCoord2.xyz;"
 "	CIBL = gl_MultiTexCoord1.xyz;"
-"	OScale = gl_MultiTexCoord3.x;"
+"	OScale = gl_MultiTexCoord1.w;"
 "    gl_Position     = ftransform();"
 "}";
 

@@ -262,7 +262,11 @@
 					_BOOL,
 					REQUIRE_IOSTREAM,
 				);
-				HEADER_SEARCH_PATHS = "$(MAYA_DIRECTORY)/devkit/include/";
+				HEADER_SEARCH_PATHS = (
+					"$(MAYA_DIRECTORY)/devkit/include/",
+					/usr/local/include/OpenEXR/,
+					/usr/include/,
+				);
 				LIBRARY_SEARCH_PATHS = "$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS";
 				LIBRARY_STYLE = BUNDLE;
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2008;
@@ -279,6 +283,8 @@
 					"-framework",
 					OpenGL,
 					"-lOpenMayaFX",
+					"-lHalf",
+					"-lIlmImf",
 				);
 			};
 			name = Debug;
@@ -293,7 +299,11 @@
 					_BOOL,
 					REQUIRE_IOSTREAM,
 				);
-				HEADER_SEARCH_PATHS = "$(MAYA_DIRECTORY)/devkit/include/";
+				HEADER_SEARCH_PATHS = (
+					"$(MAYA_DIRECTORY)/devkit/include/",
+					/usr/local/include/OpenEXR/,
+					/usr/include/,
+				);
 				LIBRARY_SEARCH_PATHS = "$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS";
 				LIBRARY_STYLE = BUNDLE;
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2008;
@@ -322,7 +332,11 @@
 					_BOOL,
 					REQUIRE_IOSTREAM,
 				);
-				HEADER_SEARCH_PATHS = "$(MAYA_DIRECTORY)/devkit/include/";
+				HEADER_SEARCH_PATHS = (
+					"$(MAYA_DIRECTORY)/devkit/include/",
+					/usr/local/include/OpenEXR/,
+					/usr/include/,
+				);
 				LIBRARY_SEARCH_PATHS = "$(MAYA_DIRECTORY)/Maya.app/Contents/MacOS";
 				MAYA_DIRECTORY = /Applications/Autodesk/maya2008;
 				OTHER_LDFLAGS = (

@@ -22,6 +22,16 @@
 
 #include "../shared/zWorks.h"
 
+#include <ImfTiledOutputFile.h>
+#include <ImfTiledInputFile.h>
+#include <ImfChannelList.h>
+#include <ImfStringAttribute.h>
+#include <ImfMatrixAttribute.h>
+#include <ImfArray.h>
+
+using namespace Imf;
+using namespace Imath;
+
 MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
 MObject     PTCMapLocator::adensity;
@@ -50,7 +60,16 @@ MObject PTCMapLocator::aresolutionx;
 MObject PTCMapLocator::aresolutiony;
 MObject PTCMapLocator::acameraname;
 
-PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
+#define TILEWIDTH 1024
+#define TILEHEIGHT 1024
+
+Array2D<half> rPixels(TILEHEIGHT, TILEWIDTH);
+Array2D<half> gPixels(TILEHEIGHT, TILEWIDTH);
+Array2D<half> bPixels(TILEHEIGHT, TILEWIDTH);
+Array2D<half> aPixels(TILEHEIGHT, TILEWIDTH);
+
+PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0), fSaveImage(0),
+fImageWidth(800), fImageHeight(600)
 {
 	fRenderer = new Voltex();
 }
@@ -76,11 +95,11 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 	{
 		MStatus stat;
 		MString path =  data.inputValue( input ).asString();
-		//MString attrib2sho =  data.inputValue( aviewattrib ).asString();
-		//if(attrib2sho == "") attrib2sho = "key_lighting";
+
 	    double time = data.inputValue( frame ).asTime().value();
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
+		fSaveImage = data.inputValue( asaveimage ).asInt();
 	    
 		int hascoe = 0;
 		MVectorArray vcoe = zWorks::getVectorArrayAttr(data, aincoe);
@@ -94,6 +113,7 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		int frame_lo = time + 0.005;
 		char filename[512];
 		sprintf( filename, "%s.%d.pmap", path.asChar(), frame_lo );
+		sprintf( exrname, "%s.%d.exr", path.asChar(), frame_lo );
 		
 		if(fData) delete fData;
 		fData = new Z3DTexture();
@@ -143,6 +163,9 @@ MStatus PTCMapLocator::compute( const MPlug& plug, MDataBlock& data )
 		b = data.inputValue(acloudb).asFloat();
 		
 		fRenderer->setCloudColor(r,g,b);
+		
+		fImageWidth = data.inputValue(aresolutionx).asInt();
+		fImageHeight = data.inputValue(aresolutiony).asInt();
 		
 		data.setClean(plug);
 		
@@ -265,6 +288,11 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		
 			glDisable(GL_BLEND);	
 			glDepthMask( GL_TRUE );	
+		}
+		
+		if(fSaveImage==1) {
+				MGlobal::displayInfo(MString(" render particle cache to ") + exrname);
+				writeNebula(exrname);
 		}
 	}
 	
@@ -463,3 +491,63 @@ MStatus PTCMapLocator::initialize()
 
 }
 
+void PTCMapLocator::writeNebula(const char filename[])
+{
+	Header header(fImageWidth, fImageHeight);
+    header.channels().insert ("R", Channel (HALF));
+    header.channels().insert ("G", Channel (HALF));
+    header.channels().insert ("B", Channel (HALF));
+	header.channels().insert ("A", Channel (HALF));
+    header.setTileDescription( TileDescription (TILEWIDTH, TILEHEIGHT, ONE_LEVEL));
+	
+	TiledOutputFile file (filename, header);
+	for(int Y=0; Y < file.numYTiles(); ++Y) {
+		for(int X=0; X < file.numXTiles(); ++X) {
+    	     	     
+			Box2i range = file.dataWindowForTile (X, Y);
+/*
+    	     	     float bb = float(random()%17)/19.f;
+    	     	     
+				   for(int j=0; j<TILEWIDTH; j++) {
+						for(int i=0; i<TILEWIDTH; i++) {
+								rPixels[j][i] = float(TILEWIDTH-i)/TILEWIDTH*float(TILEWIDTH-j)/TILEWIDTH;
+								gPixels[j][i] = float(i)/TILEWIDTH*float(j)/TILEWIDTH;
+								bPixels[j][i] = bb;
+								aPixels[j][i] = 1.0 -bb;
+						}
+					}
+// set the pixels for a tile
+*/
+
+			FrameBuffer frameBuffer;
+    	     	     
+			frameBuffer.insert("R", 
+			Slice(HALF,
+			(char*) &rPixels[-range.min.y][-range.min.x],
+			sizeof(rPixels[0][0])*1,	
+			sizeof(rPixels[0][0])*TILEWIDTH));
+
+			frameBuffer.insert("G", 
+			Slice(HALF,
+			(char*) &gPixels[-range.min.y][-range.min.x],
+			sizeof(gPixels[0][0])*1,	
+			sizeof(gPixels[0][0])*TILEWIDTH));
+
+			frameBuffer.insert("B", 
+			Slice(HALF,
+			(char*) &bPixels[-range.min.y][-range.min.x],
+			sizeof(bPixels[0][0])*1,	
+			sizeof(bPixels[0][0])*TILEWIDTH));
+
+			frameBuffer.insert("A", 
+			Slice(HALF,
+			(char*) &aPixels[-range.min.y][-range.min.x],
+			sizeof(aPixels[0][0])*1,	
+			sizeof(aPixels[0][0])*TILEWIDTH));
+
+
+			file.setFrameBuffer (frameBuffer);
+			file.writeTile (X, Y);
+		}
+    }
+}

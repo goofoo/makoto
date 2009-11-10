@@ -613,9 +613,9 @@ void OcTree::sortDraw()
 		
 			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, t_grid_opacity[visgrd[idraw].grid_id]);
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
-			glMultiTexCoord3f(GL_TEXTURE1, visgrd[idraw].ibl.x, visgrd[idraw].ibl.y, visgrd[idraw].ibl.z);
-			glMultiTexCoord3f(GL_TEXTURE2, oribuf[idraw].x, oribuf[idraw].y, oribuf[idraw].z);
-			glMultiTexCoord3f(GL_TEXTURE3, deltabuf[idraw], freqbuf[idraw], 1.f);
+			glMultiTexCoord4f(GL_TEXTURE1, visgrd[idraw].ibl.x, visgrd[idraw].ibl.y, visgrd[idraw].ibl.z, deltabuf[idraw]);
+			glMultiTexCoord4f(GL_TEXTURE2, oribuf[idraw].x, oribuf[idraw].y, oribuf[idraw].z, freqbuf[idraw]);
+			//glMultiTexCoord3f(GL_TEXTURE3, deltabuf[idraw], freqbuf[idraw], 1.f);
 			pp = visslice[islice].pos - ox - oy;
 			glVertex3f(pp.x, pp.y, pp.z);
 			
@@ -699,7 +699,7 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 		return;
 	}
 
-	if( node->isLeaf  || node->low == node->high ) {
+	if( node->isLeaf ) {
 		reconstructColor(node->index, cs);
 					
 		for(int i = node->low; i <= node->high; i++) {
@@ -1471,7 +1471,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 		raster->write(ray, sample_opacity*(node->high-node->low+1));
 		return;
 	}
-	if(node->isLeaf || node->low == node->high) {
+	if( node->isLeaf ) {
 		for(unsigned i= node->low; i<= node->high; i++) {
 			ray = m_pGrid[i].pos - origin;
 			if(ray.lengthSquare() < node->area) return;

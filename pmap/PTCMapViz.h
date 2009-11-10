@@ -69,9 +69,12 @@ public:
 	static MObject acameraname;
 	static      MObject     aoutval;
 private:
-	int f_type;
+	int f_type, fSaveImage;
 	Voltex* fRenderer;
 	Z3DTexture* fData;
+	char exrname[512];
+	int fImageWidth, fImageHeight;
+	void writeNebula(const char filename[]);
 };
 
 #endif
