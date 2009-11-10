@@ -63,6 +63,10 @@ public:
 	static      MObject     alacunarity;
 	static      MObject     adimension;
 	static MObject aincoe;
+	static MObject asaveimage;
+	static MObject aresolutionx;
+	static MObject aresolutiony;
+	static MObject acameraname;
 	static      MObject     aoutval;
 private:
 	int f_type;

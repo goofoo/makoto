@@ -45,6 +45,10 @@ MObject     PTCMapLocator::acloudg;
 MObject     PTCMapLocator::acloudb;
 MObject     PTCMapLocator::alacunarity;
 MObject     PTCMapLocator::adimension;
+MObject PTCMapLocator::asaveimage;
+MObject PTCMapLocator::aresolutionx;
+MObject PTCMapLocator::aresolutiony;
+MObject PTCMapLocator::acameraname;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0)
 {
@@ -412,6 +416,22 @@ MStatus PTCMapLocator::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(adimension);
 	
+	asaveimage = nAttr.create( "saveImage", "smg", MFnNumericData::kInt, 0); 
+	nAttr.setStorable(true);
+	addAttribute(asaveimage);
+	
+	aresolutionx = nAttr.create( "resolutionX", "rzx", MFnNumericData::kInt, 800); 
+	nAttr.setStorable(true);
+	addAttribute(aresolutionx);
+	
+	aresolutiony = nAttr.create( "resolutionY", "rzy", MFnNumericData::kInt, 600); 
+	nAttr.setStorable(true);
+	addAttribute(aresolutiony);
+	
+	acameraname = stringAttr.create( "cameraName", "cmn", MFnData::kString );
+ 	stringAttr.setStorable(true);
+	addAttribute( acameraname );
+	
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);
 	nAttr.setWritable(false);
@@ -438,6 +458,7 @@ MStatus PTCMapLocator::initialize()
 	attributeAffects( acloudb, aoutval );
 	attributeAffects( alacunarity, aoutval );
 	attributeAffects( adimension, aoutval );
+	attributeAffects( asaveimage, aoutval );
 	return MS::kSuccess;
 
 }

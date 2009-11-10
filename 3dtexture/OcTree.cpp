@@ -556,7 +556,7 @@ void OcTree::sortDraw()
 			sizebuf[i] = r;
 		
 			int nslice = 3 + visgrd[i].detail/8*2;
-			if(nslice > 17) nslice = 17;
+			if(nslice > 11) nslice = 11;
 			float delta = 1.f / nslice;
 			
 			deltabuf[i] = delta;
@@ -694,7 +694,7 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 		count++;
 		
 		int nslice = 3 + detail/8*2;
-		if(nslice > 17) nslice = 17;
+		if(nslice > 11) nslice = 11;
 		slice_count += nslice;
 		return;
 	}
@@ -715,7 +715,7 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 			count++;
 			
 			int nslice = 3 + detail/8*2;
-			if(nslice > 17) nslice = 17;
+			if(nslice > 11) nslice = 11;
 			slice_count += nslice;
 		}
 	}

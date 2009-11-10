@@ -64,12 +64,14 @@ global proc particleCacheMakeMenus()
 global proc particleMapAppendMenuItems()
 {
 	menuItem -p zTools -l "Particle Map" -subMenu true particleMapItems;
+	
 	menuItem -l "Create Cache Dimension" -c "createNode pmapDem";
 	menuItem -l "Save" -c "openExportParticleCacheWin";
 	menuItem -l "Load" -c "openImportParticleCacheWin";
 	menuItem -l "View Tool" -c "znebula_view";
-	menuItem -l "View Key Lighting" -c "particleMapSetDraw(\"key_lighting\")";
-	menuItem -l "View Back Lighting" -c "particleMapSetDraw(\"back_lighting\")";
+	menuItem -l "Activate Image-based Lighting" -c "particleMapSetDraw(\"key_lighting\")";
+	menuItem -l "Render To Images" -c "znebula_open_render_win";
+	
 	menuItem -l "Existing Caches" -subMenu true -postMenuCommand zsmoke_findexisting zsmoke_existingccache;
 	setParent -menu ..;
 }
@@ -411,6 +413,98 @@ global proc zsmoke_findexisting()
 	{
 		string $mnu = $an+"_mnu";
 		if(`menuItem -exists $mnu` ) deleteUI $mnu;
-		menuItem -l $an -c ("select -tgl "+$an) -p zsmoke_existingccache $mnu;
+		menuItem -l $an -c ("select -r "+$an) -p zsmoke_existingccache $mnu;
+	}
+}
+
+global proc znebula_open_render_win()
+{
+
+//If such a window already exists, destory it.
+ if ( (`window -exists saveznebulaWin`) == true ) deleteUI saveznebulaWin;
+ 
+//Create the window.
+ window -title "Save Bruise Map Options" -wh 400 300  -mb false saveznebulaWin;
+
+//Layout
+string $form = `formLayout -numberOfDivisions 100`;
+string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
+string $scroll = `scrollLayout -p $form`;
+
+columnLayout -adjustableColumn true;
+
+//column begin
+	string $cams[] = `ls -ca`;
+	string $ac;
+	
+	optionMenuGrp -label "Render Camera" -cw 1 110 -columnWidth 2 180 saveznebulaOptEye;
+	for($ac in $cams) menuItem -label $ac;
+
+	intFieldGrp -label "Image Size" -cw 1 110 -nf 2 -v1 800 -v2 600 saveznebulaOptSize;
+	
+	intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` saveznebulaOptRange;
+	
+	text -al left -l "\nDescription: render particle cache to OpenEXR images,\n    and destination folder is where .pmap files are saved.";
+
+
+//row begin
+button -l "Render" -c "doSaveZNebula;deleteUI saveznebulaWin"-p $row;
+button -l "Apply" -c "doSaveZNebula" -p $row;
+button -l "Close" -c "deleteUI saveznebulaWin" -p $row;
+
+formLayout -edit
+        -attachNone  $row     "top"
+        -attachForm     $row     "left"   2
+        -attachForm    $row     "bottom" 2
+        -attachForm     $row     "right"  2
+
+        -attachForm     $scroll "top"    2
+        -attachForm    $scroll "left"   2
+        -attachControl    $scroll "bottom" 2 $row
+        -attachForm     $scroll "right"  2
+    $form;
+
+showWindow saveznebulaWin;
+}
+
+global proc doSaveZNebula()
+{
+	string $cams[] = `ls -ca`;
+	int $ieye = `optionMenuGrp -q -select saveznebulaOptEye`;
+	string $cameye = $cams[$ieye - 1];
+	
+	string $existing[] = `ls -type pmapViz`;
+	string $an;
+	for($an in $existing) {
+		setAttr ($an + ".saveImage") 1; 
+		setAttr ($an + ".resolutionX") `intFieldGrp -q -v1 saveznebulaOptSize`; 
+		setAttr ($an + ".resolutionY") `intFieldGrp -q -v2 saveznebulaOptSize`; 
+		setAttr -type "string" ($an + ".cameraName") $cameye; 
+	}
+	
+	int $amount = 0;
+	progressWindow -title "Rendering Particle Cache" -progress $amount -status "Completed: 0%" -isInterruptable true;
+	
+	int $s = `intFieldGrp -q -v1 saveznebulaOptRange`;
+	int $e = `intFieldGrp -q -v2 saveznebulaOptRange`;
+	
+	int $i;
+	for( $i = $s; $i <= $e; $i++ ) {
+		currentTime $i;
+		$amount = ($i-$s)/(1.0*($e-$s))*100;
+		
+		// Check if the dialog has been cancelled
+		if ( `progressWindow -query -isCancelled` ) break; 
+		// Check if end condition has been reached
+		if ( `progressWindow -query -progress` > 100 ) break;
+		
+		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
+		
+	}
+	
+	progressWindow -endProgress;
+	
+	for($an in $existing) {
+		setAttr ($an + ".saveImage") 0; 
 	}
 }
