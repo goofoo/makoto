@@ -210,7 +210,7 @@ MBoundingBox PTCMapLocator::boundingBox() const
 	if(fData) fData->getBBox(corner1.x, corner2.x, corner1.y, corner2.y, corner1.z, corner2.z);
 	
 	return MBoundingBox( corner1, corner2 ); 
-} 
+}
 
 void PTCMapLocator::draw( M3dView & view, const MDagPath & path, 
                                  M3dView::DisplayStyle style,M3dView::DisplayStatus status )
@@ -218,6 +218,13 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	MDagPath camera;
 	view = M3dView::active3dView();
 	view.getCamera(camera);
+	
+	MATRIX44F mat;
+	double clipNear, clipFar, fov;
+	int ispersp;
+	
+	parseCamera(camera, mat, clipNear, clipFar, fov, ispersp);
+/*	
 	MFnCamera fnCamera( camera );
 
 	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
@@ -227,9 +234,9 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	clipNear = fnCamera.nearClippingPlane();
 	clipFar = fnCamera.farClippingPlane();
 
-	double h_apeture, v_apeture;
-	h_apeture = fnCamera.horizontalFilmAperture();
-	v_apeture = fnCamera.verticalFilmAperture();
+	//double h_apeture, v_apeture;
+	//h_apeture = fnCamera.horizontalFilmAperture();
+	//v_apeture = fnCamera.verticalFilmAperture();
 	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
 	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
 	//double fl;
@@ -260,7 +267,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		ispersp = 0;
 		fov = fnCamera.orthoWidth();
 	}
-
+*/
 	view.beginGL(); 
 	
 	if(!fRenderer->isDiagnosed()) {
@@ -534,6 +541,12 @@ void PTCMapLocator::writeNebula(const char filename[])
 	MDagPath pcamera;
 	zWorks::getTypedPathByName(MFn::kCamera, fEyeCamera, pcamera);
 	
+	MATRIX44F mat;
+	double clipNear, clipFar, fov;
+	int ispersp;
+	
+	parseCamera(pcamera, mat, clipNear, clipFar, fov, ispersp);
+	/*
 	MFnCamera fnCamera( pcamera );
 
 	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
@@ -572,9 +585,17 @@ void PTCMapLocator::writeNebula(const char filename[])
 		ispersp = 0;
 		fov = fnCamera.orthoWidth();
 	}
-	
+*/	
 	fData->setProjection(mat, fov, ispersp);
 	fData->setPortWidth(fImageWidth);
+
+// calculate display widnow	
+	double ratio = (double)fImageHeight / (double)fImageWidth;
+	double radians = 0.0174532925 * fov * 0.5; // half aperture degrees to radians 
+	double wd2 = clipNear * tan(radians);
+	double displayWidth = wd2 + wd2;
+	double tile_inc_h = displayWidth * (double)TILEWIDTH / (double)fImageWidth;
+	double tile_inc_v = displayWidth * ratio * (double)TILEWIDTH / (double)fImageHeight;
 	
 	Header header(fImageWidth, fImageHeight);
     header.channels().insert ("R", Channel (HALF));
@@ -604,38 +625,26 @@ void PTCMapLocator::writeNebula(const char filename[])
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();	
-	//gluPerspective( 35, 1.0, 0.1, 1000.0 );
+
+// calculate view for this tile
+	GLdouble left, right, top, bottom;
+
+	left  = -wd2 + tile_inc_h * X;
+	right = left + tile_inc_h;
 	
-	GLdouble ratio, radians, wd2;
-	GLdouble left, right, top, bottom, near, far;
-	ratio = 1.0;
-	near = 0.1;
+	top = wd2 * ratio - tile_inc_v * Y;
+	bottom = top - tile_inc_v;	
 	
-	far = 1000.0;
-	
-	radians = 0.0174532925 * 56 / 2; // half aperture degrees to radians 
-	wd2 = near * tan(radians);
-	
-	if (ratio >= 1.0) {
-		left  = -ratio * wd2;
-		right = ratio * wd2;
-		top = wd2;
-		bottom = -wd2;	
-	} else {
-		left  = -wd2;
-		right = wd2;
-		top = wd2 / ratio;
-		bottom = -wd2 / ratio;	
-	}
-	glFrustum (left, right, bottom, top, near, far);
+
+	glFrustum (left, right, bottom, top, clipNear, clipFar);
 	
 	glMatrixMode(GL_MODELVIEW);
 	
 	glLoadIdentity();
 	
-	gluLookAt (eyePos.x, eyePos.y, eyePos.z,
-			   eyePos.x + viewDir.x, eyePos.y + viewDir.y, eyePos.z + viewDir.z,
-			  upDir.x, upDir.y, upDir.z);
+	gluLookAt (mat.v[3][0], mat.v[3][1], mat.v[3][2],
+			   mat.v[3][0] + mat.v[2][0], mat.v[3][1] + mat.v[2][1], mat.v[3][2] + mat.v[2][2],
+			  mat.v[1][0], mat.v[1][1], mat.v[1][2]);
 	
 glEnable(GL_BLEND);
 glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -649,7 +658,7 @@ glEnable(GL_DEPTH_TEST);
 	
 glDisable(GL_BLEND);
 glDepthMask( GL_TRUE );		
-	
+/*	
 	glBegin(GL_LINES);
 		glColor4f(1,0,0,1);
 		glVertex3f(0, 0, 0);
@@ -663,8 +672,7 @@ glDepthMask( GL_TRUE );
 		glVertex3f(0, 0, 0);
 		glVertex3f(0, 0, 24);
 	glEnd();
-
-//	
+*/	
 	glPopAttrib();
 // dump	
 	float *data = new float[TILEWIDTH*TILEHEIGHT*4];
@@ -716,3 +724,40 @@ glDepthMask( GL_TRUE );
 		}
     }
 }
+
+void PTCMapLocator::parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipnear, double& clipfar, double& fov, int& ispersp)
+{
+	MFnCamera fnCamera( camera );
+
+	clipnear = fnCamera.nearClippingPlane();
+	clipfar = fnCamera.farClippingPlane();
+	
+	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
+	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
+	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
+	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
+	
+	mat.setIdentity ();
+	mat.v[0][0] = -rightDir.x;
+	mat.v[0][1] = -rightDir.y;
+	mat.v[0][2] = -rightDir.z;
+	mat.v[1][0] = upDir.x;
+	mat.v[1][1] = upDir.y;
+	mat.v[1][2] = upDir.z;
+	mat.v[2][0] = viewDir.x;
+	mat.v[2][1] = viewDir.y;
+	mat.v[2][2] = viewDir.z;
+	mat.v[3][0] = eyePos.x;
+	mat.v[3][1] = eyePos.y;
+	mat.v[3][2] = eyePos.z;
+	
+	fov = fnCamera.horizontalFieldOfView();
+	fov = fov/PI*180;
+	ispersp = 1;
+	
+	if(fnCamera.isOrtho()) {
+		ispersp = 0;
+		fov = fnCamera.orthoWidth();
+	}
+}
+//~:
