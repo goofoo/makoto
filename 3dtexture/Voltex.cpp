@@ -248,7 +248,7 @@ void Voltex::diagnose(string& log)
 				}
 			}
 		}
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA16F_ARB, WIDTH, HEIGHT, DEPTH, 0, GL_RGBA, GL_FLOAT, 0);
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA16F_ARB, WIDTH, HEIGHT, DEPTH, 0, GL_RGBA, GL_FLOAT, texels);
 		delete[] texels;
 
 // init shaders
