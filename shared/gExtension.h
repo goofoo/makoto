@@ -78,6 +78,6 @@ extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 
 char gExtensionInit();
 const char* getExtension();
-
+char gCheckExtension(char* extName);
 #endif
 //~:

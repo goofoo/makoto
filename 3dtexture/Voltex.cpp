@@ -191,10 +191,18 @@ void Voltex::diagnose(string& log)
 	sprintf(sbuf, "%s version %s\n", (char *)glGetString(GL_RENDERER), (char *)glGetString(GL_VERSION));
 	log = sbuf;
 	
-	const GLubyte * strExt = glGetString (GL_EXTENSIONS);
-	int j = sizeof(entriesNeeded)/sizeof(glExtensionEntry);
-
 	int supported = 1;
+	int j = sizeof(entriesNeeded)/sizeof(glExtensionEntry);
+#ifdef WIN32
+	 for (int i = 0; i < j; i++) {
+		 if(!gCheckExtension(entriesNeeded[i].name)) {
+			 sprintf(sbuf, "%-32s %d\n", entriesNeeded[i].name, 0);
+			 supported = 0;
+		 }
+		else sprintf(sbuf, "%-32s %d\n", entriesNeeded[i].name, 1);
+		log += sbuf;
+	}
+#else
 	for (int i = 0; i < j; i++) {
 		entriesNeeded[i].supported = gluCheckExtension((GLubyte*)entriesNeeded[i].name, strExt) |
 		(entriesNeeded[i].promoted && (core_version >= entriesNeeded[i].promoted));
@@ -202,7 +210,7 @@ void Voltex::diagnose(string& log)
 		log += sbuf;
 		supported &= entriesNeeded[i].supported;
 	}
-	
+#endif	
 	if(core_version < 1.4) {
 		sprintf(sbuf, "OpenGL version too low, this thing may not work correctly!\n");
 		log += sbuf;

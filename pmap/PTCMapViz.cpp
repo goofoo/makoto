@@ -234,8 +234,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	
 	if(!fRenderer->isDiagnosed()) {
 #ifndef __APPLE__
-MGlobal::displayInfo("init gl ext");
-		if(!gExtensionInit()) MGlobal::displayWarning("GL EXT ERROR");
+		gExtensionInit();
 #endif
 		string log;
 		fRenderer->diagnose(log);
@@ -270,7 +269,7 @@ MGlobal::displayInfo("init gl ext");
 		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 		if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("Cannot create frame buffer object.");
 // Unbind the FBO for now
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);	
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	}
 	
 	int port[4];

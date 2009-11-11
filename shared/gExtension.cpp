@@ -168,4 +168,23 @@ const char* getExtension()
 {
 	return (const char*)glGetString( GL_EXTENSIONS );
 }
+
+char gCheckExtension(char* extName)
+{
+	char *p = (char *) glGetString(GL_EXTENSIONS);
+    char *end;
+    int extNameLen;
+
+    extNameLen = strlen(extName);
+    end = p + strlen(p);
+    
+    while (p < end) {
+         int n = strcspn(p, " ");
+         if ((extNameLen == n) && (strncmp(extName, p, n) == 0)) {
+                return 1;
+            }
+            p += (n + 1);
+        }
+    return 0;
+}
 //~:
