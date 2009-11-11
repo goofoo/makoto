@@ -199,6 +199,11 @@ void Voltex::diagnose(string& log)
 		log += sbuf;
 		supported &= entriesNeeded[i].supported;
 	}
+	
+	if(core_version < 1.4) {
+		sprintf(sbuf, "OpenGL version too low, this thing may not work correctly!\n");
+		log += sbuf;
+	}
 
 	if(supported == 1) {
 		fHasExtensions = 1;

@@ -224,50 +224,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	int ispersp;
 	
 	parseCamera(camera, mat, clipNear, clipFar, fov, ispersp);
-/*	
-	MFnCamera fnCamera( camera );
 
-	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
-	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
-
-	double clipNear, clipFar;
-	clipNear = fnCamera.nearClippingPlane();
-	clipFar = fnCamera.farClippingPlane();
-
-	//double h_apeture, v_apeture;
-	//h_apeture = fnCamera.horizontalFilmAperture();
-	//v_apeture = fnCamera.verticalFilmAperture();
-	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
-	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
-	//double fl;
-	//fl = fnCamera.focalLength();
-	//double h_fov = h_apeture * 0.5*25.4 /fl;
-	//double v_fov = v_apeture * 0.5*25.4 /fl;
-
-	MATRIX44F mat;
-	mat.setIdentity ();
-	mat.v[0][0] = -rightDir.x;
-	mat.v[0][1] = -rightDir.y;
-	mat.v[0][2] = -rightDir.z;
-	mat.v[1][0] = upDir.x;
-	mat.v[1][1] = upDir.y;
-	mat.v[1][2] = upDir.z;
-	mat.v[2][0] = viewDir.x;
-	mat.v[2][1] = viewDir.y;
-	mat.v[2][2] = viewDir.z;
-	mat.v[3][0] = eyePos.x;
-	mat.v[3][1] = eyePos.y;
-	mat.v[3][2] = eyePos.z;
-	
-	double fov = fnCamera.horizontalFieldOfView();
-	fov = fov/PI*180;
-	int ispersp = 1;
-	
-	if(fnCamera.isOrtho()) {
-		ispersp = 0;
-		fov = fnCamera.orthoWidth();
-	}
-*/
 	view.beginGL(); 
 	
 	if(!fRenderer->isDiagnosed()) {
@@ -362,14 +319,6 @@ MStatus PTCMapLocator::initialize()
 	//
     MStatus stat;
 	MFnNumericAttribute nAttr;
-/*
-	aposition = nAttr.create("aposition","apo",MFnNumericData::k3Float);
-	nAttr.setDefault( 0 );
-	nAttr.setKeyable( true ); 
-    nAttr.setReadable( true ); 
-    nAttr.setWritable( true ); 
-    nAttr.setStorable( true ); 
-	stat = addAttribute(aposition);*/
 
 	MFnUnitAttribute uAttr;
 	frame = uAttr.create("currentTime", "ct", MFnUnitAttribute::kTime, 1.0);
@@ -546,46 +495,7 @@ void PTCMapLocator::writeNebula(const char filename[])
 	int ispersp;
 	
 	parseCamera(pcamera, mat, clipNear, clipFar, fov, ispersp);
-	/*
-	MFnCamera fnCamera( pcamera );
-
-	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
-	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
-
-	double clipNear, clipFar;
-	clipNear = fnCamera.nearClippingPlane();
-	clipFar = fnCamera.farClippingPlane();
-
-	double h_apeture, v_apeture;
-	h_apeture = fnCamera.horizontalFilmAperture();
-	v_apeture = fnCamera.verticalFilmAperture();
-	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
-	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
-
-	MATRIX44F mat;
-	mat.setIdentity ();
-	mat.v[0][0] = -rightDir.x;
-	mat.v[0][1] = -rightDir.y;
-	mat.v[0][2] = -rightDir.z;
-	mat.v[1][0] = upDir.x;
-	mat.v[1][1] = upDir.y;
-	mat.v[1][2] = upDir.z;
-	mat.v[2][0] = viewDir.x;
-	mat.v[2][1] = viewDir.y;
-	mat.v[2][2] = viewDir.z;
-	mat.v[3][0] = eyePos.x;
-	mat.v[3][1] = eyePos.y;
-	mat.v[3][2] = eyePos.z;
 	
-	double fov = fnCamera.horizontalFieldOfView();
-	fov = fov/PI*180;
-	int ispersp = 1;
-	
-	if(fnCamera.isOrtho()) {
-		ispersp = 0;
-		fov = fnCamera.orthoWidth();
-	}
-*/	
 	fData->setProjection(mat, fov, ispersp);
 	fData->setPortWidth(fImageWidth);
 
@@ -648,6 +558,10 @@ void PTCMapLocator::writeNebula(const char filename[])
 	
 glEnable(GL_BLEND);
 glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+glBlendFuncSeparate(GL_SRC_ALPHA, 
+ 	GL_ONE_MINUS_SRC_ALPHA, 
+ 	GL_ONE, 
+ 	GL_ONE_MINUS_SRC_ALPHA);
 glDepthMask( GL_FALSE );
 glDepthFunc(GL_LEQUAL);
 glEnable(GL_DEPTH_TEST);
@@ -658,21 +572,7 @@ glEnable(GL_DEPTH_TEST);
 	
 glDisable(GL_BLEND);
 glDepthMask( GL_TRUE );		
-/*	
-	glBegin(GL_LINES);
-		glColor4f(1,0,0,1);
-		glVertex3f(0, 0, 0);
-		glVertex3f(24, 0, 0);
-		
-		glColor4f(0,1,0,1);
-		glVertex3f(0, 0, 0);
-		glVertex3f(0, 24, 0);
-		
-		glColor4f(0,0,1,1);
-		glVertex3f(0, 0, 0);
-		glVertex3f(0, 0, 24);
-	glEnd();
-*/	
+	
 	glPopAttrib();
 // dump	
 	float *data = new float[TILEWIDTH*TILEHEIGHT*4];
