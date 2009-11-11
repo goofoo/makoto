@@ -5,6 +5,10 @@
 #include "../shared/QuickSort.h"
 #include "../shared/FNoise.h"
 
+#ifndef __APPLE__
+#include "../shared/gExtension.h"
+#endif
+
 struct NodeNDistance
 {
 	NodeNDistance() {}
