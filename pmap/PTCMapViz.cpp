@@ -36,6 +36,8 @@ using namespace Imath;
 #include "../shared/gExtension.h"
 #endif
 
+#define ZPUBLIC
+
 MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
 MObject     PTCMapLocator::adensity;
@@ -299,10 +301,13 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		}
 		
 		if(fSaveImage==1) {
+#ifndef ZPUBLIC
 			MGlobal::displayInfo(MString(" render particle cache to ") + exrname);
 				
 			writeNebula(exrname);
-
+#else
+			MGlobal::displayInfo("Public Beta skips render-to-image feature.");
+#endif
 		}
 	}
 	

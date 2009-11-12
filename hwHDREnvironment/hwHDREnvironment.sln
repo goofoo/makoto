@@ -5,10 +5,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HW HDR Preview", "hwHDREnvi
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
+		debug2009 = debug2009
+		debug2010 = debug2010
 		Maya2008 = Maya2008
 		Maya7.0 = Maya7.0
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.debug2009.ActiveCfg = debug2009|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.debug2009.Build.0 = debug2009|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.debug2010.ActiveCfg = debug2010|Win32
+		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.debug2010.Build.0 = debug2010|Win32
 		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya2008.ActiveCfg = Maya2008|Win32
 		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya2008.Build.0 = Maya2008|Win32
 		{56B7CD7E-1E92-4A7B-B98E-119B906A5C3E}.Maya7.0.ActiveCfg = Maya7.0|Win32

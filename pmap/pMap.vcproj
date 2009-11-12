@@ -29,7 +29,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
 				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib glu32.lib zlib.lib Half.lib IlmImf.lib"
-				OutputFile="../module/plug-ins/ParticleMap2008.mll"
+				OutputFile="../module/plug-ins/ParticleCache2008.mll"
 				AdditionalLibraryDirectories="D:\local\openexr\lib;&quot;$(MAYA_LOCATION_2008)\lib&quot;;D:\local\glut"
 				ProgramDatabaseFile="Debug/pMap.pdb"
 				ImportLibrary="Debug/pMap.lib"/>
@@ -78,6 +78,96 @@
 				AdditionalLibraryDirectories="C:\Program Files\Alias\Maya7.0\lib"
 				ProgramDatabaseFile="Release/pMap.pdb"
 				ImportLibrary="Release/pMap.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug2009|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Gm /GX /ZI /I &quot;.&quot; /D &quot;WIN32&quot; /D &quot;_DEBUG&quot; /YX /GZ /c"
+				Optimization="0"
+				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR;&quot;$(MAYA_LOCATION_2009)\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				RuntimeLibrary="3"
+				PrecompiledHeaderFile="Debug/pMap.pch"
+				WarningLevel="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib glu32.lib zlib.lib Half.lib IlmImf.lib"
+				OutputFile="../module/plug-ins/ParticleCache2009.mll"
+				AdditionalLibraryDirectories="D:\local\openexr\lib;&quot;$(MAYA_LOCATION_2009)\lib&quot;;D:\local\glut"
+				ProgramDatabaseFile="Debug/pMap.pdb"
+				ImportLibrary="Debug/pMap.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="debug2010|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Gm /GX /ZI /I &quot;.&quot; /D &quot;WIN32&quot; /D &quot;_DEBUG&quot; /YX /GZ /c"
+				Optimization="0"
+				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR;&quot;$(MAYA_LOCATION_2010)\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				RuntimeLibrary="3"
+				PrecompiledHeaderFile="Debug/pMap.pch"
+				WarningLevel="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib glu32.lib zlib.lib Half.lib IlmImf.lib"
+				OutputFile="../module/plug-ins/ParticleCache2010.mll"
+				AdditionalLibraryDirectories="D:\local\openexr\lib;&quot;$(MAYA_LOCATION_2010)\lib&quot;;D:\local\glut"
+				ProgramDatabaseFile="Debug/pMap.pdb"
+				ImportLibrary="Debug/pMap.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
