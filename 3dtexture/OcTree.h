@@ -17,6 +17,7 @@ struct GRID2Draw
 {
 	int grid_id, detail;
 	XYZ ibl;
+	float r;
 };
 
 struct SLICE2Draw
@@ -105,7 +106,6 @@ public:
 	void drawCube();
 	void drawSprite();
 	void sortDraw();
-	void draw(const XYZ& viewdir);
 	void drawCube(const OCTNode *node);
 	void drawSprite(const OCTNode *node);
 	void drawNeighbour(const OCTNode *node);

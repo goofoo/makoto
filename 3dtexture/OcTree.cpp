@@ -13,6 +13,8 @@ struct NodeNDistance
 	float distance;
 };
 
+void detail2NSlice(int& detail, int& nslice) { nslice = 5 + detail/7*2; if(nslice > 13) nslice = 13; }
+
 const float constantCoeff[9] = {3.543211, 
 								0.000605, 0.000152, -0.003217, 
 								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
@@ -552,11 +554,12 @@ void OcTree::sortDraw()
 			noise.sphereRand(pw.x, pw.y, pw.z, 11.3f, t_grid_id[visgrd[i].grid_id]);
 			oribuf[i] = pw;
 			
-			r = sqrt(m_pGrid[visgrd[i].grid_id].area * 0.25);
-			sizebuf[i] = r;
+			//r = sqrt(m_pGrid[visgrd[i].grid_id].area * 0.25);
+			r = sizebuf[i] = visgrd[i].r;
 		
-			int nslice = 3 + visgrd[i].detail/8*2;
-			if(nslice > 11) nslice = 11;
+			int nslice;// = 3 + visgrd[i].detail/8*2;
+			//if(nslice > 11) nslice = 11;
+			detail2NSlice(visgrd[i].detail, nslice);
 			float delta = 1.f / nslice;
 			
 			deltabuf[i] = delta;
@@ -690,11 +693,13 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 		res[count].ibl = cs;
 		res[count].grid_id = ibig;
 		res[count].detail = detail;
+		res[count].r = r;
 
 		count++;
 		
-		int nslice = 3 + detail/8*2;
-		if(nslice > 11) nslice = 11;
+		int nslice;// = 3 + detail/8*2;
+		//if(nslice > 11) nslice = 11;
+		detail2NSlice(detail, nslice);
 		slice_count += nslice;
 		return;
 	}
@@ -711,11 +716,13 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 			detail = r/portWidth*fHalfPortWidth;
 			
 			res[count].detail = detail;
+			res[count].r = r;
 
 			count++;
 			
-			int nslice = 3 + detail/8*2;
-			if(nslice > 11) nslice = 11;
+			int nslice;// = 3 + detail/8*2;
+			//if(nslice > 11) nslice = 11;
+			detail2NSlice(detail, nslice);
 			slice_count += nslice;
 		}
 	}
@@ -729,14 +736,6 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 		pushDrawList(node->child110, count, slice_count, res);
 		pushDrawList(node->child111, count, slice_count, res);
 	}
-}
-
-void OcTree::draw(const XYZ& viewdir)
-{
-	//drawSurfel(root, viewdir);
-	//glBegin(GL_LINES);
-	//drawNeighbour(root);
-	//glEnd();
 }
 
 void OcTree::drawNeighbour(const OCTNode *node)
