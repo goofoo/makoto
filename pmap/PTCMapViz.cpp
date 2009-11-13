@@ -73,7 +73,7 @@ GLuint depthBuffer;
 GLuint img;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0), fSaveImage(0),
-fImageWidth(800), fImageHeight(600)
+fImageWidth(800), fImageHeight(600), fSupported(0)
 {
 	fRenderer = new Voltex();
 }
@@ -229,8 +229,11 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	
 	if(!fRenderer->isDiagnosed()) {
 		string log;
-		fRenderer->diagnose(log);
-		MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());
+		fSupported = fRenderer->diagnose(log);
+		MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());	
+	}
+	
+	if(fSupported) {
 // setup fbo
 		glGenFramebuffersEXT(1, &fbo);
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
@@ -259,7 +262,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 		if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("Cannot create frame buffer object.");
 // Unbind the FBO for now
-		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);	
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	}
 	
 	int port[4];
@@ -273,7 +276,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 		fData->setPortWidth(port[2]);
 		
 		if(f_type == 1) fData->drawCube();
-		else {
+		else if(fSupported) {
 			//glPushAttrib(GL_ALL_ATTRIB_BITS);
 			glDepthFunc(GL_LEQUAL);
 			glEnable(GL_DEPTH_TEST);
@@ -290,7 +293,7 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 			//glPopAttrib();
 		}
 		
-		if(fSaveImage==1) {
+		if(fSaveImage==1 && fSupported) {
 			MGlobal::displayInfo(MString(" render particle cache to ") + exrname);
 				
 			writeNebula(exrname);

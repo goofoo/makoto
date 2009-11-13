@@ -20,7 +20,7 @@ public:
 	void end() const;
 	
 	char isDiagnosed() const { return fHasDiagnosis; }
-	void diagnose(string& log);
+	char diagnose(string& log);
 	
 	void setKNoise(float& val) {fKNoise = val;}
 	void setKDiffuse(float& val) {fKDiffuse = val;}

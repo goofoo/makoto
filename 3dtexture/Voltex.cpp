@@ -180,7 +180,7 @@ void Voltex::end() const
 }
 
 
-void Voltex::diagnose(string& log)
+char Voltex::diagnose(string& log)
 {
 	float core_version;
 	sscanf((char *)glGetString(GL_VERSION), "%f", &core_version);
@@ -204,8 +204,9 @@ void Voltex::diagnose(string& log)
 		sprintf(sbuf, "OpenGL version too low, this thing may not work correctly!\n");
 		log += sbuf;
 	}
+	
+	if(supported != 1) return 0;
 
-	if(supported == 1) {
 		fHasExtensions = 1;
 		
 // init textures
@@ -299,7 +300,7 @@ void Voltex::diagnose(string& log)
 		glUniform3fARB(glGetUniformLocationARB(program_object, "LightPosition"), fLightPos.x, fLightPos.y, fLightPos.z);
 
 		glUseProgramObjectARB(NULL);
-	}
 	
 	fHasDiagnosis = 1;
+	return 1;
 }

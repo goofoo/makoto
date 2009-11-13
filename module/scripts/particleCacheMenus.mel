@@ -158,10 +158,9 @@ global proc exportParticleCacheSingleFrame()
   string $attribute = stringArrayToString($attr,".");
   
   float $mindist = `floatSliderGrp -q -v SliderPTCMAPRadiusMin`;
-  float $maxdist = `floatSliderGrp -q -v SliderPTCMAPRadiusMax`;
   float $cloudos = `floatSliderGrp -q -v SliderPTCMAPDensity`;
 
-  string $sdist = " -mnd "+$mindist + " -mxd " + $maxdist + " -t " + $transdem[0] + " -ml " + $maxlevel + " -rs "+ $rootsize + " -o " + $cloudos + " -tk " + $transkey[0] + " -te " + $transeye[0];    
+  string $sdist = " -mnd "+$mindist + " -t " + $transdem[0] + " -ml " + $maxlevel + " -rs "+ $rootsize + " -o " + $cloudos + " -tk " + $transkey[0] + " -te " + $transeye[0];    
   string $cmd;
   //for($i = 0;$i<size($attr);$i++,$index++)
        if($attribute == ""){
@@ -211,7 +210,6 @@ textFieldButtonGrp
 
 intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
 floatSliderGrp -cw 1 110 -label "Min Radius" -field true -minValue 0.001 -maxValue 10.0 -value 0.1 -ss 0.01 SliderPTCMAPRadiusMin;
-floatSliderGrp -cw 1 110 -label "Max Radius" -field true -minValue 0.1 -maxValue 10.0 -value 4.0 -ss 0.01 SliderPTCMAPRadiusMax;
 floatSliderGrp -cw 1 110 -label "Density" -field true -minValue 0.01 -maxValue 1.0 -value 0.21 -ss 0.01 SliderPTCMAPDensity;
 optionMenuGrp -label "Dimension Box" -cw 1 120 -columnWidth 2 180 savePMAPOptDem;
 
@@ -424,7 +422,7 @@ global proc znebula_open_render_win()
  if ( (`window -exists saveznebulaWin`) == true ) deleteUI saveznebulaWin;
  
 //Create the window.
- window -title "Save Bruise Map Options" -wh 400 300  -mb false saveznebulaWin;
+ window -title "Render Volume to Images Options" -wh 400 300  -mb false saveznebulaWin;
 
 //Layout
 string $form = `formLayout -numberOfDivisions 100`;
