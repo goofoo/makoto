@@ -32,6 +32,10 @@
 using namespace Imf;
 using namespace Imath;
 
+#ifndef __APPLE__
+#include "../shared/gExtension.h"
+#endif
+
 MTypeId     PTCMapLocator::id( 0x0004091 );
 MObject     PTCMapLocator::frame;
 MObject     PTCMapLocator::adensity;
@@ -71,6 +75,7 @@ Array2D<half> aPixels(TILEHEIGHT, TILEWIDTH);
 GLuint fbo;
 GLuint depthBuffer;
 GLuint img;
+GLuint texname;
 
 PTCMapLocator::PTCMapLocator() : fRenderer(0), fData(0), f_type(0), fSaveImage(0),
 fImageWidth(800), fImageHeight(600), fSupported(0)
@@ -228,6 +233,9 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	view.beginGL(); 
 	
 	if(!fRenderer->isDiagnosed()) {
+#ifndef __APPLE__
+		gExtensionInit();
+#endif
 		string log;
 		fSupported = fRenderer->diagnose(log);
 		MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());	
@@ -265,8 +273,6 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 	
 	int port[4];
 	glGetIntegerv(GL_VIEWPORT, port);
-		
-	//
 
 	if(fData) {
 // update camera
@@ -298,7 +304,6 @@ void PTCMapLocator::draw( M3dView & view, const MDagPath & path,
 
 		}
 	}
-	
 	
 	view.endGL();
 }

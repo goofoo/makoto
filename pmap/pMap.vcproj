@@ -18,7 +18,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Gm /GX /ZI /I &quot;.&quot; /D &quot;WIN32&quot; /D &quot;_DEBUG&quot; /YX /GZ /c"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(MAYA_LOCATION_2008)\include"
+				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR;&quot;$(MAYA_LOCATION_2008)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_MBCS;NT_PLUGIN;REQUIRE_IOSTREAM"
 				RuntimeLibrary="3"
 				PrecompiledHeaderFile="Debug/pMap.pch"
@@ -28,9 +28,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/subsystem:windows /dll /incremental:yes /debug /machine:I386 /export:initializePlugin /export:uninitializePlugin"
-				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib"
+				AdditionalDependencies="Foundation.lib OpenMaya.lib OpenMayaUI.lib OpenMayaAnim.lib OpenMayaFX.lib OpenMayaRender.lib OpenGL32.lib glu32.lib zlib.lib Half.lib IlmImf.lib"
 				OutputFile="../module/plug-ins/ParticleMap2008.mll"
-				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_2008)\lib&quot;;D:\local\glut"
+				AdditionalLibraryDirectories="D:\local\openexr\lib;&quot;$(MAYA_LOCATION_2008)\lib&quot;;D:\local\glut"
 				ProgramDatabaseFile="Debug/pMap.pdb"
 				ImportLibrary="Debug/pMap.lib"/>
 			<Tool
@@ -116,6 +116,9 @@
 				RelativePath="..\shared\gBase.cpp">
 			</File>
 			<File
+				RelativePath="..\shared\gExtension.cpp">
+			</File>
+			<File
 				RelativePath="..\3dtexture\OcTree.cpp">
 			</File>
 			<File
@@ -138,6 +141,12 @@
 			</File>
 			<File
 				RelativePath="..\sh_lighting\SphericalHarmonics.cpp">
+			</File>
+			<File
+				RelativePath=".\viewVolumeTool.cpp">
+			</File>
+			<File
+				RelativePath="..\3dtexture\Voltex.cpp">
 			</File>
 			<File
 				RelativePath="..\3dtexture\Z3DTexture.cpp">

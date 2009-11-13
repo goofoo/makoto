@@ -9,6 +9,9 @@
 
 #include "Voltex.h"
 #include "../shared/FNoise.h"
+#ifndef __APPLE__
+#include "../shared/gExtension.h"
+#endif
 
 typedef struct glExtensionEntry {
     char* name;
@@ -143,7 +146,7 @@ const char *frag_source =
 //"    gl_FragColor = vec4 (CParticle, 0.05);"
 "}";
 
-static GLuint noisepool;
+GLuint noisepool;
 
 static FNoise noise;
 
@@ -188,10 +191,19 @@ char Voltex::diagnose(string& log)
 	sprintf(sbuf, "%s version %s\n", (char *)glGetString(GL_RENDERER), (char *)glGetString(GL_VERSION));
 	log = sbuf;
 	
-	const GLubyte * strExt = glGetString (GL_EXTENSIONS);
-	int j = sizeof(entriesNeeded)/sizeof(glExtensionEntry);
-
 	int supported = 1;
+	int j = sizeof(entriesNeeded)/sizeof(glExtensionEntry);
+#ifdef WIN32
+	 for (int i = 0; i < j; i++) {
+		 if(!gCheckExtension(entriesNeeded[i].name)) {
+			 sprintf(sbuf, "%-32s %d\n", entriesNeeded[i].name, 0);
+			 supported = 0;
+		 }
+		else sprintf(sbuf, "%-32s %d\n", entriesNeeded[i].name, 1);
+		log += sbuf;
+	}
+#else
+	const GLubyte *strExt = glGetString(GL_EXTENSIONS);
 	for (int i = 0; i < j; i++) {
 		entriesNeeded[i].supported = gluCheckExtension((GLubyte*)entriesNeeded[i].name, strExt) |
 		(entriesNeeded[i].promoted && (core_version >= entriesNeeded[i].promoted));
@@ -199,7 +211,7 @@ char Voltex::diagnose(string& log)
 		log += sbuf;
 		supported &= entriesNeeded[i].supported;
 	}
-	
+#endif	
 	if(core_version < 1.4) {
 		sprintf(sbuf, "OpenGL version too low, this thing may not work correctly!\n");
 		log += sbuf;
@@ -238,14 +250,14 @@ char Voltex::diagnose(string& log)
 				}
 			}
 		}
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, WIDTH, HEIGHT, DEPTH, 0, GL_RGBA, GL_FLOAT, texels);
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA16F_ARB, WIDTH, HEIGHT, DEPTH, 0, GL_RGBA, GL_FLOAT, texels);
 		delete[] texels;
 
 // init shaders
 		GLint vertex_compiled, fragment_compiled;
 		GLint linked;
 		
-		/* Delete any existing program object */
+// Delete any existing program object 
 		if (program_object) {
 			glDeleteObjectARB(program_object);
 			program_object = NULL;
@@ -276,12 +288,12 @@ char Voltex::diagnose(string& log)
 		if (vertex_shader != NULL)
 		{
 			glAttachObjectARB(program_object, vertex_shader);
-			glDeleteObjectARB(vertex_shader);   /* Release */
+			glDeleteObjectARB(vertex_shader);
 		}
 		if (fragment_shader != NULL)
 		{
 			glAttachObjectARB(program_object, fragment_shader);
-			glDeleteObjectARB(fragment_shader); /* Release */
+			glDeleteObjectARB(fragment_shader);
 		}
 		glLinkProgramARB(program_object);
 		glGetObjectParameterivARB(program_object, GL_OBJECT_LINK_STATUS_ARB, &linked);

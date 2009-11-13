@@ -8,6 +8,7 @@
  */
 
 #include "FNoise.h"
+#include <math.h>
 
 unsigned int FNoise::xRand;
 unsigned int FNoise::yRand;
