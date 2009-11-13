@@ -17,6 +17,7 @@ struct GRID2Draw
 {
 	int grid_id, detail;
 	XYZ ibl;
+	float r;
 };
 
 struct SLICE2Draw
@@ -105,13 +106,13 @@ public:
 	void drawCube();
 	void drawSprite();
 	void sortDraw();
-	void draw(const XYZ& viewdir);
 	void drawCube(const OCTNode *node);
 	void drawSprite(const OCTNode *node);
 	void drawNeighbour(const OCTNode *node);
 	void pushDrawList(const OCTNode *node, int& count, int& slice_count, GRID2Draw* res);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
+	float getMaxSearchDistance() const {return root->size/8;}
 
 	void combineSurfel(const RGRID *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
 	

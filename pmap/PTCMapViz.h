@@ -77,6 +77,7 @@ private:
 	void writeNebula(const char filename[]);
 	void parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipnear, double& clipfar, double& fov, int& ispersp);
 	MString fEyeCamera;
+	char fSupported;
 };
 
 #endif

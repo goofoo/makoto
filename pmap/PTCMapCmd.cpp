@@ -21,7 +21,6 @@ MSyntax PTCMapCmd::newSyntax()
 	syntax.addFlag("-n", "-name", MSyntax::kString);
 	syntax.addFlag("-a","-attrib",MSyntax::kString);
 	syntax.addFlag("-mnd","-mindist",MSyntax::kDouble);
-	syntax.addFlag("-mxd","-maxdist",MSyntax::kDouble);
 	syntax.addFlag("-dfd","-defaultdist",MSyntax::kDouble);
 	syntax.addFlag("-t","-trans",MSyntax::kString);
 	syntax.addFlag("-tk","-transkey",MSyntax::kString);
@@ -54,7 +53,6 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	MString cache_name = "foo";
 	MString cache_attrib;
 	double cache_mindist = 0.1;
-	double cache_maxdist = 4.1;
 	int max_level = 3;
 	double root_size = 32;
 	MString dem_trans = "nil";
@@ -66,7 +64,6 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	if (argData.isFlagSet("-n")) argData.getFlagArgument("-n", 0, cache_name);
 	if (argData.isFlagSet("-a")) argData.getFlagArgument("-a", 0, cache_attrib);
 	if (argData.isFlagSet("-mnd")) argData.getFlagArgument("-mnd", 0, cache_mindist);
-	if (argData.isFlagSet("-mxd")) argData.getFlagArgument("-mxd", 0, cache_maxdist);
 	if (argData.isFlagSet("-ml")) argData.getFlagArgument("-ml", 0, max_level);
 	if (argData.isFlagSet("-rs")) argData.getFlagArgument("-rs", 0, root_size);
 	if (argData.isFlagSet("-t")) argData.getFlagArgument("-t", 0, dem_trans);
@@ -230,7 +227,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	tree->occlusionVolume(cloud_os, key_dir, view_dir);
 	MGlobal::displayInfo(" done");
 	MGlobal::displayInfo(" updating grid distance to neighbour...");
-	tree->distanceToNeighbour(cache_mindist, cache_maxdist);
+	tree->distanceToNeighbour(cache_mindist);
 	MGlobal::displayInfo(" done");
 /*
 	XYZ* attrArray = new XYZ[npt];
