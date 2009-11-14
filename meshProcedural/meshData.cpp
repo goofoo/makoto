@@ -133,7 +133,7 @@ void meshData::generateRIB(RtFloat detail)
 			}
 		}
 	}
-  
+  printf("cleanup %s", m_mesh_name);
 	delete pMesh;
 
 	return;
