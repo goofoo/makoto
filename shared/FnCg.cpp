@@ -12,6 +12,7 @@
 FnCg::FnCg(void):
 m_context(0)
 {
+	errorlog = "Cg Error Log: ";
 	m_context = cgCreateContext();
 	
 	if(m_context == NULL) cgCheckError("Failed To Create Cg Context");

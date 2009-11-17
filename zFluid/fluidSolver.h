@@ -3,7 +3,7 @@
 #define _FLUIDSOLVER_H
 
 #include "../shared/zData.h"
-#include "../shared/zFrameBuffer.h"
+//#include "../shared/zFrameBuffer.h"
 #include "fluidProgram.h"
 #include <maya/MDagPath.h>
 #include <maya/MVectorArray.h>
@@ -40,8 +40,10 @@ public:
 	
 	void initialize(int width, int height, int depth);
 	void uninitialize();
+	char isInitialized() const {return fInitialized;}
 	void update();
 	void drawQuad();
+	void showImpulse();
 	void drawBoundary();
 	void display();
 	void drawArrow();
@@ -83,10 +85,10 @@ protected:
 	XYZW* m_quad_tz;
 	XY* m_line_p;
 	
-	zFrameBuffer* m_fb;
-	zFrameBuffer* m_fbx;
-	zFrameBuffer* m_fby;
-	zFrameBuffer* m_fbz;
+	//zFrameBuffer* m_fb;
+	//zFrameBuffer* m_fbx;
+	//zFrameBuffer* m_fby;
+	//zFrameBuffer* m_fbz;
 	CFluidProgram* f_cg;
 	
 	int m_width, m_height, m_depth, m_tile_s, m_tile_t;
@@ -97,18 +99,15 @@ protected:
 	GLuint i_pressureTexture;
 	GLuint i_bufTexture;
 	GLuint i_offsetTexture;
-	GLuint i_impulseTexture;
-	GLuint i_temperatureTexture;
+	
 	GLuint i_xTexture;
 	GLuint i_yTexture;
 	GLuint i_zTexture;
 	
-	//std::vector<ImpulseDesc> m_impulseList;
-	//std::vector<MDagPath> m_obstacles;
-	
 	float m_buoyancy, m_swirl, m_keepVelocity, m_keepTemperature;
 	
 	float m_gridSize, m_origin_x, m_origin_y, m_origin_z;
+	char fInitialized;
 };
 
 #endif

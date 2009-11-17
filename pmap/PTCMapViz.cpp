@@ -363,7 +363,7 @@ MStatus PTCMapLocator::initialize()
  	stringAttr.setStorable(true);
 	addAttribute( aviewattrib );
 	
-	adrawtype = nAttr.create( "drawType", "dt", MFnNumericData::kInt, 0 );
+	adrawtype = nAttr.create( "drawType", "dt", MFnNumericData::kInt, 1 );
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( adrawtype );

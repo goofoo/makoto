@@ -15,7 +15,8 @@
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 
-//using namespace std;
+#include <string>
+using namespace std;
 
 class FnCg
 {
@@ -34,17 +35,22 @@ public:
 	CGprofile m_frag_profile;
 	
 	void cgCheckError(const char* log)
-{
+	{
 	// We Need To Determine What Went Wrong
-	//CGerror Error = cgGetError();
+		CGerror Error = cgGetError();
 	// Explaining What Went Wrong
-	//cout<<log<<" : "<<cgGetErrorString(Error);
-}
+		errorlog += log;
+		errorlog += " : ";
+		errorlog += cgGetErrorString(Error);
+	}
+	
+	const char* getErrorLog() {return errorlog.c_str();}
 	
 	void loadVertexProgram(CGprogram& prog, const char* source, const char* entry);
 	void loadFragmentProgram(CGprogram& prog, const char* source, const char* entry);
 	
 	void end();
 	void cgBegin();
+	string errorlog;
 };
 

@@ -54,7 +54,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					203,
+					176,
 					60,
 					20,
 					48,
@@ -71,12 +71,20 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 279791202;
-			PBXWorkspaceStateSaveDate = 279791202;
+			PBXPerProjectTemplateStateSaveDate = 280004716;
+			PBXWorkspaceStateSaveDate = 280004716;
 		};
 		perUserProjectItems = {
-			7F85A1E710AD74BB005171E3 /* PBXBookmark */ = 7F85A1E710AD74BB005171E3 /* PBXBookmark */;
-			7F85A1F510AD76CC005171E3 /* PBXTextBookmark */ = 7F85A1F510AD76CC005171E3 /* PBXTextBookmark */;
+			7F93731810B08D3600649F1E /* PBXBookmark */ = 7F93731810B08D3600649F1E /* PBXBookmark */;
+			7F93731E10B08E3C00649F1E /* PBXTextBookmark */ = 7F93731E10B08E3C00649F1E /* PBXTextBookmark */;
+			7F93732510B08E3C00649F1E /* PBXTextBookmark */ = 7F93732510B08E3C00649F1E /* PBXTextBookmark */;
+			7F93732C10B0904300649F1E /* PBXBookmark */ = 7F93732C10B0904300649F1E /* PBXBookmark */;
+			7F93735010B0971800649F1E /* PBXTextBookmark */ = 7F93735010B0971800649F1E /* PBXTextBookmark */;
+			7F93736210B09CED00649F1E /* PBXTextBookmark */ = 7F93736210B09CED00649F1E /* PBXTextBookmark */;
+			7F93736310B09CED00649F1E /* PBXTextBookmark */ = 7F93736310B09CED00649F1E /* PBXTextBookmark */;
+			7F93736410B09CED00649F1E /* PBXTextBookmark */ = 7F93736410B09CED00649F1E /* PBXTextBookmark */;
+			7F93736510B09CED00649F1E /* PBXTextBookmark */ = 7F93736510B09CED00649F1E /* PBXTextBookmark */;
+			7F93736710B09CED00649F1E /* PBXTextBookmark */ = 7F93736710B09CED00649F1E /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBookmarkGroup = 7FC97743109B472F003E8507 /* PBXBookmarkGroup */;
@@ -101,9 +109,9 @@
 	};
 	7F7C0866109C17C1004AD163 /* Voltex.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1106, 4228}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1106, 4438}}";
 			sepNavSelRange = "{5659, 0}";
-			sepNavVisRange = "{5098, 1121}";
+			sepNavVisRange = "{3141, 975}";
 			sepNavWindowFrame = "{{425, 100}, {755, 622}}";
 		};
 	};
@@ -149,9 +157,9 @@
 	};
 	7F81224610711C4D0022BF82 /* Z3DTexture.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {692, 4256}}";
-			sepNavSelRange = "{4156, 0}";
-			sepNavVisRange = "{3750, 1018}";
+			sepNavIntBoundsRect = "{{0, 0}, {692, 4200}}";
+			sepNavSelRange = "{4115, 42}";
+			sepNavVisRange = "{3866, 947}";
 			sepNavWindowFrame = "{{243, 83}, {554, 661}}";
 		};
 	};
@@ -165,18 +173,18 @@
 	};
 	7F81226F10711F040022BF82 /* PTCMapCmd.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {596, 4466}}";
-			sepNavSelRange = "{1400, 0}";
-			sepNavVisRange = "{4926, 707}";
+			sepNavIntBoundsRect = "{{0, 0}, {596, 4312}}";
+			sepNavSelRange = "{2402, 0}";
+			sepNavVisRange = "{1707, 1317}";
 			sepNavWindowFrame = "{{597, 174}, {623, 592}}";
 		};
 	};
 	7F81227010711F040022BF82 /* PTCMapViz.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {806, 9604}}";
-			sepNavSelRange = "{6062, 0}";
-			sepNavVisRange = "{17874, 1018}";
-			sepNavWindowFrame = "{{276, 70}, {673, 702}}";
+			sepNavIntBoundsRect = "{{0, 0}, {614, 9548}}";
+			sepNavSelRange = "{10016, 0}";
+			sepNavVisRange = "{9423, 1256}";
+			sepNavWindowFrame = "{{374, 42}, {673, 702}}";
 		};
 	};
 	7F812284107120470022BF82 /* particleCacheMenus.mel */ = {
@@ -186,20 +194,6 @@
 			sepNavVisRange = "{13804, 1020}";
 			sepNavWindowFrame = "{{496, 139}, {772, 627}}";
 		};
-	};
-	7F85A1E710AD74BB005171E3 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
-	};
-	7F85A1F510AD76CC005171E3 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
-		name = "PTCMapViz.cpp: 239";
-		rLen = 0;
-		rLoc = 6062;
-		rType = 0;
-		vrLen = 1018;
-		vrLoc = 17874;
 	};
 	7F8BAFF61081031000FE0291 /* FNoise.cpp */ = {
 		uiCtxt = {
@@ -211,11 +205,118 @@
 	};
 	7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1184, 28238}}";
-			sepNavSelRange = "{56464, 0}";
-			sepNavVisRange = "{17915, 1933}";
-			sepNavWindowFrame = "{{274, 114}, {575, 659}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1244, 27566}}";
+			sepNavSelRange = "{37853, 0}";
+			sepNavVisRange = "{37438, 806}";
+			sepNavWindowFrame = "{{601, 78}, {575, 659}}";
 		};
+	};
+	7F93731810B08D3600649F1E /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7F81226F10711F040022BF82 /* PTCMapCmd.cpp */;
+	};
+	7F93731E10B08E3C00649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F93731F10B08E3C00649F1E /* OcTree.h */;
+		name = "OcTree.h: 115";
+		rLen = 0;
+		rLoc = 2397;
+		rType = 0;
+		vrLen = 1409;
+		vrLoc = 1894;
+	};
+	7F93731F10B08E3C00649F1E /* OcTree.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = OcTree.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/OcTree.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {770, 2254}}";
+			sepNavSelRange = "{2397, 0}";
+			sepNavVisRange = "{3891, 707}";
+			sepNavWindowFrame = "{{15, 137}, {718, 636}}";
+		};
+	};
+	7F93732510B08E3C00649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81224610711C4D0022BF82 /* Z3DTexture.cpp */;
+		name = "Z3DTexture.cpp: 135";
+		rLen = 24;
+		rLoc = 2852;
+		rType = 0;
+		vrLen = 929;
+		vrLoc = 2578;
+	};
+	7F93732C10B0904300649F1E /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
+	};
+	7F93735010B0971800649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 1286";
+		rLen = 0;
+		rLoc = 37853;
+		rType = 0;
+		vrLen = 807;
+		vrLoc = 37438;
+	};
+	7F93736210B09CED00649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
+		name = "OcTree.cpp: 1286";
+		rLen = 0;
+		rLoc = 37853;
+		rType = 0;
+		vrLen = 806;
+		vrLoc = 37438;
+	};
+	7F93736310B09CED00649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81226F10711F040022BF82 /* PTCMapCmd.cpp */;
+		name = "PTCMapCmd.cpp: 78";
+		rLen = 0;
+		rLoc = 2402;
+		rType = 0;
+		vrLen = 1317;
+		vrLoc = 1707;
+	};
+	7F93736410B09CED00649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81227010711F040022BF82 /* PTCMapViz.cpp */;
+		name = "PTCMapViz.cpp: 366";
+		rLen = 0;
+		rLoc = 10016;
+		rType = 0;
+		vrLen = 1256;
+		vrLoc = 9423;
+	};
+	7F93736510B09CED00649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F93736610B09CED00649F1E /* OcTree.h */;
+		name = "OcTree.h: 115";
+		rLen = 0;
+		rLoc = 2397;
+		rType = 0;
+		vrLen = 707;
+		vrLoc = 3891;
+	};
+	7F93736610B09CED00649F1E /* OcTree.h */ = {
+		isa = PBXFileReference;
+		name = OcTree.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/OcTree.h;
+		sourceTree = "<absolute>";
+	};
+	7F93736710B09CED00649F1E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F81224610711C4D0022BF82 /* Z3DTexture.cpp */;
+		name = "Z3DTexture.cpp: 182";
+		rLen = 42;
+		rLoc = 4115;
+		rType = 0;
+		vrLen = 947;
+		vrLoc = 3866;
 	};
 	7FC97743109B472F003E8507 /* PBXBookmarkGroup */ = {
 		isa = PBXBookmarkGroup;
@@ -233,7 +334,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 693";
 		rLen = 0;
-		rLoc = 31137;
+		rLoc = 31150;
 		rType = 0;
 		vrLen = 5557;
 		vrLoc = 19197;
@@ -243,7 +344,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 693";
 		rLen = 0;
-		rLoc = 31137;
+		rLoc = 31150;
 		rType = 0;
 		vrLen = 5557;
 		vrLoc = 19197;
@@ -253,7 +354,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 693";
 		rLen = 1;
-		rLoc = 31137;
+		rLoc = 31150;
 		rType = 0;
 		vrLen = 5557;
 		vrLoc = 19197;
@@ -263,7 +364,7 @@
 		fRef = 7F8D27EE107BA4E300390A46 /* OcTree.cpp */;
 		name = "OcTree.cpp: 1654";
 		rLen = 0;
-		rLoc = 49656;
+		rLoc = 49853;
 		rType = 0;
 		vrLen = 1003;
 		vrLoc = 46524;

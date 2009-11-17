@@ -1,0 +1,151 @@
+global proc zfluidRemoveMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the zfluid menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if zfluid menu exists, delete it first.
+		else {
+			if(`menuItem -exists zfluidItems` ) deleteUI zfluidItems;
+		}
+	}
+}
+
+global proc zfluidCreateMenus()
+{
+	global string $gMainWindow;
+	if ($gMainWindow != "") {
+		global string $gRenderingMenus[];
+		int $menuIndex = -1;
+		int $menuSize = `size $gRenderingMenus`;
+		setParent $gMainWindow;
+
+		// iterate through the Rendering menu to find the zfluid menu.
+		for ($i = 0; $i < $menuSize; $i++) {
+			string $m = `match "zTools" $gRenderingMenus[$i]`;
+			if ( $m != "" ) {
+				$menuIndex = $i;
+				break;
+			}
+		}
+		
+		// if not found, create it.
+		if ($menuIndex == -1) {
+			$gRenderingMenus[$menuSize] = `menu -l "*zTools" -aob true -to true zTools`;
+		}
+		
+		// if zfluid menu exists, seach the menu item.
+		else {
+			if(`menuItem -exists zfluidItems` ) deleteUI zfluidItems;
+		}
+		
+		// append menu items
+		menuItem -p zTools -l "GPU Fluid" -subMenu true zfluidItems;
+				menuItem -l "Create/Attach Fluid Field" -c "zcreateFluidField";
+				menuItem -l "Attach Fluid Obstacle" -c "zcreateFluidObstacle";
+		setParent -menu ..;
+	}
+}
+
+global proc zcreateFluidField()
+{
+	string $sel[] = `ls -sl`;
+	select -r $sel[0];
+	string $particle[] = `pickWalk -d down`;
+	if(`nodeType $particle[0]`=="particle")
+	{
+		//setAttr ($particle[0]+".startFrame") 0;
+		setAttr ($particle[0]+".castsShadows") 0;
+		setAttr ($particle[0]+".receiveShadows") 0;
+	
+		string $viz = `createNode fluidViz`;
+		string $field = `createNode -n "fluid" fluidField`;
+		
+		connectAttr -f ($viz+".outDesc") ($field+".inDesc");
+		connectAttr -f ($particle[0]+".age") ($field+".age");
+		connectAttr -f ("time1.outTime") ($field+".currentTime");
+		connectAttr -f ($particle[0]+".startFrame") ($field+".startTime");
+		
+		select -r $viz;
+		string $transform[] = `pickWalk -d up`;
+		
+		connectAttr -f ($transform[0]+".worldMatrix[0]") ($field+".localMatrix");
+		
+		setAttr -lock true ($transform[0]+".rx");
+setAttr -lock true ($transform[0]+".ry");
+setAttr -lock true ($transform[0]+".rz");
+setAttr -lock true ($transform[0]+".sx");
+setAttr -lock true ($transform[0]+".sy");
+setAttr -lock true ($transform[0]+".sz");
+	
+		connectDynamic -f $field $particle[0];
+		
+		playbackOptions -minTime 0;
+	}
+	else print "Select a particle to add fluid field!";
+}
+
+global proc zcreateFluidObstacle()
+{
+	string $sel[] = `ls -sl`;
+	int $num_sel = `size($sel)`;
+	if($num_sel>1)
+	{
+		select -r $sel[$num_sel-1];
+		string $particle[] = `pickWalk -d down`;
+		
+		if(`nodeType $particle[0]`=="particle")
+		{
+			string $field[] = `listConnections ($particle[0]+".age")`;
+			if(`size($field)`<1 || `nodeType $field[0]` != "fluidField")
+			{
+				print "Attach a fuild field first!";
+			}
+			else
+			{
+				int $iter;
+				for($iter=0; $iter<$num_sel-1; $iter++)
+				{
+					select -r $sel[$iter];
+					string $mesh[] = `pickWalk -d down`;
+					if(`nodeType $mesh[0]`=="mesh")
+					{
+						if(`connectionInfo -is ($mesh[0]+".worldMesh[0]")`==0)
+						{
+							int $i;
+							for($i=0; $i<64; $i++)
+							{
+								if(`connectionInfo -id ($field[0]+".obstacles["+$i+"]")`==0)
+								{
+									connectAttr -f ($mesh[0]+".worldMesh[0]") ($field[0]+".obstacles["+$i+"]");
+									$i = 64;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		else print "Select polygonal objects and shift-select a particle to add fluid obstacle!";
+	}
+	else print "Select polygonal objects and shift-select a particle to add fluid obstacle!";
+}
+
+

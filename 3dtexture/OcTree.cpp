@@ -615,8 +615,8 @@ void OcTree::sortDraw()
 			//glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freqbuf[idraw]);
 			
 			XYZ ox, oy, pp;
-			ox = fSpriteX * sizebuf[idraw] * 2.5;
-			oy = fSpriteY * sizebuf[idraw] * 2.5;
+			ox = fSpriteX * sizebuf[idraw] * 2.0;
+			oy = fSpriteY * sizebuf[idraw] * 2.0;
 		
 			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, t_grid_opacity[visgrd[idraw].grid_id]);
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
@@ -640,6 +640,7 @@ void OcTree::sortDraw()
 			
 		}
 		glEnd();
+		glFlush();
 		delete[] dsort;
 		delete[] visslice;
 		delete[] oribuf;
@@ -1277,6 +1278,17 @@ void OcTree::getRootCenterNSize(XYZ& center, float&size) const
 		size = root->size;
 	}
 }
+
+float OcTree::getMaxSearchDistance() const 
+{
+	float div = 1;
+	int last = max_level;
+	while(last >3) {
+		div *=2;
+		last--;
+	}
+	return root->size/div;
+}
 /*
 void OcTree::getBBox(const RGRID* data, const int num_data, XYZ& center, float& size)
 {
@@ -1474,7 +1486,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 		raster->write(ray, sample_opacity*(node->high-node->low+1));
 		return;
 	}
-	if( node->isLeaf ) {
+	if( node->isLeaf || node->high - node->low < 8 ) {
 		for(unsigned i= node->low; i<= node->high; i++) {
 			ray = m_pGrid[i].pos - origin;
 			if(ray.lengthSquare() < node->area) return;

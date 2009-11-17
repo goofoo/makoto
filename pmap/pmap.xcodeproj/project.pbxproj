@@ -43,7 +43,7 @@
 		7F8BAFF61081031000FE0291 /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
 		7F8D27EE107BA4E300390A46 /* OcTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OcTree.cpp; path = ../3dtexture/OcTree.cpp; sourceTree = SOURCE_ROOT; };
 		7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pluginMain.cpp; sourceTree = "<group>"; };
-		D2AAC0630554660B00DB518D /* ParticleMap.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ParticleMap.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		D2AAC0630554660B00DB518D /* ParticleCache.bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = ParticleCache.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +94,7 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D2AAC0630554660B00DB518D /* ParticleMap.bundle */,
+				D2AAC0630554660B00DB518D /* ParticleCache.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -141,7 +141,7 @@
 			);
 			name = ParticleMap;
 			productName = footPrintNodePlugin;
-			productReference = D2AAC0630554660B00DB518D /* ParticleMap.bundle */;
+			productReference = D2AAC0630554660B00DB518D /* ParticleCache.bundle */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -207,7 +207,7 @@
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
 				PREBINDING = NO;
-				PRODUCT_NAME = ParticleMap;
+				PRODUCT_NAME = ParticleCache;
 				ZERO_LINK = YES;
 			};
 			name = Debug;

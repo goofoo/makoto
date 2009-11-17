@@ -112,7 +112,7 @@ public:
 	void pushDrawList(const OCTNode *node, int& count, int& slice_count, GRID2Draw* res);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
-	float getMaxSearchDistance() const {return root->size/8;}
+	float getMaxSearchDistance() const;
 
 	void combineSurfel(const RGRID *data, const int low, const int high, XYZ& center, XYZ& color, XYZ& dir, float& area) const;
 	

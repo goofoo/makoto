@@ -1,27 +1,6 @@
 #include <stdio.h>
 #include "zFrameBuffer.h"
 
-#ifdef __APPLE__
-#else
-extern PFNGLISRENDERBUFFEREXTPROC glIsRenderbufferEXT = NULL;
-extern PFNGLBINDRENDERBUFFEREXTPROC glBindRenderbufferEXT = NULL;
-extern PFNGLDELETERENDERBUFFERSEXTPROC glDeleteRenderbuffersEXT = NULL;
-extern PFNGLGENRENDERBUFFERSEXTPROC glGenRenderbuffersEXT = NULL;
-extern PFNGLRENDERBUFFERSTORAGEEXTPROC glRenderbufferStorageEXT = NULL;
-extern PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC glGetRenderbufferParameterivEXT = NULL;
-extern PFNGLISFRAMEBUFFEREXTPROC glIsFramebufferEXT = NULL;
-extern PFNGLBINDFRAMEBUFFEREXTPROC glBindFramebufferEXT = NULL;
-extern PFNGLDELETEFRAMEBUFFERSEXTPROC glDeleteFramebuffersEXT = NULL;
-extern PFNGLGENFRAMEBUFFERSEXTPROC glGenFramebuffersEXT = NULL;
-extern PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC glCheckFramebufferStatusEXT = NULL;
-extern PFNGLFRAMEBUFFERTEXTURE1DEXTPROC glFramebufferTexture1DEXT = NULL;
-extern PFNGLFRAMEBUFFERTEXTURE2DEXTPROC glFramebufferTexture2DEXT = NULL;
-extern PFNGLFRAMEBUFFERTEXTURE3DEXTPROC glFramebufferTexture3DEXT = NULL;
-extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC glFramebufferRenderbufferEXT = NULL;
-extern PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT = NULL;
-extern PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT = NULL;
-#endif
-
 #define CHECK_FRAMEBUFFER_STATUS()                            \
       {                                                           \
         GLenum status;                                            \
@@ -39,45 +18,7 @@ extern PFNGLGENERATEMIPMAPEXTPROC glGenerateMipmapEXT = NULL;
       }\
 
 zFrameBuffer::zFrameBuffer(int cx, int cy)
-{
-#ifdef __APPLE__
-#else	
-	const char *ext = (const char*)glGetString( GL_EXTENSIONS );
-	if( strstr( ext, "EXT_framebuffer_object" ) == NULL )
-	{
-		printf("ERROR: EXT_framebuffer_object extension was not found");
-	}
-	else
-	{
-		glIsRenderbufferEXT = (PFNGLISRENDERBUFFEREXTPROC)wglGetProcAddress("glIsRenderbufferEXT");
-		glBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)wglGetProcAddress("glBindRenderbufferEXT");
-		glDeleteRenderbuffersEXT = (PFNGLDELETERENDERBUFFERSEXTPROC)wglGetProcAddress("glDeleteRenderbuffersEXT");
-		glGenRenderbuffersEXT = (PFNGLGENRENDERBUFFERSEXTPROC)wglGetProcAddress("glGenRenderbuffersEXT");
-		glRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)wglGetProcAddress("glRenderbufferStorageEXT");
-		glGetRenderbufferParameterivEXT = (PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC)wglGetProcAddress("glGetRenderbufferParameterivEXT");
-		glIsFramebufferEXT = (PFNGLISFRAMEBUFFEREXTPROC)wglGetProcAddress("glIsFramebufferEXT");
-		glBindFramebufferEXT = (PFNGLBINDFRAMEBUFFEREXTPROC)wglGetProcAddress("glBindFramebufferEXT");
-		glDeleteFramebuffersEXT = (PFNGLDELETEFRAMEBUFFERSEXTPROC)wglGetProcAddress("glDeleteFramebuffersEXT");
-		glGenFramebuffersEXT = (PFNGLGENFRAMEBUFFERSEXTPROC)wglGetProcAddress("glGenFramebuffersEXT");
-		glCheckFramebufferStatusEXT = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)wglGetProcAddress("glCheckFramebufferStatusEXT");
-		glFramebufferTexture1DEXT = (PFNGLFRAMEBUFFERTEXTURE1DEXTPROC)wglGetProcAddress("glFramebufferTexture1DEXT");
-		glFramebufferTexture2DEXT = (PFNGLFRAMEBUFFERTEXTURE2DEXTPROC)wglGetProcAddress("glFramebufferTexture2DEXT");
-		glFramebufferTexture3DEXT = (PFNGLFRAMEBUFFERTEXTURE3DEXTPROC)wglGetProcAddress("glFramebufferTexture3DEXT");
-		glFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)wglGetProcAddress("glFramebufferRenderbufferEXT");
-		glGetFramebufferAttachmentParameterivEXT = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC)wglGetProcAddress("glGetFramebufferAttachmentParameterivEXT");
-		glGenerateMipmapEXT = (PFNGLGENERATEMIPMAPEXTPROC)wglGetProcAddress("glGenerateMipmapEXT");
-
-		if( !glIsRenderbufferEXT || !glBindRenderbufferEXT || !glDeleteRenderbuffersEXT || 
-			!glGenRenderbuffersEXT || !glRenderbufferStorageEXT || !glGetRenderbufferParameterivEXT || 
-			!glIsFramebufferEXT || !glBindFramebufferEXT || !glDeleteFramebuffersEXT || 
-			!glGenFramebuffersEXT || !glCheckFramebufferStatusEXT || !glFramebufferTexture1DEXT || 
-			!glFramebufferTexture2DEXT || !glFramebufferTexture3DEXT || !glFramebufferRenderbufferEXT||  
-			!glGetFramebufferAttachmentParameterivEXT || !glGenerateMipmapEXT )
-		{
-			printf( "ERROR: One or more EXT_framebuffer_object functions were not found");
-		}
-	}
-#endif	
+{	
 	m_frameWidth = cx;
 	m_frameHeight = cy;
 
@@ -87,7 +28,7 @@ zFrameBuffer::zFrameBuffer(int cx, int cy)
 	
 // initialize the render-buffer
 	glBindRenderbufferEXT( GL_RENDERBUFFER_EXT, m_depthRenderBuffer );
-	glRenderbufferStorageEXT( GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, m_frameWidth, m_frameHeight );
+	glRenderbufferStorageEXT( GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, m_frameWidth, m_frameHeight );
 	
 	CHECK_FRAMEBUFFER_STATUS()
 }

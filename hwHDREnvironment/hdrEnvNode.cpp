@@ -47,6 +47,7 @@ void hdrEnvNode::loadHDR(MString& hdrname)
 {
 	if(!m_program) delete m_program;
 	m_program = new hdrProgram();
+	MGlobal::displayInfo(m_program->getErrorLog());
 	if(hdrname=="") return;
 
 	if(f_hdr)

@@ -23,7 +23,7 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "ZHANG JIAN", "0.5.0 Fri Nov 13 2009", "Any");
+	MFnPlugin plugin( obj, "ZHANG JIAN", "0.5.1 Mon Nov 16 2009", "Any");
 
 	status = plugin.registerCommand( "pmapCache", PTCMapCmd::creator, PTCMapCmd::newSyntax );
 	if (!status) {

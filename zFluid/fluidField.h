@@ -57,6 +57,9 @@ public:
 	//
 	virtual MStatus	compute( const MPlug& plug, MDataBlock& block );
 	
+	virtual void draw (  M3dView  & view, const  MDagPath  & path,  M3dView::DisplayStyle  style, M3dView:: DisplayStatus );
+
+	
 	virtual MStatus connectionMade (const  MPlug & plug, const  MPlug & otherPlug, bool asSrc);
 	virtual MStatus connectionBroken(const  MPlug & plug, const  MPlug & otherPlug, bool asSrc);
 
@@ -89,6 +92,11 @@ private:
 							
 	void getLocalPoint(MPoint& pt);
 	void getLocalPoint(float& px, float& py, float& pz);
+	
+		virtual MStatus iconSizeAndOrigin(	GLuint& width,
+						GLuint& height,
+						GLuint& xbo,
+						GLuint& ybo   );
 							
 	double fish_speed;
 	double neighbor_dist;

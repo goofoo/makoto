@@ -1,11 +1,9 @@
 #include <maya/MDagPathArray.h>
+#include <maya/M3dView.h>
 #include "fluidField.h"
 #include "../shared/zAttrWorks.h"
 #include "../shared/zWorks.h"
 #include "../shared/zMath.h"
-//#include "../shared/zImage.h"
-//#include "../shared/fdcFile.h"
-#include <maya/M3dView.h>
 #include "fluidDescData.h"
 #include "../shared/gBase.h"
 
@@ -186,8 +184,6 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	m_pSolver->setTemperatureLoss(Ktemperature);
 	m_pSolver->setSwirl(Kswirl);
 	
-	//zDisplayFloat(Ktemperature);
-	
 	MDoubleArray ptc_age = zGetDoubleArrayAttr(block, ainAge);
 	
 	MArrayDataHandle hArray = block.inputArrayValue(aobstacle);
@@ -203,35 +199,17 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	if(ison==1)
 	{
 		// simulate !
-		glPushAttrib(GL_ALL_ATTRIB_BITS);
-		glShadeModel(GL_SMOOTH);
-		//glClearDepth(1.0f);							
-		glDisable(GL_DEPTH_TEST);					
-		//glDepthFunc(GL_LEQUAL);
-		glDisable(GL_LIGHTING);
-		glDisable(GL_BLEND);
-		glClearColor(0,0,0,0);
-		glPointSize(2);
+		//glPushAttrib(GL_ALL_ATTRIB_BITS);
+		
 		m_pSolver->processSources(points, velocities, ptc_age);
-		m_pSolver->processObstacles(obslist);
+		//m_pSolver->processObstacles(obslist);
 		m_pSolver->update();
 		
-		glPopAttrib();
+		//glPopAttrib();
 	}
 
 	obslist.clear();
-/*
-	zImage* fimg = new zImage();
-	TIFF* tif = TIFFOpen("D:/foo.tif", "w");
-	if(tif) {
-		//fimg->write(m_pSolver->getOffset(), m_pSolver->getImageWidth(), m_pSolver->getImageHeight(), 4, tif);
-		//fimg->write(m_pSolver->getVelocity(), m_pSolver->getImageWidth(), m_pSolver->getImageHeight(), 4, tif);
-		fimg->write(m_pSolver->getTemperature(), m_pSolver->getImageWidth(), m_pSolver->getImageHeight(), 1, tif);
-		
-		TIFFClose(tif);
-	}
-	delete fimg;
-*/
+
 	// restore the perspective view port after drawing
 	float aspect = (float)pw/(float)ph;
 	glViewport(0, 0, pw, ph);
@@ -280,7 +258,12 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	else return MS::kUnknownParameter;
 }
 
-
+void fluidField::draw( M3dView& view, const MDagPath& path, M3dView::DisplayStyle style, M3dView:: DisplayStatus )
+{
+	 view.beginGL();
+	//if(m_pSolver->isInitialized()) m_pSolver->showImpulse();
+	 view.endGL ();
+}
 
 void fluidField::calculateForce
 	(
@@ -326,19 +309,6 @@ void fluidField::calculateForce
 		else
 			OutputForce.append( MVector(0,0,0) );
 	}
-/*
-	if(i_cache==1) 
-	{
-		MString sfile;
-		MGlobal::executeCommand(MString ("string $p = `workspace -q -fn`"), sfile);
-		MObject particleNode;
-		MPlug agePlg(thisMObject(), ainAge);
-		zWorks::getConnectedNode(particleNode, agePlg);
-		sfile = sfile + "/data/" + MFnDependencyNode(particleNode).name() + "." + i_frame + ".fdc";
-		if(fdcFile::save(sfile.asChar(), points, dest_vels, ages) == 1) MGlobal::displayInfo(MString("ZFluid saved cache file: ")+sfile);
-		else MGlobal::displayWarning(MString("ZFluid failed to save cache file: ")+sfile);
-	}
-*/
 }
 
 int fluidField::isInField(const MPoint& pt)
@@ -382,5 +352,25 @@ void fluidField::getLocalPoint(float& px, float& py, float& pz)
 	pz = (pz-m_origin_z)/m_gridSize;
 }
 
-
+MStatus fluidField::iconSizeAndOrigin(	GLuint& width,
+					GLuint& height,
+					GLuint& xbo,
+					GLuint& ybo   )
+//
+//	This method is not required to be overridden.  It should be overridden
+//	if the plug-in has custom icon.
+//
+//	The width and height have to be a multiple of 32 on Windows and 16 on 
+//	other platform.
+//
+//	Define an 8x8 icon at the lower left corner of the 32x32 grid. 
+//	(xbo, ybo) of (4,4) makes sure the icon is center at origin.
+//
+{
+	width = 32;
+	height = 32;
+	xbo = 4;
+	ybo = 4;
+	return MS::kSuccess;
+}
 

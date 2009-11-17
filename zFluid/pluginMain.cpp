@@ -43,6 +43,8 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}	
 */	
+	MGlobal::executeCommand ( "source zFluidMenus.mel; zfluidCreateMenus;" );
+
 	return status;
 }
 
@@ -75,6 +77,7 @@ MStatus uninitializePlugin( MObject obj)
 		return status;
 	}
 */		
+	MGlobal::executeCommand ( "zfluidRemoveMenus;" );
 	return status;
 }
 
