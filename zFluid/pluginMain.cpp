@@ -1,15 +1,16 @@
 #include "fluidField.h"
 #include "fluidViz.h"
 #include "fluidDescData.h"
-#include <maya/MPlug.h>
+#include "boomEmitter.h"
+
 #include <maya/MGlobal.h>
 #include <maya/MFnPlugin.h>
-#include <maya/MIOStream.h>
+
 
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang Jian", "1.4.2 Wed Nov 18 2009", "Any");
+	MFnPlugin plugin( obj, "Zhang Jian", "1.4.3 Thu Nov 19 2009", "Any");
 	
 	status = plugin.registerData("fluidDescData", zjFluidDescData::id,
 								 zjFluidDescData::creator);
@@ -30,6 +31,14 @@ MStatus initializePlugin( MObject obj )
 	status = plugin.registerNode( "fluidViz", fluidViz::id, 
 						 &fluidViz::creator, &fluidViz::initialize,
 						 MPxNode::kLocatorNode );
+	if (!status) {
+		status.perror("registerNode");
+		return status;
+	}
+	
+	status = plugin.registerNode( "boomEmitter", boomEmitter::id,
+							&boomEmitter::creator, &boomEmitter::initialize,
+							MPxNode::kEmitterNode );
 	if (!status) {
 		status.perror("registerNode");
 		return status;
@@ -67,6 +76,12 @@ MStatus uninitializePlugin( MObject obj)
 	status = plugin.deregisterData(zjFluidDescData::id);
 	if (!status) {
 		MGlobal::displayWarning("ERROR deregistering fluid desc data.");
+		return status;
+	}
+	
+	status = plugin.deregisterNode( boomEmitter::id );
+	if (!status) {
+		status.perror("deregisterNode");
 		return status;
 	}
 /*
