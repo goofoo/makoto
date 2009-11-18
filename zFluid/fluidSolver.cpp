@@ -22,18 +22,22 @@ inline void findST(int width, int height, int depth, int& s, int& t)
 }
 
 GLuint fbo;
-//GLuint fbo_temper;
 GLuint depthBuffer;
 
-//GLuint img;
 GLuint img_impuls;
 GLuint img_temper;
+GLuint i_velocityTexture;
+GLuint i_divergenceTexture;
+GLuint i_vorticityTexture;
+GLuint i_pressureTexture;
+GLuint i_bufTexture;
+GLuint i_offsetTexture;
 
 GLenum status;
 
 FluidSolver::FluidSolver(void) 
 : m_velocityField(0),
-m_temperatureField(0),
+//m_temperatureField(0),
 m_obstacleField(0),
 //m_fb(0),m_fbx(0),m_fby(0),m_fbz(0),
 f_cg(0),
@@ -44,7 +48,8 @@ m_quad_tz(0),
 m_line_p(0),
 m_buoyancy(0.05f),
 m_gridSize(1.0f),
-m_keepVelocity(1.0), m_keepTemperature(0.9),fInitialized(0)
+m_keepVelocity(1.0), m_keepTemperature(0.9),fInitialized(0),
+fTemperature(2.f),fWindX(0.f), fWindZ(0.f)
 {
 }
 
@@ -57,7 +62,7 @@ void FluidSolver::uninitialize()
 {
 	if(m_obstacleField) delete[] m_obstacleField;
 	if(m_velocityField) delete[] m_velocityField;
-	if(m_temperatureField) delete[] m_temperatureField;
+	//if(m_temperatureField) delete[] m_temperatureField;
 	//if(m_fb) delete m_fb;
 	//if(m_fbx) delete m_fbx;
 	//if(m_fby) delete m_fby;
@@ -170,28 +175,20 @@ void FluidSolver::initialize(int width, int height, int depth)
 	//m_obstacleField = new float[m_width*m_depth*4];
 	
 	m_velocityField = new float[m_frame_width*m_frame_height*4];
-	m_temperatureField = new float[m_frame_width*m_frame_height];
+	//m_temperatureField = new float[m_frame_width*m_frame_height];
 	zeros = new float[m_frame_width*m_frame_height*4];
-	for(int j=0; j<m_frame_height; j++)
-	{
-		for(int i=0; i<m_frame_width; i++)
-		{
-			m_velocityField[(m_frame_width*j+i)*4] = 0;
-			m_velocityField[(m_frame_width*j+i)*4+1] = 0;
-			m_velocityField[(m_frame_width*j+i)*4+2] = 0;
-			m_velocityField[(m_frame_width*j+i)*4+3] = 0;
-			m_temperatureField[m_frame_width*j+i] = 0;
+	for(int j=0; j<m_frame_height; j++) {
+		for(int i=0; i<m_frame_width; i++) {
+			//m_velocityField[(m_frame_width*j+i)*4] = fWindX;
+			//m_velocityField[(m_frame_width*j+i)*4+1] = 0;
+			//m_velocityField[(m_frame_width*j+i)*4+2] = fWindZ;
+			//m_velocityField[(m_frame_width*j+i)*4+3] = 0;
 			zeros[(m_frame_width*j+i)*4] = 0;
 			zeros[(m_frame_width*j+i)*4+1] = 0;
 			zeros[(m_frame_width*j+i)*4+2] = 0;
 			zeros[(m_frame_width*j+i)*4+3] = 0;
 		}
 	}
-	/*
-	m_fb = new zFrameBuffer(m_frame_width, m_frame_height);
-	m_fbx = new zFrameBuffer(m_depth, m_height);
-	m_fby = new zFrameBuffer(m_width, m_depth);
-	m_fbz = new zFrameBuffer(m_width, m_height);*/
 	
 	glGenFramebuffersEXT(1, &fbo);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
@@ -247,7 +244,7 @@ void FluidSolver::initialize(int width, int height, int depth)
     	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_velocityTexture);
 
    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, m_velocityField);
+                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, 0);
 
     glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -420,21 +417,23 @@ void FluidSolver::update()
 	//m_fb->begin(img_temper, GL_TEXTURE_RECTANGLE_ARB);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);	
+	glDepthMask( GL_FALSE );
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	glClearColor(0,0,0,0);
 // record temperature
 	glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
-//glClear(GL_COLOR_BUFFER_BIT);
-        glViewport(0, 0, m_frame_width, m_frame_height);
+
+	glViewport(0, 0, m_frame_width, m_frame_height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();	
 	glOrtho(-m_frame_width/2, m_frame_width/2, -m_frame_height/2, m_frame_height/2, .1, 1000.);
 	glMatrixMode(GL_MODELVIEW);
-	//
-	
+
 	glLoadIdentity();
 	gluLookAt(m_frame_width/2, m_frame_height/2, 10,
 			  m_frame_width/2, m_frame_height/2, -10,
@@ -450,21 +449,13 @@ void FluidSolver::update()
 	drawQuad();
 	f_cg->addTemperatureEnd();
 	
-	
-	//m_fb->readR(m_temperatureField);
-	//glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RED, GL_FLOAT, m_temperatureField);
-	
-	//m_fb->end();
-	
 // record velocity
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, m_velocityField);
 	
-	//m_fb->begin(i_velocityTexture, GL_TEXTURE_RECTANGLE_ARB);
-	
 	glDrawBuffer(GL_COLOR_ATTACHMENT2_EXT);
-//glClear(GL_COLOR_BUFFER_BIT);
+
 	f_cg->advectBegin(i_bufTexture, i_bufTexture, m_width, m_height, m_depth, m_tile_s, m_keepVelocity);
 	drawQuad();
 	f_cg->advectEnd();
@@ -487,13 +478,10 @@ void FluidSolver::update()
 // record vorticity	
     glDrawBuffer(GL_COLOR_ATTACHMENT3_EXT);
 //glClear(GL_COLOR_BUFFER_BIT);
-        //m_fb->begin(i_vorticityTexture, GL_TEXTURE_RECTANGLE_ARB);
-        f_cg->vorticityBegin(i_velocityTexture);
+        
+	f_cg->vorticityBegin(i_velocityTexture);
 	drawQuad();
 	f_cg->vorticityEnd();
-	
-	//m_fb->end();
-	
  
 // record velocity
 	glDrawBuffer(GL_COLOR_ATTACHMENT2_EXT);
@@ -502,34 +490,29 @@ void FluidSolver::update()
 	drawQuad();
 	f_cg->swirlEnd();
 	
-	//f_cg->boundaryBegin(i_velocityTexture,-1.0f);
-	//drawBoundary();
-	//f_cg->boundaryEnd();
+	f_cg->boundaryBegin(i_velocityTexture,-1.0f);
+	drawBoundary();
+	f_cg->boundaryEnd();
 
 	//m_fb->end();
 	
 // record divergence
 	glDrawBuffer(GL_COLOR_ATTACHMENT4_EXT);
 	//m_fb->begin(i_divergenceTexture, GL_TEXTURE_RECTANGLE_ARB);
+	glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
 	f_cg->divergenceBegin(i_velocityTexture);
 	drawQuad();
 	f_cg->divergenceEnd();
 	
-	//f_cg->boundaryBegin(i_divergenceTexture,1.0f);
-	//drawBoundary();
-	//f_cg->boundaryEnd();
+	f_cg->boundaryBegin(i_divergenceTexture,1.0f);
+	drawBoundary();
+	f_cg->boundaryEnd();
 	
-
-	//m_fb->end();
+glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	
-
-	
-		
-	//glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_pressureTexture);
-	// glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-    //             m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
 // record pressure
 	glDrawBuffer(GL_COLOR_ATTACHMENT5_EXT);
+	glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//m_fb->begin(i_pressureTexture, GL_TEXTURE_RECTANGLE_ARB);
 	// reset the pressure field texture before jacobi
@@ -542,23 +525,20 @@ void FluidSolver::update()
 		
 		
 	
-		//f_cg->boundaryBegin(i_pressureTexture,1.0f);
-		//drawBoundary();
-		//f_cg->boundaryEnd();
+		f_cg->boundaryBegin(i_pressureTexture,1.0f);
+		drawBoundary();
+		f_cg->boundaryEnd();
 		
 		
 	}
-	
-
-	//m_fb->end();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	
 // record velocity
 	glDrawBuffer(GL_COLOR_ATTACHMENT2_EXT);
-	//m_fb->begin(i_velocityTexture, GL_TEXTURE_RECTANGLE_ARB);
-	
-	//f_cg->boundaryBegin(i_velocityTexture,-1.0f);
-	//drawBoundary();
-	//f_cg->boundaryEnd();
+
+	f_cg->boundaryBegin(i_velocityTexture,-1.0f);
+	drawBoundary();
+	f_cg->boundaryEnd();
 	
 	f_cg->gradientBegin(i_pressureTexture, i_velocityTexture);
 	drawQuad();
@@ -720,34 +700,38 @@ void FluidSolver::drawArrow()
 
 void FluidSolver::clear()
 {
-	for(int j=0; j<m_frame_height; j++)
-	{
-		for(int i=0; i<m_frame_width; i++)
-		{
-			m_velocityField[(m_frame_width*j+i)*4] = 0;
+	float grad_x, grad_z;
+	
+	for(int j=0; j<m_frame_height; j++) {
+		for(int i=0; i<m_frame_width; i++) {
+			grad_x = i%m_width;
+			if(grad_x < 10) grad_x = (float)grad_x/10.f;
+			else if(grad_x > m_width - 11)  grad_x = (float)(m_width - 1 - grad_x)/10.f;
+			else grad_x = 1.f;
+			
+			grad_x *= grad_x;
+			
+			grad_z = (j/m_height)*m_tile_s + i/m_width;
+			if(grad_z < 10) grad_z = (float)grad_z/10.f;
+			else if(grad_z > m_depth - 11)  grad_z = (float)(m_depth - 1 - grad_z)/10.f;
+			else grad_z = 1.f;
+			
+			grad_z *= grad_z;
+			
+			m_velocityField[(m_frame_width*j+i)*4] = fWindX * grad_x;
 			m_velocityField[(m_frame_width*j+i)*4+1] = 0;
-			m_velocityField[(m_frame_width*j+i)*4+2] = 0;
+			m_velocityField[(m_frame_width*j+i)*4+2] = fWindZ * grad_z;
 			m_velocityField[(m_frame_width*j+i)*4+3] = 0;
-			m_temperatureField[m_frame_width*j+i] = 0;
 		}
 	}
 	
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_velocityTexture);
    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
-                 
-                 glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
-   glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+                m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, m_velocityField);
 	
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_temper);
  glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
                  m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
-				 
-                
-	
-                 
-        
 }
 
 void FluidSolver::getVelocity(float& vx, float& vy, float& vz, float x, float y, float z)
@@ -957,8 +941,7 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 	float* pVertex = new float[n_ptc*3];
 	float* pColor = new float[n_ptc*4];
 	float decay;
-	for(int i=0; i<n_ptc; i++)
-	{
+	for(int i=0; i<n_ptc; i++) {
 		pVertex[i*3]=points[i].x;
 		pVertex[i*3+1]=points[i].y;
 		pVertex[i*3+2]=points[i].z;
@@ -966,7 +949,7 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 		pColor[i*4]=velocities[i].x*decay;
 		pColor[i*4+1]=velocities[i].y*decay;
 		pColor[i*4+2]=velocities[i].z*decay;
-		pColor[i*4+3]=10*exp(-2*m_keepTemperature*(ages[i]+.01));
+		pColor[i*4+3]=fTemperature * exp(-2*m_keepTemperature*(ages[i]+.01));
 	}
 	
 	//m_fb->begin(i_impulseTexture, GL_TEXTURE_RECTANGLE_ARB);
@@ -975,11 +958,14 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 	glShadeModel(GL_SMOOTH);
 		//glClearDepth(1.0f);							
 		glDisable(GL_DEPTH_TEST);					
-		//glDepthFunc(GL_LEQUAL);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_LIGHTING);	
+		glDepthMask( GL_FALSE );
+		glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 		glDisable(GL_LIGHTING);
 		glDisable(GL_BLEND);
 		glClearColor(0,0,0,0);
-		glPointSize(3.0);
+		glPointSize(2.0);
 // record impulse
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

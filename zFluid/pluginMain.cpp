@@ -1,7 +1,6 @@
 #include "fluidField.h"
 #include "fluidViz.h"
 #include "fluidDescData.h"
-//#include "fdcNode.h"
 #include <maya/MPlug.h>
 #include <maya/MGlobal.h>
 #include <maya/MFnPlugin.h>
@@ -10,7 +9,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "CVFX | Zhang Jian", "1.4.0", "Any");
+	MFnPlugin plugin( obj, "Zhang Jian", "1.4.2 Wed Nov 18 2009", "Any");
 	
 	status = plugin.registerData("fluidDescData", zjFluidDescData::id,
 								 zjFluidDescData::creator);

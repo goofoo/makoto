@@ -86,7 +86,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	if( plug == mOutputForce)
 	{
         	int ison, rx, ry, rz;
-		float Kbuoyancy, Kswirl, Kvelocity, Ktemperature;
+		float Kbuoyancy, Kswirl, Kvelocity, Ktemperature, temperatureLoss, wind_x, wind_z;
 		MDataHandle hdesc = block.inputValue(ainDesc);
 		MObject odesc = hdesc.data();
 		MFnPluginData fdesc(odesc);
@@ -101,11 +101,14 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 			Kswirl = pDesc->swirl;
 			Kvelocity = pDesc->velocity;
 			Ktemperature = pDesc->temperature;
+			temperatureLoss = pDesc->temperatureLoss;
 			rx = pDesc->resolution_x;
 			ry = pDesc->resolution_y;
 			rz = pDesc->resolution_z;
 			ison = pDesc->enable;
 			do_save_cache = pDesc->save_cache;
+			wind_x = pDesc->wind_x;
+			wind_z = pDesc->wind_z;
 		}
 		else return MS::kUnknownParameter;
 		
@@ -155,9 +158,23 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	view.getCamera ( cameraPath );
 	MFnCamera cameraFn(cameraPath );
 	
+	MMatrix mat_world = zGetMatrixAttr(block, amatrix);
+	m_origin_x = mat_world(3,0);
+	m_origin_y = mat_world(3,1);
+	m_origin_z = mat_world(3,2);
+	m_pSolver->setOrigin(m_origin_x, m_origin_y, m_origin_z);
+
+	m_pSolver->setBuoyancy(Kbuoyancy);
+	m_pSolver->setConserveVelocity(Kvelocity);
+	m_pSolver->setTemperature(Ktemperature);
+	m_pSolver->setTemperatureLoss(temperatureLoss);
+	m_pSolver->setSwirl(Kswirl);
+	m_pSolver->setWind(wind_x, wind_z);
+	
 	// initialize velocity field
-	if(currentTime.value() <= startTime.value()+1){
+	if(currentTime.value() <= startTime.value() + 1){
 		MGlobal::displayInfo(MString("Initialize fluid at frame ")+currentTime.value());
+		
 		if(isPowerof2(rx)==1&&isPowerof2(ry)==1&&isPowerof2(rz)==1)
 		{
 			if(rx!=m_rx || ry!=m_ry || rz!=m_rz)
@@ -173,16 +190,8 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 		m_pSolver->clear();
 	}
 	
-	MMatrix mat_world = zGetMatrixAttr(block, amatrix);
-	m_origin_x = mat_world(3,0);
-	m_origin_y = mat_world(3,1);
-	m_origin_z = mat_world(3,2);
-	m_pSolver->setOrigin(m_origin_x, m_origin_y, m_origin_z);
-
-	m_pSolver->setBuoyancy(Kbuoyancy);
-	m_pSolver->setConserveVelocity(Kvelocity);
-	m_pSolver->setTemperatureLoss(Ktemperature);
-	m_pSolver->setSwirl(Kswirl);
+	
+	
 	
 	MDoubleArray ptc_age = zGetDoubleArrayAttr(block, ainAge);
 	
@@ -196,9 +205,8 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 		hArray.next();
 	}
 
-	if(ison==1)
-	{
-		// simulate !
+	if(ison==1) {
+// simulate !
 		//glPushAttrib(GL_ALL_ATTRIB_BITS);
 		
 		m_pSolver->processSources(points, velocities, ptc_age);

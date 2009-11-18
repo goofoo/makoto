@@ -36,7 +36,10 @@ MObject	fluidViz::aenable;
 MObject	fluidViz::abuoyancy;
 MObject	fluidViz::aswirl;
 MObject	fluidViz::aconserveVelocity;
+MObject fluidViz::atemperature;
 MObject	fluidViz::aconserveTemperature;
+MObject	fluidViz::awindx;
+MObject	fluidViz::awindz;
 MObject	fluidViz::asaveCache;
 MObject	fluidViz::aoutDesc;
 
@@ -81,7 +84,10 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 	m_pDesc->buoyancy = zGetDoubleAttr(block, abuoyancy);
 	m_pDesc->swirl = zGetDoubleAttr(block, aswirl);
 	m_pDesc->velocity = zGetDoubleAttr(block, aconserveVelocity);
-	m_pDesc->temperature = zGetDoubleAttr(block, aconserveTemperature);
+	m_pDesc->temperature = zGetDoubleAttr(block, atemperature);
+	m_pDesc->temperatureLoss = zGetDoubleAttr(block, aconserveTemperature);
+	m_pDesc->wind_x = zGetDoubleAttr(block, awindx);
+	m_pDesc->wind_z = zGetDoubleAttr(block, awindz);
 	
 	MStatus status;
 	
@@ -235,9 +241,21 @@ MStatus fluidViz::initialize()
 	zCheckStatus(status, "ERROR creating conserveVelocity");
 	zCheckStatus(addAttribute(aconserveVelocity), "ERROR adding conserveVelocity");
 	
+	status = zCreateKeyableDoubleAttr(atemperature, MString("temperature"), MString("tpt"), 2.0);
+	zCheckStatus(status, "ERROR creating temperature");
+	zCheckStatus(addAttribute(atemperature), "ERROR adding temperature");
+	
 	status = zCreateKeyableDoubleAttr(aconserveTemperature, MString("temperatureLoss"), MString("tls"), 1.0);
 	zCheckStatus(status, "ERROR creating conserveTemperature");
 	zCheckStatus(addAttribute(aconserveTemperature), "ERROR adding conserveTemperature");
+	
+	status = zCreateKeyableDoubleAttr(awindx, MString("windX"), MString("wdx"), 0.0);
+	zCheckStatus(status, "ERROR creating wind x");
+	zCheckStatus(addAttribute(awindx), "ERROR adding wind y");
+	
+	status = zCreateKeyableDoubleAttr(awindz, MString("windZ"), MString("wdz"), 0.0);
+	zCheckStatus(status, "ERROR creating wind z");
+	zCheckStatus(addAttribute(awindz), "ERROR adding wind z");
 	
 	status = zCreateKeyableIntAttr(asaveCache, MString("saveCache"), MString("saveCache"), 0);
 	zCheckStatus(status, "ERROR creating save cache");
@@ -257,7 +275,7 @@ MStatus fluidViz::connectionMade ( const  MPlug & plug, const  MPlug & otherPlug
 	if(plug==aoutDesc)
 	{
 		int rx,ry,rz,enable, save_cache;
-		double gsize, buoy, swir, velo, temp;
+		double gsize, buoy, swir, velo, temp, temploss, wind_x, wind_z;
 		MObject node = thisMObject();
 		zWorks::getIntFromNamedPlug(rx, node, "rezx");
 		zWorks::getIntFromNamedPlug(ry, node, "rezy");
@@ -268,7 +286,10 @@ MStatus fluidViz::connectionMade ( const  MPlug & plug, const  MPlug & otherPlug
 		zWorks::getDoubleFromNamedPlug(buoy, node, "buo");
 		zWorks::getDoubleFromNamedPlug(swir, node, "swl");
 		zWorks::getDoubleFromNamedPlug(velo, node, "csvy");
-		zWorks::getDoubleFromNamedPlug(temp, node, "cstr");
+		zWorks::getDoubleFromNamedPlug(temp, node, "tpt");
+		zWorks::getDoubleFromNamedPlug(temploss, node, "tls");
+		zWorks::getDoubleFromNamedPlug(wind_x, node, "wdx");
+		zWorks::getDoubleFromNamedPlug(wind_z, node, "wdz");
 	
 		if(isPowerof2(rx) == 1)
 		{	
@@ -294,7 +315,10 @@ MStatus fluidViz::connectionMade ( const  MPlug & plug, const  MPlug & otherPlug
 		m_pDesc->swirl = swir;
 		m_pDesc->velocity = velo;
 		m_pDesc->temperature = temp;
+		m_pDesc->temperatureLoss = temploss;
 		m_pDesc->save_cache = save_cache;
+		m_pDesc->wind_x = wind_x;
+		m_pDesc->wind_z = wind_z;
 			
 		MGlobal::displayInfo("update fluid desc");
 		return MS::kSuccess;

@@ -39,7 +39,10 @@ public:
 	static MObject	abuoyancy;
 	static MObject	aswirl;
 	static MObject	aconserveVelocity;
+	static MObject atemperature;
 	static MObject	aconserveTemperature;
+	static MObject	awindx;
+	static MObject	awindz;
 	static MObject	asaveCache;
 	static MObject	aoutDesc;
 
