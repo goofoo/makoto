@@ -263,7 +263,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 }
 
 void fluidField::draw( M3dView& view, const MDagPath& path, M3dView::DisplayStyle style, M3dView:: DisplayStatus )
-{
+{return;
 	 view.beginGL();
 	if(m_pSolver->isInitialized()) m_pSolver->showImpulse();
 	 view.endGL ();

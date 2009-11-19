@@ -587,7 +587,7 @@ glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	//m_fb->begin(i_pressureTexture, GL_TEXTURE_RECTANGLE_ARB);
 	// reset the pressure field texture before jacobi
 	
-	for(int i =0; i<40; i++) { 
+	for(int i =0; i<32; i++) { 
 
 		f_cg->jacobiBegin(i_pressureTexture, i_divergenceTexture);
 		drawQuad();
@@ -902,7 +902,19 @@ void FluidSolver::addImpulse(int _type, float _radius, float _spread, float posx
 */
 void FluidSolver::processObstacles(const MObjectArray& obstacles)
 {
-	MStatus status;
+	//MStatus status;
+	if(obstacles.length() < 1) {
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+		glPushAttrib(GL_ALL_ATTRIB_BITS);
+		
+		glClearColor(0,0,0,0);
+		glDrawBuffer(GL_COLOR_ATTACHMENT7_EXT);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glPopAttrib();
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+		
+		return;
+	}
 
 	//m_fbx->begin(i_xTexture, GL_TEXTURE_RECTANGLE_ARB);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, x_fbo);
@@ -983,7 +995,7 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	glDisable(GL_DEPTH_TEST);
 	glDrawBuffer(GL_COLOR_ATTACHMENT6_EXT);
 	//m_fb->begin(i_bufTexture, GL_TEXTURE_RECTANGLE_ARB);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 	glViewport(0, 0, m_frame_width, m_frame_height);
 
 	glMatrixMode(GL_PROJECTION);
@@ -1007,7 +1019,7 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	
 	//m_fb->begin(i_offsetTexture, GL_TEXTURE_RECTANGLE_ARB);
 	glDrawBuffer(GL_COLOR_ATTACHMENT7_EXT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 	/*
 	glViewport(0, 0, m_frame_width, m_frame_height);
 
@@ -1137,7 +1149,7 @@ void FluidSolver::drawList(const MObjectArray& obstacles)
 
 void FluidSolver::showImpulse()
 {
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_offsetTexture);
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	glColor3f(1,1,1);
 	drawQuad();
