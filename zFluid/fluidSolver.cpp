@@ -33,6 +33,14 @@ GLuint i_pressureTexture;
 GLuint i_bufTexture;
 GLuint i_offsetTexture;
 
+GLuint x_fbo;
+GLuint y_fbo;
+GLuint z_fbo;
+GLuint x_depthBuffer;
+	GLuint i_xTexture;
+	GLuint i_yTexture;
+	GLuint i_zTexture;
+
 GLenum status;
 
 FluidSolver::FluidSolver(void) 
@@ -87,6 +95,10 @@ void FluidSolver::uninitialize()
 	glDeleteTextures(1, &i_xTexture);
 	glDeleteTextures(1, &i_yTexture);
 	glDeleteTextures(1, &i_zTexture);
+	if(x_fbo) glDeleteFramebuffersEXT(1, &x_fbo);
+	if(y_fbo) glDeleteFramebuffersEXT(1, &y_fbo);
+	if(z_fbo) glDeleteFramebuffersEXT(1, &z_fbo);
+	if(x_depthBuffer) glDeleteRenderbuffersEXT(1, &x_depthBuffer);
 	fInitialized = 0;
 }
 
@@ -321,19 +333,19 @@ void FluidSolver::initialize(int width, int height, int depth)
 	
 	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
 	if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("pressure frame buffer object failed on creation.");				
-// end of framebuffer				 
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+
              
                    
                     
                     
-                   
+// buf texture is 7th                   
                     
                     glGenTextures(1, &i_bufTexture);
     	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
 
-   glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_ALPHA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RED, GL_FLOAT, zeros);
+   glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
+                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
 
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -344,8 +356,12 @@ void FluidSolver::initialize(int width, int height, int depth)
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
                     
-                   
-                    
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT6_EXT, GL_TEXTURE_RECTANGLE_ARB, i_bufTexture, 0);
+	
+	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("buf frame buffer object failed on creation.");	
+	
+// offset is 8th
 	glGenTextures(1, &i_offsetTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_offsetTexture);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
@@ -358,12 +374,29 @@ void FluidSolver::initialize(int width, int height, int depth)
                     GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+					
+	 glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT7_EXT, GL_TEXTURE_RECTANGLE_ARB, i_offsetTexture, 0);
+	
+	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("offset frame buffer object failed on creation.");
+
+				
+// end of framebuffer				 
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);               
                     
+	
                     
+    glGenFramebuffersEXT(1, &x_fbo);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, x_fbo);
+	
+	glGenRenderbuffersEXT(1, &x_depthBuffer);
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, x_depthBuffer);
+	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, m_depth, m_height);
+	                
         glGenTextures(1, &i_xTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_xTexture);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_depth, m_height, 0, GL_RGBA, GL_FLOAT, zeros);
+                 m_depth, m_height, 0, GL_RGBA, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
@@ -372,11 +405,22 @@ void FluidSolver::initialize(int width, int height, int depth)
                     GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+					
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_RECTANGLE_ARB, i_xTexture, 0);
+	
+	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("x frame buffer object failed on creation.");				
+// end of framebuffer				 
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
                     
-        glGenTextures(1, &i_yTexture);
+    
+		 glGenFramebuffersEXT(1, &y_fbo);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, y_fbo);
+	
+		    glGenTextures(1, &i_yTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_yTexture);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_width, m_depth, 0, GL_RGBA, GL_FLOAT, zeros);
+                 m_width, m_depth, 0, GL_RGBA, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
@@ -385,11 +429,21 @@ void FluidSolver::initialize(int width, int height, int depth)
                     GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-                    
+					
+		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_RECTANGLE_ARB, i_yTexture, 0);
+	
+	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("y frame buffer object failed on creation.");				
+// end of framebuffer				 
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    
+					glGenFramebuffersEXT(1, &z_fbo);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, z_fbo);
+	                
                     glGenTextures(1, &i_zTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_zTexture);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_width, m_height, 0, GL_RGBA, GL_FLOAT, zeros);
+                 m_width, m_height, 0, GL_RGBA, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
@@ -400,7 +454,12 @@ void FluidSolver::initialize(int width, int height, int depth)
                     GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 					
 	
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_RECTANGLE_ARB, i_zTexture, 0);
 	
+	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	if(status != GL_FRAMEBUFFER_COMPLETE_EXT) MGlobal::displayInfo("z frame buffer object failed on creation.");				
+// end of framebuffer				 
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
         
                     
@@ -467,14 +526,11 @@ void FluidSolver::update()
 	f_cg->addVelocityBegin(i_velocityTexture, img_impuls);
 	drawQuad();
 	f_cg->addVelocityEnd();
-/*
+
 	f_cg->abcBegin(i_velocityTexture, i_offsetTexture, m_width, m_height, m_depth, m_tile_s);
 	drawQuad();
-	f_cg->abcEnd();
-	*/
+	f_cg->abcEnd();	
 
-	
-	
 // record vorticity	
     glDrawBuffer(GL_COLOR_ATTACHMENT3_EXT);
 //glClear(GL_COLOR_BUFFER_BIT);
@@ -516,7 +572,7 @@ glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//m_fb->begin(i_pressureTexture, GL_TEXTURE_RECTANGLE_ARB);
 	// reset the pressure field texture before jacobi
-	glClear(GL_COLOR_BUFFER_BIT);
+	
 	for(int i =0; i<40; i++) { 
 
 		f_cg->jacobiBegin(i_pressureTexture, i_divergenceTexture);
@@ -729,9 +785,21 @@ void FluidSolver::clear()
    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, m_velocityField);
 	
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_temper);
- glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+	//glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_temper);
+// glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
+ //                m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+				 
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
+	glClearColor(0,0,0,0);
+//reset temperature
+	glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
+	
+	glViewport(0, 0, m_frame_width, m_frame_height);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glPopAttrib();
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
 void FluidSolver::getVelocity(float& vx, float& vy, float& vz, float x, float y, float z)
@@ -823,7 +891,11 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	MStatus status;
 
 	//m_fbx->begin(i_xTexture, GL_TEXTURE_RECTANGLE_ARB);
-	
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, x_fbo);
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glEnable(GL_DEPTH_TEST);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, m_depth, m_height);
 	
@@ -841,11 +913,14 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	
 	drawList(obstacles);
 	
-
+	
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	//m_fbx->end();
 	
 	//m_fby->begin(i_yTexture, GL_TEXTURE_RECTANGLE_ARB);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, y_fbo);
 	
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, m_width, m_depth);
 	
@@ -862,10 +937,13 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	drawList(obstacles);
 	
 
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	//m_fby->end();
 	
 	//m_fbz->begin(i_zTexture, GL_TEXTURE_RECTANGLE_ARB);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, z_fbo);
 	
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, m_width, m_height);
 	
@@ -881,10 +959,15 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	
 	drawList(obstacles);
 	
-	
+	glPopAttrib();
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	//m_fbz->end();
 	
-
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glClearColor(0,0,0,0);
+	glDisable(GL_DEPTH_TEST);
+	glDrawBuffer(GL_COLOR_ATTACHMENT6_EXT);
 	//m_fb->begin(i_bufTexture, GL_TEXTURE_RECTANGLE_ARB);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, m_frame_width, m_frame_height);
@@ -907,7 +990,9 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	//m_fb->readRGBA(m_obstacleField);
 	//m_fb->end();
 	
+	
 	//m_fb->begin(i_offsetTexture, GL_TEXTURE_RECTANGLE_ARB);
+	glDrawBuffer(GL_COLOR_ATTACHMENT7_EXT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	/*
 	glViewport(0, 0, m_frame_width, m_frame_height);
@@ -932,6 +1017,8 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	//m_fb->end();
 
 	//m_obstacles.clear();
+	glPopAttrib();
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
 void FluidSolver::processSources(const MVectorArray &points, const MVectorArray &velocities, const MDoubleArray& ages)
@@ -1036,7 +1123,7 @@ void FluidSolver::drawList(const MObjectArray& obstacles)
 
 void FluidSolver::showImpulse()
 {
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_velocityTexture);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	glColor3f(1,1,1);
 	drawQuad();

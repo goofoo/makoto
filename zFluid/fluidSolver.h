@@ -3,35 +3,13 @@
 #define _FLUIDSOLVER_H
 
 #include "../shared/zData.h"
-//#include "../shared/zFrameBuffer.h"
 #include "fluidProgram.h"
 #include <maya/MDagPath.h>
 #include <maya/MVectorArray.h>
 #include <maya/MDoubleArray.h>
 #include <maya/MDagPathArray.h>
 #include <maya/MObjectArray.h>
-#include <vector>
-/*
-struct ImpulseDesc
-{
-	ImpulseDesc(int _type, float _radius, float _spread, float posx, float posy, float posz, float velx, float vely, float velz)
-	{
-		type = _type;
-		radius = _radius;
-		spread = _spread;
-		px = posx;
-		py = posy;
-		pz = posz;
-		vx = velx;
-		vy = vely;
-		vz = velz;
-	}
-	int type;
-	float radius, spread;
-	float px, py, pz;
-	float vx, vy, vz;
-};
-*/
+
 class FluidSolver
 {
 public:
@@ -54,11 +32,7 @@ public:
 	void flatTo2D(int& s, int& t, int x, int y, int z);
 	
 	const float* getVelocity() {return m_velocityField;}
-	//const float* getTemperature() {return m_temperatureField;}
-	const float* getOffset() {return m_obstacleField;}
 	
-	//void addImpulse(int _type, float _radius, float _spread, float posx, float posy, float posz, float velx, float vely, float velz);
-	//void addObstacle(MDagPath mesh) {m_obstacles.push_back(mesh);}
 	void processObstacles(const MObjectArray& obstacles);
 	void processSources(const MVectorArray &points, const MVectorArray &velocities, const MDoubleArray& ages);
 	
@@ -76,7 +50,6 @@ public:
 	
 protected:
 	float* m_velocityField;
-	//float* m_temperatureField;
 	float* m_obstacleField;
 	float* zeros;
 	
@@ -92,9 +65,7 @@ protected:
 	int m_width, m_height, m_depth, m_tile_s, m_tile_t;
 	int m_frame_width, m_frame_height;
 	
-	GLuint i_xTexture;
-	GLuint i_yTexture;
-	GLuint i_zTexture;
+
 	
 	float m_buoyancy, m_swirl, m_keepVelocity, m_keepTemperature, fTemperature, fWindX, fWindZ;
 	

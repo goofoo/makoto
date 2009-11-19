@@ -207,13 +207,9 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 
 	if(ison==1) {
 // simulate !
-		//glPushAttrib(GL_ALL_ATTRIB_BITS);
-		
 		m_pSolver->processSources(points, velocities, ptc_age);
-		//m_pSolver->processObstacles(obslist);
+		m_pSolver->processObstacles(obslist);
 		m_pSolver->update();
-		
-		//glPopAttrib();
 	}
 
 	obslist.clear();
@@ -269,7 +265,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 void fluidField::draw( M3dView& view, const MDagPath& path, M3dView::DisplayStyle style, M3dView:: DisplayStatus )
 {
 	 view.beginGL();
-	//if(m_pSolver->isInitialized()) m_pSolver->showImpulse();
+	if(m_pSolver->isInitialized()) m_pSolver->showImpulse();
 	 view.endGL ();
 }
 
