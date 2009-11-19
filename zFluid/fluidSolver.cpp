@@ -36,7 +36,9 @@ GLuint i_offsetTexture;
 GLuint x_fbo;
 GLuint y_fbo;
 GLuint z_fbo;
-GLuint x_depthBuffer;
+//GLuint x_depthBuffer;
+//GLuint y_depthBuffer;
+//GLuint z_depthBuffer;
 	GLuint i_xTexture;
 	GLuint i_yTexture;
 	GLuint i_zTexture;
@@ -49,7 +51,7 @@ FluidSolver::FluidSolver(void)
 m_obstacleField(0),
 //m_fb(0),m_fbx(0),m_fby(0),m_fbz(0),
 f_cg(0),
-zeros(0),
+//zeros(0),
 m_quad_p(0),
 m_quad_pw(0),
 m_quad_tz(0),
@@ -79,7 +81,7 @@ void FluidSolver::uninitialize()
 	//if(fbo_temper) glDeleteFramebuffersEXT(1, &fbo_temper);
 	if(depthBuffer) glDeleteRenderbuffersEXT(1, &depthBuffer);
 	if(f_cg) delete f_cg;
-	if(zeros) delete[] zeros;
+	//if(zeros) delete[] zeros;
 	if(m_quad_p) delete[] m_quad_p;
 	if(m_quad_pw) delete[] m_quad_pw;
 	if(m_quad_tz)	delete[] m_quad_tz;
@@ -98,7 +100,9 @@ void FluidSolver::uninitialize()
 	if(x_fbo) glDeleteFramebuffersEXT(1, &x_fbo);
 	if(y_fbo) glDeleteFramebuffersEXT(1, &y_fbo);
 	if(z_fbo) glDeleteFramebuffersEXT(1, &z_fbo);
-	if(x_depthBuffer) glDeleteRenderbuffersEXT(1, &x_depthBuffer);
+	//if(x_depthBuffer) glDeleteRenderbuffersEXT(1, &x_depthBuffer);
+//if(y_depthBuffer) glDeleteRenderbuffersEXT(1, &y_depthBuffer);
+//if(z_depthBuffer) glDeleteRenderbuffersEXT(1, &z_depthBuffer);
 	fInitialized = 0;
 }
 
@@ -188,19 +192,19 @@ void FluidSolver::initialize(int width, int height, int depth)
 	
 	m_velocityField = new float[m_frame_width*m_frame_height*4];
 	//m_temperatureField = new float[m_frame_width*m_frame_height];
-	zeros = new float[m_frame_width*m_frame_height*4];
-	for(int j=0; j<m_frame_height; j++) {
-		for(int i=0; i<m_frame_width; i++) {
+	//float *zeros = new float[m_frame_width*m_frame_height*4];
+	//for(int j=0; j<m_frame_height; j++) {
+	//	for(int i=0; i<m_frame_width; i++) {
 			//m_velocityField[(m_frame_width*j+i)*4] = fWindX;
 			//m_velocityField[(m_frame_width*j+i)*4+1] = 0;
 			//m_velocityField[(m_frame_width*j+i)*4+2] = fWindZ;
 			//m_velocityField[(m_frame_width*j+i)*4+3] = 0;
-			zeros[(m_frame_width*j+i)*4] = 0;
-			zeros[(m_frame_width*j+i)*4+1] = 0;
-			zeros[(m_frame_width*j+i)*4+2] = 0;
-			zeros[(m_frame_width*j+i)*4+3] = 0;
-		}
-	}
+	//		zeros[(m_frame_width*j+i)*4] = 0;
+	//		zeros[(m_frame_width*j+i)*4+1] = 0;
+	//		zeros[(m_frame_width*j+i)*4+2] = 0;
+	//		zeros[(m_frame_width*j+i)*4+3] = 0;
+	//	}
+	//}
 	
 	glGenFramebuffersEXT(1, &fbo);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
@@ -235,7 +239,7 @@ void FluidSolver::initialize(int width, int height, int depth)
 
 	glGenTextures(1, &img_temper);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_temper);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB, m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB, m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, 0);
 	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, 
@@ -276,7 +280,7 @@ void FluidSolver::initialize(int width, int height, int depth)
     	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_vorticityTexture);
 
    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, 0);
 
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -318,7 +322,7 @@ void FluidSolver::initialize(int width, int height, int depth)
     	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_pressureTexture);
 
    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, 0);
 
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -345,7 +349,7 @@ void FluidSolver::initialize(int width, int height, int depth)
     	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
 
    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, 0);
 
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -365,7 +369,7 @@ void FluidSolver::initialize(int width, int height, int depth)
 	glGenTextures(1, &i_offsetTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_offsetTexture);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
-                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, zeros);
+                 m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, 
@@ -389,9 +393,9 @@ void FluidSolver::initialize(int width, int height, int depth)
     glGenFramebuffersEXT(1, &x_fbo);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, x_fbo);
 	
-	glGenRenderbuffersEXT(1, &x_depthBuffer);
-	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, x_depthBuffer);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, m_depth, m_height);
+	//glGenRenderbuffersEXT(1, &x_depthBuffer);
+	//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, x_depthBuffer);
+	//glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, m_depth, m_height);
 	                
         glGenTextures(1, &i_xTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_xTexture);
@@ -417,6 +421,10 @@ void FluidSolver::initialize(int width, int height, int depth)
 		 glGenFramebuffersEXT(1, &y_fbo);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, y_fbo);
 	
+	//glGenRenderbuffersEXT(1, &y_depthBuffer);
+	//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, y_depthBuffer);
+	//glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, m_width, m_depth);
+	
 		    glGenTextures(1, &i_yTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_yTexture);
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA16F_ARB,
@@ -439,6 +447,10 @@ void FluidSolver::initialize(int width, int height, int depth)
     
 					glGenFramebuffersEXT(1, &z_fbo);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, z_fbo);
+	
+	//glGenRenderbuffersEXT(1, &z_depthBuffer);
+	///glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, z_depthBuffer);
+	//glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, m_width, m_height);
 	                
                     glGenTextures(1, &i_zTexture);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_zTexture);
@@ -465,6 +477,8 @@ void FluidSolver::initialize(int width, int height, int depth)
                     
 	f_cg = new CFluidProgram();
 	MGlobal::displayInfo(f_cg->getErrorLog());
+	
+	//delete[] zeros;
 #ifdef WIN32	
 	
 #endif
@@ -533,7 +547,7 @@ void FluidSolver::update()
 
 // record vorticity	
     glDrawBuffer(GL_COLOR_ATTACHMENT3_EXT);
-//glClear(GL_COLOR_BUFFER_BIT);
+glClear(GL_COLOR_BUFFER_BIT);
         
 	f_cg->vorticityBegin(i_velocityTexture);
 	drawQuad();
