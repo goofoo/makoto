@@ -36,7 +36,7 @@ MStatus initializePlugin( MObject obj )
 		return status;
 	}
 	
-	status = plugin.registerNode( "boomEmitter", boomEmitter::id,
+	status = plugin.registerNode( "jetEmitter", boomEmitter::id,
 							&boomEmitter::creator, &boomEmitter::initialize,
 							MPxNode::kEmitterNode );
 	if (!status) {
