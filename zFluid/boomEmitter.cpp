@@ -38,7 +38,7 @@ void sphereRand(MVector& q)
 }
 
 
-
+MObject boomEmitter::ajetlength;
 MTypeId boomEmitter::id( 0x0004132c );
 
 
@@ -65,6 +65,13 @@ MStatus boomEmitter::initialize()
 //		Initialize the node, create user defined attributes.
 //
 {
+	MFnNumericAttribute nAttr;
+	ajetlength = nAttr.create( "jetLength", "jtl", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute( ajetlength );
+	
 	return( MS::kSuccess );
 }
 
@@ -143,10 +150,19 @@ MStatus boomEmitter::compute(const MPlug& plug, MDataBlock& block)
 
 		return( MS::kSuccess );
 	}
+	
+	int countptri = (int)rateValue( block );
+	
+	if(countptri < 1) {
+		hOut.set( dOutput );
+		block.setClean( plug );
+
+		return( MS::kSuccess );
+	}
 
 	// Get speed, direction vector, and inheritFactor attributes.
 	//
-	//double speed = speedValue( block );
+	double speed = speedValue( block );
 	//MVector dirV = directionVector( block );
 	//double inheritFactor = inheritFactorValue( multiIndex, block );
 
@@ -154,7 +170,9 @@ MStatus boomEmitter::compute(const MPlug& plug, MDataBlock& block)
 	//
 	MVectorArray fnOutPos = fnOutput.vectorArray("position", &status);
 	MVectorArray fnOutVel = fnOutput.vectorArray("velocity", &status);
-
+	
+	
+	float jheight = block.inputValue(ajetlength).asFloat();
 	// Convert deltaTime into seconds.
 	//
 	//double dt = dT.as( MTime::kSeconds );
@@ -164,7 +182,7 @@ MStatus boomEmitter::compute(const MPlug& plug, MDataBlock& block)
 	// velocity
 	MVectorArray inVelAry;
 	
-
+	float nf, cf;
 	// Get the swept geometry data
 	//
 	MObject thisObj = this->thisMObject();
@@ -198,20 +216,20 @@ MStatus boomEmitter::compute(const MPlug& plug, MDataBlock& block)
 				float aheight = 2 + 2*float(rand()%391)/391.f;
 
 // generate new points
-				for(int j=0; j<80; j++) {
+				for(int j=0; j<countptri; j++) {
 					MVector noi, vnoi, addp;
 					sphereRand(noi);
 					
-						addp =  dir + noi*0.25; 
-						double fcenter = (addp.normal() * dir.normal() -0.5)/0.5;
-						addp *= 1.f + 2*(float(rand()%491)/491.f - 0.5) * fcenter;
+						addp =  dir + noi*0.5; 
+						cf = (addp.normal() * dir.normal() -0.5)/0.5;
+						
+						addp *= 1.f + float(rand()%391)/391.f*cf;
 						addp *= aheight;
-						float nf = float(rand()%491)/491.f;
-						addp += (dir.normal()*addp.length() - addp)*nf*nf;
+						addp += (dir.normal()*addp.length() - addp)*cf;
 						
-						addp = addp.normal()*2*addp.length()*float(rand()%191)/191.f;
+						addp = addp.normal()*jheight*addp.length()*float(rand()%191)/191.f;
 						
-						vnoi = addp.normal()*4;
+						vnoi = addp.normal()*speed*cf;
 						
 						nf = float(rand()%491)/491.f;
 						float nf1 = float(rand()%491)/491.f*(1-nf);

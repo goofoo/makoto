@@ -28,7 +28,7 @@ public:
 	static MStatus	initialize();
 	virtual MStatus	compute( const MPlug& plug, MDataBlock& block );
 	static MTypeId	id;
-
+	static MObject	ajetlength;
 
 private:
 
