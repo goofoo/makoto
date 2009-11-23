@@ -71,7 +71,7 @@ GLenum status;
 FluidSolver::FluidSolver(void) 
 : m_velocityField(0),
 //m_temperatureField(0),
-m_obstacleField(0),
+//m_obstacleField(0),
 //m_fb(0),m_fbx(0),m_fby(0),m_fbz(0),
 f_cg(0),
 //zeros(0),
@@ -93,7 +93,7 @@ FluidSolver::~FluidSolver(void)
 
 void FluidSolver::uninitialize()
 {
-	if(m_obstacleField) delete[] m_obstacleField;
+	//if(m_obstacleField) delete[] m_obstacleField;
 	if(m_velocityField) delete[] m_velocityField;
 	//if(m_temperatureField) delete[] m_temperatureField;
 	//if(m_fb) delete m_fb;
@@ -134,8 +134,6 @@ void FluidSolver::initialize(int width, int height, int depth)
 	if(fUndiagnosed) {
 #ifndef __APPLE__
 		gExtensionInit();
-#endif
-		fUndiagnosed = 0;
 		
 		float core_version;
 		sscanf((char *)glGetString(GL_VERSION), "%f", &core_version);
@@ -154,6 +152,8 @@ void FluidSolver::initialize(int width, int height, int depth)
 			else sprintf(sbuf, "%-32s %d\n", entriesNeeded[i].name, 1);
 			MGlobal::displayInfo(sbuf);
 		}
+#endif
+		fUndiagnosed = 0;
 	}
 	uninitialize();
 	
@@ -233,7 +233,7 @@ void FluidSolver::initialize(int width, int height, int depth)
 		}
 	}
 	
-	m_obstacleField = new float[m_frame_width*m_frame_height*4];
+	//m_obstacleField = new float[m_frame_width*m_frame_height*4];
 	//m_obstacleField = new float[m_depth*m_height*4];
 	//m_obstacleField = new float[m_width*m_depth*4];
 	

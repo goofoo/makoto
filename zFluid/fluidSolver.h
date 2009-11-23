@@ -50,7 +50,7 @@ public:
 	
 protected:
 	float* m_velocityField;
-	float* m_obstacleField;
+	//float* m_obstacleField;
 	
 	
 	int m_n_quad;
