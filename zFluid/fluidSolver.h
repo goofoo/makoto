@@ -71,6 +71,7 @@ protected:
 	
 	float m_gridSize, m_origin_x, m_origin_y, m_origin_z;
 	char fInitialized;
+	char fUndiagnosed;
 };
 
 #endif

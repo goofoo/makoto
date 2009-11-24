@@ -9,6 +9,29 @@
 #include <string.h>
 #include "../shared/gBase.h"
 
+#ifndef __APPLE__
+#include "../shared/gExtension.h"
+#endif
+
+typedef struct testExtensionEntry {
+    char* name;
+    GLboolean supported;
+} testExtensionEntry;
+
+testExtensionEntry entriesNeeded[] = {
+{"GL_EXT_framebuffer_object",    0},
+{"GL_ARB_texture_cube_map",     0},
+{"GL_ARB_shader_objects",        0},
+{"GL_ARB_shading_language_100",  0},
+{"GL_ARB_fragment_shader",       0},
+{"GL_ARB_vertex_buffer_object",      0},
+{"GL_ARB_multitexture",      0},
+{"GL_ARB_multisample",       0},
+{"GL_ARB_vertex_program",       0},
+{"GL_ARB_fragment_program",       0},
+{"GL_ARB_texture_rectangle",       0},
+};
+
 inline void findST(int width, int height, int depth, int& s, int& t)
 {
 	float ratio = (float)height/(float)width;
@@ -58,7 +81,7 @@ m_quad_tz(0),
 m_line_p(0),
 m_buoyancy(0.05f),
 m_gridSize(1.0f),
-m_keepVelocity(1.0), m_keepTemperature(0.9),fInitialized(0),
+m_keepVelocity(1.0), m_keepTemperature(0.9),fInitialized(0),fUndiagnosed(1),
 fTemperature(2.f),fWindX(0.f), fWindZ(0.f)
 {
 }
@@ -108,6 +131,30 @@ void FluidSolver::uninitialize()
 
 void FluidSolver::initialize(int width, int height, int depth)
 {
+	if(fUndiagnosed) {
+#ifndef __APPLE__
+		gExtensionInit();
+#endif
+		fUndiagnosed = 0;
+		
+		float core_version;
+		sscanf((char *)glGetString(GL_VERSION), "%f", &core_version);
+		char sbuf[64];
+		sprintf(sbuf, "%s version %s\n", (char *)glGetString(GL_RENDERER), (char *)glGetString(GL_VERSION));
+		MGlobal::displayInfo(sbuf);
+	
+		int supported = 1;
+		int j = sizeof(entriesNeeded)/sizeof(testExtensionEntry);
+
+		 for (int i = 0; i < j; i++) {
+			 if(!gCheckExtension(entriesNeeded[i].name)) {
+				 sprintf(sbuf, "%-32s %d\n", entriesNeeded[i].name, 0);
+				 supported = 0;
+			 }
+			else sprintf(sbuf, "%-32s %d\n", entriesNeeded[i].name, 1);
+			MGlobal::displayInfo(sbuf);
+		}
+	}
 	uninitialize();
 	
 	m_width = width;
@@ -634,21 +681,21 @@ void FluidSolver::drawQuad()
 	glBegin(GL_QUADS);
 	for(int i=0; i<m_n_quad; i++)
 	{
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, m_quad_p[i*4].x, m_quad_p[i*4].y);
-		glMultiTexCoord3fARB(GL_TEXTURE1_ARB, m_quad_pw[i*4].x, m_quad_pw[i*4].y, m_quad_pw[i*4].z);
-		glMultiTexCoord4iARB(GL_TEXTURE2_ARB, m_quad_tz[i*4].x, m_quad_tz[i*4].y, m_quad_tz[i*4].z, m_quad_tz[i*4].w);
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, m_quad_p[i*4].x, m_quad_p[i*4].y);
+		glMultiTexCoord3f(GL_TEXTURE1_ARB, m_quad_pw[i*4].x, m_quad_pw[i*4].y, m_quad_pw[i*4].z);
+		glMultiTexCoord4i(GL_TEXTURE2_ARB, m_quad_tz[i*4].x, m_quad_tz[i*4].y, m_quad_tz[i*4].z, m_quad_tz[i*4].w);
 		glVertex3i(m_quad_p[i*4].x, m_quad_p[i*4].y, 0);
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, m_quad_p[i*4+1].x, m_quad_p[i*4+1].y);
-		glMultiTexCoord3fARB(GL_TEXTURE1_ARB, m_quad_pw[i*4+1].x, m_quad_pw[i*4+1].y, m_quad_pw[i*4+1].z);
-		glMultiTexCoord4iARB(GL_TEXTURE2_ARB, m_quad_tz[i*4+1].x, m_quad_tz[i*4+1].y, m_quad_tz[i*4+1].z, m_quad_tz[i*4+1].w);	
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, m_quad_p[i*4+1].x, m_quad_p[i*4+1].y);
+		glMultiTexCoord3f(GL_TEXTURE1_ARB, m_quad_pw[i*4+1].x, m_quad_pw[i*4+1].y, m_quad_pw[i*4+1].z);
+		glMultiTexCoord4i(GL_TEXTURE2_ARB, m_quad_tz[i*4+1].x, m_quad_tz[i*4+1].y, m_quad_tz[i*4+1].z, m_quad_tz[i*4+1].w);	
 		glVertex3i(m_quad_p[i*4+1].x, m_quad_p[i*4+1].y, 0);
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, m_quad_p[i*4+2].x, m_quad_p[i*4+2].y);
-		glMultiTexCoord3fARB(GL_TEXTURE1_ARB, m_quad_pw[i*4+2].x, m_quad_pw[i*4+2].y, m_quad_pw[i*4+2].z);
-		glMultiTexCoord4iARB(GL_TEXTURE2_ARB, m_quad_tz[i*4+2].x, m_quad_tz[i*4+2].y, m_quad_tz[i*4+2].z, m_quad_tz[i*4+2].w);	
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, m_quad_p[i*4+2].x, m_quad_p[i*4+2].y);
+		glMultiTexCoord3f(GL_TEXTURE1_ARB, m_quad_pw[i*4+2].x, m_quad_pw[i*4+2].y, m_quad_pw[i*4+2].z);
+		glMultiTexCoord4i(GL_TEXTURE2_ARB, m_quad_tz[i*4+2].x, m_quad_tz[i*4+2].y, m_quad_tz[i*4+2].z, m_quad_tz[i*4+2].w);	
 		glVertex3i(m_quad_p[i*4+2].x, m_quad_p[i*4+2].y, 0);
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, m_quad_p[i*4+3].x, m_quad_p[i*4+3].y);
-		glMultiTexCoord3fARB(GL_TEXTURE1_ARB, m_quad_pw[i*4+3].x, m_quad_pw[i*4+3].y, m_quad_pw[i*4+3].z);
-		glMultiTexCoord4iARB(GL_TEXTURE2_ARB, m_quad_tz[i*4+3].x, m_quad_tz[i*4+3].y, m_quad_tz[i*4+3].z, m_quad_tz[i*4+3].w);
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, m_quad_p[i*4+3].x, m_quad_p[i*4+3].y);
+		glMultiTexCoord3f(GL_TEXTURE1_ARB, m_quad_pw[i*4+3].x, m_quad_pw[i*4+3].y, m_quad_pw[i*4+3].z);
+		glMultiTexCoord4i(GL_TEXTURE2_ARB, m_quad_tz[i*4+3].x, m_quad_tz[i*4+3].y, m_quad_tz[i*4+3].z, m_quad_tz[i*4+3].w);
 		glVertex3i(m_quad_p[i*4+3].x, m_quad_p[i*4+3].y, 0);
 	}
 	glEnd();
@@ -725,16 +772,16 @@ void FluidSolver::display()
 	f_cg->displayVectorBegin(i_velocityTexture);
 		glBegin(GL_QUADS);
 		
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, 0, 0);	
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, 0, 0);	
 		glVertex3i(0, 0, 0);
 		
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, m_frame_width, 0);
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, m_frame_width, 0);
 		glVertex3i(m_frame_width, 0, 0);
 		
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, m_frame_width, m_frame_height);
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, m_frame_width, m_frame_height);
 		glVertex3i(m_frame_width, m_frame_height, 0);
 		
-		glMultiTexCoord2iARB(GL_TEXTURE0_ARB, 0, m_frame_height);
+		glMultiTexCoord2i(GL_TEXTURE0_ARB, 0, m_frame_height);
 		glVertex3i(0, m_frame_height, 0);
 		
 		glEnd();
