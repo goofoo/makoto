@@ -58,6 +58,7 @@ global proc zfluidCreateMenus()
 		
 		// append menu items
 		menuItem -p zTools -l "GPU Fluid" -subMenu true zfluidItems;
+			menuItem -l "Jet From Object" -c "zfluidJetEmit";
 				menuItem -l "Create/Attach Fluid Field" -c "zcreateFluidField";
 				menuItem -l "Attach Fluid Obstacle" -c "zcreateFluidObstacle";
 		setParent -menu ..;
@@ -148,4 +149,40 @@ global proc zcreateFluidObstacle()
 	else print "Select polygonal objects and shift-select a particle to add fluid obstacle!";
 }
 
+global proc zfluidJetEmit()
+{
+	string $sel[] = `ls -sl`;
+	int $num_sel = `size($sel)`;
+	if($num_sel>1) {
+		select -r $sel[$num_sel-1];
+		string $particle[] = `pickWalk -d down`;
+		if(`nodeType $particle[0]`=="particle") {
+			int $iter;
+			for($iter=0; $iter<$num_sel-1; $iter++) {
+				string $emt = `createNode jetEmitter -name jet`;
+				connectDynamic -em $emt $particle[0];
+				addDynamic $emt $sel[$iter];
+			}
+		}
+		else {
+			$particle = `particle -name jetparticle`;
+			int $iter;
+			for($iter=0; $iter<$num_sel; $iter++) {
+				string $emt = `createNode jetEmitter -name jet`;
+				connectDynamic -em $emt $particle[0];
+				addDynamic $emt $sel[$iter];
+			}
+		}
+	}
+	else {
+		string $particle[] = `pickWalk -d down`;
+		if(`nodeType $particle[0]`=="particle") print "Select polygonal objects and shift-select a particle to add jet emitter!";
+		else {
+			$particle = `particle -name jetparticle`;
+			string $emt = `createNode jetEmitter -name jet`;
+			connectDynamic -em $emt $particle[0];
+			addDynamic $emt $sel[0];
+		}
+	}
+}
 

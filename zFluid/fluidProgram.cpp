@@ -245,7 +245,7 @@ static const char *programSource =
 "half4 convex(vfconn IN, uniform samplerRECT x, uniform samplerRECT y, uniform samplerRECT z) : COLOR"
 "{"
 "	return h4texRECT(x, IN.coord3D.zy) * h4texRECT(y, IN.coord3D.xz) * h4texRECT(z, IN.coord3D.xy);"
-//"	return h4texRECT(z, IN.coord3D.xy);"
+//"	return h4texRECT(y, IN.coord3D.xz);"
 "}"
 "\n"
 "half4 addTemperature(vfconn IN, uniform samplerRECT u, uniform samplerRECT impulse) : COLOR"
