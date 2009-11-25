@@ -69,14 +69,20 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 275976386;
-			PBXWorkspaceStateSaveDate = 275976386;
+			PBXPerProjectTemplateStateSaveDate = 280872189;
+			PBXWorkspaceStateSaveDate = 280872189;
 		};
 		perUserProjectItems = {
-			7F9C4B8710732EF900F29D03 /* PBXBookmark */ = 7F9C4B8710732EF900F29D03 /* PBXBookmark */;
-			7F9C4B891073301100F29D03 /* PBXBookmark */ = 7F9C4B891073301100F29D03 /* PBXBookmark */;
-			7F9C4B931073406A00F29D03 /* PBXTextBookmark */ = 7F9C4B931073406A00F29D03 /* PBXTextBookmark */;
-			7F9C4B961073406A00F29D03 /* PBXTextBookmark */ = 7F9C4B961073406A00F29D03 /* PBXTextBookmark */;
+			7F80DC6F10BDC3D70093F98A = 7F80DC6F10BDC3D70093F98A /* PBXTextBookmark */;
+			7F80DC8310BDC4290093F98A = 7F80DC8310BDC4290093F98A /* PBXTextBookmark */;
+			7F80DC9310BDC5210093F98A /* PBXTextBookmark */ = 7F80DC9310BDC5210093F98A /* PBXTextBookmark */;
+			7F80DC9410BDC5210093F98A /* PBXTextBookmark */ = 7F80DC9410BDC5210093F98A /* PBXTextBookmark */;
+			7F80DC9D10BDC6080093F98A /* PBXBookmark */ = 7F80DC9D10BDC6080093F98A /* PBXBookmark */;
+			7F80DCA710BDCD3E0093F98A /* PBXBookmark */ = 7F80DCA710BDCD3E0093F98A /* PBXBookmark */;
+			7F80DCAF10BDCE250093F98A /* PBXTextBookmark */ = 7F80DCAF10BDCE250093F98A /* PBXTextBookmark */;
+			7F80DCB210BDCE250093F98A /* PBXTextBookmark */ = 7F80DCB210BDCE250093F98A /* PBXTextBookmark */;
+			7F80DCB710BDCF540093F98A /* PBXTextBookmark */ = 7F80DCB710BDCF540093F98A /* PBXTextBookmark */;
+			7F80DCB810BDCF540093F98A /* PBXTextBookmark */ = 7F80DCB810BDCF540093F98A /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -98,63 +104,121 @@
 			sepNavWindowFrame = "{{93, 47}, {645, 716}}";
 		};
 	};
+	7F80DC6F10BDC3D70093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
+		name = "rasterVizNode.cpp: 95";
+		rLen = 0;
+		rLoc = 2365;
+		rType = 0;
+		vrLen = 645;
+		vrLoc = 1969;
+	};
+	7F80DC8310BDC4290093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
+		name = "rasterVizNode.cpp: 95";
+		rLen = 0;
+		rLoc = 2365;
+		rType = 0;
+		vrLen = 645;
+		vrLoc = 1969;
+	};
+	7F80DC9310BDC5210093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: no matching function for call to 'Z3DTexture::constructTree()'";
+		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
+		rLen = 1;
+		rLoc = 46;
+		rType = 1;
+	};
+	7F80DC9410BDC5210093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
+		name = "octreeVizNode.cpp: 47";
+		rLen = 4;
+		rLoc = 1239;
+		rType = 0;
+		vrLen = 443;
+		vrLoc = 987;
+	};
+	7F80DC9D10BDC6080093F98A /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
+	};
+	7F80DCA710BDCD3E0093F98A /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
+	};
+	7F80DCAF10BDCE250093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
+		name = "octreeVizNode.cpp: 52";
+		rLen = 0;
+		rLoc = 1384;
+		rType = 0;
+		vrLen = 833;
+		vrLoc = 911;
+	};
+	7F80DCB210BDCE250093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
+		name = "rasterVizNode.cpp: 95";
+		rLen = 0;
+		rLoc = 2365;
+		rType = 0;
+		vrLen = 594;
+		vrLoc = 1903;
+	};
+	7F80DCB710BDCF540093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
+		name = "octreeVizNode.cpp: 119";
+		rLen = 0;
+		rLoc = 3002;
+		rType = 0;
+		vrLen = 700;
+		vrLoc = 2534;
+	};
+	7F80DCB810BDCF540093F98A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
+		name = "rasterVizNode.cpp: 95";
+		rLen = 0;
+		rLoc = 2365;
+		rType = 0;
+		vrLen = 594;
+		vrLoc = 1903;
+	};
 	7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {580, 2464}}";
+			sepNavIntBoundsRect = "{{0, 0}, {878, 5152}}";
 			sepNavSelRange = "{4304, 0}";
-			sepNavVisRange = "{1476, 1011}";
+			sepNavVisRange = "{3520, 950}";
 			sepNavWindowFrame = "{{84, 85}, {639, 625}}";
 		};
 	};
 	7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {513, 2002}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{1183, 586}";
-			sepNavWindowFrame = "{{588, 233}, {572, 505}}";
+			sepNavIntBoundsRect = "{{0, 0}, {692, 4270}}";
+			sepNavSelRange = "{5132, 10}";
+			sepNavVisRange = "{2180, 628}";
+			sepNavWindowFrame = "{{527, 75}, {572, 505}}";
 		};
 	};
 	7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {513, 3192}}";
-			sepNavSelRange = "{2383, 0}";
-			sepNavVisRange = "{1969, 645}";
-			sepNavWindowFrame = "{{470, 189}, {572, 505}}";
+			sepNavIntBoundsRect = "{{0, 0}, {513, 3150}}";
+			sepNavSelRange = "{2365, 0}";
+			sepNavVisRange = "{1903, 594}";
+			sepNavWindowFrame = "{{549, 167}, {572, 505}}";
 		};
-	};
-	7F9C4B8710732EF900F29D03 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */;
-	};
-	7F9C4B891073301100F29D03 /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
-	};
-	7F9C4B931073406A00F29D03 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */;
-		name = "CubeRaster.cpp: 168";
-		rLen = 0;
-		rLoc = 4304;
-		rType = 0;
-		vrLen = 1011;
-		vrLoc = 1476;
-	};
-	7F9C4B961073406A00F29D03 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
-		name = "rasterVizNode.cpp: 95";
-		rLen = 0;
-		rLoc = 2383;
-		rType = 0;
-		vrLen = 645;
-		vrLoc = 1969;
 	};
 	7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {515, 3794}}";
-			sepNavSelRange = "{1792, 0}";
-			sepNavVisRange = "{1750, 310}";
+			sepNavIntBoundsRect = "{{0, 0}, {716, 4550}}";
+			sepNavSelRange = "{3002, 0}";
+			sepNavVisRange = "{2534, 700}";
 			sepNavWindowFrame = "{{220, 93}, {495, 645}}";
 		};
 	};

@@ -14,6 +14,7 @@
 		7F80C8E6104EFDDD001882AC /* GetZRotationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F80C8E2104EFDDD001882AC /* GetZRotationMatrix.cpp */; };
 		7F80C8E7104EFDDD001882AC /* RotateSHCoefficients.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F80C8E3104EFDDD001882AC /* RotateSHCoefficients.cpp */; };
 		7F80C8EA104EFDF2001882AC /* SHMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F80C8E9104EFDF2001882AC /* SHMath.cpp */; };
+		7F80DCA410BDC73A0093F98A /* FNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F80DCA310BDC73A0093F98A /* FNoise.cpp */; };
 		7F9C4B68107310DD00F29D03 /* CubeRaster.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */; };
 		7F9C4B69107310DD00F29D03 /* Z3DTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */; };
 		7F9C4B6A107310DD00F29D03 /* OcTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9C4B67107310DD00F29D03 /* OcTree.cpp */; };
@@ -34,6 +35,7 @@
 		7F80C8E2104EFDDD001882AC /* GetZRotationMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GetZRotationMatrix.cpp; path = "../sh_lighting/SH Rotation/GetZRotationMatrix.cpp"; sourceTree = SOURCE_ROOT; };
 		7F80C8E3104EFDDD001882AC /* RotateSHCoefficients.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RotateSHCoefficients.cpp; path = "../sh_lighting/SH Rotation/RotateSHCoefficients.cpp"; sourceTree = SOURCE_ROOT; };
 		7F80C8E9104EFDF2001882AC /* SHMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SHMath.cpp; path = ../sh_lighting/SHMath.cpp; sourceTree = SOURCE_ROOT; };
+		7F80DCA310BDC73A0093F98A /* FNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FNoise.cpp; path = ../shared/FNoise.cpp; sourceTree = SOURCE_ROOT; };
 		7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CubeRaster.cpp; path = ../3dtexture/CubeRaster.cpp; sourceTree = SOURCE_ROOT; };
 		7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Z3DTexture.cpp; path = ../3dtexture/Z3DTexture.cpp; sourceTree = SOURCE_ROOT; };
 		7F9C4B67107310DD00F29D03 /* OcTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OcTree.cpp; path = ../3dtexture/OcTree.cpp; sourceTree = SOURCE_ROOT; };
@@ -72,6 +74,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F80DCA310BDC73A0093F98A /* FNoise.cpp */,
 				7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */,
 				7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */,
 				7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */,
@@ -184,6 +187,7 @@
 				7F9C4B69107310DD00F29D03 /* Z3DTexture.cpp in Sources */,
 				7F9C4B6A107310DD00F29D03 /* OcTree.cpp in Sources */,
 				7F9C4B7C107312E100F29D03 /* rasterVizNode.cpp in Sources */,
+				7F80DCA410BDC73A0093F98A /* FNoise.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

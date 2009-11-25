@@ -92,7 +92,7 @@ MStatus rasterVizNode::compute( const MPlug& plug, MDataBlock& data )
 		}
 		
 		raster->clear();
-		raster->write(ray0);
+		
 
 		data.setClean(plug);
 	}

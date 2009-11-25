@@ -44,11 +44,12 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 			
 			m_pTex = new Z3DTexture;
 			if(m_pTex->load(m_gridname.asChar())) {
-				m_pTex->constructTree();
-				m_pTex->computePower();
+				
 				zDisplayFloat(m_pTex->getNumGrid());
 				zDisplayFloat(m_pTex->getNumVoxel());
 				zDisplayFloat(m_pTex->getMaxLevel());
+				
+				m_pTex->setDraw();
 			}
 		}
 		data.setClean(plug);
@@ -56,19 +57,69 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 	return MS::kUnknownParameter;
 }
 
+void parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipnear, double& clipfar, double& fov, int& ispersp)
+{
+	MFnCamera fnCamera( camera );
+
+	clipnear = fnCamera.nearClippingPlane();
+	clipfar = fnCamera.farClippingPlane();
+	
+	MVector viewDir = fnCamera.viewDirection( MSpace::kWorld );
+	MPoint eyePos = fnCamera.eyePoint ( MSpace::kWorld );
+	MVector rightDir = fnCamera.rightDirection( MSpace::kWorld );
+	MVector upDir = fnCamera.upDirection( MSpace::kWorld );
+	
+	mat.setIdentity ();
+	mat.v[0][0] = -rightDir.x;
+	mat.v[0][1] = -rightDir.y;
+	mat.v[0][2] = -rightDir.z;
+	mat.v[1][0] = upDir.x;
+	mat.v[1][1] = upDir.y;
+	mat.v[1][2] = upDir.z;
+	mat.v[2][0] = viewDir.x;
+	mat.v[2][1] = viewDir.y;
+	mat.v[2][2] = viewDir.z;
+	mat.v[3][0] = eyePos.x;
+	mat.v[3][1] = eyePos.y;
+	mat.v[3][2] = eyePos.z;
+	
+	fov = fnCamera.horizontalFieldOfView();
+	fov = fov/PI*180;
+	ispersp = 1;
+	
+	if(fnCamera.isOrtho()) {
+		ispersp = 0;
+		fov = fnCamera.orthoWidth();
+	}
+}
+
 void octreeVizNode::draw( M3dView & view, const MDagPath & /*path*/, 
 							 M3dView::DisplayStyle style,
 							 M3dView::DisplayStatus status )
 {
+	MDagPath camera;
+	view = M3dView::active3dView();
+	view.getCamera(camera);
+	
+	MATRIX44F mat;
+	double clipNear, clipFar, fov;
+	int ispersp;
+	
+	parseCamera(camera, mat, clipNear, clipFar, fov, ispersp);
+	
 	view.beginGL(); 
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	glShadeModel(GL_SMOOTH);
 	glPointSize(3);
 
 	if(m_pTex) {
-		XYZ view(0,0,1);
-		m_pTex->drawGrid(view);
-		m_pTex->draw();
+		XYZ ori(0,0,0);
+		m_pTex->setProjection(mat, fov, ispersp);
+		int port[4];
+	glGetIntegerv(GL_VIEWPORT, port);
+		m_pTex->setPortWidth(port[2]);
+		m_pTex->drawCube();
+		m_pTex->testRaster(ori);
 	}
 	
 	glPopAttrib();

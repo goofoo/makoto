@@ -6,15 +6,15 @@
  *  Copyright 2009 __MyCompanyName__. All rights reserved.
  *
  */
-#define CUBERASTER_BUFFER_H 6
-#define CUBERASTER_BUFFER_N 12
-#define CUBERASTER_BUFFER_SIZE 864
+#define CUBERASTER_BUFFER_H 8
+#define CUBERASTER_BUFFER_N 16
+#define CUBERASTER_BUFFER_SIZE 1536
 #define CUBERASTER_BUFFER_POSX 0
-#define CUBERASTER_BUFFER_NEGX 144
-#define CUBERASTER_BUFFER_POSY 288
-#define CUBERASTER_BUFFER_NEGY 432
-#define CUBERASTER_BUFFER_POSZ 576
-#define CUBERASTER_BUFFER_NEGZ 720
+#define CUBERASTER_BUFFER_NEGX 256
+#define CUBERASTER_BUFFER_POSY 512
+#define CUBERASTER_BUFFER_NEGY 768
+#define CUBERASTER_BUFFER_POSZ 1024
+#define CUBERASTER_BUFFER_NEGZ 1280
 
 #include "CubeRaster.h"
 #include "../shared/gBase.h"
@@ -363,19 +363,5 @@ void CubeRaster::readLight(XYZ& ray, float& lighting) const
 		u = (ray.x/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
 		v = (ray.y/z + 1- 0.0000001)*0.5*CUBERASTER_BUFFER_N;
 	}
-	/*
-	int nu0, nv0, nu1, nv1;
-	
-	nu0 = u; nv0 = v;
-	nu1 = u+1; nv1 = v+1;
-	if(u-nu0 < 0.5) {
-		nu0 = u-1;
-		nu1 = u;
-	}
-	if(v-nv0 < 0.5) {
-		nv0 = v-1;
-		nv1 = v;
-	}
-	*/
 	getLight(m_pOpacity[offset + v*CUBERASTER_BUFFER_N + u], lighting);
 }

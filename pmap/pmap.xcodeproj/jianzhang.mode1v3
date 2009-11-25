@@ -202,24 +202,24 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7F93730910B08AD900649F1E</string>
+				<string>7F80DCBB10BDCFC00093F98A</string>
 				<key>PBXProjectModuleLabel</key>
-				<string>Z3DTexture.cpp</string>
+				<string>PTCMapViz.cpp</string>
 				<key>PBXSplitModuleInNavigatorKey</key>
 				<dict>
 					<key>Split0</key>
 					<dict>
 						<key>PBXProjectModuleGUID</key>
-						<string>7F93730A10B08AD900649F1E</string>
+						<string>7F80DCBC10BDCFC00093F98A</string>
 						<key>PBXProjectModuleLabel</key>
-						<string>Z3DTexture.cpp</string>
+						<string>PTCMapViz.cpp</string>
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7FDDE8A110B2EC3500DD5AEA</string>
+						<string>7F80DCBD10BDCFC00093F98A</string>
 						<key>history</key>
 						<array>
-							<string>7F93736710B09CED00649F1E</string>
+							<string>7F80DCA910BDCDE70093F98A</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -231,11 +231,11 @@
 			<key>Geometry</key>
 			<dict>
 				<key>Frame</key>
-				<string>{{0, 20}, {554, 564}}</string>
+				<string>{{0, 20}, {673, 605}}</string>
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>243 139 554 605 0 0 1280 778 </string>
+				<string>20 121 673 646 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -272,8 +272,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -320,12 +318,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>24</integer>
-									<integer>23</integer>
+									<integer>8</integer>
+									<integer>1</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {186, 249}}</string>
+							<string>{{0, 13}, {186, 249}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -344,7 +343,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>426 430 663 308 0 0 1280 778 </string>
+						<string>93 452 663 308 0 0 1280 778 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -381,7 +380,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {455, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>426 430 663 308 0 0 1280 778 </string>
+								<string>93 452 663 308 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -389,6 +388,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -401,7 +402,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {455, 262}}</string>
 								<key>RubberWindowFrame</key>
-								<string>426 430 663 308 0 0 1280 778 </string>
+								<string>93 452 663 308 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -425,9 +426,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7FDDE89F10B2EC3500DD5AEA</string>
+				<string>7F80DCB910BDCFC00093F98A</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7FDDE8A010B2EC3500DD5AEA</string>
+				<string>7F80DCBA10BDCFC00093F98A</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -561,15 +562,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7F93730610B08AD900649F1E</string>
-		<string>7F93732210B08E3C00649F1E</string>
-		<string>7F93732E10B0905500649F1E</string>
-		<string>7F93731C10B08E3C00649F1E</string>
-		<string>7F93730910B08AD900649F1E</string>
+		<string>7F80DCBB10BDCFC00093F98A</string>
 		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>426 430 663 308 0 0 1280 778 </string>
+	<string>93 452 663 308 0 0 1280 778 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -646,7 +643,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FE58BA50FB61F9000187112</string>
-				<string>7F93730F10B08AD900649F1E</string>
+				<string>7F80DC6510BDC3A00093F98A</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
