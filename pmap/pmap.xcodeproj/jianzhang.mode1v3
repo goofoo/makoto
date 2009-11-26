@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F80DCBD10BDCFC00093F98A</string>
+						<string>7F7AB9CA10BF177700D12B41</string>
 						<key>history</key>
 						<array>
-							<string>7F80DCA910BDCDE70093F98A</string>
+							<string>7F80DCBD10BDCFC00093F98A</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -235,7 +235,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>20 121 673 646 0 0 1280 778 </string>
+				<string>26 44 673 646 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -426,9 +426,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F80DCB910BDCFC00093F98A</string>
+				<string>7F7AB9C210BF054500D12B41</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F80DCBA10BDCFC00093F98A</string>
+				<string>7F7AB9C310BF054500D12B41</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -562,6 +562,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>7FE58BA50FB61F9000187112</string>
 		<string>7F80DCBB10BDCFC00093F98A</string>
 		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 	</array>
@@ -643,7 +644,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FE58BA50FB61F9000187112</string>
-				<string>7F80DC6510BDC3A00093F98A</string>
+				<string>7F7AB9C510BF054500D12B41</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

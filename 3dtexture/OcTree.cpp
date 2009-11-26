@@ -615,8 +615,8 @@ void OcTree::sortDraw()
 			//glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freqbuf[idraw]);
 			
 			XYZ ox, oy, pp;
-			ox = fSpriteX * sizebuf[idraw] * 2.0;
-			oy = fSpriteY * sizebuf[idraw] * 2.0;
+			ox = fSpriteX * sizebuf[idraw] * 2.5;
+			oy = fSpriteY * sizebuf[idraw] * 2.5;
 		
 			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, t_grid_opacity[visgrd[idraw].grid_id]);
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
@@ -1481,7 +1481,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 	XYZ ray;
 	float solidangle;
 	ray = node->mean - origin;
-	solidangle = node->area/(ray.lengthSquare() + 0.00001);
+	solidangle = sqrt(node->area)/(ray.length() + 0.00001);
 	if(solidangle < CUBERASTER_MAXANGLE) {
 		raster->write(ray, sample_opacity*(node->high-node->low+1));
 		return;
@@ -1489,10 +1489,11 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 	if( node->isLeaf || node->high - node->low < 8 ) {
 		for(unsigned i= node->low; i<= node->high; i++) {
 			ray = m_pGrid[i].pos - origin;
-			if(ray.lengthSquare() < node->area) return;
+			if(ray.length() < node->area) return;
 			
-			solidangle = m_pGrid[i].area/(ray.lengthSquare() + 0.00001);
-			
+			solidangle = sqrt(m_pGrid[i].area)/(ray.length() + 0.00001);
+			raster->writemip(ray, sample_opacity, int(solidangle*8));
+			/*
 			int nsamp = 1+solidangle*CUBERASTER_MAXANGLEINV;
 			nsamp *= nsamp;
 			float r = sqrt(m_pGrid[i].area);
@@ -1512,6 +1513,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 				if(ray.lengthSquare() < node->area) continue;
 				raster->write(ray, sample_opacity/nsamp);
 			}
+			*/
 		}
 	}
 	else {
@@ -1539,6 +1541,7 @@ void OcTree::voxelOcclusionAccum(OCTNode *node)
 	if(node->isLeaf) {
 		raster->clear();
 		occlusionAccum(node->mean);
+		raster->compose();
 		
 		float l, vl;
 		for(unsigned int j=0; j<SH_N_SAMPLES; j++) {

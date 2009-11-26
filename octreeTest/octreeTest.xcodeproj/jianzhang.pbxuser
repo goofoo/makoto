@@ -69,23 +69,53 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 280872189;
-			PBXWorkspaceStateSaveDate = 280872189;
+			PBXPerProjectTemplateStateSaveDate = 280950784;
+			PBXWorkspaceStateSaveDate = 280950784;
 		};
 		perUserProjectItems = {
-			7F80DC6F10BDC3D70093F98A = 7F80DC6F10BDC3D70093F98A /* PBXTextBookmark */;
-			7F80DC8310BDC4290093F98A = 7F80DC8310BDC4290093F98A /* PBXTextBookmark */;
-			7F80DC9310BDC5210093F98A /* PBXTextBookmark */ = 7F80DC9310BDC5210093F98A /* PBXTextBookmark */;
-			7F80DC9410BDC5210093F98A /* PBXTextBookmark */ = 7F80DC9410BDC5210093F98A /* PBXTextBookmark */;
-			7F80DC9D10BDC6080093F98A /* PBXBookmark */ = 7F80DC9D10BDC6080093F98A /* PBXBookmark */;
-			7F80DCA710BDCD3E0093F98A /* PBXBookmark */ = 7F80DCA710BDCD3E0093F98A /* PBXBookmark */;
-			7F80DCAF10BDCE250093F98A /* PBXTextBookmark */ = 7F80DCAF10BDCE250093F98A /* PBXTextBookmark */;
-			7F80DCB210BDCE250093F98A /* PBXTextBookmark */ = 7F80DCB210BDCE250093F98A /* PBXTextBookmark */;
-			7F80DCB710BDCF540093F98A /* PBXTextBookmark */ = 7F80DCB710BDCF540093F98A /* PBXTextBookmark */;
-			7F80DCB810BDCF540093F98A /* PBXTextBookmark */ = 7F80DCB810BDCF540093F98A /* PBXTextBookmark */;
+			7F7AB9CF10BF177D00D12B41 /* PBXTextBookmark */ = 7F7AB9CF10BF177D00D12B41 /* PBXTextBookmark */;
+			7F7AB9D110BF177D00D12B41 /* PBXTextBookmark */ = 7F7AB9D110BF177D00D12B41 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
+		};
+	};
+	7F7AB9CF10BF177D00D12B41 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7AB9D010BF177D00D12B41 /* OcTree.h */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F7AB9D010BF177D00D12B41 /* OcTree.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = OcTree.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/OcTree.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavWindowFrame = "{{38, 108}, {557, 644}}";
+		};
+	};
+	7F7AB9D110BF177D00D12B41 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F7AB9D210BF177D00D12B41 /* OcTree.h */;
+		name = "OcTree.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 467;
+		vrLoc = 0;
+	};
+	7F7AB9D210BF177D00D12B41 /* OcTree.h */ = {
+		isa = PBXFileReference;
+		name = OcTree.h;
+		path = /Users/jianzhang/Documents/plankton/3dtexture/OcTree.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {498, 3052}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 467}";
 		};
 	};
 	7F80C8D4104EFCA1001882AC /* shVizNode.cpp */ = {
@@ -104,122 +134,45 @@
 			sepNavWindowFrame = "{{93, 47}, {645, 716}}";
 		};
 	};
-	7F80DC6F10BDC3D70093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
-		name = "rasterVizNode.cpp: 95";
-		rLen = 0;
-		rLoc = 2365;
-		rType = 0;
-		vrLen = 645;
-		vrLoc = 1969;
-	};
-	7F80DC8310BDC4290093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
-		name = "rasterVizNode.cpp: 95";
-		rLen = 0;
-		rLoc = 2365;
-		rType = 0;
-		vrLen = 645;
-		vrLoc = 1969;
-	};
-	7F80DC9310BDC5210093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		comments = "error: no matching function for call to 'Z3DTexture::constructTree()'";
-		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
-		rLen = 1;
-		rLoc = 46;
-		rType = 1;
-	};
-	7F80DC9410BDC5210093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
-		name = "octreeVizNode.cpp: 47";
-		rLen = 4;
-		rLoc = 1239;
-		rType = 0;
-		vrLen = 443;
-		vrLoc = 987;
-	};
-	7F80DC9D10BDC6080093F98A /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
-	};
-	7F80DCA710BDCD3E0093F98A /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
-	};
-	7F80DCAF10BDCE250093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
-		name = "octreeVizNode.cpp: 52";
-		rLen = 0;
-		rLoc = 1384;
-		rType = 0;
-		vrLen = 833;
-		vrLoc = 911;
-	};
-	7F80DCB210BDCE250093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
-		name = "rasterVizNode.cpp: 95";
-		rLen = 0;
-		rLoc = 2365;
-		rType = 0;
-		vrLen = 594;
-		vrLoc = 1903;
-	};
-	7F80DCB710BDCF540093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */;
-		name = "octreeVizNode.cpp: 119";
-		rLen = 0;
-		rLoc = 3002;
-		rType = 0;
-		vrLen = 700;
-		vrLoc = 2534;
-	};
-	7F80DCB810BDCF540093F98A /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */;
-		name = "rasterVizNode.cpp: 95";
-		rLen = 0;
-		rLoc = 2365;
-		rType = 0;
-		vrLen = 594;
-		vrLoc = 1903;
-	};
 	7F9C4B65107310DD00F29D03 /* CubeRaster.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {878, 5152}}";
-			sepNavSelRange = "{4304, 0}";
-			sepNavVisRange = "{3520, 950}";
-			sepNavWindowFrame = "{{84, 85}, {639, 625}}";
+			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{5196, 2939}\";\n        }\n    );\n    r = \"{0, 19278}\";\n}";
+			sepNavIntBoundsRect = "{{0, 0}, {884, 7896}}";
+			sepNavSelRange = "{4625, 0}";
+			sepNavVisRange = "{5192, 914}";
+			sepNavWindowFrame = "{{505, 101}, {639, 625}}";
 		};
 	};
 	7F9C4B66107310DD00F29D03 /* Z3DTexture.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {692, 4270}}";
+			sepNavIntBoundsRect = "{{0, 0}, {692, 4298}}";
 			sepNavSelRange = "{5132, 10}";
-			sepNavVisRange = "{2180, 628}";
-			sepNavWindowFrame = "{{527, 75}, {572, 505}}";
+			sepNavVisRange = "{5113, 578}";
+			sepNavWindowFrame = "{{336, 98}, {572, 505}}";
+		};
+	};
+	7F9C4B67107310DD00F29D03 /* OcTree.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1244, 27342}}";
+			sepNavSelRange = "{18778, 0}";
+			sepNavVisRange = "{17974, 1887}";
+			sepNavWindowFrame = "{{91, 74}, {557, 644}}";
 		};
 	};
 	7F9C4B7B107312E100F29D03 /* rasterVizNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {513, 3150}}";
+			sepNavIntBoundsRect = "{{0, 0}, {513, 3136}}";
 			sepNavSelRange = "{2365, 0}";
 			sepNavVisRange = "{1903, 594}";
-			sepNavWindowFrame = "{{549, 167}, {572, 505}}";
+			sepNavWindowFrame = "{{712, 181}, {572, 505}}";
 		};
 	};
 	7FA4203B104D9BCF009ABB17 /* octreeVizNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {716, 4550}}";
-			sepNavSelRange = "{3002, 0}";
-			sepNavVisRange = "{2534, 700}";
-			sepNavWindowFrame = "{{220, 93}, {495, 645}}";
+			sepNavIntBoundsRect = "{{0, 0}, {716, 4480}}";
+			sepNavSelRange = "{3082, 0}";
+			sepNavVisRange = "{1466, 678}";
+			sepNavWindowFrame = "{{337, 109}, {495, 645}}";
 		};
 	};
 	7FA4203C104D9BCF009ABB17 /* pluginMain.cpp */ = {
