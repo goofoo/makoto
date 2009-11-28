@@ -119,7 +119,7 @@ public:
 	void occlusionAccum(const XYZ& origin);
 	void occlusionAccum(OCTNode *node, const XYZ& origin);
 	
-	void setSampleOpacity(const float& val) {sample_opacity = val;}
+	void setSampleOpacity(const float& val) {sample_opacity = val/(float)num_grid*512;}
 	void setDirs(XYZ& key, XYZ& view) {m_key = key; m_eye = view;}
 	
 	void setSH(sphericalHarmonics* _sh) {sh = _sh;}

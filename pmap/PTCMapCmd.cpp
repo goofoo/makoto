@@ -73,7 +73,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	
 	float div = 1;
 	int last = max_level;
-	while(last >=0) {
+	while(last >1) {
 		div *=2;
 		last--;
 	}
@@ -222,6 +222,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	tree->setGridAgeData(ageb, npt);
 	MGlobal::displayInfo(MString(" num grid ")+ tree->getNumGrid());
 	MGlobal::displayInfo(MString(" num voxel ")+ tree->getNumVoxel());
+	MGlobal::displayInfo(MString(" num leaf ")+ tree->getNumLeaf());
 	MGlobal::displayInfo(MString(" max level ")+ tree->getMaxLevel());
 	MGlobal::displayInfo(" calculating voxel volume occlusion...");
 	tree->occlusionVolume(cloud_os, key_dir, view_dir);

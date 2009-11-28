@@ -122,7 +122,7 @@ void OcTree::construct(const XYZ& rootCenter, float rootSize, int maxLevel)
 
 	root = new OCTNode();
 	//root->parent = NULL;
-	num_voxel = 0;
+	num_voxel = num_leaf = 0;
 	create(root, 0, num_grid-1, rootCenter, rootSize, 0, num_voxel);
 	
 }
@@ -148,6 +148,7 @@ void OcTree::create(OCTNode *node, int low, int high, const XYZ& center, const f
 	count++;
 	
 	if(level == max_level) {
+		num_leaf++;
 		node->isLeaf = 1;
 		return;
 	}
@@ -615,8 +616,8 @@ void OcTree::sortDraw()
 			//glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freqbuf[idraw]);
 			
 			XYZ ox, oy, pp;
-			ox = fSpriteX * sizebuf[idraw] * 2.5;
-			oy = fSpriteY * sizebuf[idraw] * 2.5;
+			ox = fSpriteX * sizebuf[idraw] * 1.5;
+			oy = fSpriteY * sizebuf[idraw] * 1.5;
 		
 			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, t_grid_opacity[visgrd[idraw].grid_id]);
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
@@ -1481,18 +1482,20 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 	XYZ ray;
 	float solidangle;
 	ray = node->mean - origin;
-	solidangle = sqrt(node->area)/(ray.length() + 0.00001);
+	solidangle = node->size*2/(ray.length() + 0.00001);
 	if(solidangle < CUBERASTER_MAXANGLE) {
 		raster->write(ray, sample_opacity*(node->high-node->low+1));
 		return;
 	}
-	if( node->isLeaf || node->high - node->low < 8 ) {
-		for(unsigned i= node->low; i<= node->high; i++) {
-			ray = m_pGrid[i].pos - origin;
-			if(ray.length() < node->area) return;
+	if( node->isLeaf ) {
+		if(ray.length() < node->size) return;
+		raster->writemip(ray, sample_opacity*(node->high-node->low+1), int(solidangle*8));
+		//for(unsigned i= node->low; i<= node->high; i++) {
+			//ray = m_pGrid[i].pos - origin;
+			//if(ray.length() < node->area) return;
 			
-			solidangle = sqrt(m_pGrid[i].area)/(ray.length() + 0.00001);
-			raster->writemip(ray, sample_opacity, int(solidangle*8));
+			//solidangle = sqrt(m_pGrid[i].area)/(ray.length() + 0.00001);
+			//raster->writemip(ray, sample_opacity, int(solidangle*8));
 			/*
 			int nsamp = 1+solidangle*CUBERASTER_MAXANGLEINV;
 			nsamp *= nsamp;
@@ -1514,7 +1517,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 				raster->write(ray, sample_opacity/nsamp);
 			}
 			*/
-		}
+		//}
 	}
 	else {
 		occlusionAccum(node->child000, origin);
