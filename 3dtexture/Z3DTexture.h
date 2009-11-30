@@ -20,7 +20,7 @@
 struct NamedSHCOEFF
 {
 	string name;
-	SHB3COEFF* data;
+	SHB4COEFF* data;
 };
 
 typedef vector<NamedSHCOEFF*>TRIDTexSHList;
@@ -63,7 +63,7 @@ public:
 	void getGridById(unsigned idx, RGRID& data) const;
 	void setProjection(MATRIX44F cameraspace, float fov, int iperspective);
 	void setPortWidth(const int& val);
-	SHB3COEFF* getNamedSH(const char* name);
+	SHB4COEFF* getNamedSH(const char* name);
 	void setProgram(GLhandleARB obj) { m_pTree->setProgram(obj); }
 	void setMeanRadius(const float& val) { m_pTree->setMeanRadius(val); }
 	void setKeyScale(const float& val) { m_pTree->setKeyScale(val); }

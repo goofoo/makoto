@@ -37,7 +37,20 @@ MStatus octreeVizNode::compute( const MPlug& plug, MDataBlock& data )
 { 
 	MStatus status;
 	if(plug == aoutput) {
-		MString sname = data.inputValue(aHDRName).asString();	
+		double time = data.inputValue(acurrenttime).asTime().value();
+		int frame_lo = time + 0.005;
+		if(frame_lo < 3) frame_lo = 3;
+		
+		if(frame_lo >60) frame_lo = 60;
+		
+		MString sname = data.inputValue(aHDRName).asString();
+		sname = "/Users/jianzhang/Documents/maya/projects/default/data/untitled";
+		char filename[512];
+		sprintf( filename, "%s.%d.pmap", sname.asChar(), frame_lo );
+		
+		sname = filename;	
+		
+		MGlobal::displayInfo(sname);
 		if(sname != m_gridname)	{
 			m_gridname = sname;
 			if(m_pTex) delete m_pTex;

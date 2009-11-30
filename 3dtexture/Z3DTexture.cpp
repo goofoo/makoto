@@ -97,7 +97,7 @@ char Z3DTexture::load(const char* filename)
 	
 	infile.read((char*)&datatype, 4);
 	while(!infile.eof()) {
-		if(datatype == 108) {
+		if(datatype == 192) {
 			infile.read((char*)&namelength, 4);
 			char *attrname = new char[32];
 			infile.read((char*)attrname, namelength);
@@ -106,9 +106,9 @@ char Z3DTexture::load(const char* filename)
 			NamedSHCOEFF* attr = new NamedSHCOEFF();
 			
 			attr->name = attrname;
-			attr->data = new SHB3COEFF[m_pTree->getNumVoxel()];
+			attr->data = new SHB4COEFF[m_pTree->getNumVoxel()];
 			
-			infile.read((char*)attr->data, 108*m_pTree->getNumVoxel());
+			infile.read((char*)attr->data, 192*m_pTree->getNumVoxel());
 			attrib_sh.push_back(attr);
 		}
 		infile.read((char*)&datatype, 4);
@@ -153,13 +153,13 @@ void Z3DTexture::save(const char* filename)
 	m_pTree->save(outfile);
 	
 // record voxel arributes	
-	int datatype = 108, namelength;
+	int datatype = 192, namelength;
 	for(unsigned i=0; i < attrib_sh.size(); i++) {
 		outfile.write((char*)&datatype, 4);
 		namelength = attrib_sh[i]->name.size();
 		outfile.write((char*)&namelength, 4);
 		outfile.write((char*)attrib_sh[i]->name.c_str(), namelength);
-		outfile.write((char*)attrib_sh[i]->data, 108*m_pTree->getNumVoxel());
+		outfile.write((char*)attrib_sh[i]->data, 192*m_pTree->getNumVoxel());
 	}
 	
 	outfile.close();
@@ -202,11 +202,11 @@ void Z3DTexture::occlusionVolume(float opacity, XYZ& key_dir, XYZ& view_dir)
 	
 	NamedSHCOEFF* attr = new NamedSHCOEFF();
 	attr->name = "key_lighting";
-	attr->data = new SHB3COEFF[m_pTree->getNumVoxel()];
+	attr->data = new SHB4COEFF[m_pTree->getNumVoxel()];
 	
 	NamedSHCOEFF* attr1 = new NamedSHCOEFF();
 	attr1->name = "back_lighting";
-	attr1->data = new SHB3COEFF[m_pTree->getNumVoxel()];
+	attr1->data = new SHB4COEFF[m_pTree->getNumVoxel()];
 	
 	m_pTree->setSH(m_sh);
 	m_pTree->setRaster(raster);
@@ -297,7 +297,7 @@ void Z3DTexture::setPortWidth(const int& val)
 	m_pTree->setHalfPortWidth(halfwidth);
 }
 
-SHB3COEFF* Z3DTexture::getNamedSH(const char* name)
+SHB4COEFF* Z3DTexture::getNamedSH(const char* name)
 {
 	for(unsigned i=0; i < attrib_sh.size(); i++) {
 		if(attrib_sh[i]->name == name) {

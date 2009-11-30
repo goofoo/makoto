@@ -764,4 +764,9 @@ struct SHB3COEFF
 {
 	XYZ value[9];
 };
+
+struct SHB4COEFF
+{
+	XYZ value[16];
+};
 #endif /* ZDATA_H */

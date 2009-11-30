@@ -19,9 +19,10 @@ struct NodeNDistance
 
 void detail2NSlice(int& detail, int& nslice) { nslice = 3 + detail/8*2; if(nslice > 13) nslice = 13; }
 
-const float constantCoeff[9] = {3.543211, 
+const float constantCoeff[16] = {3.543211, 
 								0.000605, 0.000152, -0.003217, 
-								0.000083, -0.002813, -0.000021, -0.001049, 0.000144};
+								0.000083, -0.002813, -0.000021, -0.001049, 0.000144,
+								0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 								
 static FNoise noise;
 

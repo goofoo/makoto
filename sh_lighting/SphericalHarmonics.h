@@ -4,8 +4,8 @@
 #include "../shared/zData.h"
 #include "../shared/zMath.h"
 #include "../shared/gBase.h"
-#define SH_N_BANDS 3
-#define SH_N_BASES 9
+#define SH_N_BANDS 4
+#define SH_N_BASES 16
 #define SH_N_SAMPLES 6400
 #define SH_N_SQRT_SAMPLES 80
 /* 4*PI/n/n */

@@ -69,12 +69,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 280950784;
-			PBXWorkspaceStateSaveDate = 280950784;
+			PBXPerProjectTemplateStateSaveDate = 281287700;
+			PBXWorkspaceStateSaveDate = 281287700;
 		};
 		perUserProjectItems = {
-			7F7AB9CF10BF177D00D12B41 /* PBXTextBookmark */ = 7F7AB9CF10BF177D00D12B41 /* PBXTextBookmark */;
-			7F7AB9D110BF177D00D12B41 /* PBXTextBookmark */ = 7F7AB9D110BF177D00D12B41 /* PBXTextBookmark */;
+			7F7AB9CF10BF177D00D12B41 = 7F7AB9CF10BF177D00D12B41 /* PBXTextBookmark */;
+			7F7AB9D110BF177D00D12B41 = 7F7AB9D110BF177D00D12B41 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBuildSettings = {
@@ -93,9 +93,6 @@
 		name = OcTree.h;
 		path = /Users/jianzhang/Documents/plankton/3dtexture/OcTree.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavWindowFrame = "{{38, 108}, {557, 644}}";
-		};
 	};
 	7F7AB9D110BF177D00D12B41 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -109,14 +106,10 @@
 	};
 	7F7AB9D210BF177D00D12B41 /* OcTree.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = OcTree.h;
 		path = /Users/jianzhang/Documents/plankton/3dtexture/OcTree.h;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {498, 3052}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 467}";
-		};
 	};
 	7F80C8D4104EFCA1001882AC /* shVizNode.cpp */ = {
 		uiCtxt = {

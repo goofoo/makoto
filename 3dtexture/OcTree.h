@@ -124,8 +124,8 @@ public:
 	
 	void setSH(sphericalHarmonics* _sh) {sh = _sh;}
 	void setRaster(CubeRaster* _raster) {raster = _raster;}
-	void setSHBuf(SHB3COEFF* _buf) {m_pSHBuf = _buf;}
-	void setSHBuf1(SHB3COEFF* _buf) {m_pSHBuf1 = _buf;}
+	void setSHBuf(SHB4COEFF* _buf) {m_pSHBuf = _buf;}
+	void setSHBuf1(SHB4COEFF* _buf) {m_pSHBuf1 = _buf;}
 	
 	void voxelOcclusionAccum();
 	void voxelOcclusionAccum(OCTNode *node);
@@ -171,8 +171,8 @@ private:
 	float* t_grid_opacity;
 	float sample_opacity;
 	
-	SHB3COEFF* m_pSHBuf;
-	SHB3COEFF* m_pSHBuf1;
+	SHB4COEFF* m_pSHBuf;
+	SHB4COEFF* m_pSHBuf1;
 	
 	XYZ m_key, m_eye;
 	char m_hasHdr;
