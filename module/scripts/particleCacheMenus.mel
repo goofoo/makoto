@@ -363,7 +363,7 @@ string $path = `textFieldGrp -q -text importParticleCachePath`;
 string $buffer[];
 $numTokens = `tokenize $path "." $buffer`;
 
-string $node = `createNode pmapViz`;
+string $node = `createNode pmapNode`;
 string $shape = `group -empty -n dummy`;
 connectAttr -f ($node + ".outval") ($shape + ".translateY");
 setAttr -type "string" ($node + ".cachePath") $buffer[0];
@@ -381,7 +381,7 @@ playbackOptions -min `intFieldGrp -q -v1 importParticleCacheRange` -max `intFiel
 global proc string findImportParticleCachePath()
 {
 	string $proj = `workspace -q -rd`;
-	string $path = `fileDialog -dm ($proj+"*.pmap")`;
+	string $path = `fileDialog -dm ($proj+"*.idr")`;
 	return $path;
 }
 

@@ -3,6 +3,7 @@
 #include <maya/MGlobal.h>
 #include <string>
 #include "../3dtexture/Z3DTexture.h"
+#include "../3dtexture/GPUOctree.h"
 #include "../shared/zWorks.h"
 
 PTCMapCmd::PTCMapCmd()
@@ -161,6 +162,8 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 		return MS::kSuccess;
 	}
 	
+	std::list<AParticle *> particles;
+	
 	RGRID *buf = new RGRID[npt];
 	unsigned *idxb = new unsigned[npt];
 	float *opab = new float[npt];
@@ -211,9 +214,17 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 			else opab[acc] = 1.f;
 			
 			ageb[acc] = ages[i];
+			
+			AParticle *pt = new AParticle();
+			pt->pos.x = positions[i].x;
+			pt->pos.y = positions[i].y;
+			pt->pos.z = positions[i].z; 
+			pt->r = 1.f;
+			
+			particles.push_back(pt);
 		}
 	}
-
+/*
 	Z3DTexture* tree = new Z3DTexture();
 	tree->setGrid(buf, npt);
 	tree->constructTree(root_center, root_size, max_level);
@@ -230,77 +241,29 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	MGlobal::displayInfo(" updating grid distance to neighbour...");
 	tree->distanceToNeighbour(cache_mindist);
 	MGlobal::displayInfo(" done");
-/*
-	XYZ* attrArray = new XYZ[npt];
-	float* attr = new float[npt];
-	for(unsigned i=0; i<attribArray.length(); i++)
-	{ 
-		acc = 0;
-		MStringArray tokenizeAttr;
-		MString attribute;
-		attribute = attribArray[i];
-		attribute.split(':',tokenizeAttr);
 
-		MString temp = tokenizeAttr[0];
-		//char* attriName = temp.asChar();
-		list.reset();
-		list.getDagPath (fDagPath, component);
-		MFnParticleSystem ps( fDagPath );
-			
-		if(tokenizeAttr[1] == "vectorArray")
-			{
-				if(ps.hasAttribute(tokenizeAttr[0]))
-				{
-					list.reset();
-					for(;!list.isDone();list.next()) {
-		                list.getDagPath (fDagPath, component);
-		                MFnParticleSystem ps( fDagPath );
-
-						MVectorArray attribute;
-						ps.getPerParticleAttribute(tokenizeAttr[0],attribute);
-						for(unsigned j=0; j<attribute.length(); j++,acc++ )
-						{
-							MVector p = attribute[j];
-							attrArray[acc].x = p[0];
-							attrArray[acc].y = p[1];
-							attrArray[acc].z = p[2];
-						}
-					}
-					tree->addThree(attrArray,temp.asChar(),buf);
-					//MGlobal::displayInfo(MString("")+temp.asChar());
-				}
-				else MGlobal::displayWarning(MString("This object has't ")+tokenizeAttr[0]+MString(" attribute"));
-			}
-			
-			if(tokenizeAttr[1] == "floatArray")
-			{
-				if(ps.hasAttribute(tokenizeAttr[0]))
-				{
-					list.reset();
-					for(;!list.isDone();list.next()) {
-		                list.getDagPath (fDagPath, component);
-		                MFnParticleSystem ps( fDagPath );
-
-					    MDoubleArray attribute;
-					    ps.getPerParticleAttribute(tokenizeAttr[0],attribute);
-					    for(unsigned j=0; j<attribute.length(); j++,acc++ )
-							attr[acc] = attribute[j]; 
-					}
-					tree->addSingle(attr,temp.asChar(),buf);
-					//MGlobal::displayInfo(MString("")+temp.asChar());
-				}
-				else MGlobal::displayWarning(MString("This object has't ")+tokenizeAttr[0]+MString(" attribute"));
-			}
-			//delete[] attrArray;
-			//delete attrArray;
-	}
-*/
 	char filename[512];
 	sprintf( filename, "%s/%s.%d.pmap", cache_path.asChar(), cache_name.asChar(), frame );
 	MGlobal::displayInfo(MString("PTCMap saved ") + filename);
 	tree->save(filename);
 	
 	delete tree;
+	*/
+	if(!particles.empty()) {
+		GPUOctree *data = new GPUOctree();
+		data->create(root_center, root_size, 8, particles);
+		MGlobal::displayInfo(MString(" num voxel ")+ data->getNumVoxel());
+		MGlobal::displayInfo(MString(" max level ")+ data->getMaxLevel());
+		
+		char filename[512];
+	sprintf( filename, "%s/%s.%d.idr", cache_path.asChar(), cache_name.asChar(), frame );
+	
+		data->dumpIndirection(filename);
+		
+		delete data;
+		particles.clear();
+	}
+
 	return MS::kSuccess;
 }
 

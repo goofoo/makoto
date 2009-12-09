@@ -10,6 +10,7 @@
 #include "PTCMapViz.h"
 #include "PTCDemViz.h"
 #include "viewVolumeTool.h"
+#include "PMapNode.h"
 
 MStatus initializePlugin( MObject obj )
 //
@@ -23,7 +24,7 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "ZHANG JIAN", "0.5.2 Fri Nov 27 2009", "Any");
+	MFnPlugin plugin( obj, "ZHANG JIAN", "0.5.5 Wed Dec 9 2009", "Any");
 
 	status = plugin.registerCommand( "pmapCache", PTCMapCmd::creator, PTCMapCmd::newSyntax );
 	if (!status) {
@@ -54,6 +55,14 @@ MStatus initializePlugin( MObject obj )
 	if (!status) {
 	      status.perror("deregisterCommand");
 	      return status;
+	}
+	
+	status = plugin.registerNode( "pmapNode", PMapNode::id, 
+                                   &PMapNode::creator, &PMapNode::initialize,
+                                                 MPxNode::kLocatorNode );
+   if (!status) {
+		status.perror("registerNode");
+		return status;
 	}
 
    MGlobal::executeCommand ( "source particleCacheMenus.mel;particleCacheMakeMenus;" );
@@ -93,6 +102,12 @@ MStatus uninitializePlugin( MObject obj )
 	}
 	
 	status = plugin.deregisterContextCommand( "viewVolumeToolContext", "viewVolumeTool");
+	
+	status = plugin.deregisterNode( PMapNode::id );
+	if (!status) {
+		status.perror("deregisterNode");
+		return status;
+	}
 	
     MGlobal::executeCommand ( "particleCacheRemoveMenus;" );
 
