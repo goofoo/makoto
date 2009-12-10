@@ -99,7 +99,7 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		if( time < minfrm ) time = minfrm;
 		int frame_lo = time + 0.005;
 		char filename[512];
-		sprintf( filename, "%s.%d.idr", path.asChar(), frame_lo );
+		sprintf( filename, "%s.%d", path.asChar(), frame_lo );
 		
 		fValid = fData->load(filename);
 		if(!fValid) MGlobal::displayInfo("PMap cannot load file");
@@ -205,7 +205,7 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	int port[4];
 	glGetIntegerv(GL_VIEWPORT, port);
 
-	if(fValid) fData->drawBox();
+	if(fValid) { fData->drawCube(); }
 	
 	view.endGL();
 }

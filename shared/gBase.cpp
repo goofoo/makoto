@@ -1049,7 +1049,6 @@ void gBase::drawBox(const float xmin, const float xmax, const float ymin, const 
 
 void gBase::drawBox(const XYZ& cen, const float& size)
 {
-	glBegin(GL_QUADS);
 			glVertex3f(cen.x - size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y - size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
@@ -1079,7 +1078,6 @@ void gBase::drawBox(const XYZ& cen, const float& size)
 			glVertex3f(cen.x + size, cen.y + size, cen.z - size);
 			glVertex3f(cen.x + size, cen.y + size, cen.z + size);
 			glVertex3f(cen.x - size, cen.y + size, cen.z + size);
-	glEnd();
 }
 
 void gBase::drawLocator(const XYZ& origin)

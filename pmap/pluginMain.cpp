@@ -24,20 +24,29 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "ZHANG JIAN", "0.5.5 Wed Dec 9 2009", "Any");
+	MFnPlugin plugin( obj, "ZHANG JIAN", "0.5.7 Thu Dec 10 2009", "Any");
 
 	status = plugin.registerCommand( "pmapCache", PTCMapCmd::creator, PTCMapCmd::newSyntax );
 	if (!status) {
 		status.perror("registerCommand");
 		return status;
 	}
-	status = plugin.registerNode( "pmapViz", PTCMapLocator::id, 
-                                   &PTCMapLocator::creator, &PTCMapLocator::initialize,
+	
+	status = plugin.registerNode( "pmapNode", PMapNode::id, 
+                                   &PMapNode::creator, &PMapNode::initialize,
                                                  MPxNode::kLocatorNode );
    if (!status) {
 		status.perror("registerNode");
 		return status;
 	}
+	
+	//status = plugin.registerNode( "pmapViz", PTCMapLocator::id, 
+    //                               &PTCMapLocator::creator, &PTCMapLocator::initialize,
+   //                                              MPxNode::kLocatorNode );
+   //if (!status) {
+	//	status.perror("registerNode");
+	//	return status;
+	//}
 	status = plugin.registerNode( "pmapDem", PTCDemViz::id, 
                                    &PTCDemViz::creator, &PTCDemViz::initialize,
                                                  MPxNode::kLocatorNode );
@@ -55,14 +64,6 @@ MStatus initializePlugin( MObject obj )
 	if (!status) {
 	      status.perror("deregisterCommand");
 	      return status;
-	}
-	
-	status = plugin.registerNode( "pmapNode", PMapNode::id, 
-                                   &PMapNode::creator, &PMapNode::initialize,
-                                                 MPxNode::kLocatorNode );
-   if (!status) {
-		status.perror("registerNode");
-		return status;
 	}
 
    MGlobal::executeCommand ( "source particleCacheMenus.mel;particleCacheMakeMenus;" );
@@ -88,12 +89,18 @@ MStatus uninitializePlugin( MObject obj )
 		status.perror("deregisterCommand");
 		return status;
 	}
-
-	status = plugin.deregisterNode( PTCMapLocator::id );
+	
+	status = plugin.deregisterNode( PMapNode::id );
 	if (!status) {
 		status.perror("deregisterNode");
 		return status;
 	}
+
+	//status = plugin.deregisterNode( PTCMapLocator::id );
+	//if (!status) {
+	//	status.perror("deregisterNode");
+	//	return status;
+	//}
 	
 	status = plugin.deregisterNode( PTCDemViz::id );
 	if (!status) {
@@ -103,11 +110,7 @@ MStatus uninitializePlugin( MObject obj )
 	
 	status = plugin.deregisterContextCommand( "viewVolumeToolContext", "viewVolumeTool");
 	
-	status = plugin.deregisterNode( PMapNode::id );
-	if (!status) {
-		status.perror("deregisterNode");
-		return status;
-	}
+	
 	
     MGlobal::executeCommand ( "particleCacheRemoveMenus;" );
 

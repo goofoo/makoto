@@ -41,6 +41,7 @@ using namespace Imf;
 #define INDIRECTIONPOOLWIDTH 1024
 #define INDIRECTIONPOOLSIZE 1024*1024
 #define DATAPOOLWIDTH 512
+#define DATAPOOLSIZE 262144
 #define MAXNNODE 262143
 
 struct AParticle
@@ -59,6 +60,9 @@ struct GPUTreeNode
 	
 	unsigned short coordx, coordy;
 	GPUTreeNode **child;
+	
+// data
+	float density;
 };
 
 class GPUOctree
@@ -71,19 +75,22 @@ public:
 	void releaseNode(GPUTreeNode *node);
 	
 	void create(const XYZ& rootCenter, float rootSize, short maxLevel, const std::list<AParticle *>& particles);
-	void subdivideNode(GPUTreeNode *node, const XYZ& center, float size, short level, const std::list<AParticle *>& particles);
+	void subdivideNode(GPUTreeNode *node, const XYZ& center, float size, short level, const std::list<AParticle *>& particles, float density);
 	
-	void dumpIndirection(const char *filename) const;
-	void setIndirection(const GPUTreeNode *node, half *r, half *g, half *b, half *a) const;
+	void dumpIndirection(const char *filename);
+	void setIndirection(const GPUTreeNode *node);
 	
 	unsigned long getNumVoxel() const {return m_currentIndex-1;}
 	short getMaxLevel() const {return m_maxLevel;}
-	char isInBox(const XYZ& center, float size, const AParticle *particle);
+	float filterBox(const XYZ& center, float size, const AParticle *particle);
+	char bInBox(const XYZ& center, float size, const AParticle *particle);
 	
 	char load(const char *filename);
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	void drawBox() const;
 	void drawBoxNode(const XYZ& center, float size, int x, int y) const;
+	void drawCube() const;
+	void drawCubeNode(const XYZ& center, float size, int x, int y) const;
 private:
 	GPUTreeNode *m_root;
 	short m_maxLevel;
@@ -95,4 +102,9 @@ private:
 	half *m_idr_g;
 	half *m_idr_b;
 	half *m_idr_a;
+	
+	half *m_dt_r;
+	half *m_dt_g;
+	half *m_dt_b;
+	half *m_dt_a;
 };
