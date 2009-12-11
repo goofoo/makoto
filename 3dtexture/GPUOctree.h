@@ -58,7 +58,7 @@ struct GPUTreeNode
 		for(int i=0; i < 8; i++) child[i] = 0;
 	}
 	
-	unsigned short coordx, coordy;
+	short coordx, coordy;
 	GPUTreeNode **child;
 	
 // data
@@ -91,6 +91,8 @@ public:
 	void drawBoxNode(const XYZ& center, float size, int x, int y) const;
 	void drawCube() const;
 	void drawCubeNode(const XYZ& center, float size, int x, int y) const;
+	
+	const short* getIndirection() const {return m_idr;}
 private:
 	GPUTreeNode *m_root;
 	short m_maxLevel;
@@ -98,13 +100,9 @@ private:
 	XYZ m_rootCenter;
 	float m_rootSize;
 	
-	half *m_idr_r;
-	half *m_idr_g;
-	half *m_idr_b;
-	half *m_idr_a;
-	
 	half *m_dt_r;
 	half *m_dt_g;
 	half *m_dt_b;
 	half *m_dt_a;
+	short *m_idr;
 };

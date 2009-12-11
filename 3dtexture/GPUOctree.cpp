@@ -11,10 +11,7 @@
 #include "../shared/gBase.h"
 
 GPUOctree::GPUOctree() : m_root(0),
-m_idr_r(0),
-m_idr_g(0),
-m_idr_b(0),
-m_idr_a(0),
+m_idr(0),
 m_dt_r(0),
 m_dt_g(0),
 m_dt_b(0),
@@ -29,14 +26,11 @@ GPUOctree::~GPUOctree()
 void GPUOctree::release()
 {
 	if(m_root) releaseNode(m_root);
-	if(m_idr_r) delete[] m_idr_r;
-	if(m_idr_g) delete[] m_idr_g;
-	if(m_idr_b) delete[] m_idr_b;
-	if(m_idr_a) delete[] m_idr_a;
 	if(m_dt_r) delete[] m_dt_r;
 	if(m_dt_g) delete[] m_dt_g;
 	if(m_dt_b) delete[] m_dt_b;
 	if(m_dt_a) delete[] m_dt_a;
+	if(m_idr) delete[] m_idr;
 }
 
 void GPUOctree::releaseNode(GPUTreeNode *node)
@@ -119,16 +113,27 @@ void GPUOctree::subdivideNode(GPUTreeNode *node, const XYZ& center, float size, 
 
 void GPUOctree::dumpIndirection(const char *filename)
 {
-	m_idr_r = new half[INDIRECTIONPOOLSIZE];
-	m_idr_g = new half[INDIRECTIONPOOLSIZE];
-	m_idr_b = new half[INDIRECTIONPOOLSIZE];
-	m_idr_a = new half[INDIRECTIONPOOLSIZE];
+	m_idr = new short[INDIRECTIONPOOLSIZE*4];
+	
 	m_dt_r = new half[DATAPOOLSIZE];
 	m_dt_g = new half[DATAPOOLSIZE];
 	m_dt_b = new half[DATAPOOLSIZE];
 	m_dt_a = new half[DATAPOOLSIZE];
 	
 	setIndirection(m_root);
+	
+	half *m_idr_r = new half[INDIRECTIONPOOLSIZE];
+	half *m_idr_g = new half[INDIRECTIONPOOLSIZE];
+	half *m_idr_b = new half[INDIRECTIONPOOLSIZE];
+	half *m_idr_a = new half[INDIRECTIONPOOLSIZE];
+	
+	for(long i=0; i<INDIRECTIONPOOLSIZE; i++) {
+		m_idr_r[i] = (float)m_idr[i*4];
+		m_idr_g[i] = (float)m_idr[i*4+1];
+		m_idr_b[i] = (float)m_idr[i*4+2];
+		m_idr_a[i] = (float)m_idr[i*4+3];
+	}
+	
 // save indirection	
 	Header idrheader (INDIRECTIONPOOLWIDTH, INDIRECTIONPOOLWIDTH); 
 	idrheader.insert ("root_size", FloatAttribute (m_rootSize));
@@ -166,6 +171,11 @@ void GPUOctree::dumpIndirection(const char *filename)
        
         idrfile.setFrameBuffer (idrframeBuffer);                                // 16 
         idrfile.writePixels (INDIRECTIONPOOLWIDTH); 
+        
+        delete[] m_idr_r;
+	delete[] m_idr_g;
+	delete[] m_idr_b;
+	delete[] m_idr_a;
 // save data
 	Header dtheader (DATAPOOLWIDTH, DATAPOOLWIDTH); 
 		dtheader.channels().insert ("R", Channel (HALF));
@@ -222,20 +232,20 @@ void GPUOctree::setIndirection(const GPUTreeNode *node)
 				if(k==0) {
 					
 					if(node->child[k*4+j*2+i]) {
-						m_idr_r[poolloc] = float(node->child[k*4+j*2+i]->coordx);
-						m_idr_g[poolloc] = float(node->child[k*4+j*2+i]->coordy);
+						m_idr[poolloc*4] = node->child[k*4+j*2+i]->coordx;
+						m_idr[poolloc*4+1] = node->child[k*4+j*2+i]->coordy;
 					}
 					else { // empty
-						m_idr_r[poolloc] = m_idr_g[poolloc] = -1;
+						m_idr[poolloc*4] = m_idr[poolloc*4+1] = -1;
 					}
 				}
 				else {
 					if(node->child[k*4+j*2+i]) {
-						m_idr_b[poolloc] = float(node->child[k*4+j*2+i]->coordx);
-						m_idr_a[poolloc] = float(node->child[k*4+j*2+i]->coordy);
+						m_idr[poolloc*4+2] = node->child[k*4+j*2+i]->coordx;
+						m_idr[poolloc*4+3] = node->child[k*4+j*2+i]->coordy;
 					}
 					else { // empty
-						m_idr_b[poolloc] = m_idr_a[poolloc] = -1;
+						m_idr[poolloc*4+2] = m_idr[poolloc*4+3] = -1;
 					}
 				}
 				
@@ -320,10 +330,10 @@ char GPUOctree::load(const char *filename)
 		int width  = dw.max.x - dw.min.x + 1;
 		int height = dw.max.y - dw.min.y + 1; 
 		
-		m_idr_r = new half[width*height];
-		m_idr_g = new half[width*height];
-		m_idr_b = new half[width*height];
-		m_idr_a = new half[width*height];
+		half *m_idr_r = new half[width*height];
+		half *m_idr_g = new half[width*height];
+		half *m_idr_b = new half[width*height];
+		half *m_idr_a = new half[width*height];
 	
 		FrameBuffer idrframeBuffer; 
 		idrframeBuffer.insert ("R",                                  
@@ -356,7 +366,21 @@ char GPUOctree::load(const char *filename)
 								   0.0));
 								   
 		idrfile.setFrameBuffer (idrframeBuffer); 
-		idrfile.readPixels (dw.min.y, dw.max.y); 
+		idrfile.readPixels (dw.min.y, dw.max.y);
+		
+		m_idr = new short[INDIRECTIONPOOLSIZE*4];
+
+		for(int i=0; i<INDIRECTIONPOOLSIZE; i++) {
+			m_idr[i*4] = (short)m_idr_r[i];
+			m_idr[i*4+1] = (short)m_idr_g[i];
+			m_idr[i*4+2] = (short)m_idr_b[i];
+			m_idr[i*4+3] = (short)m_idr_a[i];
+		}
+		
+		delete[] m_idr_r;
+		delete[] m_idr_g;
+		delete[] m_idr_b;
+		delete[] m_idr_a;
 // read data
 		std::string dtname = filename;
 		dtname += ".exr";
@@ -457,14 +481,14 @@ void GPUOctree::drawBoxNode(const XYZ& center, float size, int x, int y) const
 				else halfCenter.z = center.z + halfSize;
 				
 				if(k==0) {
-					x = m_idr_r[poolloc];
-					y = m_idr_g[poolloc];
+					x = m_idr[poolloc*4];
+					y = m_idr[poolloc*4+1];
 					
 					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y);			
 				}
 				else {
-					x = m_idr_b[poolloc];
-					y = m_idr_a[poolloc];
+					x = m_idr[poolloc*4+2];
+					y = m_idr[poolloc*4+3];
 					
 					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y);
 				}
@@ -508,8 +532,8 @@ void GPUOctree::drawCubeNode(const XYZ& center, float size, int x, int y) const
 				else halfCenter.z = center.z + halfSize;
 				
 				if(k==0) {
-					x = m_idr_r[poolloc];
-					y = m_idr_g[poolloc];
+					x = m_idr[poolloc*4];
+					y = m_idr[poolloc*4+1];
 					
 					if(x >=0) {
 						drawCubeNode(halfCenter, halfSize, x, y);	
@@ -517,8 +541,8 @@ void GPUOctree::drawCubeNode(const XYZ& center, float size, int x, int y) const
 					}
 				}
 				else {
-					x = m_idr_b[poolloc];
-					y = m_idr_a[poolloc];
+					x = m_idr[poolloc*4+2];
+					y = m_idr[poolloc*4+3];
 					
 					if(x >=0) {
 						drawCubeNode(halfCenter, halfSize, x, y);
