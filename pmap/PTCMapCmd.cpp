@@ -74,10 +74,12 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	
 	float def_area = root_size;
 	int last = 0;
-	while(last < max_level) {
+	while(last < max_level-2) {
 		def_area /= 2;
 		last++;
 	}
+	
+	def_area = 1.0f;
 
 	//def_area *= def_area;
 	
@@ -250,7 +252,7 @@ MStatus PTCMapCmd::doIt( const MArgList& args)
 	*/
 	if(!particles.empty()) {
 		GPUOctree *data = new GPUOctree();
-		data->create(root_center, root_size, 8, particles);
+		data->create(root_center, root_size, max_level, particles);
 		MGlobal::displayInfo(MString(" num voxel ")+ data->getNumVoxel()+MString(" max level ")+ data->getMaxLevel()+ MString(" filter size ")+ def_area);
 		
 		char filename[512];

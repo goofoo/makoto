@@ -87,12 +87,16 @@ public:
 	
 	char load(const char *filename);
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
+	void getBBox(float& rootX, float& rootY, float& rootZ, float& rootSize) const;
 	void drawBox() const;
 	void drawBoxNode(const XYZ& center, float size, int x, int y) const;
 	void drawCube() const;
-	void drawCubeNode(const XYZ& center, float size, int x, int y) const;
+	void drawCubeNode(const XYZ& center, float size, int x, int y, int level) const;
 	
-	const short* getIndirection() const {return m_idr;}
+	short* getIndirection() const {return m_idr;}
+	float* getData() const {return m_dt;}
+	
+	void drawBox(const XYZ& center, float size) const;
 private:
 	GPUTreeNode *m_root;
 	short m_maxLevel;
@@ -100,9 +104,6 @@ private:
 	XYZ m_rootCenter;
 	float m_rootSize;
 	
-	half *m_dt_r;
-	half *m_dt_g;
-	half *m_dt_b;
-	half *m_dt_a;
+	float *m_dt;
 	short *m_idr;
 };
