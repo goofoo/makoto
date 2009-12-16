@@ -38,6 +38,7 @@ MObject	fluidViz::aswirl;
 MObject	fluidViz::aconserveVelocity;
 MObject fluidViz::atemperature;
 MObject	fluidViz::aconserveTemperature;
+MObject	fluidViz::aconserveDensity;
 MObject	fluidViz::awindx;
 MObject	fluidViz::awindz;
 MObject	fluidViz::asaveCache;
@@ -86,6 +87,7 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 	m_pDesc->velocity = zGetDoubleAttr(block, aconserveVelocity);
 	m_pDesc->temperature = zGetDoubleAttr(block, atemperature);
 	m_pDesc->temperatureLoss = zGetDoubleAttr(block, aconserveTemperature);
+	m_pDesc->conserveDensity = zGetDoubleAttr(block, aconserveDensity);
 	m_pDesc->wind_x = zGetDoubleAttr(block, awindx);
 	m_pDesc->wind_z = zGetDoubleAttr(block, awindz);
 	
@@ -248,6 +250,10 @@ MStatus fluidViz::initialize()
 	status = zCreateKeyableDoubleAttr(aconserveTemperature, MString("temperatureLoss"), MString("tls"), 1.0);
 	zCheckStatus(status, "ERROR creating conserveTemperature");
 	zCheckStatus(addAttribute(aconserveTemperature), "ERROR adding conserveTemperature");
+	
+	status = zCreateKeyableDoubleAttr(aconserveDensity, MString("conserveDenisty"), MString("csd"), 1.0);
+	zCheckStatus(status, "ERROR creating conserveDensity");
+	zCheckStatus(addAttribute(aconserveDensity), "ERROR adding conserveDensity");
 	
 	status = zCreateKeyableDoubleAttr(awindx, MString("windX"), MString("wdx"), 0.0);
 	zCheckStatus(status, "ERROR creating wind x");

@@ -41,6 +41,7 @@ public:
 	static MObject	aconserveVelocity;
 	static MObject atemperature;
 	static MObject	aconserveTemperature;
+	static MObject	aconserveDensity;
 	static MObject	awindx;
 	static MObject	awindz;
 	static MObject	asaveCache;

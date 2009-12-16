@@ -248,12 +248,11 @@ static const char *programSource =
 //"	return h4texRECT(y, IN.coord3D.xz);"
 "}"
 "\n"
-"half4 addTemperature(vfconn IN, uniform samplerRECT u, uniform samplerRECT impulse) : COLOR"
+"half4 addTemperature(vfconn IN, uniform samplerRECT u, uniform samplerRECT impulse, uniform float scale) : COLOR"
 "{"
 "	half4 left, right, bottom, top, back, front;"
 "	h4gridneighbourst(impulse, IN.TexCoord, IN.coordZ, left, right, bottom, top, back, front);"
-//"	return h4texRECT(u, IN.TexCoord) + (left.a+right.a+bottom.a+top.a+back.a+front.a)/120;"
-"return h4texRECT(u, IN.TexCoord) + half4(left.a +right.a+ bottom.a + top.a + back.a + front.a)/120;"
+"return h4texRECT(u, IN.TexCoord) + half4(left.a +right.a+ bottom.a + top.a + back.a + front.a)/120 * scale;"
 "}"
 "\n"
 "half4 addVelocity(vfconn IN, uniform samplerRECT u, uniform samplerRECT impulse) : COLOR"
@@ -437,6 +436,7 @@ m_frag_advect(0)
 	cgGLLoadProgram(m_frag_addTemperature);
 	addTemperature_u = cgGetNamedParameter(m_frag_addTemperature, "u");
 	addTemperature_impulse = cgGetNamedParameter(m_frag_addTemperature, "impulse");
+	addTemperature_scale = cgGetNamedParameter(m_frag_addTemperature, "scale");
 	
 	m_frag_addVelocity = cgCreateProgram(m_context, CG_SOURCE, programSource, m_frag_profile, "addVelocity", 0);
 	
@@ -719,12 +719,8 @@ void CFluidProgram::convexEnd()
 	cgGLDisableTextureParameter(convex_z);
 }
 
-void CFluidProgram::addTemperatureBegin(GLuint i_textureU, GLuint i_textureImpulse)
+void CFluidProgram::addTemperatureBegin(GLuint i_textureU, GLuint i_textureImpulse, float k)
 {
-	//cgGLEnableProfile(m_vert_profile);
-	//cgGLBindProgram(m_vert_program);
-	//cgGLSetStateMatrixParameter(modelViewMatrix, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
-
 	cgGLEnableProfile(m_frag_profile);
 	cgGLBindProgram(m_frag_addTemperature);
 	
@@ -733,14 +729,14 @@ void CFluidProgram::addTemperatureBegin(GLuint i_textureU, GLuint i_textureImpul
 	
 	cgGLSetTextureParameter(addTemperature_impulse, i_textureImpulse);
 	cgGLEnableTextureParameter(addTemperature_impulse);
+	
+	cgGLSetParameter1f(addTemperature_scale, k);
 }
 
 void CFluidProgram::addTemperatureEnd()
 {
 	cgGLDisableTextureParameter(addTemperature_u);
 	cgGLDisableTextureParameter(addTemperature_impulse);
-	//cgGLDisableProfile(m_frag_profile);
-	//cgGLDisableProfile(m_vert_profile);
 }
 
 void CFluidProgram::addVelocityBegin(GLuint i_textureU, GLuint i_textureImpulse)

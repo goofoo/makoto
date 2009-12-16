@@ -81,6 +81,8 @@ public:
 	void setIndirection(const GPUTreeNode *node);
 	
 	unsigned long getNumVoxel() const {return m_currentIndex-1;}
+	unsigned long getNumTwig() const {return m_currentTwigIndex-1;}
+	float getMinVariation() const {return m_min_variation;}
 	short getMaxLevel() const {return m_maxLevel;}
 	float filterBox(const XYZ& center, float size, const AParticle *particle);
 	char bInBox(const XYZ& center, float size, const AParticle *particle);
@@ -101,9 +103,11 @@ private:
 	GPUTreeNode *m_root;
 	short m_maxLevel;
 	unsigned long m_currentIndex;
+	unsigned long m_currentTwigIndex;
 	XYZ m_rootCenter;
 	float m_rootSize;
 	
 	float *m_dt;
 	short *m_idr;
+	float m_min_variation;
 };

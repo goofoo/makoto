@@ -42,6 +42,7 @@ public:
 	void setTemperatureLoss(float val) {m_keepTemperature = val;}
 	void setTemperature(const float& val) {fTemperature = val;}
 	void setWind(const float& x, const float& z) {fWindX = x; fWindZ = z;}
+	void setConserveDensity(float val) {m_conserve_denisty = val;}
 	
 	void drawList(const MObjectArray& obstacles);
 	
@@ -72,6 +73,9 @@ protected:
 	float m_gridSize, m_origin_x, m_origin_y, m_origin_z;
 	char fInitialized;
 	char fUndiagnosed;
+	
+	GLuint img_temper, img_density;
+	float m_conserve_denisty;
 };
 
 #endif

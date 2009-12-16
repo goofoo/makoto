@@ -7,7 +7,7 @@
 
 struct fluidDesc
 {
-	float gridSize, buoyancy, swirl, velocity, temperatureLoss, temperature, wind_x, wind_z;
+	float gridSize, buoyancy, swirl, velocity, temperatureLoss, temperature, wind_x, wind_z, conserveDensity;
 	int enable, save_cache, resolution_x, resolution_y, resolution_z;
 };
 

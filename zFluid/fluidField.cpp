@@ -83,10 +83,9 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	MStatus status;
 	int do_save_cache;
 	
-	if( plug == mOutputForce)
-	{
-        	int ison, rx, ry, rz;
-		float Kbuoyancy, Kswirl, Kvelocity, Ktemperature, temperatureLoss, wind_x, wind_z;
+	if( plug == mOutputForce) {
+		int ison, rx, ry, rz;
+		float Kbuoyancy, Kswirl, Kvelocity, Ktemperature, temperatureLoss, wind_x, wind_z, conserve_density;
 		MDataHandle hdesc = block.inputValue(ainDesc);
 		MObject odesc = hdesc.data();
 		MFnPluginData fdesc(odesc);
@@ -109,6 +108,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 			do_save_cache = pDesc->save_cache;
 			wind_x = pDesc->wind_x;
 			wind_z = pDesc->wind_z;
+			conserve_density = pDesc->conserveDensity;
 		}
 		else return MS::kUnknownParameter;
 		
@@ -170,6 +170,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	m_pSolver->setTemperatureLoss(temperatureLoss);
 	m_pSolver->setSwirl(Kswirl);
 	m_pSolver->setWind(wind_x, wind_z);
+	m_pSolver->setConserveDensity(conserve_density);
 	
 	// initialize velocity field
 	if(currentTime.value() <= startTime.value() + 1){
@@ -263,7 +264,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 }
 
 void fluidField::draw( M3dView& view, const MDagPath& path, M3dView::DisplayStyle style, M3dView:: DisplayStatus )
-{return;
+{
 	 view.beginGL();
 	if(m_pSolver->isInitialized()) m_pSolver->showImpulse();
 	 view.endGL ();

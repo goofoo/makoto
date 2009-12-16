@@ -9,6 +9,7 @@
 
 #include "GPUOctree.h"
 #include "../shared/gBase.h"
+//#include <maya/MGlobal.h>
 
 GPUOctree::GPUOctree() : m_root(0),
 m_idr(0),
@@ -44,12 +45,14 @@ void GPUOctree::create(const XYZ& rootCenter, float rootSize, short maxLevel, co
 	m_rootSize = rootSize;
 	m_root = new GPUTreeNode();
 	m_currentIndex = 0;
-	
-	float den = 0;
-	for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
+	m_currentTwigIndex = 0;
+	m_min_variation = 10e6;
+		
+	float den = (float)particles.size()/rootSize/rootSize/rootSize/8;
+	//for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
 // store data
-		den += filterBox(rootCenter, rootSize, *it);
-	}
+	//	den += filterBox(rootCenter, rootSize, *it);
+	//}
 	subdivideNode(m_root, rootCenter, rootSize, 0, particles, den);
 }
 
@@ -61,12 +64,50 @@ void GPUOctree::subdivideNode(GPUTreeNode *node, const XYZ& center, float size, 
 	node->coordy = m_currentIndex/DATAPOOLWIDTH;
 	node->coordx = m_currentIndex%DATAPOOLWIDTH;
 	node->density = density;
-	
-	level++;
 
 	m_currentIndex++;
 	
-	if(level == m_maxLevel || m_currentIndex > MAXNNODE) return;
+	if(level == m_maxLevel || m_currentIndex > MAXNNODE) {
+		m_currentTwigIndex++;
+		return;
+	}
+	
+// determine variation 
+	float childdens[8], childfract, maxchildfract = 0.f;
+	
+	for (int k=0;k<2;k++) {
+		for (int j=0;j<2;j++) {
+			for (int i=0;i<2;i++) {
+				
+				if(i==0) halfCenter.x = center.x - halfSize;
+				else halfCenter.x = center.x + halfSize;
+				
+				if(j==0) halfCenter.y = center.y - halfSize;
+				else halfCenter.y = center.y + halfSize;
+				
+				if(k==0) halfCenter.z = center.z - halfSize;
+				else halfCenter.z = center.z + halfSize;
+
+				childdens[k*4 + j*2 +i] = 0;
+				for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
+					if(bInBox(halfCenter, halfSize, *it)) childdens[k*4 + j*2 +i] += 1.f;
+				}
+				
+				childdens[8] /= (float)particles.size();
+				
+				//childfract =  childdens[k*4 + j*2 +i] - 0.125f;
+				//if(childfract < 0.f) childfract = -childfract;
+				
+				
+				//if(childfract > maxchildfract) maxchildfract = childfract;
+			}
+		}
+	}
+	//MGlobal::displayInfo(MString("l ") + level + MString(" var ") + childdens[0] + " "+ childdens[1] + " "+ childdens[2] + " "+ childdens[3] + " "+ childdens[4] + " "+ childdens[5] + " "+ childdens[6] + " "+ childdens[7] );
+	//if(maxchildfract < m_min_variation) m_min_variation = maxchildfract;
+	//if(maxchildfract < 0.01f) return;
+	
+	level++;
 
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<2;j++) {
@@ -81,21 +122,25 @@ void GPUOctree::subdivideNode(GPUTreeNode *node, const XYZ& center, float size, 
 				if(k==0) halfCenter.z = center.z - halfSize;
 				else halfCenter.z = center.z + halfSize;
 				
-				std::list<AParticle *> divParticles;
-				float sumden = 0;
-				for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
-					float aden = filterBox(halfCenter, halfSize, *it);
-					if( aden > 0.f) {
-						sumden += aden;
-						divParticles.push_back(*it);
+				if(particles.size() > 0) {// divide when there are many hits
+					std::list<AParticle *> divParticles;
+					float sumden = 0;
+					for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
+						//float aden = filterBox(halfCenter, halfSize, *it);
+						if( bInBox(halfCenter, halfSize, *it)) {
+							//sumden += aden;
+							divParticles.push_back(*it);
+						}
 					}
+					
+					if(!divParticles.empty()) {
+						node->child[k*4+j*2+i] = new GPUTreeNode();
+						sumden = (float)divParticles.size()/size/size/size;
+						subdivideNode(node->child[k*4+j*2+i], halfCenter, halfSize, level, divParticles, sumden);
+					}
+					divParticles.clear();
 				}
 				
-				if(!divParticles.empty()) {
-					node->child[k*4+j*2+i] = new GPUTreeNode();
-					subdivideNode(node->child[k*4+j*2+i], halfCenter, halfSize, level, divParticles, sumden);
-				}
-				divParticles.clear();
 			}
 		}
 	}
@@ -265,25 +310,28 @@ float GPUOctree::filterBox(const XYZ& center, float size, const AParticle *parti
 {	
 	float H = particle->r;
 	float diffx = particle->pos.x - center.x;
-	if(diffx < 0) diffx = -diffx;
-	diffx -= size;
-	if(diffx > H) return 0.f;
+	if(diffx < 0.0f) diffx = -diffx;
+	diffx = diffx - size;
+	if(diffx >= H) return 0.f;
 	
 	float diffy = particle->pos.y - center.y;
-	if(diffy < 0) diffy = -diffy;
-	diffy -= size;
-	if(diffy > H) return 0.f;
+	if(diffy < 0.0f) diffy = -diffy;
+	diffy = diffy - size;
+	if(diffy >= H) return 0.f;
 	
 	float diffz = particle->pos.z - center.z;
-	if(diffz < 0) diffz = -diffz;
-	diffz -= size;
-	if(diffz > H) return 0.f;
+	if(diffz < 0.0f) diffz = -diffz;
+	diffz = diffz - size;
+	if(diffz >= H) return 0.f;
 	
+
 	if(diffx < 0) diffx = 1.f;
 	else diffx = 1.f - diffx/H;
 	
+	
 	if(diffy < 0) diffy = 1.f;
 	else diffy = 1.f - diffy/H;
+	
 	
 	if(diffz < 0) diffz = 1.f;
 	else diffz = 1.f - diffz/H;
@@ -294,24 +342,18 @@ float GPUOctree::filterBox(const XYZ& center, float size, const AParticle *parti
 char GPUOctree::bInBox(const XYZ& center, float size, const AParticle *particle)
 {
 	float diffx = particle->pos.x - center.x;
-	if(diffx < 0) diffx = -diffx;
-	diffx -= size;
-	if(diffx > particle->r*2) return 0;
+	if(diffx < -size || diffx >= size) return 0;
 	
 	float diffy = particle->pos.y - center.y;
-	if(diffy < 0) diffy = -diffy;
-	diffy -= size;
-	if(diffy > particle->r*2) return 0;
+	if(diffy < -size || diffy >= size) return 0;
 	
 	float diffz = particle->pos.z - center.z;
-	if(diffz < 0) diffz = -diffz;
-	diffz -= size;
-	if(diffz > particle->r*2) return 0;
+	if(diffz < -size || diffz >= size) return 0;
 	
 	return 1;
 }
 
-//#include <maya/MGlobal.h>
+//
 char GPUOctree::load(const char *filename)
 {
 	release();
@@ -545,7 +587,7 @@ void GPUOctree::drawCube() const
 
 void GPUOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int level) const
 {
-	if(level==7) {
+	if(level==8) {
 		// get density
 		float den = m_dt[(y * DATAPOOLWIDTH + x)*4];
 		den /= 4;
