@@ -39,11 +39,11 @@
 
 using namespace Imf;
 
-#define INDIRECTIONPOOLWIDTH 1024
-#define INDIRECTIONPOOLSIZE 1024*1024
-#define DATAPOOLWIDTH 512
-#define DATAPOOLSIZE 262144
-#define MAXNNODE 262143
+#define INDIRECTIONPOOLWIDTH 512
+#define INDIRECTIONIMAGEWIDTH 1024
+//#define INDIRECTIONPOOLSIZE 1024*1024
+#define DATAPOOLWIDTH 1024
+//#define DATAPOOLSIZE 262144
 
 struct AParticle
 {
@@ -62,7 +62,7 @@ struct GPUTreeNode
 		for(int i=0; i < 8; i++) child[i] = 0;
 	}
 	
-	short coordx, coordy;
+	long idx;
 	GPUTreeNode **child;
 	
 // data
@@ -85,8 +85,8 @@ public:
 	void dumpIndirection(const char *filename);
 	void setIndirection(const GPUTreeNode *node, short level);
 #endif	
-	unsigned long getNumVoxel() const {return m_currentIndex-1;}
-	unsigned long getNumLeaf() const {return m_currentLeafIndex-1;}
+	long getNumVoxel() const {return m_currentIndex-1;}
+	long getNumLeaf() const {return m_currentLeafIndex-1;}
 	float getMinVariation() const {return m_min_variation;}
 	short getMaxLevel() const {return m_maxLevel;}
 	//float filterBox(const XYZ& center, float size, const AParticle *particle);
@@ -107,8 +107,8 @@ public:
 private:
 	GPUTreeNode *m_root;
 	short m_maxLevel;
-	unsigned long m_currentIndex;
-	unsigned long m_currentLeafIndex;
+	long m_currentIndex;
+	long m_currentLeafIndex;
 	XYZ m_rootCenter;
 	float m_rootSize;
 	

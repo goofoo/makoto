@@ -10,7 +10,7 @@
 #include "FluidOctree.h"
 #include "../shared/gBase.h"
 #include "fluidSolver.h"
-#include <maya/MGlobal.h>
+//#include <maya/MGlobal.h>
 
 FluidOctree::FluidOctree() : m_root(0),
 m_idr(0),
@@ -40,7 +40,6 @@ void FluidOctree::releaseNode(GPUTreeNode *node)
 }
 #ifndef FLUIDTREEREADONLY
 void FluidOctree::create(FluidSolver *solver, short maxLevel)
-//void FluidOctree::create(const XYZ& rootCenter, float rootSize, short maxLevel, const std::list<AParticle *>& particles)
 {
 	m_maxLevel = maxLevel;
 	m_pSolver = solver;
@@ -82,15 +81,11 @@ void FluidOctree::subdivideNode(GPUTreeNode *node, int cx, int cy, int cz, int s
 	node->density = density;
 	//MGlobal::displayInfo(MString("level ")+ level +"sum "+node->density);
 	if(level < m_maxLevel) {
-		node->coordy = m_currentIndex/DATAPOOLWIDTH;
-		node->coordx = m_currentIndex%DATAPOOLWIDTH;
+		node->idx = m_currentIndex;
 		m_currentIndex++;
 	}
-	else {//node->density = float(rand()%313)/313.f;
-		node->coordy = m_currentLeafIndex/DATAPOOLWIDTH;
-		node->coordx = m_currentLeafIndex%DATAPOOLWIDTH;
-		//node->coordy = rand()%DATAPOOLWIDTH;
-		//node->coordx = rand()%DATAPOOLWIDTH;
+	else {
+		node->idx = m_currentLeafIndex;
 		m_currentLeafIndex++;
 		return;
 	}
@@ -126,7 +121,7 @@ void FluidOctree::subdivideNode(GPUTreeNode *node, int cx, int cy, int cz, int s
 				
 				float sum = addupDensityCells( childcx, childcy, childcz, halfSize);
 
-				if(sum > 0.004f) {
+				if(sum > 0.009f) {
 					node->child[k*4+j*2+i] = new GPUTreeNode();
 					
 					subdivideNode(node->child[k*4+j*2+i], childcx, childcy, childcz, halfSize, level, sum);
@@ -178,25 +173,39 @@ float FluidOctree::addupDensityCells(int cx, int cy, int cz, int size)
 
 void FluidOctree::dumpIndirection(const char *filename)
 {
-	m_idr = new short[INDIRECTIONPOOLSIZE*4];
-	m_dt = new float[DATAPOOLSIZE*4];
+	int indirectionimage_height = (m_currentIndex/INDIRECTIONPOOLWIDTH + 1)*2;
+	int indirectionimage_size = INDIRECTIONIMAGEWIDTH * indirectionimage_height;
+	m_idr = new short[indirectionimage_size*4];
+	
+	max_h = indirectionimage_height;
+	
+	int datapool_height = m_currentLeafIndex/DATAPOOLWIDTH + 1;
+	int datapool_size = DATAPOOLWIDTH * datapool_height;
+	m_dt = new float[datapool_size*4];
 
 	setIndirection(m_root, 0);
 	
-	half *idr_r = new half[INDIRECTIONPOOLSIZE];
-	half *idr_g = new half[INDIRECTIONPOOLSIZE];
-	half *idr_b = new half[INDIRECTIONPOOLSIZE];
-	half *idr_a = new half[INDIRECTIONPOOLSIZE];
+	half *idr_r = new half[indirectionimage_size];
+	half *idr_g = new half[indirectionimage_size];
+	half *idr_b = new half[indirectionimage_size];
+	half *idr_a = new half[indirectionimage_size];
 	
-	for(long i=0; i<INDIRECTIONPOOLSIZE; i++) {
-		idr_r[i] = (half)m_idr[i*4];
-		idr_g[i] = (half)m_idr[i*4+1];
-		idr_b[i] = (half)m_idr[i*4+2];
-		idr_a[i] = (half)m_idr[i*4+3];
+	for(int j=0; j<indirectionimage_height; j++) {
+		for(int i=0; i<INDIRECTIONIMAGEWIDTH; i++) {
+			idr_r[j*INDIRECTIONIMAGEWIDTH + i] = (half)m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4];
+			idr_g[j*INDIRECTIONIMAGEWIDTH + i] = (half)m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+1];
+			idr_b[j*INDIRECTIONIMAGEWIDTH + i] = (half)m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+2];
+			idr_a[j*INDIRECTIONIMAGEWIDTH + i] = (half)m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+3];
+			
+			//if(m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4]>=1024) MGlobal::displayInfo(MString("exx ")+m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4]+" "+1024);
+			//if(m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+1]>=max_h) MGlobal::displayInfo(MString("exy ")+m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+1]+" "+max_h);
+			//if(m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+2]>=1024) MGlobal::displayInfo(MString("exx ")+m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+2]+" "+1024);
+			//if(m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+3]>=max_h) MGlobal::displayInfo(MString("exy ")+m_idr[(j*INDIRECTIONIMAGEWIDTH + i)*4+3]+" "+max_h);
+		}
 	}
 	
 // save indirection	
-	Header idrheader (INDIRECTIONPOOLWIDTH, INDIRECTIONPOOLWIDTH); 
+	Header idrheader (INDIRECTIONIMAGEWIDTH, indirectionimage_height); 
 	idrheader.insert ("root_size", FloatAttribute (m_rootSize));
 	idrheader.insert ("max_level", FloatAttribute (m_maxLevel));
 	idrheader.insert ("root_center", V3fAttribute (Imath::V3f(m_rootCenter.x, m_rootCenter.y, m_rootCenter.z))); 
@@ -214,25 +223,25 @@ void FluidOctree::dumpIndirection(const char *filename)
                             Slice (HALF,                        // type   // 7 
                                    (char *) idr_r,            // base   // 8 
                                    sizeof (*idr_r) * 1,       // xStride// 9 
-                                   sizeof (*idr_r) * INDIRECTIONPOOLWIDTH));
+                                   sizeof (*idr_r) * INDIRECTIONIMAGEWIDTH));
         idrframeBuffer.insert ("G",                                // name   // 6 
                             Slice (HALF,                        // type   // 7 
                                    (char *) idr_g,            // base   // 8 
                                    sizeof (*idr_g) * 1,       // xStride// 9 
-                                   sizeof (*idr_g) * INDIRECTIONPOOLWIDTH));
+                                   sizeof (*idr_g) * INDIRECTIONIMAGEWIDTH));
 		 idrframeBuffer.insert ("B",                                // name   // 6 
                             Slice (HALF,                        // type   // 7 
                                    (char *) idr_b,            // base   // 8 
                                    sizeof (*idr_b) * 1,       // xStride// 9 
-                                   sizeof (*idr_b) * INDIRECTIONPOOLWIDTH));
+                                   sizeof (*idr_b) * INDIRECTIONIMAGEWIDTH));
 		 idrframeBuffer.insert ("A",                                // name   // 6 
                             Slice (HALF,                        // type   // 7 
                                    (char *) idr_a,            // base   // 8 
                                    sizeof (*idr_a) * 1,       // xStride// 9 
-                                   sizeof (*idr_a) * INDIRECTIONPOOLWIDTH));
+                                   sizeof (*idr_a) * INDIRECTIONIMAGEWIDTH));
        
         idrfile.setFrameBuffer (idrframeBuffer);                                // 16 
-        idrfile.writePixels (INDIRECTIONPOOLWIDTH); 
+        idrfile.writePixels (indirectionimage_height); 
         
         delete[] idr_r;
 	delete[] idr_g;
@@ -240,19 +249,20 @@ void FluidOctree::dumpIndirection(const char *filename)
 	delete[] idr_a;
 // save data
 
-	half *dt_r = new half[DATAPOOLSIZE];
-	half *dt_g = new half[DATAPOOLSIZE];
-	half *dt_b = new half[DATAPOOLSIZE];
-	half *dt_a = new half[DATAPOOLSIZE];
+	half *dt_r = new half[datapool_size];
+	half *dt_g = new half[datapool_size];
+	half *dt_b = new half[datapool_size];
+	half *dt_a = new half[datapool_size];
 	
-	for(long i=0; i<DATAPOOLSIZE; i++) {
-		dt_r[i] = (half)m_dt[i*4];
-		dt_g[i] = (half)m_dt[i*4+1];
-		dt_b[i] = (half)m_dt[i*4+2];
-		dt_a[i] = (half)m_dt[i*4+3];
+	for(int j=0; j<datapool_height; j++) {
+		for(int i=0; i<DATAPOOLWIDTH; i++) {
+			dt_r[j*DATAPOOLWIDTH+i] = (half)m_dt[(j*DATAPOOLWIDTH+i)*4];
+			dt_g[j*DATAPOOLWIDTH+i] = (half)m_dt[(j*DATAPOOLWIDTH+i)*4+1];
+			dt_b[j*DATAPOOLWIDTH+i] = (half)m_dt[(j*DATAPOOLWIDTH+i)*4+2];
+			dt_a[j*DATAPOOLWIDTH+i] = (half)m_dt[(j*DATAPOOLWIDTH+i)*4+3];
+		}
 	}
-	
-	Header dtheader (DATAPOOLWIDTH, DATAPOOLWIDTH); 
+	Header dtheader (DATAPOOLWIDTH, datapool_height); 
 		dtheader.channels().insert ("R", Channel (HALF));
 		dtheader.channels().insert ("G", Channel (HALF));                                   // 1 
         dtheader.channels().insert ("B", Channel (HALF));
@@ -284,7 +294,7 @@ void FluidOctree::dumpIndirection(const char *filename)
                                    sizeof (*dt_a) * DATAPOOLWIDTH));
        
         dtfile.setFrameBuffer (dtframeBuffer);                                // 16 
-        dtfile.writePixels (DATAPOOLWIDTH); 
+        dtfile.writePixels (datapool_height); 
 		
 	delete[] dt_r;
 	delete[] dt_g;
@@ -298,41 +308,44 @@ void FluidOctree::setIndirection(const GPUTreeNode *node, short level)
 	
 // set data for leaf node
 	if(level == m_maxLevel) {
-		long dataloc = node->coordy * DATAPOOLWIDTH + node->coordx;
-	m_dt[dataloc*4] = node->density;
-	m_dt[dataloc*4+1] = 0.f;
-	m_dt[dataloc*4+2] = 0.f;
-	m_dt[dataloc*4+3] = 0.f;
-	
-	return;
+		long dataloc = node->idx;
+		m_dt[dataloc*4] = node->density;
+		m_dt[dataloc*4+1] = 0.f;
+		m_dt[dataloc*4+2] = 0.f;
+		m_dt[dataloc*4+3] = 0.f;
+		
+		return;
 	}
 	
-	int pools = node->coordx * 2;
-	int poolt = node->coordy * 2;
+	int pools = node->idx%INDIRECTIONPOOLWIDTH;
+	int poolt = node->idx/INDIRECTIONPOOLWIDTH;
 	
 	level++;
+	
+	int poolwidth = INDIRECTIONPOOLWIDTH;
+	if(level == m_maxLevel) poolwidth = DATAPOOLWIDTH;
 	
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<2;j++) {
 			for (int i=0;i<2;i++) {
-				unsigned long poolloc = (poolt + j)*INDIRECTIONPOOLWIDTH + pools + i;
+				long poolimgloc = (poolt*2 + j)*INDIRECTIONIMAGEWIDTH + pools*2 + i;
 				if(k==0) {
 					
 					if(node->child[k*4+j*2+i]) {
-						m_idr[poolloc*4] = node->child[k*4+j*2+i]->coordx;
-						m_idr[poolloc*4+1] = node->child[k*4+j*2+i]->coordy;
+						m_idr[poolimgloc*4] = node->child[k*4+j*2+i]->idx%poolwidth;
+						m_idr[poolimgloc*4+1] = node->child[k*4+j*2+i]->idx/poolwidth;
 					}
 					else { // empty
-						m_idr[poolloc*4] = m_idr[poolloc*4+1] = -1;
+						m_idr[poolimgloc*4] = m_idr[poolimgloc*4+1] = -1;
 					}
 				}
 				else {
 					if(node->child[k*4+j*2+i]) {
-						m_idr[poolloc*4+2] = node->child[k*4+j*2+i]->coordx;
-						m_idr[poolloc*4+3] = node->child[k*4+j*2+i]->coordy;
+						m_idr[poolimgloc*4+2] = node->child[k*4+j*2+i]->idx%poolwidth;
+						m_idr[poolimgloc*4+3] = node->child[k*4+j*2+i]->idx/poolwidth;
 					}
 					else { // empty
-						m_idr[poolloc*4+2] = m_idr[poolloc*4+3] = -1;
+						m_idr[poolimgloc*4+2] = m_idr[poolimgloc*4+3] = -1;
 					}
 				}
 				
@@ -343,54 +356,6 @@ void FluidOctree::setIndirection(const GPUTreeNode *node, short level)
 	}
 }
 #endif
-/*
-float FluidOctree::filterBox(const XYZ& center, float size, const AParticle *particle)
-{	
-	float H = particle->r;
-	float diffx = particle->pos.x - center.x;
-	if(diffx < 0.0f) diffx = -diffx;
-	diffx = diffx - size;
-	if(diffx >= H) return 0.f;
-	
-	float diffy = particle->pos.y - center.y;
-	if(diffy < 0.0f) diffy = -diffy;
-	diffy = diffy - size;
-	if(diffy >= H) return 0.f;
-	
-	float diffz = particle->pos.z - center.z;
-	if(diffz < 0.0f) diffz = -diffz;
-	diffz = diffz - size;
-	if(diffz >= H) return 0.f;
-	
-
-	if(diffx < 0) diffx = 1.f;
-	else diffx = 1.f - diffx/H;
-	
-	
-	if(diffy < 0) diffy = 1.f;
-	else diffy = 1.f - diffy/H;
-	
-	
-	if(diffz < 0) diffz = 1.f;
-	else diffz = 1.f - diffz/H;
-	
-	return (diffx*diffy*diffz);
-}
-
-char FluidOctree::bInBox(const XYZ& center, float size, const AParticle *particle)
-{
-	float diffx = particle->pos.x - center.x;
-	if(diffx < -size || diffx >= size) return 0;
-	
-	float diffy = particle->pos.y - center.y;
-	if(diffy < -size || diffy >= size) return 0;
-	
-	float diffz = particle->pos.z - center.z;
-	if(diffz < -size || diffz >= size) return 0;
-	
-	return 1;
-}
-*/
 
 char FluidOctree::load(const char *filename)
 {
@@ -457,21 +422,29 @@ char FluidOctree::load(const char *filename)
 		idrfile.setFrameBuffer (idrframeBuffer); 
 		idrfile.readPixels (dw.min.y, dw.max.y);
 		
-		m_idr = new short[INDIRECTIONPOOLSIZE*4];
-
-		for(int i=0; i<INDIRECTIONPOOLSIZE; i++) {
-			m_idr[i*4] = idr_r[i];
-			m_idr[i*4+1] = idr_g[i];
-			m_idr[i*4+2] = idr_b[i];
-			m_idr[i*4+3] = idr_a[i];
+		int indirectionimage_height = height;
+	int indirectionimage_size = INDIRECTIONIMAGEWIDTH * indirectionimage_height;
+	
+		
+		m_idr = new short[indirectionimage_size*4];
+		for(int j=0; j<indirectionimage_height; j++) {
+			for(int i=0; i<INDIRECTIONIMAGEWIDTH; i++) {
+				m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4] = idr_r[(j*INDIRECTIONIMAGEWIDTH+i)];
+				m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4+1] = idr_g[(j*INDIRECTIONIMAGEWIDTH+i)];
+				m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4+2] = idr_b[(j*INDIRECTIONIMAGEWIDTH+i)];
+				m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4+3] = idr_a[(j*INDIRECTIONIMAGEWIDTH+i)];
+				
+				//MGlobal::displayInfo(MString("idr ")+m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4]+MString(" ")+m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4+1]+MString(" ")+m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4+2]+MString(" ")+m_idr[(j*INDIRECTIONIMAGEWIDTH+i)*4+3]);
+			}
 		}
-		
-		
 		
 		delete[] idr_r;
 		delete[] idr_g;
 		delete[] idr_b;
 		delete[] idr_a;
+		
+		//MGlobal::displayInfo(MString("idr h ")+indirectionimage_height+MString(" h ")+ height+ " max h"+max_h);
+		
 // read data
 
 		std::string dtname = filename;
@@ -483,10 +456,13 @@ char FluidOctree::load(const char *filename)
 		width  = dw.max.x - dw.min.x + 1;
 		height = dw.max.y - dw.min.y + 1; 
 		
-		half *dt_r = new half[DATAPOOLSIZE];
-		half *dt_g = new half[DATAPOOLSIZE];
-		half *dt_b = new half[DATAPOOLSIZE];
-		half *dt_a = new half[DATAPOOLSIZE];
+		int datapool_height = height;
+		int datapool_size = DATAPOOLWIDTH * datapool_height;
+		
+		half *dt_r = new half[datapool_size];
+		half *dt_g = new half[datapool_size];
+		half *dt_b = new half[datapool_size];
+		half *dt_a = new half[datapool_size];
 	
 		FrameBuffer dtframeBuffer; 
 		dtframeBuffer.insert ("R",                                  
@@ -521,15 +497,15 @@ char FluidOctree::load(const char *filename)
 		dtfile.setFrameBuffer (dtframeBuffer); 
 		dtfile.readPixels (dw.min.y, dw.max.y);
 		
-		m_dt = new float[DATAPOOLSIZE*4];
-
-		for(int i=0; i<DATAPOOLSIZE; i++) {
-			m_dt[i*4] = dt_r[i];
-			m_dt[i*4+1] = dt_g[i];
-			m_dt[i*4+2] = dt_b[i];
-			m_dt[i*4+3] = dt_a[i];
+		m_dt = new float[datapool_size*4];
+		for(int j=0; j<datapool_height; j++) {
+			for(int i=0; i<DATAPOOLWIDTH; i++) {
+				m_dt[(j*DATAPOOLWIDTH + i)*4] = dt_r[j*DATAPOOLWIDTH + i];
+				m_dt[(j*DATAPOOLWIDTH + i)*4+1] = dt_g[j*DATAPOOLWIDTH + i];
+				m_dt[(j*DATAPOOLWIDTH + i)*4+2] = dt_b[j*DATAPOOLWIDTH + i];
+				m_dt[(j*DATAPOOLWIDTH + i)*4+3] = dt_a[j*DATAPOOLWIDTH + i];
+			}
 		}
-		
 		delete[] dt_r;
 		delete[] dt_g;
 		delete[] dt_b;
@@ -577,8 +553,11 @@ void FluidOctree::drawBoxNode(const XYZ& center, float size, int x, int y, short
 	
 	if(level == m_maxLevel) return;
 			
-	int pools = x * 2;
-	int poolt = y * 2;
+	int pools = x;
+	int poolt = y;
+	
+	//if(poolt >= max_h) {MGlobal::displayInfo(MString("ex y ")+poolt+" "+max_h); return;}
+	//if(pools >= 512) {MGlobal::displayInfo(MString("ex x ")+pools); return;}
 	
 	float halfSize = size/2;
 	XYZ halfCenter;
@@ -588,7 +567,7 @@ void FluidOctree::drawBoxNode(const XYZ& center, float size, int x, int y, short
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<2;j++) {
 			for (int i=0;i<2;i++) {
-				unsigned long poolloc = (poolt + j)*INDIRECTIONPOOLWIDTH + pools + i;
+				long poolimgloc = (poolt*2 + j)*INDIRECTIONIMAGEWIDTH + pools*2 + i;
 				
 				if(i==0) halfCenter.x = center.x - halfSize;
 				else halfCenter.x = center.x + halfSize;
@@ -600,15 +579,15 @@ void FluidOctree::drawBoxNode(const XYZ& center, float size, int x, int y, short
 				else halfCenter.z = center.z + halfSize;
 				
 				if(k==0) {
-					x = m_idr[poolloc*4];
-					y = m_idr[poolloc*4+1];
-					
+					x = m_idr[poolimgloc*4];
+					y = m_idr[poolimgloc*4+1];
+					//MGlobal::displayInfo(MString("xy ")+x+" "+y);
 					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y, level);			
 				}
 				else {
-					x = m_idr[poolloc*4+2];
-					y = m_idr[poolloc*4+3];
-					
+					x = m_idr[poolimgloc*4+2];
+					y = m_idr[poolimgloc*4+3];
+					//MGlobal::displayInfo(MString("xy ")+x+" "+y);
 					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y, level);
 				}
 			}
@@ -635,8 +614,8 @@ void FluidOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int 
 	
 	level++;
 	
-	int pools = x * 2;
-	int poolt = y * 2;
+	int pools = x;
+	int poolt = y;
 	
 	float halfSize = size/2;
 	XYZ halfCenter;
@@ -644,7 +623,7 @@ void FluidOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int 
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<2;j++) {
 			for (int i=0;i<2;i++) {
-				unsigned long poolloc = (poolt + j)*INDIRECTIONPOOLWIDTH + pools + i;
+				long poolimgloc = (poolt*2 + j)*INDIRECTIONIMAGEWIDTH + pools*2 + i;
 				
 				if(i==0) halfCenter.x = center.x - halfSize;
 				else halfCenter.x = center.x + halfSize;
@@ -656,22 +635,16 @@ void FluidOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int 
 				else halfCenter.z = center.z + halfSize;
 				
 				if(k==0) {
-					x = m_idr[poolloc*4];
-					y = m_idr[poolloc*4+1];
+					x = m_idr[poolimgloc*4];
+					y = m_idr[poolimgloc*4+1];
 					
-					if(x >=0) {
-						drawCubeNode(halfCenter, halfSize, x, y, level);	
-						
-					}
+					if(x >=0) drawCubeNode(halfCenter, halfSize, x, y, level);	
 				}
 				else {
-					x = m_idr[poolloc*4+2];
-					y = m_idr[poolloc*4+3];
+					x = m_idr[poolimgloc*4+2];
+					y = m_idr[poolimgloc*4+3];
 					
-					if(x >=0) {
-						drawCubeNode(halfCenter, halfSize, x, y, level);
-						
-					}
+					if(x >=0) drawCubeNode(halfCenter, halfSize, x, y, level);
 				}
 				
 				

@@ -104,7 +104,7 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		fValid = fData->load(filename);
 		if(!fValid) MGlobal::displayInfo("PMap cannot load file");
 		
-		//MGlobal::displayInfo(MString(" max level ")+ fData->getMaxLevel());
+		MGlobal::displayInfo(MString(" max level ")+ fData->getMaxLevel());
 		
 		float kwei = data.inputValue(adiffuse).asFloat();
 		
