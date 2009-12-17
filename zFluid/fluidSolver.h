@@ -31,7 +31,7 @@ public:
 	void getVelocity(float& vx, float& vy, float& vz, float x, float y, float z);
 	void flatTo2D(int& s, int& t, int x, int y, int z);
 	float getVoxelDensity(int x, int y, int z);
-	
+	void getVoxelVelocity(float& vx, float& vy, float& vz, int x, int y, int z);
 	const float* getVelocity() {return m_velocityField;}
 	
 	void processObstacles(const MObjectArray& obstacles);

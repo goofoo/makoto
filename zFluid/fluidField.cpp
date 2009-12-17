@@ -249,7 +249,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	
 		//float rootSize = m_gridSize * maxres / 2;
 		
-		MGlobal::displayInfo(sfile);
+		MGlobal::displayInfo(MString("cache fluid: ")+sfile);
 		FluidOctree *data = new FluidOctree();
 		data->create(m_pSolver, maxlevel);
 		MGlobal::displayInfo(MString(" num twig ")+ data->getNumVoxel() +MString(" num leaf ")+ data->getNumLeaf() + MString(" max level ")+ data->getMaxLevel());
@@ -313,7 +313,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 }
 
 void fluidField::draw( M3dView& view, const MDagPath& path, M3dView::DisplayStyle style, M3dView:: DisplayStatus )
-{
+{return;
 	 view.beginGL();
 	if(m_pSolver->isInitialized()) m_pSolver->showImpulse();
 	 view.endGL ();

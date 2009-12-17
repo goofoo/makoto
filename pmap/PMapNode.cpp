@@ -104,7 +104,7 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		fValid = fData->load(filename);
 		if(!fValid) MGlobal::displayInfo("PMap cannot load file");
 		
-		MGlobal::displayInfo(MString(" max level ")+ fData->getMaxLevel());
+		MGlobal::displayInfo(MString(" num_leaf ")+ fData->getNumLeaf() + MString(" max_level ")+ fData->getMaxLevel());
 		
 		float kwei = data.inputValue(adiffuse).asFloat();
 		
@@ -207,7 +207,22 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	int port[4];
 	glGetIntegerv(GL_VIEWPORT, port);
 
-	if(fValid) { fData->drawCube(); }
+	if(fValid) {
+		switch(f_type) {
+		case 0: 
+			fData->drawCube();
+			break;
+		case 1: 
+			drawPoint();
+			break;
+		case 2: 
+			fData->drawVelocity();
+			break;
+		case 3: 
+			fData->drawBox();
+			break;
+		}
+	}
 	
 	view.endGL();
 }
@@ -229,6 +244,13 @@ MStatus PMapNode::initialize()
 	//
     MStatus stat;
 	MFnNumericAttribute nAttr;
+	
+	adrawtype = nAttr.create( "drawType", "dt", MFnNumericData::kInt, 0 );
+	nAttr.setMin(-1);
+	nAttr.setMax(3);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute( adrawtype );
 
 	MFnUnitAttribute uAttr;
 	frame = uAttr.create("currentTime", "ct", MFnUnitAttribute::kTime, 1.0);
@@ -261,11 +283,6 @@ MStatus PMapNode::initialize()
 	aviewattrib = stringAttr.create( "viewAttrib", "va", MFnData::kString );
  	stringAttr.setStorable(true);
 	addAttribute( aviewattrib );
-	
-	adrawtype = nAttr.create( "drawType", "dt", MFnNumericData::kInt, 1 );
-	nAttr.setStorable(true);
-	nAttr.setKeyable(true);
-	addAttribute( adrawtype );
 	
 	zWorks::createVectorArrayAttr(aincoe, "inCoeff", "icoe");
 	addAttribute( aincoe );
@@ -429,5 +446,21 @@ void PMapNode::parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipn
 		ispersp = 0;
 		fov = fnCamera.orthoWidth();
 	}
+}
+
+void PMapNode::drawPoint()
+{
+	long n_ptc = fData->getNumLeaf();
+	float* pVertex = new float[n_ptc*3];
+	
+	fData->pushVertex(pVertex);
+	glEnableClientState(GL_VERTEX_ARRAY);
+		//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glVertexPointer(3, GL_FLOAT, 0, (float*)pVertex);
+		//glTexCoordPointer(4, GL_FLOAT, 0, (float*)pColor);
+		glDrawArrays(GL_POINTS, 0, n_ptc);
+		//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);
+	delete[] pVertex;
 }
 //~:

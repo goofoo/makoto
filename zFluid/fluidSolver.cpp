@@ -675,7 +675,7 @@ glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	//m_fb->begin(i_pressureTexture, GL_TEXTURE_RECTANGLE_ARB);
 	// reset the pressure field texture before jacobi
 	
-	for(int i =0; i<32; i++) { 
+	for(int i =0; i<64; i++) { 
 
 		f_cg->jacobiBegin(i_pressureTexture, i_divergenceTexture);
 		drawQuad();
@@ -923,6 +923,17 @@ float FluidSolver::getVoxelDensity(int x, int y, int z)
 	flatTo2D(coordx, coordy, x, y, z);
 	
 	return m_densityField[m_frame_width*coordy + coordx];
+}
+
+void FluidSolver::getVoxelVelocity(float& vx, float& vy, float& vz, int x, int y, int z)
+{
+	int coordx, coordy;
+	
+	flatTo2D(coordx, coordy, x, y, z);
+	
+	vx = m_velocityField[(m_frame_width*coordy + coordx)*4];
+	vy = m_velocityField[(m_frame_width*coordy + coordx)*4+1];
+	vz = m_velocityField[(m_frame_width*coordy + coordx)*4+2];
 }
 
 void FluidSolver::getVelocity(float& vx, float& vy, float& vz, float x, float y, float z)
@@ -1250,7 +1261,7 @@ void FluidSolver::drawList(const MObjectArray& obstacles)
 
 void FluidSolver::showImpulse()
 {
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_density);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_velocityTexture);
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	glColor3f(1,1,1);
 	drawQuad();

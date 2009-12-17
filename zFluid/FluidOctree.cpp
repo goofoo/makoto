@@ -86,6 +86,8 @@ void FluidOctree::subdivideNode(GPUTreeNode *node, int cx, int cy, int cz, int s
 	}
 	else {
 		node->idx = m_currentLeafIndex;
+// buf grid
+		m_pSolver->getVoxelVelocity(node->velocity.x, node->velocity.y, node->velocity.z, cx, cy, cz);
 		m_currentLeafIndex++;
 		return;
 	}
@@ -177,8 +179,6 @@ void FluidOctree::dumpIndirection(const char *filename)
 	int indirectionimage_size = INDIRECTIONIMAGEWIDTH * indirectionimage_height;
 	m_idr = new short[indirectionimage_size*4];
 	
-	max_h = indirectionimage_height;
-	
 	int datapool_height = m_currentLeafIndex/DATAPOOLWIDTH + 1;
 	int datapool_size = DATAPOOLWIDTH * datapool_height;
 	m_dt = new float[datapool_size*4];
@@ -209,6 +209,7 @@ void FluidOctree::dumpIndirection(const char *filename)
 	idrheader.insert ("root_size", FloatAttribute (m_rootSize));
 	idrheader.insert ("max_level", FloatAttribute (m_maxLevel));
 	idrheader.insert ("root_center", V3fAttribute (Imath::V3f(m_rootCenter.x, m_rootCenter.y, m_rootCenter.z))); 
+	idrheader.insert ("num_leaf", FloatAttribute (m_currentLeafIndex)); 
 
 		idrheader.channels().insert ("R", Channel (HALF));
 		idrheader.channels().insert ("G", Channel (HALF));                                   // 1 
@@ -310,9 +311,9 @@ void FluidOctree::setIndirection(const GPUTreeNode *node, short level)
 	if(level == m_maxLevel) {
 		long dataloc = node->idx;
 		m_dt[dataloc*4] = node->density;
-		m_dt[dataloc*4+1] = 0.f;
-		m_dt[dataloc*4+2] = 0.f;
-		m_dt[dataloc*4+3] = 0.f;
+		m_dt[dataloc*4+1] = node->velocity.x;
+		m_dt[dataloc*4+2] = node->velocity.y;
+		m_dt[dataloc*4+3] = node->velocity.z;
 		
 		return;
 	}
@@ -374,6 +375,9 @@ char FluidOctree::load(const char *filename)
 		
 		const V3fAttribute *centerattr = idrfile.header().findTypedAttribute <V3fAttribute> ("root_center");
 		Imath::V3f center = centerattr->value();
+		
+		const FloatAttribute *nleafattr = idrfile.header().findTypedAttribute <FloatAttribute> ("num_leaf");
+		m_currentLeafIndex = nleafattr->value();
 		
 		m_rootCenter.x = center[0];
 		m_rootCenter.y = center[1];
@@ -540,11 +544,13 @@ void FluidOctree::getBBox(float& rootX, float& rootY, float& rootZ, float& rootS
 
 void FluidOctree::drawBox() const
 {
+	glDisable(GL_DEPTH_TEST);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBegin(GL_QUADS);
 	drawBoxNode(m_rootCenter, m_rootSize, 0, 0, 0);
 	glEnd();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void FluidOctree::drawBoxNode(const XYZ& center, float size, int x, int y, short level) const
@@ -607,6 +613,9 @@ void FluidOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int 
 	if(level== m_maxLevel) {
 		// get density
 		float den = m_dt[(y * DATAPOOLWIDTH + x)*4];
+		//float vx = m_dt[(y * DATAPOOLWIDTH + x)*4+1];
+		//float vy = m_dt[(y * DATAPOOLWIDTH + x)*4+2];
+		//float vz = m_dt[(y * DATAPOOLWIDTH + x)*4+3];
 		glColor3f(den, den, den);
 		drawBox(center, size/2);
 		return;
@@ -654,6 +663,69 @@ void FluidOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int 
 	
 }
 
+void FluidOctree::drawVelocity() const
+{
+	glBegin(GL_LINES);
+	drawVelocityNode(m_rootCenter, m_rootSize, 0, 0, 0);
+	glEnd();
+}
+
+void FluidOctree::drawVelocityNode(const XYZ& center, float size, int x, int y, int level) const
+{
+	if(level== m_maxLevel) {
+		// get velocity
+		float vx = m_dt[(y * DATAPOOLWIDTH + x)*4+1];
+		float vy = m_dt[(y * DATAPOOLWIDTH + x)*4+2];
+		float vz = m_dt[(y * DATAPOOLWIDTH + x)*4+3];
+		XYZ colv(vx, vy, vz);
+		colv.normalize();
+		glColor3f(colv.x * 0.5f + 0.5f, colv.y * 0.5f + 0.5f, colv.z * 0.5f + 0.5f);
+		glVertex3f(center.x, center.y, center.z);
+		glVertex3f(center.x+vx*3, center.y+vx*3, center.z+vz*3);
+		return;
+	}
+	
+	level++;
+	
+	int pools = x;
+	int poolt = y;
+	
+	float halfSize = size/2;
+	XYZ halfCenter;
+	
+	for (int k=0;k<2;k++) {
+		for (int j=0;j<2;j++) {
+			for (int i=0;i<2;i++) {
+				long poolimgloc = (poolt*2 + j)*INDIRECTIONIMAGEWIDTH + pools*2 + i;
+				
+				if(i==0) halfCenter.x = center.x - halfSize;
+				else halfCenter.x = center.x + halfSize;
+				
+				if(j==0) halfCenter.y = center.y - halfSize;
+				else halfCenter.y = center.y + halfSize;
+				
+				if(k==0) halfCenter.z = center.z - halfSize;
+				else halfCenter.z = center.z + halfSize;
+				
+				if(k==0) {
+					x = m_idr[poolimgloc*4];
+					y = m_idr[poolimgloc*4+1];
+					
+					if(x >=0) drawVelocityNode(halfCenter, halfSize, x, y, level);	
+				}
+				else {
+					x = m_idr[poolimgloc*4+2];
+					y = m_idr[poolimgloc*4+3];
+					
+					if(x >=0) drawVelocityNode(halfCenter, halfSize, x, y, level);
+				}
+				
+				
+			}
+		}
+	}
+}
+
 void FluidOctree::drawBox(const XYZ& center, float size) const
 {
 	glVertex3f(center.x - size, center.y - size, center.z - size);
@@ -685,4 +757,63 @@ void FluidOctree::drawBox(const XYZ& center, float size) const
 	glVertex3f(center.x + size, center.y + size, center.z - size);
 	glVertex3f(center.x + size, center.y + size, center.z + size);
 	glVertex3f(center.x - size, center.y + size, center.z + size);	
+}
+
+void FluidOctree::pushVertex(float* vert)
+{
+	long count = 0;
+	pushVertexNode(vert, m_rootCenter, m_rootSize, 0, 0, 0, count);
+}
+
+void FluidOctree::pushVertexNode(float* vert, const XYZ& center, float size, int x, int y, int level, long& count) const
+{
+	if(level== m_maxLevel) {
+		float vx = m_dt[(y * DATAPOOLWIDTH + x)*4+1];
+		float vy = m_dt[(y * DATAPOOLWIDTH + x)*4+2];
+		float vz = m_dt[(y * DATAPOOLWIDTH + x)*4+3];
+		vert[count*3] = center.x + vx;
+		vert[count*3+1] = center.y + vy;
+		vert[count*3+2] = center.z + vz;
+		
+		count++;
+		return;
+	}
+	
+	level++;
+	
+	int pools = x;
+	int poolt = y;
+	
+	float halfSize = size/2;
+	XYZ halfCenter;
+	
+	for (int k=0;k<2;k++) {
+		for (int j=0;j<2;j++) {
+			for (int i=0;i<2;i++) {
+				long poolimgloc = (poolt*2 + j)*INDIRECTIONIMAGEWIDTH + pools*2 + i;
+				
+				if(i==0) halfCenter.x = center.x - halfSize;
+				else halfCenter.x = center.x + halfSize;
+				
+				if(j==0) halfCenter.y = center.y - halfSize;
+				else halfCenter.y = center.y + halfSize;
+				
+				if(k==0) halfCenter.z = center.z - halfSize;
+				else halfCenter.z = center.z + halfSize;
+				
+				if(k==0) {
+					x = m_idr[poolimgloc*4];
+					y = m_idr[poolimgloc*4+1];
+					
+					if(x >=0) pushVertexNode(vert, halfCenter, halfSize, x, y, level, count);	
+				}
+				else {
+					x = m_idr[poolimgloc*4+2];
+					y = m_idr[poolimgloc*4+3];
+					
+					if(x >=0) pushVertexNode(vert, halfCenter, halfSize, x, y, level, count);
+				}
+			}
+		}
+	}
 }

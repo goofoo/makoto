@@ -29,6 +29,8 @@ public:
 
 	static  void*		creator();
 	static  MStatus		initialize();
+	
+	void drawPoint();
 
 public:
 

@@ -67,6 +67,7 @@ struct GPUTreeNode
 	
 // data
 	float density;
+	XYZ velocity;
 };
 
 class FluidOctree
@@ -85,8 +86,8 @@ public:
 	void dumpIndirection(const char *filename);
 	void setIndirection(const GPUTreeNode *node, short level);
 #endif	
-	long getNumVoxel() const {return m_currentIndex-1;}
-	long getNumLeaf() const {return m_currentLeafIndex-1;}
+	long getNumVoxel() const {return m_currentIndex;}
+	long getNumLeaf() const {return m_currentLeafIndex;}
 	float getMinVariation() const {return m_min_variation;}
 	short getMaxLevel() const {return m_maxLevel;}
 	//float filterBox(const XYZ& center, float size, const AParticle *particle);
@@ -99,11 +100,15 @@ public:
 	void drawBoxNode(const XYZ& center, float size, int x, int y, short level) const;
 	void drawCube() const;
 	void drawCubeNode(const XYZ& center, float size, int x, int y, int level) const;
+	void drawVelocity() const;
+	void drawVelocityNode(const XYZ& center, float size, int x, int y, int level) const;
 	
 	short* getIndirection() const {return m_idr;}
 	float* getData() const {return m_dt;}
 	
 	void drawBox(const XYZ& center, float size) const;
+	void pushVertex(float* vert);
+	void pushVertexNode(float* vert, const XYZ& center, float size, int x, int y, int level, long& count) const;
 private:
 	GPUTreeNode *m_root;
 	short m_maxLevel;
