@@ -6,10 +6,11 @@
 // Author: Maya Plug-in Wizard 2.0
 //
 #include <maya/MFnPlugin.h>
-#include "PTCMapCmd.h"
-#include "PTCMapViz.h"
-#include "PTCDemViz.h"
-#include "viewVolumeTool.h"
+#include <maya/MGlobal.h>
+//#include "PTCMapCmd.h"
+//#include "PTCMapViz.h"
+//#include "PTCDemViz.h"
+//#include "viewVolumeTool.h"
 #include "PMapNode.h"
 
 MStatus initializePlugin( MObject obj )
@@ -24,14 +25,14 @@ MStatus initializePlugin( MObject obj )
 //
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "ZHANG JIAN", "0.5.8 Sat Dec 12 2009", "Any");
-
+	MFnPlugin plugin( obj, "ZHANG JIAN", "0.6.1 Thu Dec 17 2009", "Any");
+/*
 	status = plugin.registerCommand( "pmapCache", PTCMapCmd::creator, PTCMapCmd::newSyntax );
 	if (!status) {
 		status.perror("registerCommand");
 		return status;
 	}
-	
+*/	
 	status = plugin.registerNode( "pmapNode", PMapNode::id, 
                                    &PMapNode::creator, &PMapNode::initialize,
                                                  MPxNode::kLocatorNode );
@@ -47,6 +48,7 @@ MStatus initializePlugin( MObject obj )
 	//	status.perror("registerNode");
 	//	return status;
 	//}
+	/*
 	status = plugin.registerNode( "pmapDem", PTCDemViz::id, 
                                    &PTCDemViz::creator, &PTCDemViz::initialize,
                                                  MPxNode::kLocatorNode );
@@ -65,7 +67,7 @@ MStatus initializePlugin( MObject obj )
 	      status.perror("deregisterCommand");
 	      return status;
 	}
-
+*/
    MGlobal::executeCommand ( "source particleCacheMenus.mel;particleCacheMakeMenus;" );
 
 	return status;
@@ -83,13 +85,13 @@ MStatus uninitializePlugin( MObject obj )
 {
 	MStatus   status;
 	MFnPlugin plugin( obj );
-
+/*
 	status = plugin.deregisterCommand( "pmapCache" );
 	if (!status) {
 		status.perror("deregisterCommand");
 		return status;
 	}
-	
+*/	
 	status = plugin.deregisterNode( PMapNode::id );
 	if (!status) {
 		status.perror("deregisterNode");
@@ -101,7 +103,7 @@ MStatus uninitializePlugin( MObject obj )
 	//	status.perror("deregisterNode");
 	//	return status;
 	//}
-	
+/*	
 	status = plugin.deregisterNode( PTCDemViz::id );
 	if (!status) {
 		status.perror("deregisterNode");
@@ -109,7 +111,7 @@ MStatus uninitializePlugin( MObject obj )
 	}
 	
 	status = plugin.deregisterContextCommand( "viewVolumeToolContext", "viewVolumeTool");
-	
+*/	
 	
 	
     MGlobal::executeCommand ( "particleCacheRemoveMenus;" );

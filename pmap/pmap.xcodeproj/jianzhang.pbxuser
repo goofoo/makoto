@@ -71,36 +71,74 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 282483358;
-			PBXWorkspaceStateSaveDate = 282483358;
+			PBXPerProjectTemplateStateSaveDate = 282692662;
+			PBXWorkspaceStateSaveDate = 282692662;
+		};
+		perUserProjectItems = {
+			7F23BA1C10D9904300FE03A1 /* PBXTextBookmark */ = 7F23BA1C10D9904300FE03A1 /* PBXTextBookmark */;
+			7F23BA2D10D9922100FE03A1 /* PBXTextBookmark */ = 7F23BA2D10D9922100FE03A1 /* PBXTextBookmark */;
+			7F23BA8110D9AC7C00FE03A1 /* PBXTextBookmark */ = 7F23BA8110D9AC7C00FE03A1 /* PBXTextBookmark */;
+			7F23BA8210D9AC7C00FE03A1 /* PBXTextBookmark */ = 7F23BA8210D9AC7C00FE03A1 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7FE58B990FB61EA800187112 /* Source Control */;
 		userBookmarkGroup = 7FC97743109B472F003E8507 /* PBXBookmarkGroup */;
 		userBuildSettings = {
 		};
 	};
-	7F1C20E110CD87EA00EB9D69 /* GPUOctree.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {860, 1596}}";
-			sepNavSelRange = "{1931, 0}";
-			sepNavVisRange = "{1401, 1502}";
-			sepNavWindowFrame = "{{81, 76}, {697, 662}}";
-		};
+	7F23BA1C10D9904300FE03A1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F23BA1D10D9904300FE03A1 /* PMapNode.h */;
+		rLen = 0;
+		rLoc = 2147483648;
+		rType = 0;
 	};
-	7F1C20E210CD87EA00EB9D69 /* GPUOctree.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1358, 9196}}";
-			sepNavSelRange = "{1544, 0}";
-			sepNavVisRange = "{832, 1169}";
-			sepNavWindowFrame = "{{211, 70}, {822, 695}}";
-		};
+	7F23BA1D10D9904300FE03A1 /* PMapNode.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = PMapNode.h;
+		path = /Users/jianzhang/Documents/plankton/pmap/PMapNode.h;
+		sourceTree = "<absolute>";
 	};
-	7F1FC56110815DDC009EA837 /* PTCDemViz.cpp */ = {
+	7F23BA2D10D9922100FE03A1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F82690110CEC37800AF3FE9 /* PMapNode.cpp */;
+		name = "PMapNode.cpp: 107";
+		rLen = 0;
+		rLoc = 2824;
+		rType = 0;
+		vrLen = 1294;
+		vrLoc = 9770;
+	};
+	7F23BA8110D9AC7C00FE03A1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F82690110CEC37800AF3FE9 /* PMapNode.cpp */;
+		name = "PMapNode.cpp: 107";
+		rLen = 0;
+		rLoc = 2759;
+		rType = 0;
+		vrLen = 1101;
+		vrLoc = 1897;
+	};
+	7F23BA8210D9AC7C00FE03A1 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F23BA8310D9AC7C00FE03A1 /* PMapNode.h */;
+		name = "PMapNode.h: 63";
+		rLen = 11;
+		rLoc = 1777;
+		rType = 0;
+		vrLen = 1117;
+		vrLoc = 886;
+	};
+	7F23BA8310D9AC7C00FE03A1 /* PMapNode.h */ = {
+		isa = PBXFileReference;
+		name = PMapNode.h;
+		path = /Users/jianzhang/Documents/plankton/pmap/PMapNode.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {634, 1988}}";
-			sepNavSelRange = "{3019, 0}";
-			sepNavVisRange = "{2367, 1059}";
-			sepNavWindowFrame = "{{15, 64}, {693, 709}}";
+			sepNavIntBoundsRect = "{{0, 0}, {746, 1008}}";
+			sepNavSelRange = "{1777, 11}";
+			sepNavVisRange = "{886, 1117}";
+			sepNavWindowFrame = "{{12, 98}, {672, 677}}";
 		};
 	};
 	7F4FE5FD109FFFB800584B2E /* viewVolumeTool.cpp */ = {
@@ -176,22 +214,6 @@
 			sepNavWindowFrame = "{{62, 171}, {623, 592}}";
 		};
 	};
-	7F81226F10711F040022BF82 /* PTCMapCmd.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1214, 4004}}";
-			sepNavSelRange = "{7864, 0}";
-			sepNavVisRange = "{5235, 776}";
-			sepNavWindowFrame = "{{354, 107}, {851, 604}}";
-		};
-	};
-	7F81227010711F040022BF82 /* PTCMapViz.cpp */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {728, 9716}}";
-			sepNavSelRange = "{8147, 49}";
-			sepNavVisRange = "{7254, 1132}";
-			sepNavWindowFrame = "{{69, 67}, {673, 702}}";
-		};
-	};
 	7F812284107120470022BF82 /* particleCacheMenus.mel */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {884, 7224}}";
@@ -202,10 +224,10 @@
 	};
 	7F82690110CEC37800AF3FE9 /* PMapNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {560, 6062}}";
-			sepNavSelRange = "{2274, 0}";
-			sepNavVisRange = "{1707, 1104}";
-			sepNavWindowFrame = "{{9, 129}, {568, 639}}";
+			sepNavIntBoundsRect = "{{0, 0}, {776, 6062}}";
+			sepNavSelRange = "{2759, 0}";
+			sepNavVisRange = "{1897, 1101}";
+			sepNavWindowFrame = "{{559, 83}, {568, 639}}";
 		};
 	};
 	7F8BAFF61081031000FE0291 /* FNoise.cpp */ = {
@@ -298,9 +320,9 @@
 	};
 	7FE58BA00FB61F6700187112 /* pluginMain.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {686, 1666}}";
-			sepNavSelRange = "{614, 0}";
-			sepNavVisRange = "{219, 1307}";
+			sepNavIntBoundsRect = "{{0, 0}, {670, 1694}}";
+			sepNavSelRange = "{2029, 88}";
+			sepNavVisRange = "{1488, 931}";
 			sepNavWindowFrame = "{{485, 96}, {745, 656}}";
 		};
 	};

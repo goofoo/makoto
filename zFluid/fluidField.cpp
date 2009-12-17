@@ -6,6 +6,7 @@
 #include "../shared/zMath.h"
 #include "fluidDescData.h"
 #include "../shared/gBase.h"
+#include "FluidOctree.h"
 
 MTypeId fluidField::id( 0x0004132a );
 MObject	fluidField::amatrix;
@@ -90,8 +91,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 		MObject odesc = hdesc.data();
 		MFnPluginData fdesc(odesc);
 		zjFluidDescData* dDesc = (zjFluidDescData*) fdesc.data();
-		if(dDesc)
-		{
+		if(dDesc) {
 			fluidDesc* pDesc = dDesc->getDesc();
 			//MGlobal::displayInfo(MString("on: ")+pDesc->enable);
 			m_pSolver->setGridSize(pDesc->gridSize);
@@ -176,10 +176,8 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	if(currentTime.value() <= startTime.value() + 1){
 		MGlobal::displayInfo(MString("Initialize fluid at frame ")+currentTime.value());
 		
-		if(isPowerof2(rx)==1&&isPowerof2(ry)==1&&isPowerof2(rz)==1)
-		{
-			if(rx!=m_rx || ry!=m_ry || rz!=m_rz)
-			{
+		if(isPowerof2(rx)==1&&isPowerof2(ry)==1&&isPowerof2(rz)==1) {
+			if(rx!=m_rx || ry!=m_ry || rz!=m_rz) {
 				m_rx = rx;
 				m_ry = ry;
 				m_rz = rz;
@@ -190,18 +188,14 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 		
 		m_pSolver->clear();
 	}
-	
-	
-	
-	
+
 	MDoubleArray ptc_age = zGetDoubleArrayAttr(block, ainAge);
 	
 	MArrayDataHandle hArray = block.inputArrayValue(aobstacle);
 	
 	int n_obs = hArray.elementCount();
 	MObjectArray obslist;
-	for(int iter=0; iter<n_obs; iter++)
-	{
+	for(int iter=0; iter<n_obs; iter++) {
 		obslist.append(hArray.inputValue().asMeshTransformed());
 		hArray.next();
 	}
@@ -210,10 +204,65 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 // simulate !
 		m_pSolver->processSources(points, velocities, ptc_age);
 		m_pSolver->processObstacles(obslist);
+		if(do_save_cache==1) m_pSolver->needDensity();
 		m_pSolver->update();
 	}
 
 	obslist.clear();
+// caching	
+	if(do_save_cache==1) {
+		MString sfile;
+		MGlobal::executeCommand(MString ("string $p = `workspace -q -fn`"), sfile);
+		sfile = sfile + "/data/" + name() + "." + (int)currentTime.value();
+		
+		int levelx = 0, levely = 0, levelz = 0;
+		int res = 1;
+		while (res < m_rx) {
+			res *= 2;
+			levelx++;
+		}
+		res = 1;
+		while (res < m_ry) {
+			res *= 2;
+			levely++;
+		}
+		res = 1;
+		while (res < m_rz) {
+			res *= 2;
+			levelz++;
+		}
+		
+		int maxlevel = levelx;
+		if(levely > maxlevel) maxlevel = levely;
+		if(levelz > maxlevel) maxlevel = levelz;
+		
+		
+		/*
+		XYZ rootCenter;
+		rootCenter.x = m_origin_x + m_gridSize * m_rx / 2;
+		rootCenter.y = m_origin_y + m_gridSize * m_ry / 2;
+		rootCenter.z = m_origin_z + m_gridSize * m_rz / 2;
+		
+		int maxres = m_rx;
+		if(m_ry > maxres) maxres = m_ry;
+		if(m_rz > maxres) maxres = m_rz;*/
+	
+		//float rootSize = m_gridSize * maxres / 2;
+		
+		MGlobal::displayInfo(sfile);
+		FluidOctree *data = new FluidOctree();
+		data->create(m_pSolver, maxlevel);
+		MGlobal::displayInfo(MString(" num twig ")+ data->getNumVoxel() +MString(" num leaf ")+ data->getNumLeaf() + MString(" max level ")+ data->getMaxLevel());
+		data->dumpIndirection(sfile.asChar());
+		delete data;
+		/*MObject particleNode;
+		MPlug agePlg(thisMObject(), ainAge);
+		zWorks::getConnectedNode(particleNode, agePlg);
+		
+		if(fdcFile::save(sfile.asChar(), points, dest_vels, ages) == 1) MGlobal::displayInfo(MString("ZFluid saved cache file: ")+sfile);
+		else MGlobal::displayWarning(MString("ZFluid failed to save cache file: ")+sfile);*/
+	}
+
 
 	// restore the perspective view port after drawing
 	float aspect = (float)pw/(float)ph;
@@ -235,7 +284,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	//
 	MVectorArray forceArray;
 	
-	calculateForce( points, velocities, forceArray, do_save_cache, (int)currentTime.value(), ptc_age);
+	calculateForce( points, velocities, forceArray);
 	
 	// get output data handle
 	//
@@ -277,10 +326,7 @@ void fluidField::calculateForce
 		const MVectorArray &points,		// current position of Object
 		const MVectorArray &velocities,		// current velocity of Object
 		//const MDoubleArray &masses,		// mass of Object
-		MVectorArray &OutputForce,		// output force
-		int i_cache,
-		int i_frame,
-		const MDoubleArray &ages
+		MVectorArray &OutputForce		// output force
 	)
 //
 //	Descriptions:
@@ -290,8 +336,7 @@ void fluidField::calculateForce
 	MStatus status;
 	// points and velocities should have the same length. If not return.
 	//
-	if( points.length() != velocities.length() )
-		return;
+	if( points.length() != velocities.length() ) return;
 	
 	int receptorSize = points.length();
 	
@@ -299,20 +344,17 @@ void fluidField::calculateForce
 	MVectorArray dest_vels;
 	// particle iterator
 	//
-	for (int ptIndex = 0; ptIndex < receptorSize; ptIndex ++ ) 
-	{
+	for (int ptIndex = 0; ptIndex < receptorSize; ptIndex ++ ) {
 		MPoint ploc(points[ptIndex]);
 		MVector pvel(velocities[ptIndex]);
 		getLocalPoint(ploc);
-		if(isInField(ploc)==1)
-		{
+		if(isInField(ploc)==1) {
 			m_pSolver->getVelocity(vx, vy, vz, ploc.x, ploc.y, ploc.z);
 
 			OutputForce.append( 24.0f*(24.0f*MVector(vx, vy, vz)*m_gridSize - pvel) );
 			dest_vels.append(24.0f*MVector(vx, vy, vz)*m_gridSize);
 		}
-		else
-			OutputForce.append( MVector(0,0,0) );
+		else OutputForce.append( MVector(0,0,0) );
 	}
 }
 

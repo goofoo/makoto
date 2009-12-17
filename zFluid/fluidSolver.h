@@ -30,6 +30,7 @@ public:
 	void clear();
 	void getVelocity(float& vx, float& vy, float& vz, float x, float y, float z);
 	void flatTo2D(int& s, int& t, int x, int y, int z);
+	float getVoxelDensity(int x, int y, int z);
 	
 	const float* getVelocity() {return m_velocityField;}
 	
@@ -47,13 +48,16 @@ public:
 	void drawList(const MObjectArray& obstacles);
 	
 	void setGridSize(float size) {m_gridSize = size;}
+	float getGridSize() const {return m_gridSize;}
 	void setOrigin(float x, float y, float z) {m_origin_x = x; m_origin_y = y; m_origin_z = z;}
+	void getOrigin(float& x, float& y, float& z) const {x=m_origin_x; y=m_origin_y; z=m_origin_z; }
+	
+	void needDensity() {m_needDensity = 1;}
+	void getDimension(int& x, int& y, int& z) const {x = m_width; y = m_height; z = m_depth;}
 	
 protected:
 	float* m_velocityField;
-	//float* m_obstacleField;
-	
-	
+	float *m_densityField;
 	int m_n_quad;
 	
 	XY* m_quad_p;
@@ -65,9 +69,7 @@ protected:
 	
 	int m_width, m_height, m_depth, m_tile_s, m_tile_t;
 	int m_frame_width, m_frame_height;
-	
 
-	
 	float m_buoyancy, m_swirl, m_keepVelocity, m_keepTemperature, fTemperature, fWindX, fWindZ;
 	
 	float m_gridSize, m_origin_x, m_origin_y, m_origin_z;
@@ -76,6 +78,7 @@ protected:
 	
 	GLuint img_temper, img_density;
 	float m_conserve_denisty;
+	char m_needDensity;
 };
 
 #endif

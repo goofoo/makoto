@@ -85,10 +85,7 @@ private:
 							const MVectorArray &points,
 							const MVectorArray &velocities,
 							//const MDoubleArray &masses,
-							MVectorArray &OutputForce,
-							int i_cache,
-							int i_frame,
-							const MDoubleArray &ages);
+							MVectorArray &OutputForce);
 							
 	void getLocalPoint(MPoint& pt);
 	void getLocalPoint(float& px, float& py, float& pz);

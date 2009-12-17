@@ -13,7 +13,7 @@
 #include <string>
 #include <maya/MFnCamera.h>
 #include <maya/MDagPath.h>
-#include "../3dtexture/GPUOctree.h"
+#include "../zFluid/FluidOctree.h"
  
 class PMapNode : public MPxLocatorNode
 {
@@ -60,7 +60,7 @@ public:
 	static MObject acameraname;
 	static      MObject     aoutval;
 private:
-	GPUOctree *fData;
+	FluidOctree *fData;
 	int f_type, fSaveImage;
 	
 	void parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipnear, double& clipfar, double& fov, int& ispersp);

@@ -70,7 +70,7 @@ GLuint z_fbo;
 GLenum status;
 
 FluidSolver::FluidSolver(void) 
-: m_velocityField(0),
+: m_velocityField(0), m_densityField(0),
 //m_temperatureField(0),
 //m_obstacleField(0),
 //m_fb(0),m_fbx(0),m_fby(0),m_fbz(0),
@@ -96,7 +96,7 @@ void FluidSolver::uninitialize()
 {
 	//if(m_obstacleField) delete[] m_obstacleField;
 	if(m_velocityField) delete[] m_velocityField;
-	//if(m_temperatureField) delete[] m_temperatureField;
+	if(m_densityField) delete[] m_densityField;
 	//if(m_fb) delete m_fb;
 	//if(m_fbx) delete m_fbx;
 	//if(m_fby) delete m_fby;
@@ -240,6 +240,7 @@ void FluidSolver::initialize(int width, int height, int depth)
 	//m_obstacleField = new float[m_width*m_depth*4];
 	
 	m_velocityField = new float[m_frame_width*m_frame_height*4];
+	m_densityField = new float[m_frame_width*m_frame_height];
 	//m_temperatureField = new float[m_frame_width*m_frame_height];
 	//float *zeros = new float[m_frame_width*m_frame_height*4];
 	//for(int j=0; j<m_frame_height; j++) {
@@ -552,6 +553,7 @@ void FluidSolver::initialize(int width, int height, int depth)
 #ifdef WIN32	
 	
 #endif
+	m_needDensity = 0;
 	fInitialized = 1;
 }
 
@@ -700,19 +702,21 @@ glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	drawQuad();
 	f_cg->gradientEnd();
 	
-		glReadBuffer(GL_COLOR_ATTACHMENT2_EXT);
+	glReadBuffer(GL_COLOR_ATTACHMENT2_EXT);
 glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RGBA, GL_FLOAT, m_velocityField);
 // end of frame buffer
 	glPopAttrib();
 	f_cg->end();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	
+	if(m_needDensity) {
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, density_fbo);
+		glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);        
+	
+		glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RED, GL_FLOAT, m_densityField);
 
-//m_fb->readRGBA(m_velocityField);
-
-//        f_cg->end();
-//        m_fb->end();
-        
-        
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	}
 }
 
 void FluidSolver::drawQuad()
@@ -910,6 +914,15 @@ void FluidSolver::clear()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+}
+
+float FluidSolver::getVoxelDensity(int x, int y, int z)
+{
+	int coordx, coordy;
+	
+	flatTo2D(coordx, coordy, x, y, z);
+	
+	return m_densityField[m_frame_width*coordy + coordx];
 }
 
 void FluidSolver::getVelocity(float& vx, float& vy, float& vz, float x, float y, float z)

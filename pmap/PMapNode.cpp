@@ -58,7 +58,7 @@ MObject PMapNode::acameraname;
 
 PMapNode::PMapNode() : f_type(0), fSaveImage(0), fSupported(0), fValid(0)
 {
-	fData = new GPUOctree();
+	fData = new FluidOctree();
 }
 
 PMapNode::~PMapNode() 
@@ -103,6 +103,8 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		fValid = fData->load(filename);
 		if(!fValid) MGlobal::displayInfo("PMap cannot load file");
+		
+		//MGlobal::displayInfo(MString(" max level ")+ fData->getMaxLevel());
 		
 		float kwei = data.inputValue(adiffuse).asFloat();
 		

@@ -1,5 +1,5 @@
 /*
- *  GPUOctree.cpp
+ *  FluidOctree.cpp
  *  pmap
  *
  *  Created by jian zhang on 12/8/09.
@@ -7,28 +7,29 @@
  *
  */
 
-#include "GPUOctree.h"
+#include "FluidOctree.h"
 #include "../shared/gBase.h"
-//#include <maya/MGlobal.h>
+#include "fluidSolver.h"
+#include <maya/MGlobal.h>
 
-GPUOctree::GPUOctree() : m_root(0),
+FluidOctree::FluidOctree() : m_root(0),
 m_idr(0),
 m_dt(0)
 {}
 
-GPUOctree::~GPUOctree() 
+FluidOctree::~FluidOctree() 
 {
 	release();
 }
 
-void GPUOctree::release()
+void FluidOctree::release()
 {
 	if(m_root) releaseNode(m_root);
 	if(m_dt) delete[] m_dt;
 	if(m_idr) delete[] m_idr;
 }
 
-void GPUOctree::releaseNode(GPUTreeNode *node)
+void FluidOctree::releaseNode(GPUTreeNode *node)
 {
 	if(!node) return;
 	
@@ -37,121 +38,150 @@ void GPUOctree::releaseNode(GPUTreeNode *node)
 	delete[] node->child;
 	delete node;
 }
-
-void GPUOctree::create(const XYZ& rootCenter, float rootSize, short maxLevel, const std::list<AParticle *>& particles)
+#ifndef FLUIDTREEREADONLY
+void FluidOctree::create(FluidSolver *solver, short maxLevel)
+//void FluidOctree::create(const XYZ& rootCenter, float rootSize, short maxLevel, const std::list<AParticle *>& particles)
 {
 	m_maxLevel = maxLevel;
-	m_rootCenter = rootCenter;
-	m_rootSize = rootSize;
+	m_pSolver = solver;
+	
+	int w, h, d;
+	m_pSolver->getDimension(w, h, d);
+	
+	m_dimx = w;
+	m_dimy = h;
+	m_dimz = d;
+	
+	int cx = w/2;
+	int cy = h/2;
+	int cz = d/2;
+	
+	int maxdim = w;
+	if(h > maxdim) maxdim = h;
+	if(d > maxdim) maxdim = d;
+	
+	int size = maxdim/2;
+	
+	m_pSolver->getOrigin(m_rootCenter.x, m_rootCenter.y, m_rootCenter.z);
+	float unit = m_pSolver->getGridSize();
+	m_rootSize = unit * size;
+	
+	m_rootCenter.x += unit * cx;
+	m_rootCenter.y += unit * cy; 
+	m_rootCenter.z += unit * cz;
+	
 	m_root = new GPUTreeNode();
 	m_currentIndex = 0;
-	m_currentTwigIndex = 0;
-	m_min_variation = 10e6;
-		
-	float den = (float)particles.size()/rootSize/rootSize/rootSize/8;
-	//for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
-// store data
-	//	den += filterBox(rootCenter, rootSize, *it);
-	//}
-	subdivideNode(m_root, rootCenter, rootSize, 0, particles, den);
+	m_currentLeafIndex = 0;
+	float density = addupDensityCells( cx, cy, cz, size);
+	subdivideNode(m_root, cx, cy, cz, size, 0, density);
 }
 
-void GPUOctree::subdivideNode(GPUTreeNode *node, const XYZ& center, float size, short level, const std::list<AParticle *>& particles, float density)
-{
-	float halfSize = size/2;
-	XYZ halfCenter;
-
-	node->coordy = m_currentIndex/DATAPOOLWIDTH;
-	node->coordx = m_currentIndex%DATAPOOLWIDTH;
+void FluidOctree::subdivideNode(GPUTreeNode *node, int cx, int cy, int cz, int size, short level, float density)
+{	
 	node->density = density;
-
-	m_currentIndex++;
-	
-	if(level == m_maxLevel || m_currentIndex > MAXNNODE) {
-		m_currentTwigIndex++;
+	//MGlobal::displayInfo(MString("level ")+ level +"sum "+node->density);
+	if(level < m_maxLevel) {
+		node->coordy = m_currentIndex/DATAPOOLWIDTH;
+		node->coordx = m_currentIndex%DATAPOOLWIDTH;
+		m_currentIndex++;
+	}
+	else {//node->density = float(rand()%313)/313.f;
+		node->coordy = m_currentLeafIndex/DATAPOOLWIDTH;
+		node->coordx = m_currentLeafIndex%DATAPOOLWIDTH;
+		//node->coordy = rand()%DATAPOOLWIDTH;
+		//node->coordx = rand()%DATAPOOLWIDTH;
+		m_currentLeafIndex++;
 		return;
 	}
-	
-// determine variation 
-	float childdens[8], childfract, maxchildfract = 0.f;
-	
-	for (int k=0;k<2;k++) {
-		for (int j=0;j<2;j++) {
-			for (int i=0;i<2;i++) {
-				
-				if(i==0) halfCenter.x = center.x - halfSize;
-				else halfCenter.x = center.x + halfSize;
-				
-				if(j==0) halfCenter.y = center.y - halfSize;
-				else halfCenter.y = center.y + halfSize;
-				
-				if(k==0) halfCenter.z = center.z - halfSize;
-				else halfCenter.z = center.z + halfSize;
 
-				childdens[k*4 + j*2 +i] = 0;
-				for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
-					if(bInBox(halfCenter, halfSize, *it)) childdens[k*4 + j*2 +i] += 1.f;
-				}
-				
-				childdens[8] /= (float)particles.size();
-				
-				//childfract =  childdens[k*4 + j*2 +i] - 0.125f;
-				//if(childfract < 0.f) childfract = -childfract;
-				
-				
-				//if(childfract > maxchildfract) maxchildfract = childfract;
-			}
-		}
-	}
-	//MGlobal::displayInfo(MString("l ") + level + MString(" var ") + childdens[0] + " "+ childdens[1] + " "+ childdens[2] + " "+ childdens[3] + " "+ childdens[4] + " "+ childdens[5] + " "+ childdens[6] + " "+ childdens[7] );
-	//if(maxchildfract < m_min_variation) m_min_variation = maxchildfract;
-	//if(maxchildfract < 0.01f) return;
-	
 	level++;
+	
+	int halfSize = size/2; //if(halfSize < 1) MGlobal::displayInfo(MString("level ")+ level +MString("size ")+ halfSize);
+	int childcx, childcy, childcz;
 
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<2;j++) {
 			for (int i=0;i<2;i++) {
-				
-				if(i==0) halfCenter.x = center.x - halfSize;
-				else halfCenter.x = center.x + halfSize;
-				
-				if(j==0) halfCenter.y = center.y - halfSize;
-				else halfCenter.y = center.y + halfSize;
-				
-				if(k==0) halfCenter.z = center.z - halfSize;
-				else halfCenter.z = center.z + halfSize;
-				
-				if(particles.size() > 0) {// divide when there are many hits
-					std::list<AParticle *> divParticles;
-					float sumden = 0;
-					for(std::list<AParticle *>::const_iterator it = particles.begin(); it != particles.end(); it++) {
-						//float aden = filterBox(halfCenter, halfSize, *it);
-						if( bInBox(halfCenter, halfSize, *it)) {
-							//sumden += aden;
-							divParticles.push_back(*it);
-						}
-					}
+				if(halfSize >0) {
+					if(i==0) childcx = cx - halfSize;
+					else childcx = cx + halfSize;
 					
-					if(!divParticles.empty()) {
-						node->child[k*4+j*2+i] = new GPUTreeNode();
-						sumden = (float)divParticles.size()/size/size/size;
-						subdivideNode(node->child[k*4+j*2+i], halfCenter, halfSize, level, divParticles, sumden);
-					}
-					divParticles.clear();
+					if(j==0) childcy = cy - halfSize;
+					else childcy = cy + halfSize;
+					
+					if(k==0) childcz = cz - halfSize;
+					else childcz = cz + halfSize;
+				}
+				else {
+					if(i==0) childcx = cx - 1;
+					else childcx = cx;
+					
+					if(j==0) childcy = cy - 1;
+					else childcy = cy;
+					
+					if(k==0) childcz = cz - 1;
+					else childcz = cz;
 				}
 				
+				float sum = addupDensityCells( childcx, childcy, childcz, halfSize);
+
+				if(sum > 0.004f) {
+					node->child[k*4+j*2+i] = new GPUTreeNode();
+					
+					subdivideNode(node->child[k*4+j*2+i], childcx, childcy, childcz, halfSize, level, sum);
+				}					
 			}
 		}
 	}
 }
 
-void GPUOctree::dumpIndirection(const char *filename)
+float FluidOctree::addupDensityCells(int cx, int cy, int cz, int size)
+{
+	// find dim bound
+	int xmin = cx - size;
+	int xmax = cx + size;
+	int ymin = cy - size;
+	int ymax = cy + size;
+	int zmin = cz - size;
+	int zmax = cz + size;
+
+// discard outside box	
+	if(xmin >= m_dimx || xmax < 0) return 0.f;
+	if(ymin >= m_dimy || ymax < 0) return 0.f;
+	if(zmin >= m_dimz || zmax < 0) return 0.f;
+	
+// validate box
+	if(xmin < 0) xmin = 0;
+	if(xmax > m_dimx) xmax = m_dimx;
+	if(ymin < 0) ymin = 0;
+	if(ymax > m_dimy) ymax = m_dimy;
+	if(zmin < 0) zmin = 0;
+	if(zmax > m_dimz) zmax = m_dimz;
+	
+// add up density
+	float sum = 0;
+	
+	if(size < 1) sum = m_pSolver->getVoxelDensity(xmin, ymin, zmin);
+	else {
+		for (int k=zmin;k<zmax;k++) {
+			for (int j=ymin;j<ymax;j++) {
+				for (int i=xmin;i<xmax;i++) {
+					sum += m_pSolver->getVoxelDensity(i, j, k);
+				}
+			}
+		}
+	}
+	
+	return sum;
+}
+
+void FluidOctree::dumpIndirection(const char *filename)
 {
 	m_idr = new short[INDIRECTIONPOOLSIZE*4];
 	m_dt = new float[DATAPOOLSIZE*4];
 
-	setIndirection(m_root);
+	setIndirection(m_root, 0);
 	
 	half *idr_r = new half[INDIRECTIONPOOLSIZE];
 	half *idr_g = new half[INDIRECTIONPOOLSIZE];
@@ -168,6 +198,7 @@ void GPUOctree::dumpIndirection(const char *filename)
 // save indirection	
 	Header idrheader (INDIRECTIONPOOLWIDTH, INDIRECTIONPOOLWIDTH); 
 	idrheader.insert ("root_size", FloatAttribute (m_rootSize));
+	idrheader.insert ("max_level", FloatAttribute (m_maxLevel));
 	idrheader.insert ("root_center", V3fAttribute (Imath::V3f(m_rootCenter.x, m_rootCenter.y, m_rootCenter.z))); 
 
 		idrheader.channels().insert ("R", Channel (HALF));
@@ -261,19 +292,25 @@ void GPUOctree::dumpIndirection(const char *filename)
 	delete[] dt_a;
 }
 
-void GPUOctree::setIndirection(const GPUTreeNode *node)
+void FluidOctree::setIndirection(const GPUTreeNode *node, short level)
 {
 	if(!node) return;
 	
-	int pools = node->coordx * 2;
-	int poolt = node->coordy * 2;
-	
-// set data for current node
+// set data for leaf node
+	if(level == m_maxLevel) {
 		long dataloc = node->coordy * DATAPOOLWIDTH + node->coordx;
 	m_dt[dataloc*4] = node->density;
 	m_dt[dataloc*4+1] = 0.f;
 	m_dt[dataloc*4+2] = 0.f;
 	m_dt[dataloc*4+3] = 0.f;
+	
+	return;
+	}
+	
+	int pools = node->coordx * 2;
+	int poolt = node->coordy * 2;
+	
+	level++;
 	
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<2;j++) {
@@ -299,14 +336,15 @@ void GPUOctree::setIndirection(const GPUTreeNode *node)
 					}
 				}
 				
-				setIndirection(node->child[k*4+j*2+i]);
+				setIndirection(node->child[k*4+j*2+i], level);
 					
 			}
 		}
 	}
 }
-
-float GPUOctree::filterBox(const XYZ& center, float size, const AParticle *particle)
+#endif
+/*
+float FluidOctree::filterBox(const XYZ& center, float size, const AParticle *particle)
 {	
 	float H = particle->r;
 	float diffx = particle->pos.x - center.x;
@@ -339,7 +377,7 @@ float GPUOctree::filterBox(const XYZ& center, float size, const AParticle *parti
 	return (diffx*diffy*diffz);
 }
 
-char GPUOctree::bInBox(const XYZ& center, float size, const AParticle *particle)
+char FluidOctree::bInBox(const XYZ& center, float size, const AParticle *particle)
 {
 	float diffx = particle->pos.x - center.x;
 	if(diffx < -size || diffx >= size) return 0;
@@ -352,9 +390,9 @@ char GPUOctree::bInBox(const XYZ& center, float size, const AParticle *particle)
 	
 	return 1;
 }
+*/
 
-//
-char GPUOctree::load(const char *filename)
+char FluidOctree::load(const char *filename)
 {
 	release();
 	try 
@@ -365,6 +403,9 @@ char GPUOctree::load(const char *filename)
         InputFile idrfile(idrname.c_str()); 
 		const FloatAttribute *sizeattr = idrfile.header().findTypedAttribute <FloatAttribute> ("root_size");
 		m_rootSize = sizeattr->value();
+		
+		const FloatAttribute *levelattr = idrfile.header().findTypedAttribute <FloatAttribute> ("max_level");
+		m_maxLevel = (int)levelattr->value();
 		
 		const V3fAttribute *centerattr = idrfile.header().findTypedAttribute <V3fAttribute> ("root_center");
 		Imath::V3f center = centerattr->value();
@@ -425,14 +466,7 @@ char GPUOctree::load(const char *filename)
 			m_idr[i*4+3] = idr_a[i];
 		}
 		
-		/*for(int j=0; j<INDIRECTIONPOOLWIDTH; j++) {
-		for(int i=0; i<INDIRECTIONPOOLWIDTH; i++) {
-			m_idr[(j*INDIRECTIONPOOLWIDTH+i)*4] = i;
-			m_idr[(j*INDIRECTIONPOOLWIDTH+i)*4+1] = j;
-			m_idr[(j*INDIRECTIONPOOLWIDTH+i)*4+2] = 0;
-			m_idr[(j*INDIRECTIONPOOLWIDTH+i)*4+3] = i;
-		}
-		}*/
+		
 		
 		delete[] idr_r;
 		delete[] idr_g;
@@ -510,7 +544,7 @@ char GPUOctree::load(const char *filename)
 	return 1;
 }
 
-void GPUOctree::getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const
+void FluidOctree::getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const
 {
 	xmin = m_rootCenter.x - m_rootSize;
 	xmax = m_rootCenter.x + m_rootSize;
@@ -520,7 +554,7 @@ void GPUOctree::getBBox(double& xmin, double& xmax, double& ymin, double& ymax, 
 	zmax = m_rootCenter.z + m_rootSize;
 }
 
-void GPUOctree::getBBox(float& rootX, float& rootY, float& rootZ, float& rootSize) const 
+void FluidOctree::getBBox(float& rootX, float& rootY, float& rootZ, float& rootSize) const 
 {
 	rootX = m_rootCenter.x;
 	rootY = m_rootCenter.y;
@@ -528,24 +562,28 @@ void GPUOctree::getBBox(float& rootX, float& rootY, float& rootZ, float& rootSiz
 	rootSize = m_rootSize;
 }
 
-void GPUOctree::drawBox() const
+void FluidOctree::drawBox() const
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBegin(GL_QUADS);
-	drawBoxNode(m_rootCenter, m_rootSize, 0, 0);
+	drawBoxNode(m_rootCenter, m_rootSize, 0, 0, 0);
 	glEnd();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void GPUOctree::drawBoxNode(const XYZ& center, float size, int x, int y) const
+void FluidOctree::drawBoxNode(const XYZ& center, float size, int x, int y, short level) const
 {
 	drawBox(center, size);
+	
+	if(level == m_maxLevel) return;
 			
 	int pools = x * 2;
 	int poolt = y * 2;
 	
 	float halfSize = size/2;
 	XYZ halfCenter;
+	
+	level++;
 	
 	for (int k=0;k<2;k++) {
 		for (int j=0;j<2;j++) {
@@ -565,29 +603,29 @@ void GPUOctree::drawBoxNode(const XYZ& center, float size, int x, int y) const
 					x = m_idr[poolloc*4];
 					y = m_idr[poolloc*4+1];
 					
-					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y);			
+					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y, level);			
 				}
 				else {
 					x = m_idr[poolloc*4+2];
 					y = m_idr[poolloc*4+3];
 					
-					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y);
+					if(x >=0) drawBoxNode(halfCenter, halfSize, x, y, level);
 				}
 			}
 		}
 	}
 }
 
-void GPUOctree::drawCube() const
+void FluidOctree::drawCube() const
 {
 	glBegin(GL_QUADS);
 	drawCubeNode(m_rootCenter, m_rootSize, 0, 0, 0);
 	glEnd();
 }
 
-void GPUOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int level) const
+void FluidOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int level) const
 {
-	if(level==6) {
+	if(level== m_maxLevel) {
 		// get density
 		float den = m_dt[(y * DATAPOOLWIDTH + x)*4];
 		glColor3f(den, den, den);
@@ -635,13 +673,15 @@ void GPUOctree::drawCubeNode(const XYZ& center, float size, int x, int y, int le
 						
 					}
 				}
+				
+				
 			}
 		}
 	}
 	
 }
 
-void GPUOctree::drawBox(const XYZ& center, float size) const
+void FluidOctree::drawBox(const XYZ& center, float size) const
 {
 	glVertex3f(center.x - size, center.y - size, center.z - size);
 	glVertex3f(center.x + size, center.y - size, center.z - size);
