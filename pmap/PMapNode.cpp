@@ -59,11 +59,13 @@ MObject PMapNode::acameraname;
 PMapNode::PMapNode() : f_type(0), fSaveImage(0), fSupported(0), fValid(0)
 {
 	fData = new FluidOctree();
+	 renderer = new RenderParticle();
 }
 
 PMapNode::~PMapNode() 
 {
 	delete fData;
+	delete renderer;
 }
 
 MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
@@ -450,11 +452,26 @@ void PMapNode::parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipn
 
 void PMapNode::drawPoint()
 {
+	if(!renderer->isInitialized()) renderer->initialize();
 	long n_ptc = fData->getNumLeaf();
-	float* pVertex = new float[n_ptc*3];
-	fData->pushVertex(pVertex);
 	
-	unsigned int* idxbuffer = new unsigned int[n_ptc];
+	renderer->setNumParticle(n_ptc);
+	
+	float* pVertex = new float[n_ptc*3];
+	float* pCoord = new float[n_ptc*4];
+	
+	fData->pushVertex(pVertex, pCoord);
+	
+	renderer->setVertex(pVertex);
+	
+	
+	renderer->setCoord(pCoord);
+	
+	renderer->sort();
+	
+	renderer->drawPoints();
+	
+	/*unsigned int* idxbuffer = new unsigned int[n_ptc];
 	
 	for(unsigned int i=0; i<n_ptc; i++) idxbuffer[i]=i;
 	
@@ -479,11 +496,12 @@ void PMapNode::drawPoint()
 		
 		
 		//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_VERTEX_ARRAY);*/
 	delete[] pVertex;
-	delete[] idxbuffer;
+	delete[] pCoord;
+	/*delete[] idxbuffer;
 	
 	glBindBuffer(1, ibo);
-		glDeleteBuffers(1, &ibo);
+		glDeleteBuffers(1, &ibo);*/
 }
 //~:

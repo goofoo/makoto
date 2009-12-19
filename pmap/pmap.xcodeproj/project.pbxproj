@@ -48,8 +48,6 @@
 				8A7F063208688F460064D097 /* Mel */,
 				8A7F063308688F580064D097 /* Resources */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
-				7F976DCD10DC185E00252E4F /* RenderParticle.h */,
-				7F976DCE10DC185E00252E4F /* RenderParticle.cpp */,
 			);
 			name = footPrintNodePlugin;
 			sourceTree = "<group>";
@@ -59,6 +57,8 @@
 			children = (
 				7F23B9F810D98C9F00FE03A1 /* FluidOctree.cpp */,
 				7F82690110CEC37800AF3FE9 /* PMapNode.cpp */,
+				7F976DCD10DC185E00252E4F /* RenderParticle.h */,
+				7F976DCE10DC185E00252E4F /* RenderParticle.cpp */,
 				7F81224D10711C7C0022BF82 /* gBase.cpp */,
 				7F81223210711B8A0022BF82 /* zWorks.cpp */,
 				7F81222810711B440022BF82 /* zGlobal.cpp */,

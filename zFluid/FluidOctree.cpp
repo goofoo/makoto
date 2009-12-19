@@ -759,13 +759,13 @@ void FluidOctree::drawBox(const XYZ& center, float size) const
 	glVertex3f(center.x - size, center.y + size, center.z + size);	
 }
 
-void FluidOctree::pushVertex(float* vert)
+void FluidOctree::pushVertex(float* vert, float* coord)
 {
 	long count = 0;
-	pushVertexNode(vert, m_rootCenter, m_rootSize, 0, 0, 0, count);
+	pushVertexNode(vert, coord, m_rootCenter, m_rootSize, 0, 0, 0, count);
 }
 
-void FluidOctree::pushVertexNode(float* vert, const XYZ& center, float size, int x, int y, int level, long& count) const
+void FluidOctree::pushVertexNode(float* vert, float* coord, const XYZ& center, float size, int x, int y, int level, long& count) const
 {
 	if(level== m_maxLevel) {
 		float vx = m_dt[(y * DATAPOOLWIDTH + x)*4+1];
@@ -774,6 +774,11 @@ void FluidOctree::pushVertexNode(float* vert, const XYZ& center, float size, int
 		vert[count*3] = center.x + vx;
 		vert[count*3+1] = center.y + vy;
 		vert[count*3+2] = center.z + vz;
+		
+		coord[count*4] = vx;
+		coord[count*4+1] = vy;
+		coord[count*4+2] = vz;
+		coord[count*4+3] = m_dt[(y * DATAPOOLWIDTH + x)*4];
 		
 		count++;
 		return;
@@ -805,13 +810,13 @@ void FluidOctree::pushVertexNode(float* vert, const XYZ& center, float size, int
 					x = m_idr[poolimgloc*4];
 					y = m_idr[poolimgloc*4+1];
 					
-					if(x >=0) pushVertexNode(vert, halfCenter, halfSize, x, y, level, count);	
+					if(x >=0) pushVertexNode(vert, coord, halfCenter, halfSize, x, y, level, count);	
 				}
 				else {
 					x = m_idr[poolimgloc*4+2];
 					y = m_idr[poolimgloc*4+3];
 					
-					if(x >=0) pushVertexNode(vert, halfCenter, halfSize, x, y, level, count);
+					if(x >=0) pushVertexNode(vert, coord, halfCenter, halfSize, x, y, level, count);
 				}
 			}
 		}

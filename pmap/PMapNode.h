@@ -14,6 +14,7 @@
 #include <maya/MFnCamera.h>
 #include <maya/MDagPath.h>
 #include "../zFluid/FluidOctree.h"
+#include "RenderParticle.h"
  
 class PMapNode : public MPxLocatorNode
 {
@@ -68,6 +69,7 @@ private:
 	void parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipnear, double& clipfar, double& fov, int& ispersp);
 	MString fEyeCamera;
 	char fSupported, fValid;
+	RenderParticle* renderer;
 };
 
 #endif
