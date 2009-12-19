@@ -452,15 +452,38 @@ void PMapNode::drawPoint()
 {
 	long n_ptc = fData->getNumLeaf();
 	float* pVertex = new float[n_ptc*3];
-	
 	fData->pushVertex(pVertex);
+	
+	unsigned int* idxbuffer = new unsigned int[n_ptc];
+	
+	for(unsigned int i=0; i<n_ptc; i++) idxbuffer[i]=i;
+	
+	GLuint ibo;
+	glGenBuffers(1, &ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+	
+	unsigned int ibosize = n_ptc * sizeof(unsigned int);
+	 glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibosize, idxbuffer, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 		//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, (float*)pVertex);
 		//glTexCoordPointer(4, GL_FLOAT, 0, (float*)pColor);
-		glDrawArrays(GL_POINTS, 0, n_ptc);
+		
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, ibo);
+        glDrawElements(GL_POINTS, n_ptc, GL_UNSIGNED_INT, 0 );
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+		
+		//glDrawArrays(GL_POINTS, 0, n_ptc);
+		
+		
 		//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
 	delete[] pVertex;
+	delete[] idxbuffer;
+	
+	glBindBuffer(1, ibo);
+		glDeleteBuffers(1, &ibo);
 }
 //~:
