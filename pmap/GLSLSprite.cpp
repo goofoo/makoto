@@ -19,6 +19,9 @@ const char *particleVS =
 "{                                                           \n"
 "	vec4 wpos = vec4(gl_Vertex.xyz, 1.0);                   \n"
 "    gl_Position = gl_ModelViewMatrix * wpos;      \n"
+
+//" gl_Position = gl_ProjectionMatrix * gl_Position;"
+
 // calculate window-space point size                    
 "    vec4 eyeSpacePos = gl_ModelViewMatrix * wpos;           \n"
 //"    float dist = length(eyeSpacePos.xyz);                   \n"
@@ -26,15 +29,13 @@ const char *particleVS =
 
 "    gl_TexCoord[0] = gl_MultiTexCoord0; // sprite texcoord  \n"
 "    gl_TexCoord[1] = eyeSpacePos;                           \n"
-
-"    gl_FrontColor = gl_TexCoord[0];                               \n"
 "}";
 
 const char *particleGS =      
 "uniform float pointRadius;  \n"
 "void main()                                                    \n"
 "{                                                              \n"
-"	float radius = 0.50;                                \n"
+"	float radius = 2.0;                                \n"
 
     // eye space                                               \n
 "    vec3 pos = gl_PositionIn[0].xyz;                           \n"
@@ -45,9 +46,11 @@ const char *particleGS =
 //"pos = gl_Vertex.xyz;"
 "vec3 x = vec3(radius,0,0);"  
 "vec3 y = vec3(0,radius,0);"                        
-"    gl_FrontColor = gl_FrontColorIn[0];                        \n"
+
 "    gl_TexCoord[0] = vec4(0, 0, 0, 1);                     \n"
-//"    gl_TexCoord[1] = gl_PositionIn[0];                         \n"
+
+"    gl_TexCoord[1] = gl_TexCoordIn[0][0];"
+
 "    gl_Position = gl_ProjectionMatrix * vec4(pos + x + y, 1);  \n"
 "    EmitVertex();                                              \n"
 
@@ -71,17 +74,23 @@ const char *particleFS =
 "uniform float pointRadius;                                         \n"
 "void main()                                                        \n"
 "{                                                                  \n"
-// calculate eye-space sphere normal from texture coordinates
 "    vec3 N;                                                        \n"
 "    N.xy = gl_TexCoord[0].xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);    \n"
 "    float r2 = dot(N.xy, N.xy);                                    \n"
-"    if (r2 > 1.0) discard;   // kill pixels outside circle         \n"
-//"    N.z = sqrt(1.0-r2);                                            \n"
 
-//  float alpha = saturate(1.0 - r2);
-"    float alpha = clamp((1.0 - r2), 0.0, 1.0);                     \n"
-"	vec3 cvel = normalize(gl_Color.xyz)*0.5 + vec3(0.5);"
-"    gl_FragColor = vec4(cvel*gl_Color.w , gl_Color.w);              \n"
+   // kill pixels outside circle  
+"    if (r2 > 1.0) discard;       \n"
+
+"    float alpha = clamp((1.0 - r2*r2), 0.0, 1.0);"
+"alpha *= alpha;"
+"	float density = gl_TexCoord[1].w * 2.0;"
+
+"alpha *= density;"
+
+"	vec3 cvel = normalize(gl_TexCoord[1].xyz);"
+"	cvel = cvel*0.5 + vec3(0.5);"
+
+"    gl_FragColor = vec4(cvel*alpha , alpha);              \n"
 "} ";
 
 

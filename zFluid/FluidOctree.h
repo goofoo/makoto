@@ -107,7 +107,7 @@ public:
 	float* getData() const {return m_dt;}
 	
 	void drawBox(const XYZ& center, float size) const;
-	void pushVertex(float* vert, float* coord);
+	long pushVertex(float* vert, float* coord);
 	void pushVertexNode(float* vert, float* coord, const XYZ& center, float size, int x, int y, int level, long& count) const;
 private:
 	GPUTreeNode *m_root;

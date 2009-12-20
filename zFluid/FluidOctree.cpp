@@ -759,10 +759,11 @@ void FluidOctree::drawBox(const XYZ& center, float size) const
 	glVertex3f(center.x - size, center.y + size, center.z + size);	
 }
 
-void FluidOctree::pushVertex(float* vert, float* coord)
+long FluidOctree::pushVertex(float* vert, float* coord)
 {
 	long count = 0;
 	pushVertexNode(vert, coord, m_rootCenter, m_rootSize, 0, 0, 0, count);
+	return count;
 }
 
 void FluidOctree::pushVertexNode(float* vert, float* coord, const XYZ& center, float size, int x, int y, int level, long& count) const
@@ -771,10 +772,11 @@ void FluidOctree::pushVertexNode(float* vert, float* coord, const XYZ& center, f
 		float vx = m_dt[(y * DATAPOOLWIDTH + x)*4+1];
 		float vy = m_dt[(y * DATAPOOLWIDTH + x)*4+2];
 		float vz = m_dt[(y * DATAPOOLWIDTH + x)*4+3];
-		vert[count*3] = center.x + vx;
-		vert[count*3+1] = center.y + vy;
-		vert[count*3+2] = center.z + vz;
-		
+		vert[count*4] = center.x + vx;
+		vert[count*4+1] = center.y + vy;
+		vert[count*4+2] = center.z + vz;
+		vert[count*4+3] = 1.f;
+
 		coord[count*4] = vx;
 		coord[count*4+1] = vy;
 		coord[count*4+2] = vz;
