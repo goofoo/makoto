@@ -15,12 +15,14 @@ RenderParticle::~RenderParticle() {uninitialize();}
 void RenderParticle::initialize()
 {
 	glGenBuffers(1, &ibo);
+	shader = new GLSLSprite();
 	m_isInitialized = 1;
 }
 
 void RenderParticle::uninitialize()
 {
 	glDeleteBuffers(1, &ibo);
+	delete shader;
 }
 
 void RenderParticle::sort()
@@ -39,6 +41,16 @@ void RenderParticle::sort()
 
 void RenderParticle::drawPoints()
 {
+	//glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glShadeModel(GL_SMOOTH);
+	glClearColor(0.0f, 0.0f,0.0f, 0.0f);
+	glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+	glEnable(GL_BLEND);
+	glDepthMask( GL_FALSE );
+	glDisable(GL_DEPTH_TEST);
+	
+	shader->enable();
+	
 	glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, (float*)m_pVertex);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -50,4 +62,11 @@ void RenderParticle::drawPoints()
 		
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	
+	shader->disable();
+	
+	glDepthMask( GL_TRUE );
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
+	//glPopAttrib();
 }

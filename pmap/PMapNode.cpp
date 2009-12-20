@@ -463,8 +463,7 @@ void PMapNode::drawPoint()
 	fData->pushVertex(pVertex, pCoord);
 	
 	renderer->setVertex(pVertex);
-	
-	
+
 	renderer->setCoord(pCoord);
 	
 	renderer->sort();

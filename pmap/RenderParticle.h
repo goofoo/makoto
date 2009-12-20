@@ -11,6 +11,7 @@
 #define _RENDER_PARTICLE_H
 
 #include "../shared/gBase.h"
+#include "GLSLSprite.h"
 
 class RenderParticle
 {
@@ -36,6 +37,8 @@ private:
 	float* m_pCoord;
 	GLuint ibo;
 	char m_isInitialized;
+	
+	GLSLSprite* shader;
 };
 
 #endif
