@@ -35,7 +35,7 @@ const char *particleGS =
 "uniform float pointRadius;  \n"
 "void main()                                                    \n"
 "{                                                              \n"
-"	float radius = 2.0;                                \n"
+"	float radius = 2.3;                                \n"
 
     // eye space                                               \n
 "    vec3 pos = gl_PositionIn[0].xyz;                           \n"
@@ -82,7 +82,7 @@ const char *particleFS =
 "    if (r2 > 1.0) discard;       \n"
 
 "    float alpha = clamp((1.0 - r2*r2), 0.0, 1.0);"
-"alpha *= alpha;"
+"alpha *= alpha*alpha;"
 "	float density = gl_TexCoord[1].w * 2.0;"
 
 "alpha *= density;"
@@ -91,6 +91,26 @@ const char *particleFS =
 "	cvel = cvel*0.5 + vec3(0.5);"
 
 "    gl_FragColor = vec4(cvel*alpha , alpha);              \n"
+"} ";
+
+const char *particleShadowFS = 
+"uniform float pointRadius;                                         \n"
+"void main()                                                        \n"
+"{                                                                  \n"
+"    vec3 N;                                                        \n"
+"    N.xy = gl_TexCoord[0].xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);    \n"
+"    float r2 = dot(N.xy, N.xy);                                    \n"
+
+   // kill pixels outside circle  
+"    if (r2 > 1.0) discard;       \n"
+
+"    float alpha = clamp((1.0 - r2*r2), 0.0, 1.0);"
+"alpha *= alpha*alpha;"
+"	float density = gl_TexCoord[1].w ;"
+
+"alpha *= density;"
+
+"    gl_FragColor = vec4(vec3(alpha) , alpha);              \n"
 "} ";
 
 
@@ -148,12 +168,40 @@ char GLSLSprite::initProgram()
 	glGetProgramiv(program, GL_LINK_STATUS, &linked);
 	if(!linked) return 0;
 	
+	GLuint shadow_fragment_shader   = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(shadow_fragment_shader, 1, &particleShadowFS, NULL);
+	glCompileShader(shadow_fragment_shader);
+	
+	GLint shadowfragmentshader_compiled;
+	glGetShaderiv(shadow_fragment_shader, GL_COMPILE_STATUS, (GLint*)&shadowfragmentshader_compiled);
+	if(!shadowfragmentshader_compiled) return 0;
+	
+	shadowProgram = glCreateProgram();
+	glAttachShader(shadowProgram, vertex_shader);
+	glAttachShader(shadowProgram, shadow_fragment_shader);
+	
+	glAttachShader(shadowProgram, geomShader);
+	
+	glProgramParameteriEXT(shadowProgram, GL_GEOMETRY_INPUT_TYPE_EXT,  GL_POINTS);
+	glProgramParameteriEXT(shadowProgram, GL_GEOMETRY_OUTPUT_TYPE_EXT, GL_TRIANGLE_STRIP); 
+	glProgramParameteriEXT(shadowProgram, GL_GEOMETRY_VERTICES_OUT_EXT, 4);
+	
+	glLinkProgram(shadowProgram);
+	
+	glGetProgramiv(shadowProgram, GL_LINK_STATUS, &linked);
+	if(!linked) return 0;
+	
 	return 1;
 }
 
 void GLSLSprite::enable()
 {
 	glUseProgram(program);
+}
+
+void GLSLSprite::enableShadow()
+{
+	glUseProgram(shadowProgram);
 }
 
 void GLSLSprite::disable()

@@ -20,9 +20,12 @@ public:
 	
 	char initProgram();
 	void enable();
+	void enableShadow();
 	void disable();
+	
 private:
 	GLuint program;
+	GLuint shadowProgram;
 	char m_isValid;
 };
 #endif

@@ -25,6 +25,9 @@ public:
 	char isInitialized() const { return m_isInitialized; }
 	
 	void sort();
+	void render();
+	void compose();
+	void showShadow();
 	void drawPoints();
 	
 	void setNumParticle(long val) { m_num_particle = val; }
@@ -33,18 +36,23 @@ public:
 	
 	void setViewVector(float x, float y, float z) {m_view_x=x; m_view_y=y; m_view_z=z;}
 	void setEyePoint(float x, float y, float z) {m_eye_x=x; m_eye_y=y; m_eye_z=z;}
+	void setLightPoint(float x, float y, float z) {m_light_x=x; m_light_y=y; m_light_z=z;}
+	void setLightVector(float x, float y, float z) {m_light_vec_x=x - m_light_x; m_light_vec_y=y - m_light_y; m_light_vec_z=z - m_light_z;}
+	void setLightSize(float val) {m_light_size = val;}
 	void setImageDim(int w, int h);
+	
+	void getLightPoint(float& x, float& y, float& z) const {x = m_light_x; y = m_light_y; z = m_light_z;}
 	
 private:
 	long m_num_particle;
 	float* m_pVertex;
-	//float* m_pCoord;
 	GLuint ibo;
 	GLuint vbo;
 	GLuint tbo;
 	GLuint m_image_fbo;
-	//GLuint m_depthBuffer;
 	GLuint m_image_tex;
+	GLuint m_shadow_fbo;
+	GLuint m_shadow_tex;
 	char m_isInitialized;
 	
 	GLSLSprite* shader;
@@ -52,6 +60,10 @@ private:
 	float m_view_x, m_view_y, m_view_z;
 	float m_eye_x, m_eye_y, m_eye_z;
 	int m_image_width, m_image_height;
+	float m_light_x, m_light_y, m_light_z;
+	float m_light_vec_x, m_light_vec_y, m_light_vec_z;
+	float m_light_size;
+	char m_invert;
 };
 
 #endif

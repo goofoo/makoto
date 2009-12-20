@@ -108,6 +108,14 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		
 		MGlobal::displayInfo(MString(" num_leaf ")+ fData->getNumLeaf() + MString(" max_level ")+ fData->getMaxLevel());
 		
+		float x, y, z;
+	
+		x = data.inputValue(alightposx).asFloat();
+		y = data.inputValue(alightposy).asFloat();
+		z = data.inputValue(alightposz).asFloat();
+
+		renderer->setLightPoint(x, y, z);
+		
 		float kwei = data.inputValue(adiffuse).asFloat();
 		
 		
@@ -132,13 +140,9 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		kwei = data.inputValue(adimension).asFloat();
 		
 		
+				
+		
 		float r, g, b;
-		r = data.inputValue(alightposx).asFloat();
-		g = data.inputValue(alightposy).asFloat();
-		b = data.inputValue(alightposz).asFloat();
-		
-		
-		
 		r = data.inputValue(acloudr).asFloat();
 		g = data.inputValue(acloudg).asFloat();
 		b = data.inputValue(acloudb).asFloat();
@@ -220,7 +224,13 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	double radians = 0.0174532925 * fov * 0.5; // half aperture degrees to radians 
 	double wd2 = clipNear * tan(radians);
 
+	float x,y,z,w;
 	if(fValid) {
+		
+		fData->getBBox(x,y,z,w);
+		renderer->setLightVector(x,y,z);
+		renderer->setLightSize(w*1.8f);
+		
 		switch(f_type) {
 		case 0: 
 			fData->drawCube();
@@ -262,8 +272,9 @@ GLdouble left, right, top, bottom;
 			  mat.v[1][0], mat.v[1][1], mat.v[1][2]);
 			  
 	glBegin(GL_LINES);
-	glVertex3f(0,0,0);
-	glVertex3f(mat.v[2][0],mat.v[2][1],mat.v[2][2]);
+	glVertex3f(x,y,z);
+	renderer->getLightPoint(x,y,z);
+	glVertex3f(x,y,z);
 	glEnd();
 	
 	view.endGL();
@@ -507,40 +518,15 @@ void PMapNode::drawPoint()
 	renderer->setCoord(pCoord);
 	
 	renderer->sort();
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	renderer->render();
 	
-	renderer->drawPoints();
-	
-	/*unsigned int* idxbuffer = new unsigned int[n_ptc];
-	
-	for(unsigned int i=0; i<n_ptc; i++) idxbuffer[i]=i;
-	
-	GLuint ibo;
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	
-	unsigned int ibosize = n_ptc * sizeof(unsigned int);
-	 glBufferData(GL_ELEMENT_ARRAY_BUFFER, ibosize, idxbuffer, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-		//glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glVertexPointer(3, GL_FLOAT, 0, (float*)pVertex);
-		//glTexCoordPointer(4, GL_FLOAT, 0, (float*)pColor);
-		
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, ibo);
-        glDrawElements(GL_POINTS, n_ptc, GL_UNSIGNED_INT, 0 );
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-		
-		//glDrawArrays(GL_POINTS, 0, n_ptc);
-		
-		
-		//glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		glDisableClientState(GL_VERTEX_ARRAY);*/
+	renderer->compose();
+	renderer->showShadow();
+	glPopAttrib();
+
 	delete[] pVertex;
 	delete[] pCoord;
-	/*delete[] idxbuffer;
-	
-	glBindBuffer(1, ibo);
-		glDeleteBuffers(1, &ibo);*/
+
 }
 //~:
