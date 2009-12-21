@@ -11,8 +11,6 @@
 #include "../shared/QuickSortIdx.h"
 #include "../shared/zData.h"
 
-#define RENDERPARTICLE_NUM_SLICE 256
-
 RenderParticle::RenderParticle() : m_isInitialized(0),
 m_image_fbo(0),
 m_image_tex(0),
@@ -122,6 +120,31 @@ void RenderParticle::sort()
 
 void RenderParticle::render()
 {
+// set shadow matrix
+	MATRIX44F mat;
+	mat.v[0][0] = -m_light_side_x * m_light_size;
+	mat.v[0][1] = -m_light_side_y * m_light_size;
+	mat.v[0][2] = -m_light_side_z * m_light_size;
+	mat.v[1][0] = m_light_up_x * m_light_size;
+	mat.v[1][1] = m_light_up_y * m_light_size;
+	mat.v[1][2] = m_light_up_z * m_light_size;
+	mat.v[2][0] = -m_light_vec_x * m_light_size;
+	mat.v[2][1] = -m_light_vec_y * m_light_size;
+	mat.v[2][2] = -m_light_vec_z * m_light_size;
+	mat.v[3][0] = m_light_x;
+	mat.v[3][1] = m_light_y;
+	mat.v[3][2] = m_light_z;
+	
+	mat.inverse();
+	
+	float mm[16];
+		mm[0] = mat.v[0][0]; mm[1] = mat.v[0][1]; mm[2] = mat.v[0][2]; mm[3] = mat.v[0][3];
+		mm[4] = mat.v[1][0]; mm[5] = mat.v[1][1]; mm[6] = mat.v[1][2]; mm[7] = mat.v[1][3];
+		mm[8] = mat.v[2][0]; mm[9] = mat.v[2][1]; mm[10] = mat.v[2][2]; mm[11] = mat.v[2][3];
+		mm[12] = mat.v[3][0]; mm[13] = mat.v[3][1]; mm[14] = mat.v[3][2]; mm[15] = mat.v[3][3];
+		
+	shader->setShadowMatrix(mm);
+	
 // set states
 	glShadeModel(GL_SMOOTH);
 	glColor4f(1,1,1,1);
@@ -144,16 +167,10 @@ void RenderParticle::render()
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	
 // calc per-slice count
-	int num_slice = RENDERPARTICLE_NUM_SLICE;
-	int count_per_slice = m_num_particle / num_slice;
-	if(count_per_slice < 1) {
-		num_slice = m_num_particle;
-		count_per_slice = 1;
-	}
+	int count_per_slice = 39;
+	int num_slice = m_num_particle / count_per_slice;
 	
-	if(num_slice * count_per_slice < m_num_particle) num_slice++;
-	
-	for(int i = 0; i< num_slice; i++) {
+	for(int i = 0; i<= num_slice; i++) {
 		int start = i * count_per_slice;
 		int end = start + count_per_slice;
 		if(end > m_num_particle) end = m_num_particle;
@@ -170,6 +187,8 @@ void RenderParticle::render()
 			else glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ONE);
 
 			setPrimProjection();
+			
+			shader->setShadowTex(m_shadow_tex);
 	
 			shader->enable();
 			
@@ -183,6 +202,7 @@ void RenderParticle::render()
 			glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 			
 			glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+			
 			setShadowProjection();
 	
 			shader->enableShadow();
@@ -343,6 +363,36 @@ void RenderParticle::setImageDim(int w, int h)
 	}
 }
 
+void RenderParticle::setLightVector(float x, float y, float z) 
+{
+	m_light_vec_x=x - m_light_x; 
+	m_light_vec_y=y - m_light_y; 
+	m_light_vec_z=z - m_light_z;
+	
+	XYZ dirLight(m_light_vec_x, m_light_vec_y, m_light_vec_z);
+	dirLight.normalize();
+	
+	m_light_vec_x = dirLight.x; 
+	m_light_vec_y = dirLight.y; 
+	m_light_vec_z = dirLight.z;
+	
+	XYZ up(0,1,0);
+	if(dirLight.y > 0.9f || dirLight.y < -0.9f) up = XYZ(1,0,0);
+	
+	XYZ side = up^dirLight;
+	side.normalize();
+	up = dirLight^side;
+	up.normalize();
+	
+	m_light_up_x = up.x;
+	m_light_up_y = up.y;
+	m_light_up_z = up.z;
+	
+	m_light_side_x = side.x;
+	m_light_side_y = side.y;
+	m_light_side_z = side.z;
+}
+
 void RenderParticle::setFrustum(float l, float r, float b, float t, float n, float f)
 {
 	m_left = l;
@@ -379,5 +429,5 @@ void RenderParticle::setShadowProjection()
 	glLoadIdentity();
 		gluLookAt(m_light_x,m_light_y,m_light_z,
 				  m_light_x + m_light_vec_x, m_light_y + m_light_vec_y, m_light_z + m_light_vec_z,
-				  0, 1, 0);
+				  m_light_up_x,m_light_up_y,m_light_up_z);
 }

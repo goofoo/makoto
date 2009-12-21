@@ -38,7 +38,7 @@ public:
 	void setEyePoint(float x, float y, float z) {m_eye_x=x; m_eye_y=y; m_eye_z=z;}
 	void setUpVector(float x, float y, float z) {m_up_x=x; m_up_y=y; m_up_z=z;}
 	void setLightPoint(float x, float y, float z) {m_light_x=x; m_light_y=y; m_light_z=z;}
-	void setLightVector(float x, float y, float z) {m_light_vec_x=x - m_light_x; m_light_vec_y=y - m_light_y; m_light_vec_z=z - m_light_z;}
+	void setLightVector(float x, float y, float z);
 	void setLightSize(float val) {m_light_size = val;}
 	void setImageDim(int w, int h);
 	void setFrustum(float l, float r, float b, float t, float n, float f);
@@ -68,6 +68,8 @@ private:
 	int m_image_width, m_image_height;
 	float m_light_x, m_light_y, m_light_z;
 	float m_light_vec_x, m_light_vec_y, m_light_vec_z;
+	float m_light_up_x, m_light_up_y, m_light_up_z;
+	float m_light_side_x, m_light_side_y, m_light_side_z;
 	float m_light_size;
 	char m_invert;
 	float m_left, m_right, m_bottom, m_top, m_near, m_far;

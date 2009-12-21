@@ -20,6 +20,8 @@ public:
 	
 	char initProgram();
 	void enable();
+	void setShadowMatrix(float* m);
+	void setShadowTex(GLuint tex);
 	void enableShadow();
 	void disable();
 	

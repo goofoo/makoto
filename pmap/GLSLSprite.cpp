@@ -15,6 +15,9 @@ const char *particleVS =
 // scale to calculate size in pixels \n
 //"uniform float pointScale;"   
 "uniform vec4 eyePos;                                        \n"
+
+"uniform mat4 shadowMatrix;"
+
 "void main()                                                 \n"
 "{                                                           \n"
 "	vec4 wpos = vec4(gl_Vertex.xyz, 1.0);                   \n"
@@ -29,13 +32,19 @@ const char *particleVS =
 
 "    gl_TexCoord[0] = gl_MultiTexCoord0; // sprite texcoord  \n"
 "    gl_TexCoord[1] = eyeSpacePos;                           \n"
+
+// transform point in shadow, calc ndc
+"    gl_TexCoord[2] = vec4(shadowMatrix * wpos);"
+"    gl_TexCoord[2].x = (gl_TexCoord[2].x + 1.0)*0.5;"
+"    gl_TexCoord[2].y = (gl_TexCoord[2].y + 1.0)*0.5;"
+
 "}";
 
 const char *particleGS =      
 "uniform float pointRadius;  \n"
 "void main()                                                    \n"
 "{                                                              \n"
-"	float radius = 2.3;                                \n"
+"	float radius = 1.9;                                \n"
 
     // eye space                                               \n
 "    vec3 pos = gl_PositionIn[0].xyz;                           \n"
@@ -50,6 +59,10 @@ const char *particleGS =
 "    gl_TexCoord[0] = vec4(0, 0, 0, 1);                     \n"
 
 "    gl_TexCoord[1] = gl_TexCoordIn[0][0];"
+
+// point in shadow
+"    gl_TexCoord[2] = gl_TexCoordIn[0][2];"
+
 
 "    gl_Position = gl_ProjectionMatrix * vec4(pos + x + y, 1);  \n"
 "    EmitVertex();                                              \n"
@@ -72,6 +85,9 @@ const char *particleGS =
 
 const char *particleFS = 
 "uniform float pointRadius;                                         \n"
+
+"uniform sampler2D ShadowMap;"
+
 "void main()                                                        \n"
 "{                                                                  \n"
 "    vec3 N;                                                        \n"
@@ -90,7 +106,10 @@ const char *particleFS =
 "	vec3 cvel = normalize(gl_TexCoord[1].xyz);"
 "	cvel = cvel*0.5 + vec3(0.5);"
 
-"    gl_FragColor = vec4(cvel*alpha , alpha);              \n"
+"	float inshd = texture2D(ShadowMap, gl_TexCoord[2].xy).r;"
+
+"    gl_FragColor = vec4(vec3(exp(-inshd*2.0))*alpha , alpha);              \n"
+//"    gl_FragColor = vec4(gl_TexCoord[2].xyz*alpha , alpha);              \n"
 "} ";
 
 const char *particleShadowFS = 
@@ -106,11 +125,12 @@ const char *particleShadowFS =
 
 "    float alpha = clamp((1.0 - r2*r2), 0.0, 1.0);"
 "alpha *= alpha*alpha;"
-"	float density = gl_TexCoord[1].w ;"
+"	float density = gl_TexCoord[1].w;"
 
 "alpha *= density;"
 
-"    gl_FragColor = vec4(vec3(alpha) , alpha);              \n"
+"    gl_FragColor = vec4(vec3(0.05)*alpha , alpha);              \n"
+//"    gl_FragColor = vec4(gl_TexCoord[2].xyz*alpha , alpha);              \n"
 "} ";
 
 
@@ -198,6 +218,26 @@ char GLSLSprite::initProgram()
 void GLSLSprite::enable()
 {
 	glUseProgram(program);
+}
+
+void GLSLSprite::setShadowMatrix(float* m)
+{
+	glUseProgram(program);
+	glUniformMatrix4fv(glGetUniformLocation(program, "shadowMatrix"), 1, 0, (float*)m);
+	glUseProgram(0);
+	
+	glUseProgram(shadowProgram);
+	glUniformMatrix4fv(glGetUniformLocation(program, "shadowMatrix"), 1, 0, (float*)m);
+	glUseProgram(0);
+}
+
+void GLSLSprite::setShadowTex(GLuint tex)
+{
+	glUseProgram(program);
+	glUniform1i(glGetUniformLocation(program, "ShadowMap"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glUseProgram(0);
 }
 
 void GLSLSprite::enableShadow()
