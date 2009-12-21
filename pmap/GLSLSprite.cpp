@@ -122,6 +122,7 @@ GLSLSprite::GLSLSprite()
 GLSLSprite::~GLSLSprite() 
 {
 	glDeleteProgram( program );
+	glDeleteProgram( shadowProgram );
 }
 
 char GLSLSprite::initProgram()
