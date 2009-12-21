@@ -81,9 +81,9 @@ const char *particleFS =
    // kill pixels outside circle  
 "    if (r2 > 1.0) discard;       \n"
 
-"    float alpha = clamp((1.0 - r2*r2), 0.0, 1.0);"
+"    float alpha = 1.0 - r2*r2;"
 "alpha *= alpha*alpha;"
-"	float density = gl_TexCoord[1].w * 2.0;"
+"	float density = gl_TexCoord[1].w;"
 
 "alpha *= density;"
 

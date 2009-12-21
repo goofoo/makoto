@@ -198,6 +198,7 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	
 	renderer->setViewVector(mat.v[2][0], mat.v[2][1], mat.v[2][2]);
 	renderer->setEyePoint(mat.v[3][0], mat.v[3][1], mat.v[3][2]);
+	renderer->setUpVector(mat.v[1][0], mat.v[1][1], mat.v[1][2]);
 
 	view.beginGL(); 
 /*	
@@ -223,6 +224,15 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	double ratio = (double)port[3] / (double)port[2];
 	double radians = 0.0174532925 * fov * 0.5; // half aperture degrees to radians 
 	double wd2 = clipNear * tan(radians);
+	
+	GLdouble left, right, top, bottom;
+	left  = -wd2;
+	right = left + wd2*2;
+	
+	top = wd2 * ratio;
+	bottom = top -  wd2*2*ratio;
+	
+	renderer->setFrustum(left, right, bottom, top, clipNear, clipFar);
 
 	float x,y,z,w;
 	if(fValid) {
@@ -250,26 +260,7 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	// restore view port	
 	glViewport(0,0,port[2],port[3]);
 	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-
-// restore projection
-GLdouble left, right, top, bottom;
-	left  = -wd2;
-	right = left + wd2*2;
-	
-	top = wd2 * ratio;
-	bottom = top -  wd2*2*ratio;	
-	
-	glFrustum (left, right, bottom, top, clipNear, clipFar);
-	
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-	
-	gluLookAt (mat.v[3][0], mat.v[3][1], mat.v[3][2],
-			   mat.v[3][0] + mat.v[2][0], mat.v[3][1] + mat.v[2][1], mat.v[3][2] + mat.v[2][2],
-			  mat.v[1][0], mat.v[1][1], mat.v[1][2]);
+	renderer->setPrimProjection();
 			  
 	glBegin(GL_LINES);
 	glVertex3f(x,y,z);

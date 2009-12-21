@@ -11,6 +11,8 @@
 #include "../shared/QuickSortIdx.h"
 #include "../shared/zData.h"
 
+#define RENDERPARTICLE_NUM_SLICE 256
+
 RenderParticle::RenderParticle() : m_isInitialized(0),
 m_image_fbo(0),
 m_image_tex(0),
@@ -120,56 +122,97 @@ void RenderParticle::sort()
 
 void RenderParticle::render()
 {
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_image_fbo);
-	
-	glViewport(0,0,m_image_width, m_image_height);
+// set states
 	glShadeModel(GL_SMOOTH);
 	glColor4f(1,1,1,1);
 	glClearColor(0.0f, 0.0f,0.0f, 0.0f);
-	
-	if(m_invert) glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
-	else glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-
 	glEnable(GL_BLEND);
 	glDepthMask( GL_FALSE );
 	glDisable(GL_DEPTH_TEST);
 	
+// clean up
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_image_fbo);
+	glViewport(0,0,m_image_width, m_image_height);
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
-	
-	
-	shader->enable();
-	
-	drawPoints();
-	
-	shader->disable();
-
+	glClear(GL_COLOR_BUFFER_BIT);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	
-	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_shadow_fbo);
-	
 	glViewport(0,0, 512, 512);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-	glOrtho(-m_light_size, m_light_size, -m_light_size, m_light_size, 1.1, 1000.0);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-		gluLookAt(m_light_x,m_light_y,m_light_z,
-				  m_light_x + m_light_vec_x, m_light_y + m_light_vec_y, m_light_z + m_light_vec_z,
-				  0, 1, 0);
-	
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
-	
-	shader->enableShadow();
-	
-	drawPoints();
-	
-	shader->disable();
-	
+	glClear(GL_COLOR_BUFFER_BIT);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	
+// calc per-slice count
+	int num_slice = RENDERPARTICLE_NUM_SLICE;
+	int count_per_slice = m_num_particle / num_slice;
+	if(count_per_slice < 1) {
+		num_slice = m_num_particle;
+		count_per_slice = 1;
+	}
+	
+	if(num_slice * count_per_slice < m_num_particle) num_slice++;
+	
+	for(int i = 0; i< num_slice; i++) {
+		int start = i * count_per_slice;
+		int end = start + count_per_slice;
+		if(end > m_num_particle) end = m_num_particle;
+		
+		int count = end - start;
+		
+		if(count > 0) {
+// primary draw
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_image_fbo);
+			glViewport(0,0,m_image_width, m_image_height);
+			glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+			
+			if(m_invert) glBlendFunc( GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
+			else glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ONE);
+
+			setPrimProjection();
+	
+			shader->enable();
+			
+			drawPoints(start, count);
+			
+			shader->disable();
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+// shadow draw
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_shadow_fbo);
+			glViewport(0,0, 512, 512);
+			glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+			
+			glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+			setShadowProjection();
+	
+			shader->enableShadow();
+			
+			drawPoints(start, count);
+			
+			shader->disable();
+			
+			glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+			
+		}
+	}
+	
+	
+	
+	
+	
+		  
+	
+	//glClear(GL_COLOR_BUFFER_BIT);	// Clear Screen And Depth Buffer
+	
+	
+
+
+	
+	
+	
+	//glClear(GL_COLOR_BUFFER_BIT);	// Clear Screen And Depth Buffer
+	
+	
 }
 
 void RenderParticle::compose()
@@ -219,58 +262,122 @@ void RenderParticle::showShadow()
 	glEnable(GL_DEPTH_TEST);
 }
 
-void RenderParticle::drawPoints()
-{
+void RenderParticle::drawPoints(int start, int count)
+{/*
+// calc per-slice count
+	int num_slice = RENDERPARTICLE_NUM_SLICE;
+	int count_per_slice = m_num_particle / num_slice;
+	if(count_per_slice < 1) {
+		num_slice = m_num_particle;
+		count_per_slice = 1;
+	}
+	
+	if(num_slice * count_per_slice < m_num_particle) num_slice++;
+	
+	for(int i = 0; i< num_slice; i++) {
+		int start = i * count_per_slice;
+		int end = start + count_per_slice;
+		if(end > m_num_particle) end = m_num_particle;
+		
+		int count = end - start;
+		
+		if(count > 0) {*/
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			
+			
+			glVertexPointer(4, GL_FLOAT, 0, 0);
+			glEnableClientState(GL_VERTEX_ARRAY);
+				
+			glBindBuffer(GL_ARRAY_BUFFER, tbo);
 
-	
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexPointer(4, GL_FLOAT, 0, 0);
-	glEnableClientState(GL_VERTEX_ARRAY);
-		
-		glBindBufferARB(GL_ARRAY_BUFFER, tbo);
-		glClientActiveTexture(GL_TEXTURE0);
-				glTexCoordPointer(4, GL_FLOAT, 0, 0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
+			glTexCoordPointer(4, GL_FLOAT, 0, 0);
+			glClientActiveTexture(GL_TEXTURE0);
+			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 				
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+				glDrawElements(GL_POINTS, count, GL_UNSIGNED_INT, (void*) (start*sizeof(unsigned int)) );
 				
+				//glDrawElements(GL_POINTS, m_num_particle, GL_UNSIGNED_INT, 0 );
 				
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, ibo);
-        glDrawElements(GL_POINTS, m_num_particle, GL_UNSIGNED_INT, 0 );
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
-		
-		
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	 glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	
-	
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+				//glDrawArrays(GL_POINTS, 0, m_num_particle);
+				
+			glDisableClientState(GL_VERTEX_ARRAY);	
+			glClientActiveTexture(GL_TEXTURE0);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		/*}
+	}
+*/	
 }
 
 void RenderParticle::setImageDim(int w, int h) 
 {
-	m_image_width = w/2; m_image_height = h/2;
+	int tw = w/2;
+	int th = h/2;
 	
-	if(m_image_fbo) glDeleteFramebuffersEXT(1, &m_image_fbo);
-	if(m_image_tex) glDeleteTextures(1, &m_image_tex);
-	
-	glGenFramebuffersEXT(1, &m_image_fbo);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_image_fbo);
-	
-	glGenTextures(1, &m_image_tex);
-	glBindTexture(GL_TEXTURE_2D, m_image_tex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, m_image_width, m_image_height, 0, GL_RGBA, GL_FLOAT, 0);
-	glTexParameterf(GL_TEXTURE_2D, 
-                    GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, 
-                    GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameterf(GL_TEXTURE_2D, 
-                    GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, 
-                    GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-					
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, m_image_tex, 0);
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	if(tw != m_image_width || th != m_image_height || !m_image_fbo || !m_image_tex) {
+		m_image_width = w/2; m_image_height = h/2;
+		
+		if(m_image_fbo) glDeleteFramebuffersEXT(1, &m_image_fbo);
+		if(m_image_tex) glDeleteTextures(1, &m_image_tex);
+		
+		glGenFramebuffersEXT(1, &m_image_fbo);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_image_fbo);
+		
+		glGenTextures(1, &m_image_tex);
+		glBindTexture(GL_TEXTURE_2D, m_image_tex);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F_ARB, m_image_width, m_image_height, 0, GL_RGBA, GL_FLOAT, 0);
+		glTexParameterf(GL_TEXTURE_2D, 
+						GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, 
+						GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, 
+						GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameterf(GL_TEXTURE_2D, 
+						GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+						
+		glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, m_image_tex, 0);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	}
+}
 
+void RenderParticle::setFrustum(float l, float r, float b, float t, float n, float f)
+{
+	m_left = l;
+	m_right = r; 
+	m_bottom = b; 
+	m_top = t; 
+	m_near = n; 
+	m_far = f;
+}
+
+void RenderParticle::setPrimProjection()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
+	glFrustum (m_left, m_right, m_bottom, m_top, m_near, m_far);
+	
+	glMatrixMode(GL_MODELVIEW);
+	
+	glLoadIdentity();
+	
+	gluLookAt (m_eye_x, m_eye_y, m_eye_z,
+			   m_eye_x + m_view_x, m_eye_y + m_view_y, m_eye_z + m_view_z,
+			  m_up_x, m_up_y, m_up_z);
+}
+
+void RenderParticle::setShadowProjection()
+{
+		glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();	
+	glOrtho(-m_light_size, m_light_size, -m_light_size, m_light_size, 1.1, 1000.0);
+	glMatrixMode(GL_MODELVIEW);
+	
+	glLoadIdentity();
+		gluLookAt(m_light_x,m_light_y,m_light_z,
+				  m_light_x + m_light_vec_x, m_light_y + m_light_vec_y, m_light_z + m_light_vec_z,
+				  0, 1, 0);
 }

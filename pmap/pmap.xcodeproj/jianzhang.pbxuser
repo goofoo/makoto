@@ -71,8 +71,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 283067370;
-			PBXWorkspaceStateSaveDate = 283067370;
+			PBXPerProjectTemplateStateSaveDate = 283069351;
+			PBXWorkspaceStateSaveDate = 283069351;
 		};
 		perUserProjectItems = {
 			7F9D7BD310DE92670051800F = 7F9D7BD310DE92670051800F /* PBXTextBookmark */;
@@ -91,9 +91,9 @@
 	};
 	7F23B9F810D98C9F00FE03A1 /* FluidOctree.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1502, 11970}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1502, 11340}}";
 			sepNavSelRange = "{18396, 0}";
-			sepNavVisRange = "{17754, 941}";
+			sepNavVisRange = "{35, 746}";
 			sepNavWindowFrame = "{{68, 75}, {672, 677}}";
 		};
 	};
@@ -131,7 +131,7 @@
 	};
 	7F82690110CEC37800AF3FE9 /* PMapNode.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {776, 7490}}";
+			sepNavIntBoundsRect = "{{0, 0}, {578, 7812}}";
 			sepNavSelRange = "{6266, 0}";
 			sepNavVisRange = "{6196, 880}";
 			sepNavWindowFrame = "{{713, 101}, {568, 639}}";
@@ -148,16 +148,16 @@
 	7F976DCD10DC185E00252E4F /* RenderParticle.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {842, 966}}";
-			sepNavSelRange = "{1185, 0}";
-			sepNavVisRange = "{0, 1077}";
+			sepNavSelRange = "{1232, 14}";
+			sepNavVisRange = "{425, 1254}";
 			sepNavWindowFrame = "{{10, 68}, {597, 693}}";
 		};
 	};
 	7F976DCE10DC185E00252E4F /* RenderParticle.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {854, 3864}}";
-			sepNavSelRange = "{780, 3}";
-			sepNavVisRange = "{35, 1251}";
+			sepNavIntBoundsRect = "{{0, 0}, {854, 4186}}";
+			sepNavSelRange = "{6150, 0}";
+			sepNavVisRange = "{5791, 1207}";
 			sepNavWindowFrame = "{{514, 85}, {597, 693}}";
 		};
 	};
@@ -196,13 +196,19 @@
 		name = PMapNode.h;
 		path = /Users/jianzhang/Documents/plankton/pmap/PMapNode.h;
 		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {746, 1064}}";
+			sepNavSelRange = "{1603, 0}";
+			sepNavVisRange = "{934, 1145}";
+			sepNavWindowFrame = "{{692, -62}, {597, 693}}";
+		};
 	};
 	7F9D7CE210DED60E0051800F /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 7F976DCE10DC185E00252E4F /* RenderParticle.cpp */;
 		name = "RenderParticle.cpp: 129";
 		rLen = 3;
-		rLoc = 3992;
+		rLoc = 4030;
 		rType = 0;
 		vrLen = 1131;
 		vrLoc = 2971;
@@ -212,7 +218,7 @@
 		fRef = 7F976DCE10DC185E00252E4F /* RenderParticle.cpp */;
 		name = "RenderParticle.cpp: 35";
 		rLen = 3;
-		rLoc = 780;
+		rLoc = 818;
 		rType = 0;
 		vrLen = 1251;
 		vrLoc = 35;
