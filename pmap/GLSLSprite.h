@@ -12,6 +12,14 @@
 
 #include "../shared/gBase.h"
 
+struct GLSLSpritePARAM
+{
+	float density, shadow_scale, radius;
+	float base_r, base_g, base_b;
+	float light_r, light_g, light_b;
+	float shadow_r, shadow_g, shadow_b;
+};
+
 class GLSLSprite
 {
 public:
@@ -24,6 +32,7 @@ public:
 	void setShadowTex(GLuint tex);
 	void enableShadow();
 	void disable();
+	void setParam(GLSLSpritePARAM& param);
 	
 private:
 	GLuint program;

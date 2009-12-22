@@ -30,13 +30,20 @@
 
 MTypeId     PMapNode::id( 0x0004093 );
 MObject     PMapNode::frame;
+MObject     PMapNode::aradius;
 MObject     PMapNode::adensity;
+MObject     PMapNode::ashadowscale;
 MObject     PMapNode::amaxframe;
 MObject     PMapNode::aminframe;
 MObject 	PMapNode::aviewattrib;
 MObject     PMapNode::adrawtype;
 MObject     PMapNode::input;
-MObject PMapNode::aincoe;
+MObject     PMapNode::alightr;
+MObject     PMapNode::alightg;
+MObject     PMapNode::alightb;
+MObject     PMapNode::ashadowr;
+MObject     PMapNode::ashadowg;
+MObject     PMapNode::ashadowb;
 MObject PMapNode::anoise;
 MObject     PMapNode::adiffuse;
 MObject     PMapNode::alightposx;
@@ -60,6 +67,19 @@ PMapNode::PMapNode() : f_type(0), fSaveImage(0), fSupported(0), fValid(0)
 {
 	fData = new FluidOctree();
 	 renderer = new RenderParticle();
+// set intial param
+	 fParam.density = 1.f;
+	 fParam.shadow_scale = 1.f;
+	 fParam.radius = 1.f;
+	 fParam.base_r = 0.1;
+	 fParam.base_g = 0.1;
+	 fParam.base_b = 0.1;
+	 fParam.light_r = 1.0;
+	 fParam.light_g = 1.0;
+	 fParam.light_b = 1.0;
+	 fParam.shadow_r = 0.0;
+	 fParam.shadow_g = 0.0;
+	 fParam.shadow_b = 0.0;
 }
 
 PMapNode::~PMapNode() 
@@ -89,14 +109,6 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
 		fSaveImage = data.inputValue( asaveimage ).asInt();
-	    
-		//int hascoe = 0;
-		//MVectorArray vcoe = zWorks::getVectorArrayAttr(data, aincoe);
-		//XYZ hdrCoeff[16];
-		//if(vcoe.length() == 16) {
-		//	hascoe = 1;
-		//	for(unsigned i=0; i<16; i++) hdrCoeff[i] = XYZ(vcoe[i].x, vcoe[i].y, vcoe[i].z);
-		//}
 		
 		if( time < minfrm ) time = minfrm;
 		int frame_lo = time + 0.005;
@@ -115,12 +127,23 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		z = data.inputValue(alightposz).asFloat();
 
 		renderer->setLightPoint(x, y, z);
+
+		fParam.density = data.inputValue(adensity).asFloat();
+		fParam.shadow_scale = data.inputValue(ashadowscale).asFloat();
+		fParam.radius = data.inputValue(aradius).asFloat();
+		fParam.base_r = data.inputValue(acloudr).asFloat();
+		fParam.base_g = data.inputValue(acloudg).asFloat();
+		fParam.base_b = data.inputValue(acloudb).asFloat();
+		fParam.light_r = data.inputValue(alightr).asFloat();
+		fParam.light_g = data.inputValue(alightg).asFloat();
+		fParam.light_b = data.inputValue(alightb).asFloat();
+		fParam.shadow_r = data.inputValue(ashadowr).asFloat();
+		fParam.shadow_g = data.inputValue(ashadowg).asFloat();
+		fParam.shadow_b = data.inputValue(ashadowb).asFloat();
 		
 		float kwei = data.inputValue(adiffuse).asFloat();
 		
 		
-		
-		kwei = data.inputValue(adensity).asFloat();
 		
 		
 		
@@ -142,10 +165,8 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		
 				
 		
-		float r, g, b;
-		r = data.inputValue(acloudr).asFloat();
-		g = data.inputValue(acloudg).asFloat();
-		b = data.inputValue(acloudb).asFloat();
+		
+		
 		
 		data.setClean(plug);
 		
@@ -241,6 +262,9 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 		renderer->setLightVector(x,y,z);
 		renderer->setLightSize(w*1.8f);
 		
+		//fParam.density = 1.f;
+		
+		
 		switch(f_type) {
 		case 0: 
 			fData->drawCube();
@@ -313,11 +337,77 @@ MStatus PMapNode::initialize()
 	nAttr.setKeyable(true);
 	addAttribute( amaxframe );
 	
+	aradius = nAttr.create( "billboardSize", "bsz", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.01);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute( aradius );
+	
 	adensity = nAttr.create( "density", "den", MFnNumericData::kFloat, 1.0);
-	nAttr.setMin(0.1);
+	nAttr.setMin(0.01);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute( adensity );
+	
+	ashadowscale = nAttr.create( "shadowScale", "sds", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.01);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(ashadowscale);
+	
+	acloudr = nAttr.create( "CloudColorR", "cclr", MFnNumericData::kFloat, 0.1);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(acloudr);
+	
+	acloudg = nAttr.create( "CloudColorG", "cclg", MFnNumericData::kFloat, 0.1);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(acloudg);
+	
+	acloudb = nAttr.create( "CloudColorB", "cclb", MFnNumericData::kFloat, 0.1);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(acloudb);
+	
+	alightr = nAttr.create( "lightColorR", "lclr", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(alightr);
+	
+	alightg = nAttr.create( "lightColorG", "lclg", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(alightg);
+	
+	alightb = nAttr.create( "lightColorB", "lclb", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(alightb);
+	
+		ashadowr = nAttr.create( "shadowColorR", "sclr", MFnNumericData::kFloat, 0.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(ashadowr);
+	
+	ashadowg = nAttr.create( "shadowColorG", "sclg", MFnNumericData::kFloat, 0.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(ashadowg);
+	
+	ashadowb = nAttr.create( "shadowColorB", "sclb", MFnNumericData::kFloat, 0.0);
+	nAttr.setMin(0.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(ashadowb);
 	
 	MFnTypedAttribute   stringAttr;
 	input = stringAttr.create( "cachePath", "cp", MFnData::kString );
@@ -327,9 +417,6 @@ MStatus PMapNode::initialize()
 	aviewattrib = stringAttr.create( "viewAttrib", "va", MFnData::kString );
  	stringAttr.setStorable(true);
 	addAttribute( aviewattrib );
-	
-	zWorks::createVectorArrayAttr(aincoe, "inCoeff", "icoe");
-	addAttribute( aincoe );
 	
 	anoise = nAttr.create( "KNoise", "knoi", MFnNumericData::kFloat, 0.5);
 	nAttr.setMin(0.0);
@@ -365,23 +452,7 @@ MStatus PMapNode::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(ameanradius);
 	
-	acloudr = nAttr.create( "CloudColorR", "cclr", MFnNumericData::kFloat, 0.1);
-	nAttr.setMin(0.0);
-	nAttr.setStorable(true);
-	nAttr.setKeyable(true);
-	addAttribute(acloudr);
-	
-	acloudg = nAttr.create( "CloudColorG", "cclg", MFnNumericData::kFloat, 0.1);
-	nAttr.setMin(0.0);
-	nAttr.setStorable(true);
-	nAttr.setKeyable(true);
-	addAttribute(acloudg);
-	
-	acloudb = nAttr.create( "CloudColorB", "cclb", MFnNumericData::kFloat, 0.1);
-	nAttr.setMin(0.0);
-	nAttr.setStorable(true);
-	nAttr.setKeyable(true);
-	addAttribute(acloudb);
+
 	
 	akkey = nAttr.create( "KKey", "kky", MFnNumericData::kFloat, 1.0);
 	nAttr.setMin(0.0);
@@ -436,8 +507,9 @@ MStatus PMapNode::initialize()
 	attributeAffects( amaxframe, aoutval );
 	attributeAffects( aviewattrib, aoutval );
 	attributeAffects( adrawtype, aoutval );
-	attributeAffects( aincoe, aoutval );
+	attributeAffects( aradius, aoutval );
 	attributeAffects( adensity, aoutval );
+	attributeAffects( ashadowscale, aoutval );
 	attributeAffects( anoise, aoutval );
 	attributeAffects( adiffuse, aoutval );
 	attributeAffects( alightposx, aoutval );
@@ -449,6 +521,12 @@ MStatus PMapNode::initialize()
 	attributeAffects( acloudr, aoutval );
 	attributeAffects( acloudg, aoutval );
 	attributeAffects( acloudb, aoutval );
+	attributeAffects( alightr, aoutval );
+	attributeAffects( alightg, aoutval );
+	attributeAffects( alightb, aoutval );
+	attributeAffects( ashadowr, aoutval );
+	attributeAffects( ashadowg, aoutval );
+	attributeAffects( ashadowb, aoutval );
 	attributeAffects( alacunarity, aoutval );
 	attributeAffects( adimension, aoutval );
 	attributeAffects( asaveimage, aoutval );
@@ -510,6 +588,9 @@ void PMapNode::drawPoint()
 	
 	renderer->sort();
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	
+	renderer->updateParam(fParam);
+	
 	renderer->render();
 	
 	renderer->compose();

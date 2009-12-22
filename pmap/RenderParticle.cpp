@@ -431,3 +431,8 @@ void RenderParticle::setShadowProjection()
 				  m_light_x + m_light_vec_x, m_light_y + m_light_vec_y, m_light_z + m_light_vec_z,
 				  m_light_up_x,m_light_up_y,m_light_up_z);
 }
+
+void RenderParticle::updateParam(GLSLSpritePARAM& param)
+{
+	shader->setParam(param);
+}

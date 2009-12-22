@@ -40,7 +40,9 @@ public:
 	static  	MObject		frame;
 	static  	MObject 	aminframe;
 	static  	MObject 	amaxframe;
+	static      MObject     aradius;
 	static      MObject     adensity;
+	static      MObject     ashadowscale;
 	static      MObject     anoise;
 	static      MObject     adiffuse;
 	static      MObject     alightposx;
@@ -52,11 +54,17 @@ public:
 	static      MObject     acloudr;
 	static      MObject     acloudg;
 	static      MObject     acloudb;
+	static      MObject     alightr;
+	static      MObject     alightg;
+	static      MObject     alightb;
+		static      MObject     ashadowr;
+	static      MObject     ashadowg;
+	static      MObject     ashadowb;
 	static      MObject     akkey;
 	static      MObject     akback;
 	static      MObject     alacunarity;
 	static      MObject     adimension;
-	static MObject aincoe;
+	//static MObject aincoe;
 	static MObject asaveimage;
 	static MObject aresolutionx;
 	static MObject aresolutiony;
@@ -70,6 +78,7 @@ private:
 	MString fEyeCamera;
 	char fSupported, fValid;
 	RenderParticle* renderer;
+	GLSLSpritePARAM fParam;
 };
 
 #endif

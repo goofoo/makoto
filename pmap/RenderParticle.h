@@ -45,6 +45,8 @@ public:
 	
 	void getLightPoint(float& x, float& y, float& z) const {x = m_light_x; y = m_light_y; z = m_light_z;}
 	
+	void updateParam(GLSLSpritePARAM& param);
+	
 	void setPrimProjection();
 	void setShadowProjection();
 	
