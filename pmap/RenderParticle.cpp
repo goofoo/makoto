@@ -16,7 +16,8 @@ m_image_fbo(0),
 m_image_tex(0),
 m_shadow_fbo(0),
 m_shadow_tex(0),
-m_noise_tex(0)
+m_noise_tex(0),
+m_downSample(2)
 {}
 
 RenderParticle::~RenderParticle() {uninitialize();}
@@ -55,9 +56,9 @@ void RenderParticle::initialize()
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
 	
-#define PARTICLENOISE_WIDTH	64
-#define PARTICLENOISE_HEIGHT	64
-#define PARTICLENOISE_DEPTH	64
+#define PARTICLENOISE_WIDTH	128
+#define PARTICLENOISE_HEIGHT 128
+#define PARTICLENOISE_DEPTH	128
 	unsigned char *texels = new unsigned char[PARTICLENOISE_WIDTH*PARTICLENOISE_HEIGHT*PARTICLENOISE_DEPTH*4];
 	int u, v, w;
 	for(w=0; w<PARTICLENOISE_DEPTH; w++) {
@@ -253,7 +254,7 @@ void RenderParticle::compose()
 {
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	
-	glViewport(0,0, m_image_width*2, m_image_height*2);
+	glViewport(0,0, m_image_width*m_downSample, m_image_height*m_downSample);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();	
 	glOrtho(-1, 1, -1, 1, 0.1, 10.0);
@@ -348,11 +349,11 @@ void RenderParticle::drawPoints(int start, int count)
 
 void RenderParticle::setImageDim(int w, int h) 
 {
-	int tw = w/2;
-	int th = h/2;
+	int tw = w/m_downSample;
+	int th = h/m_downSample;
 	
 	if(tw != m_image_width || th != m_image_height || !m_image_fbo || !m_image_tex) {
-		m_image_width = w/2; m_image_height = h/2;
+		m_image_width = w/m_downSample; m_image_height = h/m_downSample;
 		
 		if(m_image_fbo) glDeleteFramebuffersEXT(1, &m_image_fbo);
 		if(m_image_tex) glDeleteTextures(1, &m_image_tex);
@@ -384,6 +385,7 @@ void RenderParticle::setLightVector(float x, float y, float z)
 	m_light_vec_z=z - m_light_z;
 	
 	XYZ dirLight(m_light_vec_x, m_light_vec_y, m_light_vec_z);
+	m_light_clipfar = dirLight.length() + m_light_size * 4;
 	dirLight.normalize();
 	
 	m_light_vec_x = dirLight.x; 
@@ -437,7 +439,7 @@ void RenderParticle::setShadowProjection()
 {
 		glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();	
-	glOrtho(-m_light_size, m_light_size, -m_light_size, m_light_size, 1.1, 1000.0);
+	glOrtho(-m_light_size, m_light_size, -m_light_size, m_light_size, 1.0, m_light_clipfar);
 	glMatrixMode(GL_MODELVIEW);
 	
 	glLoadIdentity();
@@ -450,3 +452,11 @@ void RenderParticle::updateParam(GLSLSpritePARAM& param)
 {
 	shader->setParam(param);
 }
+
+void RenderParticle::setDownSample(int val)
+{
+	if(val==0) m_downSample = 1;
+	else if(val==1) m_downSample = 2;
+	else m_downSample = 4;
+}
+//:~

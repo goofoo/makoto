@@ -44,7 +44,7 @@ MObject     PMapNode::alightb;
 MObject     PMapNode::ashadowr;
 MObject     PMapNode::ashadowg;
 MObject     PMapNode::ashadowb;
-//MObject PMapNode::anoise;
+MObject     PMapNode::adownsample;
 //MObject     PMapNode::adiffuse;
 MObject     PMapNode::alightposx;
 MObject     PMapNode::alightposy;
@@ -161,33 +161,8 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		fParam.noise_x = data.inputValue(aoriginx).asFloat();
 		fParam.noise_y = data.inputValue(aoriginy).asFloat();
 		fParam.noise_z = data.inputValue(aoriginz).asFloat();
-		//float kwei = data.inputValue(adiffuse).asFloat();
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		//kwei = data.inputValue(akkey).asFloat();
-		
-		
-		//kwei = data.inputValue(akback).asFloat();
-		
-		
-		
-		
-		
-		
-		
-		
-				
-		
-		
-		
-		
+		renderer->setDownSample(data.inputValue(adownsample).asInt());		
 		data.setClean(plug);
 		
 		return MS::kSuccess;
@@ -287,12 +262,9 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	if(fValid) {
 		
 		fData->getBBox(x,y,z,w);
-		renderer->setLightVector(x,y,z);
 		renderer->setLightSize(w*1.8f);
-		
-		//fParam.density = 1.f;
-		
-		
+		renderer->setLightVector(x,y,z);
+
 		switch(f_type) {
 		case 0: 
 			fData->drawCube();
@@ -437,6 +409,13 @@ MStatus PMapNode::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(ashadowb);
 	
+	adownsample = nAttr.create( "downSample", "dsp", MFnNumericData::kInt, 1 );
+	nAttr.setMin(0);
+	nAttr.setMax(2);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute( adownsample );
+	
 	MFnTypedAttribute   stringAttr;
 	input = stringAttr.create( "cachePath", "cp", MFnData::kString );
  	stringAttr.setStorable(true);
@@ -554,7 +533,7 @@ MStatus PMapNode::initialize()
 	attributeAffects( aradius, aoutval );
 	attributeAffects( adensity, aoutval );
 	attributeAffects( ashadowscale, aoutval );
-	//attributeAffects( anoise, aoutval );
+	attributeAffects(adownsample, aoutval );
 	//attributeAffects( adiffuse, aoutval );
 	attributeAffects( alightposx, aoutval );
 	attributeAffects( alightposy, aoutval );

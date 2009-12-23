@@ -49,6 +49,7 @@ public:
 	
 	void setPrimProjection();
 	void setShadowProjection();
+	void setDownSample(int val);
 	
 private:
 	long m_num_particle;
@@ -76,6 +77,7 @@ private:
 	float m_light_size;
 	char m_invert;
 	float m_left, m_right, m_bottom, m_top, m_near, m_far;
+	int m_downSample, m_light_clipfar;
 };
 
 #endif

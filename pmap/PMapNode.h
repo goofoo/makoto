@@ -61,7 +61,7 @@ public:
 	static      MObject     ashadowg;
 	static      MObject     ashadowb;
 	//static      MObject     akkey;
-	//static      MObject     akback;
+	static      MObject     adownsample;
 	static      MObject     alacunarity;
 	static      MObject     adimension;
 	static      MObject     aoriginx;
