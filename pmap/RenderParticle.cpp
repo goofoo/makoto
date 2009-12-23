@@ -15,7 +15,8 @@ RenderParticle::RenderParticle() : m_isInitialized(0),
 m_image_fbo(0),
 m_image_tex(0),
 m_shadow_fbo(0),
-m_shadow_tex(0)
+m_shadow_tex(0),
+m_noise_tex(0)
 {}
 
 RenderParticle::~RenderParticle() {uninitialize();}
@@ -45,6 +46,33 @@ void RenderParticle::initialize()
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, m_shadow_tex, 0);
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	
+	
+	glGenTextures(1, &m_noise_tex);	
+	glBindTexture(GL_TEXTURE_3D, m_noise_tex);	
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+	
+#define PARTICLENOISE_WIDTH	64
+#define PARTICLENOISE_HEIGHT	64
+#define PARTICLENOISE_DEPTH	64
+	unsigned char *texels = new unsigned char[PARTICLENOISE_WIDTH*PARTICLENOISE_HEIGHT*PARTICLENOISE_DEPTH*4];
+	int u, v, w;
+	for(w=0; w<PARTICLENOISE_DEPTH; w++) {
+		for(v=0; v<PARTICLENOISE_HEIGHT; v++) {
+			for(u=0; u<PARTICLENOISE_WIDTH; u++) {
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4] = random()%256;
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+1] = random()%256;
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+2] = random()%256;
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+3] = random()%256;
+			}
+		}
+	}
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, PARTICLENOISE_WIDTH, PARTICLENOISE_HEIGHT, PARTICLENOISE_DEPTH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texels);
+	free(texels);
+	
 	m_isInitialized = 1;
 }
 
@@ -58,6 +86,7 @@ void RenderParticle::uninitialize()
 	if(m_shadow_tex) glDeleteTextures(1, &m_shadow_tex);
 	if(m_image_fbo) glDeleteFramebuffersEXT(1, &m_image_fbo);
 	if(m_image_tex) glDeleteTextures(1, &m_image_tex);
+	if(m_noise_tex) glDeleteTextures(1, &m_noise_tex);
 }
 
 void RenderParticle::setVertex(float* vertex) 
@@ -144,6 +173,7 @@ void RenderParticle::render()
 		mm[12] = mat.v[3][0]; mm[13] = mat.v[3][1]; mm[14] = mat.v[3][2]; mm[15] = mat.v[3][3];
 		
 	shader->setShadowMatrix(mm);
+	//
 	
 // set states
 	glShadeModel(GL_SMOOTH);
@@ -152,6 +182,9 @@ void RenderParticle::render()
 	glEnable(GL_BLEND);
 	glDepthMask( GL_FALSE );
 	glDisable(GL_DEPTH_TEST);
+	
+	shader->setNoiseTex(m_noise_tex);
+	shader->setShadowTex(m_shadow_tex);
 	
 // clean up
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_image_fbo);
@@ -188,7 +221,6 @@ void RenderParticle::render()
 
 			setPrimProjection();
 			
-			shader->setShadowTex(m_shadow_tex);
 	
 			shader->enable();
 			
@@ -215,24 +247,6 @@ void RenderParticle::render()
 			
 		}
 	}
-	
-	
-	
-	
-	
-		  
-	
-	//glClear(GL_COLOR_BUFFER_BIT);	// Clear Screen And Depth Buffer
-	
-	
-
-
-	
-	
-	
-	//glClear(GL_COLOR_BUFFER_BIT);	// Clear Screen And Depth Buffer
-	
-	
 }
 
 void RenderParticle::compose()

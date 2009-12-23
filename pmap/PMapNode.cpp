@@ -44,20 +44,23 @@ MObject     PMapNode::alightb;
 MObject     PMapNode::ashadowr;
 MObject     PMapNode::ashadowg;
 MObject     PMapNode::ashadowb;
-MObject PMapNode::anoise;
-MObject     PMapNode::adiffuse;
+//MObject PMapNode::anoise;
+//MObject     PMapNode::adiffuse;
 MObject     PMapNode::alightposx;
 MObject     PMapNode::alightposy;
 MObject     PMapNode::alightposz;
-MObject     PMapNode::ameanradius;
+MObject     PMapNode::afreq;
 MObject     PMapNode::aoutval;
-MObject     PMapNode::akkey;
-MObject     PMapNode::akback;
+//MObject     PMapNode::akkey;
+//MObject     PMapNode::akback;
 MObject     PMapNode::acloudr;
 MObject     PMapNode::acloudg;
 MObject     PMapNode::acloudb;
 MObject     PMapNode::alacunarity;
 MObject     PMapNode::adimension;
+MObject     PMapNode::aoriginx;
+MObject     PMapNode::aoriginy;
+MObject     PMapNode::aoriginz;
 MObject PMapNode::asaveimage;
 MObject PMapNode::aresolutionx;
 MObject PMapNode::aresolutiony;
@@ -80,6 +83,18 @@ PMapNode::PMapNode() : f_type(0), fSaveImage(0), fSupported(0), fValid(0)
 	 fParam.shadow_r = 0.0;
 	 fParam.shadow_g = 0.0;
 	 fParam.shadow_b = 0.0;
+	 fParam.side_x = 1.0;
+	 fParam.side_y = 0.0;
+	 fParam.side_z = 0.0;
+	 fParam.up_x = 0.0;
+	 fParam.up_y = 1.0;
+	 fParam.up_z = 0.0;
+	 fParam.lacunarity = 2.0;
+	 fParam.dimension = 2.0;
+	 fParam.frequency = 1.0;
+	 fParam.noise_x = -256.0;
+	 fParam.noise_y = -256.0;
+	 fParam.noise_z = -256.0;
 }
 
 PMapNode::~PMapNode() 
@@ -140,27 +155,32 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		fParam.shadow_r = data.inputValue(ashadowr).asFloat();
 		fParam.shadow_g = data.inputValue(ashadowg).asFloat();
 		fParam.shadow_b = data.inputValue(ashadowb).asFloat();
-		
-		float kwei = data.inputValue(adiffuse).asFloat();
-		
-		
-		
-		
-		
-		kwei = data.inputValue(ameanradius).asFloat();
-		
+		fParam.lacunarity = data.inputValue(alacunarity).asFloat();
+		fParam.dimension = data.inputValue(adimension).asFloat();
+		fParam.frequency = data.inputValue(afreq).asFloat();
+		fParam.noise_x = data.inputValue(aoriginx).asFloat();
+		fParam.noise_y = data.inputValue(aoriginy).asFloat();
+		fParam.noise_z = data.inputValue(aoriginz).asFloat();
+		//float kwei = data.inputValue(adiffuse).asFloat();
 		
 		
-		kwei = data.inputValue(akkey).asFloat();
 		
 		
-		kwei = data.inputValue(akback).asFloat();
 		
 		
-		kwei = data.inputValue(alacunarity).asFloat();
 		
 		
-		kwei = data.inputValue(adimension).asFloat();
+		
+		//kwei = data.inputValue(akkey).asFloat();
+		
+		
+		//kwei = data.inputValue(akback).asFloat();
+		
+		
+		
+		
+		
+		
 		
 		
 				
@@ -220,6 +240,14 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	renderer->setViewVector(mat.v[2][0], mat.v[2][1], mat.v[2][2]);
 	renderer->setEyePoint(mat.v[3][0], mat.v[3][1], mat.v[3][2]);
 	renderer->setUpVector(mat.v[1][0], mat.v[1][1], mat.v[1][2]);
+	
+// update camera side and up
+	fParam.side_x = -mat.v[0][0];
+	fParam.side_y = -mat.v[0][1];
+	fParam.side_z = -mat.v[0][2];
+	fParam.up_x = mat.v[1][0];
+	fParam.up_y = mat.v[1][1];
+	fParam.up_z = mat.v[1][2];
 
 	view.beginGL(); 
 /*	
@@ -417,7 +445,7 @@ MStatus PMapNode::initialize()
 	aviewattrib = stringAttr.create( "viewAttrib", "va", MFnData::kString );
  	stringAttr.setStorable(true);
 	addAttribute( aviewattrib );
-	
+	/*
 	anoise = nAttr.create( "KNoise", "knoi", MFnNumericData::kFloat, 0.5);
 	nAttr.setMin(0.0);
 	//nAttr.setMax(1.0);
@@ -430,7 +458,7 @@ MStatus PMapNode::initialize()
 	nAttr.setMax(1.0);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
-	addAttribute(adiffuse);
+	addAttribute(adiffuse);*/
 	
 	alightposx = nAttr.create( "LightPosX", "lposx", MFnNumericData::kFloat, 100.0);
 	nAttr.setStorable(true);
@@ -447,13 +475,41 @@ MStatus PMapNode::initialize()
 	nAttr.setKeyable(true);
 	addAttribute(alightposz);
 	
-	ameanradius = nAttr.create( "MeanRadius", "mnr", MFnNumericData::kFloat, 4.0);
+	alacunarity = nAttr.create( "Lacunarity", "lcu", MFnNumericData::kFloat, 1.25);
+	nAttr.setMin(1.0);
+	nAttr.setMax(4.0);
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
-	addAttribute(ameanradius);
+	addAttribute(alacunarity);
 	
-
+	adimension = nAttr.create( "Dimension", "dem", MFnNumericData::kFloat, 0.0);
+	nAttr.setMin(0.0);
+	nAttr.setMax(3.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(adimension);
 	
+	afreq = nAttr.create( "frequency", "freq", MFnNumericData::kFloat, 1.0);
+	nAttr.setMin(0.01);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(afreq);
+	
+		aoriginx = nAttr.create( "noisePosX", "nox", MFnNumericData::kFloat, -256.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(aoriginx);
+	
+	aoriginy = nAttr.create( "noisePosY", "noy", MFnNumericData::kFloat, -256.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(aoriginy);
+	
+	aoriginz = nAttr.create( "noisePosZ", "noz", MFnNumericData::kFloat, -256.0);
+	nAttr.setStorable(true);
+	nAttr.setKeyable(true);
+	addAttribute(aoriginz);
+/*
 	akkey = nAttr.create( "KKey", "kky", MFnNumericData::kFloat, 1.0);
 	nAttr.setMin(0.0);
 	nAttr.setStorable(true);
@@ -465,20 +521,8 @@ MStatus PMapNode::initialize()
 	nAttr.setStorable(true);
 	nAttr.setKeyable(true);
 	addAttribute(akback);
-	
-	alacunarity = nAttr.create( "Lacunarity", "lcu", MFnNumericData::kFloat, 1.25);
-	nAttr.setMin(1.25);
-	nAttr.setMax(4.0);
-	nAttr.setStorable(true);
-	nAttr.setKeyable(true);
-	addAttribute(alacunarity);
-	
-	adimension = nAttr.create( "Dimension", "dem", MFnNumericData::kFloat, 0.0);
-	nAttr.setMin(0.0);
-	nAttr.setMax(3.5);
-	nAttr.setStorable(true);
-	nAttr.setKeyable(true);
-	addAttribute(adimension);
+*/	
+
 	
 	asaveimage = nAttr.create( "saveImage", "smg", MFnNumericData::kInt, 0); 
 	nAttr.setStorable(true);
@@ -510,14 +554,14 @@ MStatus PMapNode::initialize()
 	attributeAffects( aradius, aoutval );
 	attributeAffects( adensity, aoutval );
 	attributeAffects( ashadowscale, aoutval );
-	attributeAffects( anoise, aoutval );
-	attributeAffects( adiffuse, aoutval );
+	//attributeAffects( anoise, aoutval );
+	//attributeAffects( adiffuse, aoutval );
 	attributeAffects( alightposx, aoutval );
 	attributeAffects( alightposy, aoutval );
 	attributeAffects( alightposz, aoutval );
-	attributeAffects( ameanradius, aoutval );
-	attributeAffects( akkey, aoutval );
-	attributeAffects( akback, aoutval );
+	attributeAffects( afreq, aoutval );
+	//attributeAffects( akkey, aoutval );
+	//attributeAffects( akback, aoutval );
 	attributeAffects( acloudr, aoutval );
 	attributeAffects( acloudg, aoutval );
 	attributeAffects( acloudb, aoutval );
@@ -530,6 +574,9 @@ MStatus PMapNode::initialize()
 	attributeAffects( alacunarity, aoutval );
 	attributeAffects( adimension, aoutval );
 	attributeAffects( asaveimage, aoutval );
+	attributeAffects( aoriginx, aoutval );
+	attributeAffects( aoriginy, aoutval );
+	attributeAffects( aoriginz, aoutval );
 	return MS::kSuccess;
 
 }
@@ -594,7 +641,7 @@ void PMapNode::drawPoint()
 	renderer->render();
 	
 	renderer->compose();
-	renderer->showShadow();
+	//renderer->showShadow();
 	glPopAttrib();
 
 	delete[] pVertex;

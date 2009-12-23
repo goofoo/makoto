@@ -60,6 +60,7 @@ private:
 	GLuint m_image_tex;
 	GLuint m_shadow_fbo;
 	GLuint m_shadow_tex;
+	GLuint m_noise_tex;
 	char m_isInitialized;
 	
 	GLSLSprite* shader;

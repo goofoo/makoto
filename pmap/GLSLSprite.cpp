@@ -14,7 +14,8 @@ const char *particleVS =
 //"uniform float pointRadius;     \n"
 // scale to calculate size in pixels \n
 //"uniform float pointScale;"   
-"uniform vec4 eyePos;                                        \n"
+"uniform vec4 spriteSide;"
+"uniform vec4 spriteUp;"
 
 "uniform mat4 shadowMatrix;"
 
@@ -26,18 +27,26 @@ const char *particleVS =
 //" gl_Position = gl_ProjectionMatrix * gl_Position;"
 
 // calculate window-space point size                    
-"    vec4 eyeSpacePos = gl_ModelViewMatrix * wpos;           \n"
+//"    vec4 eyeSpacePos = gl_ModelViewMatrix * wpos;           \n"
 //"    float dist = length(eyeSpacePos.xyz);                   \n"
 //"    gl_PointSize = 128.0/dist;       \n"
 
-"    gl_TexCoord[0] = gl_MultiTexCoord0; // sprite texcoord  \n"
-"    gl_TexCoord[1] = eyeSpacePos;                           \n"
+// velocity and densit
+
+"    gl_TexCoord[0] = gl_MultiTexCoord0; "
+//"    gl_TexCoord[1] = eyeSpacePos;                           \n"
 
 // transform point in shadow, calc ndc
 "    gl_TexCoord[2] = vec4(shadowMatrix * wpos);"
 "    gl_TexCoord[2].x = (gl_TexCoord[2].x + 1.0)*0.5;"
 "    gl_TexCoord[2].y = (gl_TexCoord[2].y + 1.0)*0.5;"
 
+// world point for noise
+"	gl_TexCoord[3] = wpos;"
+
+// side and up of 
+"	gl_TexCoord[4] = spriteSide;"
+"	gl_TexCoord[5] = spriteUp;"
 "}";
 
 const char *particleGS =      
@@ -54,7 +63,16 @@ const char *particleGS =
 //"    float len = length(motion);                                \n"
 //"pos = gl_Vertex.xyz;"
 "vec3 x = vec3(radius,0,0);"  
-"vec3 y = vec3(0,radius,0);"                        
+"vec3 y = vec3(0,radius,0);"
+
+" vec3 vel = gl_TexCoordIn[0][0].xyz;"
+
+"vec3 I = cross( gl_TexCoordIn[0][4].xyz, gl_TexCoordIn[0][5].xyz);"
+
+" I = I*dot(vel, I);"
+
+"vec3 Side = (gl_TexCoordIn[0][4].xyz + I) * radius;"  
+"vec3 Up = (gl_TexCoordIn[0][5].xyz + I) * radius;"                         
 
 "    gl_TexCoord[0] = vec4(0, 0, 0, 1);                     \n"
 
@@ -62,23 +80,26 @@ const char *particleGS =
 
 // point in shadow
 "    gl_TexCoord[2] = gl_TexCoordIn[0][2];"
-
+"    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz + Side + Up, 1);"
 
 "    gl_Position = gl_ProjectionMatrix * vec4(pos + x + y, 1);  \n"
 "    EmitVertex();                                              \n"
 
 "    gl_TexCoord[0] = vec4(0, 1, 0, 1);                     \n"
-//"    gl_TexCoord[1] = gl_PositionIn[0];                         \n"
+"    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz + Side - Up, 1);"
+
 "    gl_Position = gl_ProjectionMatrix * vec4(pos + x - y, 1);  \n"
 "    EmitVertex();                                              \n"
 
 "    gl_TexCoord[0] = vec4(1, 0, 0, 1);                     \n"
-//"    gl_TexCoord[1] = gl_PositionIn[0];                         \n"
+"    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz - Side + Up, 1);"
+
 "    gl_Position = gl_ProjectionMatrix * vec4(pos - x + y, 1); \n"
 "    EmitVertex();                                              \n"
 
 "    gl_TexCoord[0] = vec4(1, 1, 0, 1);                     \n"
-//"    gl_TexCoord[1] = gl_PositionIn[0];                         \n"
+"    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz - Side - Up, 1);"
+
 "    gl_Position = gl_ProjectionMatrix * vec4(pos - x - y, 1); \n"
 "    EmitVertex();                                              \n"
 "}";
@@ -90,6 +111,36 @@ const char *particleFS =
 "uniform vec3 shadowColor;"
 "uniform float scaleDensity;"
 "uniform sampler2D ShadowMap;"
+
+// noise set
+"uniform sampler3D EarthNight;"
+"uniform float Lacunarity;"
+"uniform float Dimension;"
+"uniform float Frequency;"
+"uniform vec3 NoiseOrigin;"
+
+"vec4 fractal_func(vec3 pcoord)"
+"{"
+"	float f=1.0;"
+"	vec4 fractal = texture3D(EarthNight, pcoord).rgba;" 
+
+"	f*= Lacunarity;"
+
+"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
+
+"	f*= Lacunarity;"
+
+"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
+
+"	f*= Lacunarity;"
+
+"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
+
+"	f*= Lacunarity;"
+
+"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
+"return fractal;"
+"}"
 
 "void main()                                                        \n"
 "{                                                                  \n"
@@ -106,14 +157,15 @@ const char *particleFS =
 
 "alpha *= density;"
 
-"alpha = clamp(alpha, 0.0, 1.0);"
+"	vec4 fractal = fractal_func((gl_TexCoord[3].xyz + NoiseOrigin) * Frequency);"
 
-//"	vec3 cvel = normalize(gl_TexCoord[1].xyz);"
-//"	cvel = cvel*0.5 + vec3(0.5);"
+"alpha = clamp(alpha * fractal.a * fractal.a, 0.0, 1.0);"
 
 "	float inshd = texture2D(ShadowMap, gl_TexCoord[2].xy).r;"
 "	inshd = exp(-inshd*4.0);"
 "	vec3 cs = baseColor + lightColor * inshd + shadowColor * (1.0 - inshd);"
+
+//"cs = fractal.xyz;"
 "    gl_FragColor = vec4(cs*alpha , alpha);              \n"
 "} ";
 
@@ -137,7 +189,7 @@ const char *particleShadowFS =
 
 "alpha = clamp(alpha, 0.0, 1.0);"
 
-"    gl_FragColor = vec4(vec3(0.05*scaleShadow)*alpha , alpha);              \n"
+"    gl_FragColor = vec4(vec3(0.01*scaleShadow)*alpha , alpha);              \n"
 "} ";
 
 
@@ -225,12 +277,21 @@ char GLSLSprite::initProgram()
 	glUniform3f(glGetUniformLocation(program, "baseColor"), 1.0, 0.5, 0.0);
 	glUniform3f(glGetUniformLocation(program, "lightColor"), 0.0, 1.0, 1.0);
 	glUniform3f(glGetUniformLocation(program, "shadowColor"), 0.0, 0.0, 0.0);
-	//glUseProgram(0);
+	glUniform1f(glGetUniformLocation(program, "Lacunarity"), 2.0);
+	glUniform1f(glGetUniformLocation(program, "Dimension"), 1.0);
+	glUniform1f(glGetUniformLocation(program, "Frequency"), 1.0/256.0);
+	glUniform1i(glGetUniformLocation(program, "ShadowMap"), 0);
+	glUniform1i(glGetUniformLocation(program, "EarthNight"), 1);
+	glUniform4f(glGetUniformLocation(program, "spriteSide"), 1.0, 0.0, 0.0, 1.0);
+	glUniform4f(glGetUniformLocation(program, "spriteUp"), 0.0, 1.0, 0.0, 1.0);
+	glUniform3f(glGetUniformLocation(program, "NoiseOrigin"), 0.0, 0.0, 0.0);
 	
 	glUseProgram(shadowProgram);
 	glUniform1f(glGetUniformLocation(shadowProgram, "scaleDensity"), 1.0);
 	glUniform1f(glGetUniformLocation(shadowProgram, "pointRadius"), 1.0);
 	glUniform1f(glGetUniformLocation(shadowProgram, "scaleShadow"), 1.0);
+	glUniform4f(glGetUniformLocation(shadowProgram, "spriteSide"), 1.0, 0.0, 0.0, 1.0);
+	glUniform4f(glGetUniformLocation(shadowProgram, "spriteUp"), 0.0, 1.0, 0.0, 1.0);
 	glUseProgram(0);
 	
 	return 1;
@@ -254,11 +315,20 @@ void GLSLSprite::setShadowMatrix(float* m)
 
 void GLSLSprite::setShadowTex(GLuint tex)
 {
-	glUseProgram(program);
-	glUniform1i(glGetUniformLocation(program, "ShadowMap"), 0);
+	//glUseProgram(program);
+	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glUseProgram(0);
+	//glUseProgram(0);
+}
+
+void GLSLSprite::setNoiseTex(GLuint tex)
+{
+	//glUseProgram(program);
+	
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_3D, tex);
+	//glUseProgram(0);
 }
 
 void GLSLSprite::enableShadow()
@@ -279,12 +349,19 @@ void GLSLSprite::setParam(GLSLSpritePARAM& param)
 	glUniform3f(glGetUniformLocation(program, "baseColor"), param.base_r, param.base_g, param.base_b);
 	glUniform3f(glGetUniformLocation(program, "lightColor"), param.light_r, param.light_g, param.light_b);
 	glUniform3f(glGetUniformLocation(program, "shadowColor"), param.shadow_r, param.shadow_g, param.shadow_b);
-
+	glUniform4f(glGetUniformLocation(program, "spriteSide"), param.side_x, param.side_y, param.side_z, 1.0);
+	glUniform4f(glGetUniformLocation(program, "spriteUp"), param.up_x, param.up_y, param.up_z, 1.0);
+	glUniform1f(glGetUniformLocation(program, "Lacunarity"), param.lacunarity);
+	glUniform1f(glGetUniformLocation(program, "Dimension"), param.dimension);
+	glUniform1f(glGetUniformLocation(program, "Frequency"), param.frequency/256.0);
+	glUniform3f(glGetUniformLocation(program, "NoiseOrigin"), param.noise_x, param.noise_y, param.noise_z);
 	//glUseProgram(0);
 	
 	glUseProgram(shadowProgram);
 	glUniform1f(glGetUniformLocation(shadowProgram, "scaleDensity"), param.density);
 	glUniform1f(glGetUniformLocation(shadowProgram, "scaleShadow"), param.shadow_scale);
 	glUniform1f(glGetUniformLocation(shadowProgram, "pointRadius"), param.radius);
+	//glUniform4f(glGetUniformLocation(shadowProgram, "spriteSide"), param.side_x, param.side_y, param.side_z, 1.0);
+	//glUniform4f(glGetUniformLocation(shadowProgram, "spriteUp"), param.up_x, param.up_y, param.up_z, 1.0);
 	glUseProgram(0);
 }
