@@ -60,6 +60,7 @@ global proc zfluidCreateMenus()
 		menuItem -p zTools -l "GPU Fluid" -subMenu true zfluidItems;
 			menuItem -l "Jet From Object" -c "zfluidJetEmit";
 				menuItem -l "Create/Attach Fluid Field" -c "zcreateFluidField";
+				menuItem -l "Object As Source" -c "zcreateFluidSource";
 				menuItem -l "Attach Fluid Obstacle" -c "zcreateFluidObstacle";
 		setParent -menu ..;
 	}
@@ -101,6 +102,52 @@ setAttr -lock true ($transform[0]+".sz");
 		playbackOptions -minTime 0;
 	}
 	else print "Select a particle to add fluid field!";
+}
+
+global proc zcreateFluidSource()
+{
+	string $sel[] = `ls -sl`;
+	int $num_sel = `size($sel)`;
+	if($num_sel>1)
+	{
+		select -r $sel[$num_sel-1];
+		string $particle[] = `pickWalk -d down`;
+		
+		if(`nodeType $particle[0]`=="particle")
+		{
+			string $field[] = `listConnections ($particle[0]+".age")`;
+			if(`size($field)`<1 || `nodeType $field[0]` != "fluidField")
+			{
+				print "Attach a fuild field first!";
+			}
+			else
+			{
+				int $iter;
+				for($iter=0; $iter<$num_sel-1; $iter++)
+				{
+					select -r $sel[$iter];
+					string $mesh[] = `pickWalk -d down`;
+					if(`nodeType $mesh[0]`=="mesh")
+					{
+						if(`connectionInfo -is ($mesh[0]+".worldMesh[0]")`==0)
+						{
+							int $i;
+							for($i=0; $i<64; $i++)
+							{
+								if(`connectionInfo -id ($field[0]+".sourceGeo["+$i+"]")`==0)
+								{
+									connectAttr -f ($mesh[0]+".worldMesh[0]") ($field[0]+".sourceGeo["+$i+"]");
+									$i = 64;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		else print "Select polygonal objects and shift-select a particle to add fluid source!";
+	}
+	else print "Select polygonal objects and shift-select a particle to add fluid source!";
 }
 
 global proc zcreateFluidObstacle()

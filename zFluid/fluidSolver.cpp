@@ -670,7 +670,7 @@ glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	
 // record pressure
 	glDrawBuffer(GL_COLOR_ATTACHMENT5_EXT);
-	glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	glClear(GL_COLOR_BUFFER_BIT);
 	//m_fb->begin(i_pressureTexture, GL_TEXTURE_RECTANGLE_ARB);
 	// reset the pressure field texture before jacobi
@@ -1120,7 +1120,7 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();	
-	glOrtho(-m_frame_width/2, m_frame_width/2, -m_frame_height/2, m_frame_height/2, .1, 1000.);
+	glOrtho(-m_frame_width/2, m_frame_width/2, -m_frame_height/2, m_frame_height/2, .1, 1000.*m_gridSize);
 	glMatrixMode(GL_MODELVIEW);
 	
 	glLoadIdentity();
@@ -1133,11 +1133,7 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	f_cg->convexEnd();
 	f_cg->end();
 	
-	//m_fb->readRGBA(m_obstacleField);
-	//m_fb->end();
-	
-	
-	//m_fb->begin(i_offsetTexture, GL_TEXTURE_RECTANGLE_ARB);
+// update offset field
 	glDrawBuffer(GL_COLOR_ATTACHMENT7_EXT);
 	glClear(GL_COLOR_BUFFER_BIT);
 	/*
@@ -1167,7 +1163,7 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
-void FluidSolver::processSources(const MVectorArray &points, const MVectorArray &velocities, const MDoubleArray& ages)
+void FluidSolver::processSources(const MVectorArray &points, const MVectorArray &velocities, const MDoubleArray& ages, const MObjectArray& sources)
 {
 	int n_ptc = points.length();
 	if(n_ptc != ages.length()) return;
@@ -1205,7 +1201,7 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();	
-	glOrtho(-m_width/2*m_gridSize, m_width/2*m_gridSize, -m_height/2*m_gridSize, m_height/2*m_gridSize, .009, m_gridSize);
+	glOrtho(-m_width/2*m_gridSize, m_width/2*m_gridSize, -m_height/2*m_gridSize, m_height/2*m_gridSize, .009, m_gridSize*2);
 	glMatrixMode(GL_MODELVIEW);
 	
 	int x_offset, y_offset, i_frame = m_frame_width/m_width;
@@ -1214,8 +1210,8 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 		y_offset = i/i_frame*m_height;
 		glViewport(x_offset, y_offset, m_width, m_height);
 		glLoadIdentity();
-		gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + i*m_gridSize,
-				  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + i*m_gridSize-1,
+		gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
+				  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
 				  0, 1, 0);
 		f_cg->particleBegin();
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -1226,6 +1222,22 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		glDisableClientState(GL_VERTEX_ARRAY);
 		f_cg->particleEnd();
+	}
+	
+// add source
+	if(sources.length() > 0) {
+		glColor4f(0,1,0,4);
+		for(int i=1; i<m_depth-1; i++) {
+			x_offset = i%i_frame*m_width;
+			y_offset = i/i_frame*m_height;
+			glViewport(x_offset, y_offset, m_width, m_height);
+			glLoadIdentity();
+			gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
+					  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
+					  0, 1, 0);
+			drawList(sources);
+			
+		}
 	}
 	
 	glPopAttrib();
@@ -1257,6 +1269,38 @@ void FluidSolver::drawList(const MObjectArray& obstacles)
 	}
 	f_cg->flatEnd();
 	f_cg->end();
+}
+
+void FluidSolver::showTexture(int itex)
+{
+	glColor3f(1,1,1);
+	switch (itex)
+	{
+		case 1:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_density);
+			break;
+		case 2:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_temper);
+			break;
+		case 3:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_pressureTexture);
+			break;
+		case 4:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_impuls);
+			break;
+		case 5:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_offsetTexture);
+			break;
+		case 6:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_velocityTexture);
+			break;
+		default:
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
+			break;
+	}
+	glEnable(GL_TEXTURE_RECTANGLE_ARB);
+	drawQuad();
+	glDisable(GL_TEXTURE_RECTANGLE_ARB);
 }
 
 void FluidSolver::showImpulse()

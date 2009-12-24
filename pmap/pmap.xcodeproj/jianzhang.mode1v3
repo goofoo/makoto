@@ -202,6 +202,46 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
+				<string>7F21CCC310E4267B006463BF</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>GLSLSprite.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7F21CCC410E4267B006463BF</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>GLSLSprite.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7F21CCC510E4267B006463BF</string>
+						<key>history</key>
+						<array>
+							<string>7F21CCC010E4266A006463BF</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {597, 596}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>403 121 597 637 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
 				<string>7F7A9DA610E1944000B5F073</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>RenderParticle.cpp</string>
@@ -216,10 +256,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F5BF76010E292DD00DA9B62</string>
+						<string>7F21CCC610E4267B006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F5BF75F10E292DD00DA9B62</string>
+							<string>7F5BF76510E2945F00DA9B62</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -235,7 +275,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>610 82 594 642 0 0 1280 778 </string>
+				<string>356 116 594 642 0 0 1280 778 </string>
 			</dict>
 		</dict>
 		<dict>
@@ -256,10 +296,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F5BF76110E292DD00DA9B62</string>
+						<string>7F21CCC710E4267B006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F5BF75310E28EA200DA9B62</string>
+							<string>7F5BF76610E2945F00DA9B62</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -296,10 +336,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F5BF76210E292DD00DA9B62</string>
+						<string>7F21CCC810E4267B006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F5BF75510E28EA200DA9B62</string>
+							<string>7F5BF76710E2945F00DA9B62</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -336,10 +376,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F5BF76310E292DD00DA9B62</string>
+						<string>7F21CCCA10E4267B006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F929EB410E2474C0020E789</string>
+							<string>7F5BF76910E2945F00DA9B62</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -392,8 +432,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -440,7 +478,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>4</integer>
+									<integer>12</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -510,6 +548,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -546,9 +586,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F5BF73D10E28B3500DA9B62</string>
+				<string>7F21CCC110E4267B006463BF</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F5BF73E10E28B3500DA9B62</string>
+				<string>7F21CCC210E4267B006463BF</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -682,12 +722,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7FE58BA50FB61F9000187112</string>
 		<string>7F7A9C9210E1473500B5F073</string>
-		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 		<string>7F7A9C9610E1473500B5F073</string>
 		<string>7F7A9C8510E1473500B5F073</string>
 		<string>7F7A9DA610E1944000B5F073</string>
+		<string>7F21CCC310E4267B006463BF</string>
+		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>566 385 663 308 0 0 1280 778 </string>

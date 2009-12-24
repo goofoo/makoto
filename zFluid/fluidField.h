@@ -70,6 +70,7 @@ public:
 	static MObject	atime;
 	static MObject	astarttime;
 	static MObject	aobstacle;
+	static MObject	asourcegeo;
 	static MObject	ainDesc;
 	static MObject	ainAge;
 
@@ -113,5 +114,5 @@ private:
 	int isInField(const MPoint& pt);
 	
 	FluidSolver* m_pSolver;
-	
+	int m_sho_tex;
 };

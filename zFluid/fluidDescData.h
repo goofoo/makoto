@@ -8,7 +8,7 @@
 struct fluidDesc
 {
 	float gridSize, buoyancy, swirl, velocity, temperatureLoss, temperature, wind_x, wind_z, conserveDensity;
-	int enable, save_cache, resolution_x, resolution_y, resolution_z;
+	int enable, save_cache, resolution_x, resolution_y, resolution_z, sho_tex;
 };
 
 class zjFluidDescData : public MPxData

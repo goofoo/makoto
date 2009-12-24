@@ -22,6 +22,7 @@ public:
 	void update();
 	void drawQuad();
 	void showImpulse();
+	void showTexture(int itex);
 	void drawBoundary();
 	void display();
 	void drawArrow();
@@ -35,7 +36,7 @@ public:
 	const float* getVelocity() {return m_velocityField;}
 	
 	void processObstacles(const MObjectArray& obstacles);
-	void processSources(const MVectorArray &points, const MVectorArray &velocities, const MDoubleArray& ages);
+	void processSources(const MVectorArray &points, const MVectorArray &velocities, const MDoubleArray& ages, const MObjectArray& sources);
 	
 	void setBuoyancy(float val) {m_buoyancy = val/20.0f;}
 	void setSwirl(float val) {m_swirl = val/10.0f;}

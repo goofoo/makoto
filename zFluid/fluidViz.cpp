@@ -42,6 +42,7 @@ MObject	fluidViz::aconserveDensity;
 MObject	fluidViz::awindx;
 MObject	fluidViz::awindz;
 MObject	fluidViz::asaveCache;
+MObject	fluidViz::ashotex;
 MObject	fluidViz::aoutDesc;
 
 fluidViz::fluidViz() : m_pDesc(0) 
@@ -90,6 +91,7 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 	m_pDesc->conserveDensity = zGetDoubleAttr(block, aconserveDensity);
 	m_pDesc->wind_x = zGetDoubleAttr(block, awindx);
 	m_pDesc->wind_z = zGetDoubleAttr(block, awindz);
+	m_pDesc->sho_tex = zGetIntAttr(block, ashotex);
 	
 	MStatus status;
 	
@@ -262,6 +264,12 @@ MStatus fluidViz::initialize()
 	status = zCreateKeyableDoubleAttr(awindz, MString("windZ"), MString("wdz"), 0.0);
 	zCheckStatus(status, "ERROR creating wind z");
 	zCheckStatus(addAttribute(awindz), "ERROR adding wind z");
+	
+	ashotex = numAttr.create( "shoTex", "sot", MFnNumericData::kInt, 0 );
+	numAttr.setMin(0);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute( ashotex );
 	
 	status = zCreateKeyableIntAttr(asaveCache, MString("saveCache"), MString("saveCache"), 0);
 	zCheckStatus(status, "ERROR creating save cache");

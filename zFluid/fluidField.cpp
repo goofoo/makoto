@@ -15,6 +15,7 @@ MObject	fluidField::atime;
 MObject	fluidField::aobstacle;
 MObject	fluidField::ainDesc;
 MObject	fluidField::ainAge;
+MObject	fluidField::asourcegeo;
 
 fluidField::fluidField():
 m_rx(32),
@@ -23,7 +24,8 @@ m_rz(32),
 m_pSolver(0),
 m_origin_x(0.0f), 
 m_origin_y(0.0f), 
-m_origin_z(0.0f)
+m_origin_z(0.0f),
+m_sho_tex(0)
 {
 	m_pSolver=new FluidSolver();
 	m_pSolver->initialize(m_rx,m_ry,m_rz);
@@ -70,6 +72,11 @@ MStatus fluidField::initialize()
 	zCheckStatus(addAttribute(ainAge), "ERROR adding age");
 	
 	attributeAffects(aobstacle, mOutputForce);
+	
+	zWorks::createTypedArrayAttr(asourcegeo, MString("sourceGeo"), MString("scg"), MFnData::kMesh);
+	zCheckStatus(addAttribute(asourcegeo), "ERROR adding sourcegeo");
+	
+	attributeAffects(asourcegeo, mOutputForce);
 
 	return( MS::kSuccess );
 }
@@ -109,6 +116,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 			wind_x = pDesc->wind_x;
 			wind_z = pDesc->wind_z;
 			conserve_density = pDesc->conserveDensity;
+			m_sho_tex = pDesc->sho_tex;
 		}
 		else return MS::kUnknownParameter;
 		
@@ -199,10 +207,19 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 		obslist.append(hArray.inputValue().asMeshTransformed());
 		hArray.next();
 	}
+	
+	MArrayDataHandle hsrcgeoArray = block.inputArrayValue(asourcegeo);
+	
+	int n_srcgeo = hsrcgeoArray.elementCount();
+	MObjectArray srcgeolist;
+	for(int iter=0; iter<n_srcgeo; iter++) {
+		srcgeolist.append(hsrcgeoArray.inputValue().asMeshTransformed());
+		hsrcgeoArray.next();
+	}
 
 	if(ison==1) {
 // simulate !
-		m_pSolver->processSources(points, velocities, ptc_age);
+		m_pSolver->processSources(points, velocities, ptc_age, srcgeolist);
 		m_pSolver->processObstacles(obslist);
 		if(do_save_cache==1) m_pSolver->needDensity();
 		m_pSolver->update();
@@ -236,31 +253,12 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 		if(levely > maxlevel) maxlevel = levely;
 		if(levelz > maxlevel) maxlevel = levelz;
 		
-		
-		/*
-		XYZ rootCenter;
-		rootCenter.x = m_origin_x + m_gridSize * m_rx / 2;
-		rootCenter.y = m_origin_y + m_gridSize * m_ry / 2;
-		rootCenter.z = m_origin_z + m_gridSize * m_rz / 2;
-		
-		int maxres = m_rx;
-		if(m_ry > maxres) maxres = m_ry;
-		if(m_rz > maxres) maxres = m_rz;*/
-	
-		//float rootSize = m_gridSize * maxres / 2;
-		
 		MGlobal::displayInfo(MString("cache fluid: ")+sfile);
 		FluidOctree *data = new FluidOctree();
 		data->create(m_pSolver, maxlevel);
 		MGlobal::displayInfo(MString(" num twig ")+ data->getNumVoxel() +MString(" num leaf ")+ data->getNumLeaf() + MString(" max level ")+ data->getMaxLevel());
 		data->dumpIndirection(sfile.asChar());
 		delete data;
-		/*MObject particleNode;
-		MPlug agePlg(thisMObject(), ainAge);
-		zWorks::getConnectedNode(particleNode, agePlg);
-		
-		if(fdcFile::save(sfile.asChar(), points, dest_vels, ages) == 1) MGlobal::displayInfo(MString("ZFluid saved cache file: ")+sfile);
-		else MGlobal::displayWarning(MString("ZFluid failed to save cache file: ")+sfile);*/
 	}
 
 
@@ -313,9 +311,10 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 }
 
 void fluidField::draw( M3dView& view, const MDagPath& path, M3dView::DisplayStyle style, M3dView:: DisplayStatus )
-{return;
+{
+	if(m_sho_tex < 1) return;
 	 view.beginGL();
-	if(m_pSolver->isInitialized()) m_pSolver->showImpulse();
+	if(m_pSolver->isInitialized()) m_pSolver->showTexture(m_sho_tex);
 	 view.endGL ();
 }
 

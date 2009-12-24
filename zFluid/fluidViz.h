@@ -44,6 +44,7 @@ public:
 	static MObject	aconserveDensity;
 	static MObject	awindx;
 	static MObject	awindz;
+	static MObject	ashotex;
 	static MObject	asaveCache;
 	static MObject	aoutDesc;
 
