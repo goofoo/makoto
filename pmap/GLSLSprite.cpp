@@ -159,7 +159,7 @@ const char *particleFS =
 
 "	vec4 fractal = fractal_func((gl_TexCoord[3].xyz + NoiseOrigin) * Frequency);"
 
-"alpha = clamp(alpha * fractal.a * fractal.a, 0.0, 1.0);"
+"alpha = clamp(alpha * fractal.a, 0.0, 1.0);"
 
 "	float inshd = texture2D(ShadowMap, gl_TexCoord[2].xy).r;"
 "	inshd = exp(-inshd*4.0);"

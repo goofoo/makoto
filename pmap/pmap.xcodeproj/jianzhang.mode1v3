@@ -216,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F21CCC510E4267B006463BF</string>
+						<string>7F21CCE410E44541006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F21CCC010E4266A006463BF</string>
+							<string>7F21CCC510E4267B006463BF</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -256,10 +256,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F21CCC610E4267B006463BF</string>
+						<string>7F21CCE510E44541006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F5BF76510E2945F00DA9B62</string>
+							<string>7F21CCC610E4267B006463BF</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -296,10 +296,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F21CCC710E4267B006463BF</string>
+						<string>7F21CCE610E44541006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F5BF76610E2945F00DA9B62</string>
+							<string>7F21CCC710E4267B006463BF</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -336,10 +336,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F21CCC810E4267B006463BF</string>
+						<string>7F21CCE710E44541006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F5BF76710E2945F00DA9B62</string>
+							<string>7F21CCC810E4267B006463BF</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -376,10 +376,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F21CCCA10E4267B006463BF</string>
+						<string>7F21CCE810E44541006463BF</string>
 						<key>history</key>
 						<array>
-							<string>7F5BF76910E2945F00DA9B62</string>
+							<string>7F21CCCA10E4267B006463BF</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -586,9 +586,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F21CCC110E4267B006463BF</string>
+				<string>7F21CCE210E44541006463BF</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F21CCC210E4267B006463BF</string>
+				<string>7F21CCE310E44541006463BF</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -722,12 +722,13 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>7FE58BA50FB61F9000187112</string>
 		<string>7F7A9C9210E1473500B5F073</string>
 		<string>7F7A9C9610E1473500B5F073</string>
 		<string>7F7A9C8510E1473500B5F073</string>
 		<string>7F7A9DA610E1944000B5F073</string>
-		<string>7F21CCC310E4267B006463BF</string>
 		<string>/Users/jianzhang/Documents/plankton/pmap/pmap.xcodeproj</string>
+		<string>7F21CCC310E4267B006463BF</string>
 	</array>
 	<key>WindowString</key>
 	<string>566 385 663 308 0 0 1280 778 </string>
@@ -807,7 +808,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7FE58BA50FB61F9000187112</string>
-				<string>7F5BF74A10E28B6D00DA9B62</string>
+				<string>7F21CCE910E44541006463BF</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

@@ -1253,7 +1253,7 @@ void FluidSolver::drawList(const MObjectArray& obstacles)
 	f_cg->flatBegin();
 	
 	MStatus status;
-	//for (std::vector<MDagPath>::iterator ms = obstacles.begin(); ms != obstacles.end(); ms++)
+	glBegin(GL_TRIANGLES);
 	for(int iter = 0; iter<obstacles.length(); iter++)
 	{
 		MItMeshPolygon faceIter(obstacles[iter], &status );
@@ -1261,12 +1261,16 @@ void FluidSolver::drawList(const MObjectArray& obstacles)
 			for( ; !faceIter.isDone(); faceIter.next() ) {
 				MPointArray pts;
 				faceIter.getPoints(pts,  MSpace::kWorld);
-				glBegin(GL_POLYGON);
-				for(int k=0; k<pts.length(); k++) glVertex3f(pts[k].x, pts[k].y, pts[k].z);
-				glEnd();
+				int n_tri = pts.length() - 2;
+				for(int k=0; k<n_tri; k++) {
+					glVertex3f(pts[k].x, pts[k].y, pts[k].z);
+					glVertex3f(pts[k+1].x, pts[k+1].y, pts[k+1].z);
+					glVertex3f(pts[k+2].x, pts[k+2].y, pts[k+2].z);
+				}
 			}
 		}
 	}
+	glEnd();
 	f_cg->flatEnd();
 	f_cg->end();
 }
