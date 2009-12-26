@@ -117,6 +117,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 			wind_z = pDesc->wind_z;
 			conserve_density = pDesc->conserveDensity;
 			m_sho_tex = pDesc->sho_tex;
+			m_slice_id = pDesc->slice_id;
 		}
 		else return MS::kUnknownParameter;
 		
@@ -314,7 +315,7 @@ void fluidField::draw( M3dView& view, const MDagPath& path, M3dView::DisplayStyl
 {
 	if(m_sho_tex < 1) return;
 	 view.beginGL();
-	if(m_pSolver->isInitialized()) m_pSolver->showTexture(m_sho_tex);
+	if(m_pSolver->isInitialized()) m_pSolver->showTexture(m_sho_tex, m_slice_id);
 	 view.endGL ();
 }
 

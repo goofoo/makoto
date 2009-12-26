@@ -43,6 +43,7 @@ MObject	fluidViz::awindx;
 MObject	fluidViz::awindz;
 MObject	fluidViz::asaveCache;
 MObject	fluidViz::ashotex;
+MObject	fluidViz::atexz;
 MObject	fluidViz::aoutDesc;
 
 fluidViz::fluidViz() : m_pDesc(0) 
@@ -92,6 +93,7 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 	m_pDesc->wind_x = zGetDoubleAttr(block, awindx);
 	m_pDesc->wind_z = zGetDoubleAttr(block, awindz);
 	m_pDesc->sho_tex = zGetIntAttr(block, ashotex);
+	m_pDesc->slice_id = zGetIntAttr(block, atexz);
 	
 	MStatus status;
 	
@@ -143,13 +145,11 @@ void fluidViz::draw( M3dView & view, const MDagPath & /*path*/,
 	glPopAttrib();
 	glBegin( GL_LINES );
 
-			
 			glVertex3f(mx,0,0);
 			glVertex3f(mx,my,0);
 			glVertex3f(mx,my,0);
 			glVertex3f(0,my,0);
-			
-			
+
 			glVertex3f(0,0,mz);
 			glVertex3f(mx,0,mz);
 			glVertex3f(mx,0,mz);
@@ -158,26 +158,13 @@ void fluidViz::draw( M3dView & view, const MDagPath & /*path*/,
 			glVertex3f(0,my,mz);
 			glVertex3f(0,my,mz);
 			glVertex3f(0,0,mz);
-			
-			
+
 			glVertex3f(mx,0,0);
 			glVertex3f(mx,0,mz);
 			glVertex3f(0,my,0);
 			glVertex3f(0,my,mz);
 			glVertex3f(mx,my,0);
 			glVertex3f(mx,my,mz);
-			
-			/*for(int i=1; i<m_pDesc->resolution_x; i++)
-			{
-				glVertex3f(i*m_pDesc->gridSize,0,0);
-				glVertex3f(i*m_pDesc->gridSize,0,mz);
-			}
-			
-			for(int i=1; i<m_pDesc->resolution_z; i++)
-			{
-				glVertex3f(0,0,i*m_pDesc->gridSize);
-				glVertex3f(mx,0,i*m_pDesc->gridSize);
-			}*/
 		
 	glEnd();
 
@@ -271,6 +258,12 @@ MStatus fluidViz::initialize()
 	numAttr.setKeyable(true);
 	addAttribute( ashotex );
 	
+	atexz = numAttr.create( "sliceZ", "slz", MFnNumericData::kInt, 32 );
+	numAttr.setMin(1);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute( atexz );
+	
 	status = zCreateKeyableIntAttr(asaveCache, MString("saveCache"), MString("saveCache"), 0);
 	zCheckStatus(status, "ERROR creating save cache");
 	status = addAttribute(asaveCache);
@@ -294,6 +287,7 @@ MStatus fluidViz::initialize()
 	attributeAffects(aconserveDensity, aoutDesc);
 	attributeAffects(awindx, aoutDesc);
 	attributeAffects(awindz, aoutDesc);
+	attributeAffects(atexz, aoutDesc);
 	
 	return MS::kSuccess;
 }

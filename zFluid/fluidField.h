@@ -114,5 +114,5 @@ private:
 	int isInField(const MPoint& pt);
 	
 	FluidSolver* m_pSolver;
-	int m_sho_tex;
+	int m_sho_tex, m_slice_id;
 };

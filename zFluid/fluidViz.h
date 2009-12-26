@@ -45,6 +45,7 @@ public:
 	static MObject	awindx;
 	static MObject	awindz;
 	static MObject	ashotex;
+	static MObject	atexz;
 	static MObject	asaveCache;
 	static MObject	aoutDesc;
 

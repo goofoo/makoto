@@ -21,8 +21,7 @@ public:
 	char isInitialized() const {return fInitialized;}
 	void update();
 	void drawQuad();
-	void showImpulse();
-	void showTexture(int itex);
+	void showTexture(int itex, int islice);
 	void drawBoundary();
 	void display();
 	void drawArrow();
@@ -45,9 +44,7 @@ public:
 	void setTemperature(const float& val) {fTemperature = val;}
 	void setWind(const float& x, const float& z) {fWindX = x; fWindZ = z;}
 	void setConserveDensity(float val) {m_conserve_denisty = val;}
-	
-	//void drawList(const MObjectArray& obstacles);
-	
+
 	void setGridSize(float size) {m_gridSize = size;}
 	float getGridSize() const {return m_gridSize;}
 	void setOrigin(float x, float y, float z) {m_origin_x = x; m_origin_y = y; m_origin_z = z;}
@@ -58,6 +55,7 @@ public:
 	
 	void drawTriangleMesh(int count, const float* vert);
 	void setFrameView();
+	void showSlice(int i);
 	
 protected:
 	float* m_velocityField;

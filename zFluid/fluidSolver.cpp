@@ -1180,7 +1180,7 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 		glDisable(GL_LIGHTING);
 		glDisable(GL_BLEND);
 		glClearColor(0,0,0,0);
-		glPointSize(2.0);
+		glPointSize(1.0);
 // record impulse
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1249,7 +1249,7 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 			gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
 					  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
 					  0, 1, 0);
-			glTexCoord4f(0,0,0,m_keepTemperature);
+			glTexCoord4f(0,1,0,fTemperature);
 			f_cg->particleBegin();
 			drawTriangleMesh(n_tri, pp);
 			f_cg->particleEnd();
@@ -1333,7 +1333,7 @@ void FluidSolver::setFrameView()
 			  0, 1, 0);
 }
 
-void FluidSolver::showTexture(int itex)
+void FluidSolver::showTexture(int itex, int islice)
 {
 	glColor3f(1,1,1);
 	switch (itex)
@@ -1361,15 +1361,27 @@ void FluidSolver::showTexture(int itex)
 			break;
 	}
 	glEnable(GL_TEXTURE_RECTANGLE_ARB);
-	drawQuad();
+	showSlice(islice);
 	glDisable(GL_TEXTURE_RECTANGLE_ARB);
 }
 
-void FluidSolver::showImpulse()
+void FluidSolver::showSlice(int i)
 {
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_velocityTexture);
-	glEnable(GL_TEXTURE_RECTANGLE_ARB);
-	glColor3f(1,1,1);
-	drawQuad();
-	glDisable(GL_TEXTURE_RECTANGLE_ARB);
+	if( i > m_depth ) i = m_depth;
+	int ii = m_depth -i;
+	glBegin(GL_QUADS);
+		glTexCoord2i( m_quad_p[ii*4].x, m_quad_p[ii*4].y);
+		glVertex3f(m_origin_x, m_origin_y, m_origin_z + m_gridSize * (i+0.5));
+		
+		glTexCoord2i( m_quad_p[ii*4+1].x, m_quad_p[ii*4+1].y);
+		glVertex3f(m_origin_x + m_gridSize * m_width, m_origin_y, m_origin_z + m_gridSize * (i+0.5));
+		
+		glTexCoord2i( m_quad_p[ii*4+2].x, m_quad_p[ii*4+2].y);
+		glVertex3f(m_origin_x  + m_gridSize * m_width, m_origin_y  + m_gridSize * m_height, m_origin_z + m_gridSize * (i+0.5));
+		
+		glTexCoord2i( m_quad_p[ii*4+3].x, m_quad_p[ii*4+3].y);
+		glVertex3f(m_origin_x, m_origin_y  + m_gridSize * m_height, m_origin_z + m_gridSize * (i+0.5));
+	
+	glEnd();
+	
 }
