@@ -78,6 +78,26 @@ protected:
 	char fUndiagnosed;
 	
 	GLuint img_temper, img_density;
+	GLuint density_fbo;
+GLuint fbo;
+GLuint depthBuffer;
+
+GLuint img_impuls;
+
+GLuint i_velocityTexture;
+GLuint i_divergenceTexture;
+GLuint i_vorticityTexture;
+GLuint i_pressureTexture;
+GLuint i_bufTexture;
+GLuint i_offsetTexture;
+
+GLuint x_fbo;
+GLuint y_fbo;
+GLuint z_fbo;
+GLuint i_xTexture;
+	GLuint i_yTexture;
+	GLuint i_zTexture;
+	
 	float m_conserve_denisty;
 	char m_needDensity;
 };

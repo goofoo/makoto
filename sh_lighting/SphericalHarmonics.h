@@ -6,10 +6,10 @@
 #include "../shared/gBase.h"
 #define SH_N_BANDS 4
 #define SH_N_BASES 16
-#define SH_N_SAMPLES 6400
-#define SH_N_SQRT_SAMPLES 80
+#define SH_N_SAMPLES 3600
+#define SH_N_SQRT_SAMPLES 60
 /* 4*PI/n/n */
-#define SH_UNITAREA 0.0019625
+#define SH_UNITAREA 0.0034906585
 #include "SHMath.h"
 
 //#define SH_DEBUG

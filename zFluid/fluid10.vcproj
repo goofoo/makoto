@@ -421,7 +421,7 @@
 				AdditionalOptions="/GR /GS /EHsc"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".;&quot;$(MAYA_LOCATION_2010)/include&quot;;&quot;$(CG_INC_PATH)&quot;"
+				AdditionalIncludeDirectories="D:\local\openexr\include\OpenEXR;&quot;$(MAYA_LOCATION_2010)/include&quot;;&quot;$(CG_INC_PATH)&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM;Bits64_"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -447,11 +447,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
-				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib Foundation.lib OpenMayaFX.lib OpenMayaUI.lib cg.lib cgGL.lib"
-				OutputFile="..\module\plug-ins\zfluid2010x64.mll"
+				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib Foundation.lib OpenMayaFX.lib OpenMayaUI.lib cg.lib cgGL.lib half.lib ilmimf.lib ilmthread.lib iex.lib zlib.lib"
+				OutputFile="..\module\plug-ins\zFluid2010x64.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_2010)/lib&quot;;&quot;$(CG_LIB64_PATH)&quot;"
+				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_2010)/lib&quot;;&quot;$(CG_LIB64_PATH)&quot;;D:\local\openexr\libx64"
 				ProgramDatabaseFile=".\Release/helloCmd.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -498,6 +498,10 @@
 			</File>
 			<File
 				RelativePath=".\fluidField.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FluidOctree.cpp"
 				>
 			</File>
 			<File

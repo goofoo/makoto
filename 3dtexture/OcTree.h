@@ -109,7 +109,7 @@ public:
 	void drawCube(const OCTNode *node);
 	void drawSprite(const OCTNode *node);
 	void drawNeighbour(const OCTNode *node);
-	void pushDrawList(const OCTNode *node, int& count, int& slice_count, GRID2Draw* res);
+	void pushDrawList(const OCTNode *node, unsigned& count, unsigned& slice_count, GRID2Draw* res);
 	
 	void getRootCenterNSize(XYZ& center, float&size) const;
 	float getMaxSearchDistance() const;
@@ -119,7 +119,7 @@ public:
 	void occlusionAccum(const XYZ& origin);
 	void occlusionAccum(OCTNode *node, const XYZ& origin);
 	
-	void setSampleOpacity(const float& val) {sample_opacity = val/(float)num_grid*512;}
+	void setSampleOpacity(const float& val) {sample_opacity = val/(float)num_grid*100;}
 	void setDirs(XYZ& key, XYZ& view) {m_key = key; m_eye = view;}
 	
 	void setSH(sphericalHarmonics* _sh) {sh = _sh;}

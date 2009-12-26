@@ -448,7 +448,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
 				AdditionalDependencies="odbc32.lib odbccp32.lib OpenMaya.lib Foundation.lib OpenMayaFX.lib OpenMayaAnim.lib OpenMayaUI.lib cg.lib cgGL.lib half.lib ilmimf.lib ilmthread.lib iex.lib zlib.lib"
-				OutputFile="..\module\plug-ins\particlecache2010x64.mll"
+				OutputFile="..\module\plug-ins\zSmoke2010x64.mll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(MAYA_LOCATION_2010)/lib&quot;;D:\local\openexr\libx64;&quot;$(CG_LIB64_PATH)&quot;"
@@ -489,11 +489,15 @@
 			Name="Source Files"
 			>
 			<File
-				RelativePath="..\3dtexture\CubeRaster.cpp"
+				RelativePath="..\zFluid\FluidOctree.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\shared\FNoise.cpp"
+				RelativePath="..\zFluid\fluidProgram.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\zFluid\fluidSolver.cpp"
 				>
 			</File>
 			<File
@@ -505,7 +509,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\3dtexture\OcTree.cpp"
+				RelativePath=".\GLSLSprite.cpp"
 				>
 			</File>
 			<File
@@ -513,15 +517,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PTCDemViz.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PTCMapCmd.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PTCMapViz.cpp"
+				RelativePath=".\PMapNode.cpp"
 				>
 			</File>
 			<File
@@ -529,23 +525,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\sh_lighting\SHMath.cpp"
+				RelativePath="..\shared\QuickSortIdx.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\sh_lighting\SphericalHarmonics.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\viewVolumeTool.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\3dtexture\Voltex.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\3dtexture\Z3DTexture.cpp"
+				RelativePath=".\RenderParticle.cpp"
 				>
 			</File>
 			<File

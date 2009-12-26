@@ -12,6 +12,31 @@
 #include "fluidSolver.h"
 //#include <maya/MGlobal.h>
 
+#include <ImfHeader.h>
+#include <ImfArray.h>
+#include <ImfInputFile.h>
+#include <ImfOutputFile.h>
+#include <ImfTiledOutputFile.h>
+#include <ImfTiledInputFile.h>
+#include <ImfChannelList.h>
+
+#include <ImfBoxAttribute.h>
+#include <ImfChannelListAttribute.h>
+#include <ImfCompressionAttribute.h>
+#include <ImfChromaticitiesAttribute.h>
+#include <ImfFloatAttribute.h>
+#include <ImfEnvmapAttribute.h>
+#include <ImfDoubleAttribute.h>
+#include <ImfIntAttribute.h>
+#include <ImfLineOrderAttribute.h>
+#include <ImfMatrixAttribute.h>
+#include <ImfOpaqueAttribute.h>
+#include <ImfStringAttribute.h>
+#include <ImfVecAttribute.h>
+
+using namespace Imf;
+using namespace Imath;
+
 FluidOctree::FluidOctree() : m_root(0),
 m_idr(0),
 m_dt(0)

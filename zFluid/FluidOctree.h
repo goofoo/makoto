@@ -5,7 +5,8 @@
  *  Copyright 2009 __MyCompanyName__. All rights reserved.
  *
  */
-#pragma once
+#ifndef _FLUID_OCTREE_H
+#define _FLUID_OCTREE_H    
 
 #include <iostream>
 #include <stdlib.h>
@@ -15,29 +16,7 @@
 
 #include "../shared/zData.h"
 
-#include <ImfHeader.h>
-#include <ImfArray.h>
-#include <ImfInputFile.h>
-#include <ImfOutputFile.h>
-#include <ImfTiledOutputFile.h>
-#include <ImfTiledInputFile.h>
-#include <ImfChannelList.h>
-
-#include <ImfBoxAttribute.h>
-#include <ImfChannelListAttribute.h>
-#include <ImfCompressionAttribute.h>
-#include <ImfChromaticitiesAttribute.h>
-#include <ImfFloatAttribute.h>
-#include <ImfEnvmapAttribute.h>
-#include <ImfDoubleAttribute.h>
-#include <ImfIntAttribute.h>
-#include <ImfLineOrderAttribute.h>
-#include <ImfMatrixAttribute.h>
-#include <ImfOpaqueAttribute.h>
-#include <ImfStringAttribute.h>
-#include <ImfVecAttribute.h>
-
-using namespace Imf;
+#include <winsock2.h>
 
 #define INDIRECTIONPOOLWIDTH 512
 #define INDIRECTIONIMAGEWIDTH 1024
@@ -123,3 +102,4 @@ private:
 	FluidSolver *m_pSolver;
 	int m_dimx, m_dimy, m_dimz;
 };
+#endif

@@ -41,7 +41,7 @@ const char *vert_source =
 //"uniform float VFreq;"
 
 "varying vec4 CParticle;"
-"varying vec2 ViewCoord;"
+"varying vec3 ViewCoord;"
 "varying vec3  TexCoord;"
 "varying vec3  TexCoordNoise;"
 "varying vec3  LightVec;"
@@ -51,7 +51,7 @@ const char *vert_source =
 "void main(void)"
 "{"
 "	CParticle = gl_Color;"
-"	ViewCoord = gl_MultiTexCoord0.xy;"
+"	ViewCoord = gl_MultiTexCoord0.xyz;"
 "	vec3 ecPos      = vec3 (gl_ModelViewMatrix * gl_Vertex);"
 "	LightVec   = normalize(LightPosition - ecPos);"
 "	vec4 pw = vec4(gl_MultiTexCoord0.xyz, 0.0);"
@@ -74,7 +74,7 @@ const char *frag_source =
 
 "varying vec3 CIBL;"
 "varying vec4 CParticle;"
-"varying vec2 ViewCoord;"
+"varying vec3 ViewCoord;"
 "varying vec3  TexCoord;"
 "varying vec3  TexCoordNoise;"
 "varying vec3  LightVec;"
@@ -131,7 +131,7 @@ const char *frag_source =
 
 "void main (void)"
 "{" 
-"	float edgexy = 1.0-smoothstep(0.25, 0.5, length(ViewCoord.xy));"
+"	float edgexy = 1.0-smoothstep(0.4, 0.5, length(ViewCoord.xyz));"
 
 "	vec3 fractal = fractal_func(TexCoordNoise);"
 
@@ -142,7 +142,7 @@ const char *frag_source =
 
 "	float dist = length(TexCoord + (fractal.xyz - vec3(0.5))*1.5*KNoise);"
 
-"    gl_FragColor = vec4 (CCloud * CParticle.rgb + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), CParticle.a*GScale*OScale*dens*edgexy*(1.0 - smoothstep(0.6, 1.0, dist/0.5)));"
+"    gl_FragColor = vec4 (CCloud * CParticle.rgb + CIBL * (1.0 + smoothstep(0.6, 1.0, NdotL)*KDiffuse), CParticle.a*GScale*dens*edgexy*(1.0 - smoothstep(0.0, 1.0, dist/0.5)));"
 //"    gl_FragColor = vec4 (CParticle, 0.05);"
 "}";
 

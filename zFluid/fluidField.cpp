@@ -340,7 +340,7 @@ void fluidField::calculateForce
 	int receptorSize = points.length();
 	
 	float vx, vy, vz;
-	MVectorArray dest_vels;
+	//MVectorArray dest_vels;
 	// particle iterator
 	//
 	for (int ptIndex = 0; ptIndex < receptorSize; ptIndex ++ ) {
@@ -351,7 +351,7 @@ void fluidField::calculateForce
 			m_pSolver->getVelocity(vx, vy, vz, ploc.x, ploc.y, ploc.z);
 
 			OutputForce.append( 24.0f*(24.0f*MVector(vx, vy, vz)*m_gridSize - pvel) );
-			dest_vels.append(24.0f*MVector(vx, vy, vz)*m_gridSize);
+			//dest_vels.append(24.0f*MVector(vx, vy, vz)*m_gridSize);
 		}
 		else OutputForce.append( MVector(0,0,0) );
 	}

@@ -80,72 +80,72 @@ void CubeRaster::compose()
 	for(int j=0; j<CUBERASTER_BUFFER_N; j++) {
 		for(int i=0; i<CUBERASTER_BUFFER_N; i++) {
 
-			//m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_POSX + j/2*CUBERASTER_BUFFER8_N + i/2];
-			//m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_POSX + j/4*CUBERASTER_BUFFER4_N + i/4];
-			//m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_POSX + j/8*CUBERASTER_BUFFER2_N + i/8];
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_POSX + j/2*CUBERASTER_BUFFER8_N + i/2]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_POSX + j/4*CUBERASTER_BUFFER4_N + i/4]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_POSX + j/8*CUBERASTER_BUFFER2_N + i/8]);
+			m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_POSX + j/2*CUBERASTER_BUFFER8_N + i/2];
+			m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_POSX + j/4*CUBERASTER_BUFFER4_N + i/4];
+			m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_POSX + j/8*CUBERASTER_BUFFER2_N + i/8];
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_POSX + j/2*CUBERASTER_BUFFER8_N + i/2]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_POSX + j/4*CUBERASTER_BUFFER4_N + i/4]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSX + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_POSX + j/8*CUBERASTER_BUFFER2_N + i/8]);
 		}
 	}
 	
 	for(int j=0; j<CUBERASTER_BUFFER_N; j++) {
 		for(int i=0; i<CUBERASTER_BUFFER_N; i++) {
 
-			//m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_NEGX + j/2*CUBERASTER_BUFFER8_N + i/2];
-			//m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_NEGX + j/4*CUBERASTER_BUFFER4_N + i/4];
-			//m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_NEGX + j/8*CUBERASTER_BUFFER2_N + i/8];
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_NEGX + j/2*CUBERASTER_BUFFER8_N + i/2]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_NEGX + j/4*CUBERASTER_BUFFER4_N + i/4]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_NEGX + j/8*CUBERASTER_BUFFER2_N + i/8]);
+			m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_NEGX + j/2*CUBERASTER_BUFFER8_N + i/2];
+			m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_NEGX + j/4*CUBERASTER_BUFFER4_N + i/4];
+			m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_NEGX + j/8*CUBERASTER_BUFFER2_N + i/8];
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_NEGX + j/2*CUBERASTER_BUFFER8_N + i/2]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_NEGX + j/4*CUBERASTER_BUFFER4_N + i/4]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGX + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_NEGX + j/8*CUBERASTER_BUFFER2_N + i/8]);
 		}
 	}
 	
 	for(int j=0; j<CUBERASTER_BUFFER_N; j++) {
 		for(int i=0; i<CUBERASTER_BUFFER_N; i++) {
 
-			//m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_POSY + j/2*CUBERASTER_BUFFER8_N + i/2];
-			//m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_POSY + j/4*CUBERASTER_BUFFER4_N + i/4];
-			//m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_POSY + j/8*CUBERASTER_BUFFER2_N + i/8];
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_POSY + j/2*CUBERASTER_BUFFER8_N + i/2]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_POSY + j/4*CUBERASTER_BUFFER4_N + i/4]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_POSY + j/8*CUBERASTER_BUFFER2_N + i/8]);
+			m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_POSY + j/2*CUBERASTER_BUFFER8_N + i/2];
+			m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_POSY + j/4*CUBERASTER_BUFFER4_N + i/4];
+			m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_POSY + j/8*CUBERASTER_BUFFER2_N + i/8];
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_POSY + j/2*CUBERASTER_BUFFER8_N + i/2]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_POSY + j/4*CUBERASTER_BUFFER4_N + i/4]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSY + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_POSY + j/8*CUBERASTER_BUFFER2_N + i/8]);
 		}
 	}
 	
 	for(int j=0; j<CUBERASTER_BUFFER_N; j++) {
 		for(int i=0; i<CUBERASTER_BUFFER_N; i++) {
 
-			//m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_NEGY + j/2*CUBERASTER_BUFFER8_N + i/2];
-			//m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_NEGY + j/4*CUBERASTER_BUFFER4_N + i/4];
-			//m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_NEGY + j/8*CUBERASTER_BUFFER2_N + i/8];
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_NEGY + j/2*CUBERASTER_BUFFER8_N + i/2]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_NEGY + j/4*CUBERASTER_BUFFER4_N + i/4]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_NEGY + j/8*CUBERASTER_BUFFER2_N + i/8]);
+			m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_NEGY + j/2*CUBERASTER_BUFFER8_N + i/2];
+			m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_NEGY + j/4*CUBERASTER_BUFFER4_N + i/4];
+			m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_NEGY + j/8*CUBERASTER_BUFFER2_N + i/8];
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_NEGY + j/2*CUBERASTER_BUFFER8_N + i/2]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_NEGY + j/4*CUBERASTER_BUFFER4_N + i/4]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGY + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_NEGY + j/8*CUBERASTER_BUFFER2_N + i/8]);
 		}
 	}
 	
 	for(int j=0; j<CUBERASTER_BUFFER_N; j++) {
 		for(int i=0; i<CUBERASTER_BUFFER_N; i++) {
 
-			//m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_POSZ + j/2*CUBERASTER_BUFFER8_N + i/2];
-			//m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_POSZ + j/4*CUBERASTER_BUFFER4_N + i/4];
-			//m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_POSZ + j/8*CUBERASTER_BUFFER2_N + i/8];
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_POSZ + j/2*CUBERASTER_BUFFER8_N + i/2]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_POSZ + j/4*CUBERASTER_BUFFER4_N + i/4]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_POSZ + j/8*CUBERASTER_BUFFER2_N + i/8]);
+			m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_POSZ + j/2*CUBERASTER_BUFFER8_N + i/2];
+			m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_POSZ + j/4*CUBERASTER_BUFFER4_N + i/4];
+			m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_POSZ + j/8*CUBERASTER_BUFFER2_N + i/8];
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_POSZ + j/2*CUBERASTER_BUFFER8_N + i/2]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_POSZ + j/4*CUBERASTER_BUFFER4_N + i/4]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_POSZ + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_POSZ + j/8*CUBERASTER_BUFFER2_N + i/8]);
 		}
 	}
 	
 	for(int j=0; j<CUBERASTER_BUFFER_N; j++) {
 		for(int i=0; i<CUBERASTER_BUFFER_N; i++) {
 
-			//m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_NEGZ + j/2*CUBERASTER_BUFFER8_N + i/2];
-			//m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_NEGZ + j/4*CUBERASTER_BUFFER4_N + i/4];
-			//m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_NEGZ + j/8*CUBERASTER_BUFFER2_N + i/8];
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_NEGZ + j/2*CUBERASTER_BUFFER8_N + i/2]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_NEGZ + j/4*CUBERASTER_BUFFER4_N + i/4]);
-			addon(m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_NEGZ + j/8*CUBERASTER_BUFFER2_N + i/8]);
+			m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i] += fOpacity8[CUBERASTER_BUFFER8_NEGZ + j/2*CUBERASTER_BUFFER8_N + i/2];
+			m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i] += fOpacity4[CUBERASTER_BUFFER4_NEGZ + j/4*CUBERASTER_BUFFER4_N + i/4];
+			m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i] += fOpacity2[CUBERASTER_BUFFER2_NEGZ + j/8*CUBERASTER_BUFFER2_N + i/8];
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i], fOpacity8[CUBERASTER_BUFFER8_NEGZ + j/2*CUBERASTER_BUFFER8_N + i/2]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i], fOpacity4[CUBERASTER_BUFFER4_NEGZ + j/4*CUBERASTER_BUFFER4_N + i/4]);
+			//addon(m_pOpacity[CUBERASTER_BUFFER_NEGZ + j*CUBERASTER_BUFFER_N + i], fOpacity2[CUBERASTER_BUFFER2_NEGZ + j/8*CUBERASTER_BUFFER2_N + i/8]);
 		}
 	}
 }
@@ -309,10 +309,10 @@ void CubeRaster::write2(XYZ& ray, float val)
 		nv1 = v;
 	}
 	
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER2_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER2_N) addon(fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu0], val);//fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu0] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER2_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER2_N) addon(fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu1], val);//fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu1] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER2_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER2_N) addon(fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu1], val);//fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu1] += val;		
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER2_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER2_N) addon(fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu0], val);//fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu0] += val;
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER2_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER2_N) /*addon(fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu0], val);*/fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu0] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER2_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER2_N) /*addon(fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu1], val);*/fOpacity2[offset + nv0*CUBERASTER_BUFFER2_N + nu1] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER2_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER2_N) /*addon(fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu1], val);*/fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu1] += val;		
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER2_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER2_N) /*addon(fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu0], val);*/fOpacity2[offset + nv1*CUBERASTER_BUFFER2_N + nu0] += val;
 }
 
 void CubeRaster::write4(XYZ& ray, float val)
@@ -359,10 +359,10 @@ void CubeRaster::write4(XYZ& ray, float val)
 		nv1 = v;
 	}
 	
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER4_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER4_N) addon(fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu0], val);//fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu0] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER4_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER4_N) addon(fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu1], val);//fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu1] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER4_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER4_N) addon(fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu1], val);//fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu1] += val;		
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER4_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER4_N) addon(fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu0], val);//fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu0] += val;
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER4_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER4_N) /*addon(fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu0], val);*/fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu0] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER4_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER4_N) /*addon(fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu1], val);*/fOpacity4[offset + nv0*CUBERASTER_BUFFER4_N + nu1] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER4_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER4_N) /*addon(fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu1], val);*/fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu1] += val;		
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER4_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER4_N) /*addon(fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu0], val);*/fOpacity4[offset + nv1*CUBERASTER_BUFFER4_N + nu0] += val;
 }
 
 void CubeRaster::write8(XYZ& ray, float val)
@@ -409,10 +409,10 @@ void CubeRaster::write8(XYZ& ray, float val)
 		nv1 = v;
 	}
 	
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER8_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER8_N) addon(fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu0], val);//fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu0] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER8_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER8_N) addon(fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu1], val);//fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu1] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER8_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER8_N) addon(fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu1], val);//fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu1] += val;		
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER8_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER8_N) addon(fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu0], val);//fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu0] += val;
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER8_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER8_N) /*addon(fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu0], val);*/fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu0] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER8_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER8_N) /*addon(fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu1], val);*/fOpacity8[offset + nv0*CUBERASTER_BUFFER8_N + nu1] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER8_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER8_N) /*addon(fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu1], val);*/fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu1] += val;		
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER8_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER8_N) /*addon(fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu0], val);*/fOpacity8[offset + nv1*CUBERASTER_BUFFER8_N + nu0] += val;
 }
 
 void CubeRaster::write(XYZ& ray, float val)
@@ -459,10 +459,10 @@ void CubeRaster::write(XYZ& ray, float val)
 		nv1 = v;
 	}
 	
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER_N) addon(m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu0], val); //m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu0] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER_N) addon(m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu1], val);//m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu1] += val;
-	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER_N) addon(m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu1], val);//m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu1] += val;		
-	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER_N) addon(m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu0], val);//m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu0] += val;
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER_N) /*addon(m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu0], val); */m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu0] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER_N && nv0 > -1 && nv0 < CUBERASTER_BUFFER_N) /*addon(m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu1], val);*/m_pOpacity[offset + nv0*CUBERASTER_BUFFER_N + nu1] += val;
+	if(nu1 > -1 && nu1 < CUBERASTER_BUFFER_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER_N) /*addon(m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu1], val);*/m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu1] += val;		
+	if(nu0 > -1 && nu0 < CUBERASTER_BUFFER_N && nv1 > -1 && nv1 < CUBERASTER_BUFFER_N) /*addon(m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu0], val);*/m_pOpacity[offset + nv1*CUBERASTER_BUFFER_N + nu0] += val;
 }
 
 void CubeRaster::draw() const
@@ -606,8 +606,9 @@ void CubeRaster::draw() const
 
 void CubeRaster::getLight(const float& opacity, float& lighting) const
 {
-	lighting = 1.f - opacity;
-	if(lighting < 0) lighting = 0;
+	//lighting = 1.f - opacity;
+	//if(lighting < 0) lighting = 0;
+	lighting = 1.f/ (1.f+opacity*4);
 }
 
 void CubeRaster::readLight(XYZ& ray, float& lighting) const

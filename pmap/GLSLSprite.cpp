@@ -9,6 +9,10 @@
 
 #include "GLSLSprite.h"
 
+#ifndef __APPLE__
+#include "../shared/gExtension.h"
+#endif
+
 const char *particleVS = 
 // point size in world space 
 //"uniform float pointRadius;     \n"

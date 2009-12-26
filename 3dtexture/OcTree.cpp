@@ -17,7 +17,7 @@ struct NodeNDistance
 	float distance;
 };
 
-void detail2NSlice(int& detail, int& nslice) { nslice = 3 + detail/8*2; if(nslice > 13) nslice = 13; }
+void detail2NSlice(int& detail, unsigned& nslice) { nslice = 3 + detail/8; if(nslice > 13) nslice = 13; nslice = 1;}
 
 const float constantCoeff[16] = {3.543211, 
 								0.000605, 0.000152, -0.003217, 
@@ -541,9 +541,10 @@ void OcTree::sortDraw()
 	glUniformMatrix4fvARB(glGetUniformLocationARB(program_object, "objspace"), 1, 0, (float*)fMatSprite);
 	
 	GRID2Draw* visgrd = new GRID2Draw[num_grid];
-	int num_draw_grid = 0, num_slice = 0;
+	unsigned num_draw_grid = 0;
+	unsigned num_slice = 0;
 	
-	pushDrawList(root, num_draw_grid, num_slice, visgrd);
+	pushDrawList(root, num_draw_grid, num_slice, visgrd);printf(" ngrid %i nslice %i", num_draw_grid, num_slice);
 
 	if(num_draw_grid > 0) {
 		SLICE2Draw* visslice = new SLICE2Draw[num_slice];
@@ -563,7 +564,7 @@ void OcTree::sortDraw()
 			//r = sqrt(m_pGrid[visgrd[i].grid_id].area * 0.25);
 			r = sizebuf[i] = visgrd[i].r;
 		
-			int nslice;// = 3 + visgrd[i].detail/8*2;
+			unsigned nslice;// = 3 + visgrd[i].detail/8*2;
 			//if(nslice > 11) nslice = 11;
 			detail2NSlice(visgrd[i].detail, nslice);
 			float delta = 1.f / nslice;
@@ -617,8 +618,8 @@ void OcTree::sortDraw()
 			//glUniform1fARB(glGetUniformLocationARB(program_object, "VFreq"), freqbuf[idraw]);
 			
 			XYZ ox, oy, pp;
-			ox = fSpriteX * sizebuf[idraw] * 1.5;
-			oy = fSpriteY * sizebuf[idraw] * 1.5;
+			ox = fSpriteX * sizebuf[idraw] *3.5;
+			oy = fSpriteY * sizebuf[idraw] *3.5;
 		
 			glColor4f(m_pGrid[visgrd[idraw].grid_id].col.x, m_pGrid[visgrd[idraw].grid_id].col.y,m_pGrid[visgrd[idraw].grid_id].col.z, t_grid_opacity[visgrd[idraw].grid_id]);
 			glMultiTexCoord3f(GL_TEXTURE0, -.5f, -.5f, visslice[islice].z);
@@ -653,7 +654,7 @@ void OcTree::sortDraw()
 	delete[] visgrd;
 }
 
-void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRID2Draw* res)
+void OcTree::pushDrawList(const OCTNode *node, unsigned& count, unsigned& slice_count, GRID2Draw* res)
 {
 	if(!node) return;
 	XYZ cen = node->center;
@@ -689,11 +690,12 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 	}
 
 	float r = sqrt(sumarea * 0.25);
+	r = sumarea;
 	
 	int detail = r/portWidth*fHalfPortWidth;
 	
 	XYZ pw, ox, oy, cs;
-
+/*
 	if(detail < 4) {
 		reconstructColor(node->index, cs);
 		
@@ -704,12 +706,12 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 
 		count++;
 		
-		int nslice;// = 3 + detail/8*2;
+		unsigned nslice;// = 3 + detail/8*2;
 		//if(nslice > 11) nslice = 11;
 		detail2NSlice(detail, nslice);
 		slice_count += nslice;
 		return;
-	}
+	}*/
 
 	if( node->isLeaf ) {
 		reconstructColor(node->index, cs);
@@ -719,6 +721,7 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 			res[count].grid_id = i;
 			
 			r = sqrt(m_pGrid[i].area * 0.25);
+			r = m_pGrid[i].area;
 
 			detail = r/portWidth*fHalfPortWidth;
 			
@@ -727,7 +730,7 @@ void OcTree::pushDrawList(const OCTNode *node, int& count, int& slice_count, GRI
 
 			count++;
 			
-			int nslice;// = 3 + detail/8*2;
+			unsigned nslice;// = 3 + detail/8*2;
 			//if(nslice > 11) nslice = 11;
 			detail2NSlice(detail, nslice);
 			slice_count += nslice;
@@ -1489,7 +1492,7 @@ void OcTree::occlusionAccum(OCTNode *node, const XYZ& origin)
 		return;
 	}
 	if( node->isLeaf ) {
-		if(ray.length() < node->size) return;
+		if(ray.length() < node->size * 4) return;
 		raster->writemip(ray, sample_opacity*(node->high-node->low+1), int(solidangle*8));
 		//for(unsigned i= node->low; i<= node->high; i++) {
 			//ray = m_pGrid[i].pos - origin;

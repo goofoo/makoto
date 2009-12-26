@@ -76,6 +76,35 @@ extern PFNGLATTACHOBJECTARBPROC glAttachObjectARB;
 extern PFNGLCOMPILESHADERARBPROC glCompileShaderARB;
 extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 
+extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+extern PFNGLUSEPROGRAMPROC glUseProgram;
+extern PFNGLCREATESHADERPROC glCreateShader;
+extern PFNGLSHADERSOURCEPROC glShaderSource;
+extern PFNGLLINKPROGRAMPROC glLinkProgram;
+extern PFNGLCREATEPROGRAMPROC glCreateProgram;
+extern PFNGLATTACHSHADERPROC glAttachShader;
+extern PFNGLCOMPILESHADERPROC glCompileShader;
+extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
+extern PFNGLGETSHADERIVPROC glGetShaderiv;
+extern PFNGLPROGRAMPARAMETERIEXTPROC glProgramParameteriEXT;
+extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
+
+extern PFNGLUNIFORM1IPROC glUniform1i;
+extern PFNGLUNIFORM2IPROC glUniform2i;
+extern PFNGLUNIFORM3IPROC glUniform3i;
+extern PFNGLUNIFORM4IPROC glUniform4i;
+extern PFNGLUNIFORM1FPROC glUniform1f;
+extern PFNGLUNIFORM2FPROC glUniform2f;
+extern PFNGLUNIFORM3FPROC glUniform3f;
+extern PFNGLUNIFORM4FPROC glUniform4f;
+extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
+
+extern PFNGLGENBUFFERSPROC glGenBuffers;
+extern PFNGLDELETEBUFFERSPROC glDeleteBuffers;
+extern PFNGLBINDBUFFERPROC glBindBuffer;
+extern PFNGLBUFFERDATAPROC glBufferData;
+extern PFNGLCLIENTACTIVETEXTUREPROC glClientActiveTexture;
+
 char gExtensionInit();
 const char* getExtension();
 char gCheckExtension(char* extName);

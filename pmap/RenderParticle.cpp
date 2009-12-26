@@ -11,6 +11,10 @@
 #include "../shared/QuickSortIdx.h"
 #include "../shared/zData.h"
 
+#ifndef __APPLE__
+#include "../shared/gExtension.h"
+#endif
+
 RenderParticle::RenderParticle() : m_isInitialized(0),
 m_image_fbo(0),
 m_image_tex(0),
@@ -64,15 +68,22 @@ void RenderParticle::initialize()
 	for(w=0; w<PARTICLENOISE_DEPTH; w++) {
 		for(v=0; v<PARTICLENOISE_HEIGHT; v++) {
 			for(u=0; u<PARTICLENOISE_WIDTH; u++) {
+#ifndef __APPLE__
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4] = rand()%256;
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+1] = rand()%256;
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+2] = rand()%256;
+				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+3] = rand()%256;
+#else
 				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4] = random()%256;
 				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+1] = random()%256;
 				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+2] = random()%256;
 				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+3] = random()%256;
+#endif
 			}
 		}
 	}
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, PARTICLENOISE_WIDTH, PARTICLENOISE_HEIGHT, PARTICLENOISE_DEPTH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texels);
-	free(texels);
+	delete[] texels;
 	
 	m_isInitialized = 1;
 }

@@ -189,7 +189,7 @@ void Z3DTexture::distanceToNeighbour(float min)
 		float dist = maxdist;
 		XYZ vneib;
 		m_pTree->nearestGrid(to, min, dist, vneib);
-		m_pGrid[i].area = dist*dist*4;
+		m_pGrid[i].area = dist;
 	}
 }
 

@@ -44,28 +44,11 @@ inline void findST(int width, int height, int depth, int& s, int& t)
 	}
 }
 
-GLuint density_fbo;
-GLuint fbo;
-GLuint depthBuffer;
 
-GLuint img_impuls;
-
-GLuint i_velocityTexture;
-GLuint i_divergenceTexture;
-GLuint i_vorticityTexture;
-GLuint i_pressureTexture;
-GLuint i_bufTexture;
-GLuint i_offsetTexture;
-
-GLuint x_fbo;
-GLuint y_fbo;
-GLuint z_fbo;
 //GLuint x_depthBuffer;
 //GLuint y_depthBuffer;
 //GLuint z_depthBuffer;
-	GLuint i_xTexture;
-	GLuint i_yTexture;
-	GLuint i_zTexture;
+	
 
 GLenum status;
 
@@ -675,7 +658,7 @@ glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	//m_fb->begin(i_pressureTexture, GL_TEXTURE_RECTANGLE_ARB);
 	// reset the pressure field texture before jacobi
 	
-	for(int i =0; i<64; i++) { 
+	for(int i =0; i<36; i++) { 
 
 		f_cg->jacobiBegin(i_pressureTexture, i_divergenceTexture);
 		drawQuad();
@@ -1175,7 +1158,8 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 		pVertex[i*3]=points[i].x;
 		pVertex[i*3+1]=points[i].y;
 		pVertex[i*3+2]=points[i].z;
-		decay = exp(-40*(ages[i]+.01));
+// normalize by grid size
+		decay = exp(-40*(ages[i]+.01))/m_gridSize;
 		pColor[i*4]=velocities[i].x*decay;
 		pColor[i*4+1]=velocities[i].y*decay;
 		pColor[i*4+2]=velocities[i].z*decay;

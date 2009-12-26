@@ -225,19 +225,19 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	fParam.up_z = mat.v[1][2];
 
 	view.beginGL(); 
-/*	
-	if(!fRenderer->isDiagnosed()) {
+	
+	if(!renderer->isInitialized()) {
 #ifndef __APPLE__
 		gExtensionInit();
 #endif
-		string log;
-		fSupported = fRenderer->diagnose(log);
-		MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());	
-		if(fSupported) {
+		//string log;
+		//fSupported = fRenderer->diagnose(log);
+		//MGlobal::displayInfo(MString("Voltex log: ") + log.c_str());	
+		//if(fSupported) {
 
-		}
+		//}
 	}
-*/	
+	
 	int port[4];
 	glGetIntegerv(GL_VIEWPORT, port);
 	
