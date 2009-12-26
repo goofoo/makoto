@@ -189,11 +189,11 @@ string $scroll = `scrollLayout -p $form`;
 columnLayout -adjustableColumn true;
 
 //column begin
-	string $cams[] = `ls -ca`;
-	string $ac;
+	//string $cams[] = `ls -ca`;
+	//string $ac;
 	
-	optionMenuGrp -label "Render Camera" -cw 1 110 -columnWidth 2 180 saveznebulaOptEye;
-	for($ac in $cams) menuItem -label $ac;
+	//optionMenuGrp -label "Render Camera" -cw 1 110 -columnWidth 2 180 saveznebulaOptEye;
+	//for($ac in $cams) menuItem -label $ac;
 
 	intFieldGrp -label "Image Size" -cw 1 110 -nf 2 -v1 800 -v2 600 saveznebulaOptSize;
 	
@@ -224,9 +224,9 @@ showWindow saveznebulaWin;
 
 global proc doSaveZNebula()
 {
-	string $cams[] = `ls -ca`;
-	int $ieye = `optionMenuGrp -q -select saveznebulaOptEye`;
-	string $cameye = $cams[$ieye - 1];
+	//string $cams[] = `ls -ca`;
+	//int $ieye = `optionMenuGrp -q -select saveznebulaOptEye`;
+	//string $cameye = $cams[$ieye - 1];
 	
 	string $existing[] = `ls -type pmapNode`;
 	string $an;
@@ -234,7 +234,7 @@ global proc doSaveZNebula()
 		setAttr ($an + ".saveImage") 1; 
 		setAttr ($an + ".resolutionX") `intFieldGrp -q -v1 saveznebulaOptSize`; 
 		setAttr ($an + ".resolutionY") `intFieldGrp -q -v2 saveznebulaOptSize`; 
-		setAttr -type "string" ($an + ".cameraName") $cameye; 
+		//setAttr -type "string" ($an + ".cameraName") $cameye; 
 	}
 	
 	int $amount = 0;

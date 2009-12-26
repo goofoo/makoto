@@ -227,8 +227,8 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	}
 
 	obslist.clear();
-// caching	
-	if(do_save_cache==1) {
+// caching when on
+	if(do_save_cache==1 && ison==1) {
 		MString sfile;
 		MGlobal::executeCommand(MString ("string $p = `workspace -q -fn`"), sfile);
 		sfile = sfile + "/data/" + name() + "." + (int)currentTime.value();

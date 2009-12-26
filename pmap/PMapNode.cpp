@@ -64,7 +64,7 @@ MObject     PMapNode::aoriginz;
 MObject PMapNode::asaveimage;
 MObject PMapNode::aresolutionx;
 MObject PMapNode::aresolutiony;
-MObject PMapNode::acameraname;
+//MObject PMapNode::acameraname;
 
 PMapNode::PMapNode() : f_type(0), fSaveImage(0), fSupported(0), fValid(0)
 {
@@ -118,7 +118,6 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 	{
 		MStatus stat;
 		MString path =  data.inputValue( input ).asString();
-		fEyeCamera = data.inputValue( acameraname ).asString();
 
 	    double time = data.inputValue( frame ).asTime().value();
 	    iFrame = int(time + 0.005);
@@ -519,9 +518,7 @@ MStatus PMapNode::initialize()
 	nAttr.setStorable(true);
 	addAttribute(aresolutiony);
 	
-	acameraname = stringAttr.create( "cameraName", "cmn", MFnData::kString );
- 	stringAttr.setStorable(true);
-	addAttribute( acameraname );
+	
 	
 	aoutval = nAttr.create( "outval", "ov", MFnNumericData::kFloat ); 
 	nAttr.setStorable(false);

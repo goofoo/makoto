@@ -70,14 +70,14 @@ static      MObject     aoriginz;
 	static MObject asaveimage;
 	static MObject aresolutionx;
 	static MObject aresolutiony;
-	static MObject acameraname;
+	//static MObject acameraname;
 	static      MObject     aoutval;
 private:
 	FluidOctree *fData;
 	int f_type, fSaveImage;
 	
 	void parseCamera(const MDagPath& camera, MATRIX44F& mat, double& clipnear, double& clipfar, double& fov, int& ispersp);
-	MString fEyeCamera;
+	
 	char fSupported, fValid;
 	RenderParticle* renderer;
 	GLSLSpritePARAM fParam;
