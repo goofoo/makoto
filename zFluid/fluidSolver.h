@@ -46,7 +46,7 @@ public:
 	void setWind(const float& x, const float& z) {fWindX = x; fWindZ = z;}
 	void setConserveDensity(float val) {m_conserve_denisty = val;}
 	
-	void drawList(const MObjectArray& obstacles);
+	//void drawList(const MObjectArray& obstacles);
 	
 	void setGridSize(float size) {m_gridSize = size;}
 	float getGridSize() const {return m_gridSize;}

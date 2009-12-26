@@ -1123,18 +1123,6 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
 // update buf 
 	glDrawBuffer(GL_COLOR_ATTACHMENT6_EXT);
-	/*
-	glViewport(0, 0, m_frame_width, m_frame_height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-	glOrtho(-m_frame_width/2, m_frame_width/2, -m_frame_height/2, m_frame_height/2, .1, 1000.*m_gridSize);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-	gluLookAt(m_frame_width/2, m_frame_height/2, 10,
-			  m_frame_width/2, m_frame_height/2, -10,
-			  0, 1, 0);*/
 			  
 			  setFrameView();
 
@@ -1146,117 +1134,11 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 		}
 	}
 	
-/*
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, x_fbo);
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-	glEnable(GL_DEPTH_TEST);
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-	glClearColor(0,0,0,0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, m_depth, m_height);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-	glOrtho(-m_depth/2*m_gridSize, m_depth/2*m_gridSize, -m_height/2*m_gridSize, m_height/2*m_gridSize, .01, 1000.*m_gridSize);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-	gluLookAt(m_origin_x, m_origin_y + m_height/2*m_gridSize, m_origin_z + m_depth/2*m_gridSize,
-			  m_origin_x+1, m_origin_y + m_height/2*m_gridSize, m_origin_z + m_depth/2*m_gridSize,
-			  0, 1, 0);
-	
-	glColor3f(1, 1, 1);
-	
-	drawList(obstacles);
-	
-	
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
-	
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, y_fbo);
-	
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, m_width, m_depth);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-	glOrtho(-m_width/2*m_gridSize, m_width/2*m_gridSize, -m_depth/2*m_gridSize, m_depth/2*m_gridSize, .01, 1000.*m_gridSize);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-	gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y, m_origin_z + m_depth/2*m_gridSize,
-			  m_origin_x + m_width/2*m_gridSize, m_origin_y + 1, m_origin_z + m_depth/2*m_gridSize,
-			  0, 0, 1);
-	
-	drawList(obstacles);
-	
-
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-	
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, z_fbo);
-	
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(0, 0, m_width, m_height);
-	
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-	glOrtho(-m_width/2*m_gridSize, m_width/2*m_gridSize, -m_height/2*m_gridSize, m_height/2*m_gridSize, .01, 1000.*m_gridSize);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-	gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + m_depth*m_gridSize,
-			  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + m_depth*m_gridSize-1,
-			  0, 1, 0);
-	
-	drawList(obstacles);
-	
-	glPopAttrib();
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-	
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo);
-	//glPushAttrib(GL_ALL_ATTRIB_BITS);
-	//glClearColor(0,0,0,0);
-	//glDisable(GL_DEPTH_TEST);
-// up date buf 
-	glDrawBuffer(GL_COLOR_ATTACHMENT6_EXT);
-	//m_fb->begin(i_bufTexture, GL_TEXTURE_RECTANGLE_ARB);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, m_frame_width, m_frame_height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-	glOrtho(-m_frame_width/2, m_frame_width/2, -m_frame_height/2, m_frame_height/2, .1, 1000.*m_gridSize);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-	gluLookAt(m_frame_width/2, m_frame_height/2, 10,
-			  m_frame_width/2, m_frame_height/2, -10,
-			  0, 1, 0);
-	f_cg->begin();
-	f_cg->convexBegin(i_xTexture, i_yTexture, i_zTexture);
-	drawQuad();
-	f_cg->convexEnd();
-	f_cg->end();
-*/	
 // update offset field
 	glDrawBuffer(GL_COLOR_ATTACHMENT7_EXT);
 	glClear(GL_COLOR_BUFFER_BIT);
-	/*
-	glViewport(0, 0, m_frame_width, m_frame_height);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();	
-	glOrtho(-m_frame_width/2, m_frame_width/2, -m_frame_height/2, m_frame_height/2, .1, 1000.);
-	glMatrixMode(GL_MODELVIEW);
-	
-	glLoadIdentity();
-	gluLookAt(m_frame_width/2, m_frame_height/2, 10,
-			  m_frame_width/2, m_frame_height/2, -10,
-			  0, 1, 0);
-	*/
 	f_cg->begin();
 	f_cg->offsetBegin(i_bufTexture);
 	drawQuad();
@@ -1328,6 +1210,56 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 		f_cg->particleEnd();
 	}
 	
+	delete[] pVertex;
+	delete[] pColor;
+	
+	MStatus status;
+	
+	for(int iter = 0; iter<sources.length(); iter++)
+	{
+		MItMeshPolygon faceIter(sources[iter], &status );
+		if(status) {
+			int n_tri = faceIter.count();
+			float *pp = new float[n_tri*3*3];
+			int acc = 0;
+			for( ; !faceIter.isDone(); faceIter.next() ) {
+			
+				MPointArray pts;
+				faceIter.getPoints(pts,  MSpace::kWorld);
+				
+				pp[acc*3] = pts[0].x;
+				pp[acc*3+1] = pts[0].y;
+				pp[acc*3+2] = pts[0].z;
+				acc++;
+				pp[acc*3] = pts[1].x;
+				pp[acc*3+1] = pts[1].y;
+				pp[acc*3+2] = pts[1].z;
+				acc++;
+				pp[acc*3] = pts[2].x;
+				pp[acc*3+1] = pts[2].y;
+				pp[acc*3+2] = pts[2].z;
+				acc++;
+			}
+		
+		for(int i=1; i<m_depth-1; i++) {
+			x_offset = i%i_frame*m_width;
+			y_offset = i/i_frame*m_height;
+			glViewport(x_offset, y_offset, m_width, m_height);
+			glLoadIdentity();
+			gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
+					  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
+					  0, 1, 0);
+			glTexCoord4f(0,0,0,m_keepTemperature);
+			f_cg->particleBegin();
+			drawTriangleMesh(n_tri, pp);
+			f_cg->particleEnd();
+		}
+// end of object
+			delete[] pp;
+		}
+	}
+
+/*	
 // add source
 	if(sources.length() > 0) {
 		glColor4f(0,1,0,4);
@@ -1343,14 +1275,11 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 			
 		}
 	}
-	
+*/	
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-	delete[] pVertex;
-	delete[] pColor;
 }
-
+/*
 void FluidSolver::drawList(const MObjectArray& obstacles)
 {
 	f_cg->begin();
@@ -1378,7 +1307,7 @@ void FluidSolver::drawList(const MObjectArray& obstacles)
 	f_cg->flatEnd();
 	f_cg->end();
 }
-
+*/
 void FluidSolver::drawTriangleMesh(int count, const float* vert)
 {
 	glEnableClientState(GL_VERTEX_ARRAY);
