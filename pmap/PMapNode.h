@@ -81,6 +81,7 @@ private:
 	char fSupported, fValid;
 	RenderParticle* renderer;
 	GLSLSpritePARAM fParam;
+	int iFrame, iOutWidth, iOutHeight;
 };
 
 #endif

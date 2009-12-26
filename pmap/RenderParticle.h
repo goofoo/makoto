@@ -42,6 +42,7 @@ public:
 	void setLightSize(float val) {m_light_size = val;}
 	void setImageDim(int w, int h);
 	void setFrustum(float l, float r, float b, float t, float n, float f);
+	void setFov(float f) {m_fov =f;}
 	
 	void getLightPoint(float& x, float& y, float& z) const {x = m_light_x; y = m_light_y; z = m_light_z;}
 	
@@ -50,6 +51,8 @@ public:
 	void setPrimProjection();
 	void setShadowProjection();
 	void setDownSample(int val);
+	
+	void saveToFile(const char *filename, int outWidth, int outHeight);
 	
 private:
 	long m_num_particle;
@@ -78,6 +81,7 @@ private:
 	char m_invert;
 	float m_left, m_right, m_bottom, m_top, m_near, m_far;
 	int m_downSample, m_light_clipfar;
+	float m_fov;
 };
 
 #endif

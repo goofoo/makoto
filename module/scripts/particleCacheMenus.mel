@@ -65,249 +65,11 @@ global proc particleMapAppendMenuItems()
 {
 	menuItem -p zTools -l "Particle Map" -subMenu true particleMapItems;
 	
-	menuItem -l "Create Cache Dimension" -c "createNode pmapDem";
-	menuItem -l "Save" -c "openExportParticleCacheWin";
 	menuItem -l "Load" -c "openImportParticleCacheWin";
-	menuItem -l "View Tool" -c "znebula_view";
-	menuItem -l "Activate Image-based Lighting" -c "particleMapSetDraw(\"key_lighting\")";
 	menuItem -l "Render To Images" -c "znebula_open_render_win";
 	
 	menuItem -l "Existing Caches" -subMenu true -postMenuCommand zsmoke_findexisting zsmoke_existingccache;
 	setParent -menu ..;
-}
-
-global proc doExportParticleCache()
-{	
-	int $amount = 0;
-	progressWindow -title "Writing Particle Cache" -progress $amount -status "Completed: 0%" -isInterruptable true;
-	
-	int $s = `intFieldGrp -q -v1 exportParticleCacheRange`;
-	int $e = `intFieldGrp -q -v2 exportParticleCacheRange`;
-	
-	int $i;
-	for( $i = $s; $i <= $e; $i++ ) {
-		currentTime $i;
-		$amount = ($i-$s)/(1.0*($e-$s))*100;
-		
-		// Check if the dialog has been cancelled
-		if ( `progressWindow -query -isCancelled` ) break; 
-		// Check if end condition has been reached
-		if ( `progressWindow -query -progress` > 100 ) break;
-		
-		progressWindow -edit -progress $amount -status ("Completed: "+$amount+"%");
-		
-		exportParticleCacheSingleFrame;
-	}
-	
-	progressWindow -endProgress;
-	
-}
-
-global proc exportParticleCacheSingleFrame()
-{
-	int $idem = `optionMenuGrp -q -select savePMAPOptDem`;
-	string $dems[] = `ls -type pmapDem`;
-	string $dem = $dems[$idem - 1];
-	string $transdem[] = `listRelatives -p $dem`;
-	
-	string $cams[] = `ls -ca`;
-	int $ikey = `optionMenuGrp -q -select savePMAPOptKey`;
-	int $ieye = `optionMenuGrp -q -select savePMAPOptEye`;
-	string $camkey = $cams[$ikey - 1];
-	string $cameye = $cams[$ieye - 1];
-	string $transkey[] = `listRelatives -p $camkey`;
-	string $transeye[] = `listRelatives -p $cameye`;
-	
-	float $rootsize = `getAttr ($dem+".boxSize")`;
-	int $maxlevel = `getAttr ($dem+".maxLevel")`;
-	
-  string $attr[];
-  int $index = 0;
-  /*
-  if(`columnLayout -q -nch basicAttriColumnLyt`)
-  {
-    string $arrayBasic[] = `columnLayout -q -ca basicAttriColumnLyt`;
-    for($i = 0;$i<size($arrayBasic);$i++,$index++)
-    {
-      if(`checkBox -q -v $arrayBasic`)
-      $attr[$index] = $arrayBasic[$i];
-    }
-  }
-  
-  if(`columnLayout -q -nch appendedAttriColumnLyt`)
-  {
-    string $arrayAppend[] = `columnLayout -q -ca appendedAttriColumnLyt`;
-    for($i = 0;$i<size($arrayAppend);$i++,$index++)
-    {
-      if(`checkBox -q -v $arrayAppend`)
-      $attr[$index] = $arrayAppend[$i];
-    }
-  }
-  
-  if(`columnLayout -q -nch extraAttriColumnLyt`)
-  {
-    string $arrayAppend[] = `columnLayout -q -ca extraAttriColumnLyt`;
-    for($i = 0;$i<size($arrayAppend);$i++,$index++)
-    {
-      if(`checkBox -q -v $arrayAppend`)
-      $attr[$index] = $arrayAppend[$i];
-    }
-  }
-*/
-
-  string $attribute = stringArrayToString($attr,".");
-  
-  float $mindist = `floatSliderGrp -q -v SliderPTCMAPRadiusMin`;
-  float $cloudos = `floatSliderGrp -q -v SliderPTCMAPDensity`;
-
-  string $sdist = " -mnd "+$mindist + " -t " + $transdem[0] + " -ml " + $maxlevel + " -rs "+ $rootsize + " -o " + $cloudos + " -tk " + $transkey[0] + " -te " + $transeye[0];    
-  string $cmd;
-  //for($i = 0;$i<size($attr);$i++,$index++)
-       if($attribute == ""){
-        if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" )
-             $cmd = "pmapCache -n `textFieldGrp -q -text exportParticleCacheName`" + $sdist;
-	else
-             $cmd = "pmapCache -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName`" + $sdist;
-             }
-        else{
-        if ( `textFieldButtonGrp -q -text exportParticleCachePath` == "" ) 
-             $cmd = "pmapCache -n `textFieldGrp -q -text exportParticleCacheName` -a " + $attribute +$sdist;
-	else
-             $cmd = "pmapCache -p `textFieldButtonGrp -q -text exportParticleCachePath` -n `textFieldGrp -q -text exportParticleCacheName` -a "+$attribute + $sdist;
-             }
-        eval($cmd);
-}
-
-global proc openExportParticleCacheWin()
-{
-
-//If such a window already exists, destory it.
- if ( (`window -exists exportParticleCacheWin`) == true ) deleteUI exportParticleCacheWin;
- 
-//Create the window.
- window -title "particleCache 1.0 - Save Particle Cache Options" -wh 400 300 exportParticleCacheWin;
-
-formLayout  -numberOfDivisions 100 windowLyt;
-$scrollLayout = `scrollLayout -childResizable true `;
-$form = `formLayout`;
-//scrollLayout;
-$frameSetting = `frameLayout -label "Setting Path And File Name" -borderVisible true
-		-collapsable true -borderStyle "etchedIn"`;
-//string $form = `formLayout -numberOfDivisions 100`;
-//string $row = `rowLayout -numberOfColumns 3 -columnWidth3 120 120 120 -columnAttach 1 "both" 0 -columnAttach 2 "both" 0 -columnAttach 3 "both" 0`;
-//string $scroll = `scrollLayout -p $form`;
-
-columnLayout -adjustableColumn true;
-
-//column begin
-text -al left -l "\nSelect particle(es) and press DOWN key to export to particle cache files.";
-
-textFieldGrp -cw 1 110 -label "Cache Name" -text "untitled" exportParticleCacheName;
-textFieldButtonGrp
-     -cw 1 110 -label "Cache Path" -buttonLabel "Browse.."
-     -bc "fileBrowser \"setParticleCachePath\" \"Set Path\" \"\" 4"
-     exportParticleCachePath;
-
-intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` exportParticleCacheRange;
-floatSliderGrp -cw 1 110 -label "Min Radius" -field true -minValue 0.001 -maxValue 10.0 -value 0.1 -ss 0.01 SliderPTCMAPRadiusMin;
-floatSliderGrp -cw 1 110 -label "Density" -field true -minValue 0.01 -maxValue 1.0 -value 0.21 -ss 0.01 SliderPTCMAPDensity;
-optionMenuGrp -label "Dimension Box" -cw 1 120 -columnWidth 2 180 savePMAPOptDem;
-
-	string $dems[] = `ls -type pmapDem`;
-	string $ad;
-	for($ad in $dems) menuItem -label $ad;
-
-optionMenuGrp -label "Key Camera" -cw 1 120 -columnWidth 2 180 savePMAPOptKey;
-
-	string $cams[] = `ls -ca`;
-	string $ac;
-	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
-	
-optionMenuGrp -label "Render Camera" -cw 1 120 -columnWidth 2 180 savePMAPOptEye;
-
-	for($ac in $cams) menuItem -label `listRelatives -p $ac`;
-
-setParent ..;
-setParent ..;
-/*
-$frameBasic = `frameLayout -label "Basic Attribute" -borderVisible true
-		-collapsable true -borderStyle "etchedIn"`;
-columnLayout -adjustableColumn true basicAttriColumnLyt;
-checkBox -al "left" -l "velocity:vectorArray" velocity:vectorArray;
-
-setParent ..;
-setParent ..;
-
-$frameAppended = `frameLayout -label "Appended Attribute" -borderVisible true
-		-collapsable true -borderStyle "etchedIn"`;
-columnLayout -adjustableColumn true appendedAttriColumnLyt;
-
-setParent ..;
-setParent ..;
-$frameExtra = `frameLayout -label "Extra Attribute" -borderVisible true
-		-collapsable true -borderStyle "etchedIn"`;
-columnLayout -adjustableColumn true extraAttriColumnLyt;
-
-setParent ..;
-setParent ..;
-*/
-setParent ..;
-setParent ..;
-
-button -l "Export" -c "doExportParticleCache;deleteUI exportParticleCacheWin" exportBtn;
-button -l "Apply" -c "doExportParticleCache" applyBtn;
-button -l "Close" -c "deleteUI exportParticleCacheWin" closeBtn;
-
-formLayout -edit
-        -attachForm     $frameSetting     "top"    2
-        -attachForm     $frameSetting     "left"   1
-        //-attachForm	$frame     "bottom" 2
-        -attachForm 	$frameSetting     "right"  1
-        
-       // -ac             $frameBasic     "top"    1  $frameSetting
-       // -attachForm     $frameBasic     "left"   1
-        //-attachForm	$frame     "bottom" 2
-       // -attachForm 	$frameBasic     "right"  1
-        
-       // -ac             $frameAppended     "top"    1  $frameBasic
-       // -attachForm     $frameAppended     "left"   1
-        //-attachForm	$frame     "bottom" 2
-       // -attachForm 	$frameAppended     "right"  1
-        
-       // -ac             $frameExtra     "top"    1  $frameAppended
-       // -attachForm     $frameExtra     "left"   1
-        //-attachForm	$frame     "bottom" 2
-       // -attachForm 	$frameExtra     "right"  1
-    $form;
-
-formLayout -edit
-
-        -af $scrollLayout    top 1
-        -af $scrollLayout    left 1
-        -af $scrollLayout    right 1
-        -ac $scrollLayout    bottom 2 applyBtn
-
-        -af exportBtn left 5
-        -ap exportBtn right 3 33
-        -af exportBtn bottom 5
-
-        -ap applyBtn left 2 33
-        -ap applyBtn right 3 66
-        -af applyBtn bottom 5
-		
-	-ap closeBtn left 2 66
-	-af closeBtn right 5
-	-af closeBtn bottom 5
- windowLyt;
-
- showWindow exportParticleCacheWin;
-
-}
-
-global proc int setParticleCachePath(string $path, string $type)
-{
-	textFieldButtonGrp -e -text $path exportParticleCachePath;
-	return true;
 }
 
 global proc openImportParticleCacheWin()
@@ -398,14 +160,9 @@ global proc particleMapSetDraw(string $attrname)
 	}
 }
 
-global proc znebula_view()
-{
-	setToolTo `viewVolumeToolContext`;
-}
-
 global proc zsmoke_findexisting()
 {
-	string $existing[] = `ls -type pmapViz`;
+	string $existing[] = `ls -type pmapNode`;
 	string $an;
 	for($an in $existing) 
 	{
@@ -442,7 +199,7 @@ columnLayout -adjustableColumn true;
 	
 	intFieldGrp -cw 1 110 -label "Frame Start/End" -nf 2 -v1 `playbackOptions -q -min` -v2 `playbackOptions -q -max` saveznebulaOptRange;
 	
-	text -al left -l "\nDescription: render particle cache to OpenEXR images,\n    and destination folder is where .pmap files are saved.";
+	text -al left -l "\nDescription: render zSmoke to OpenEXR images,\n    and destination folder is /images folder of current project.";
 
 
 //row begin
@@ -471,7 +228,7 @@ global proc doSaveZNebula()
 	int $ieye = `optionMenuGrp -q -select saveznebulaOptEye`;
 	string $cameye = $cams[$ieye - 1];
 	
-	string $existing[] = `ls -type pmapViz`;
+	string $existing[] = `ls -type pmapNode`;
 	string $an;
 	for($an in $existing) {
 		setAttr ($an + ".saveImage") 1; 
@@ -481,7 +238,7 @@ global proc doSaveZNebula()
 	}
 	
 	int $amount = 0;
-	progressWindow -title "Rendering Particle Cache" -progress $amount -status "Completed: 0%" -isInterruptable true;
+	progressWindow -title "Rendering zSmoke" -progress $amount -status "Completed: 0%" -isInterruptable true;
 	
 	int $s = `intFieldGrp -q -v1 saveznebulaOptRange`;
 	int $e = `intFieldGrp -q -v2 saveznebulaOptRange`;

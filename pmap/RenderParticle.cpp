@@ -15,6 +15,31 @@
 #include "../shared/gExtension.h"
 #endif
 
+#include <ImfHeader.h>
+#include <ImfArray.h>
+#include <ImfInputFile.h>
+#include <ImfOutputFile.h>
+#include <ImfTiledOutputFile.h>
+#include <ImfTiledInputFile.h>
+#include <ImfChannelList.h>
+
+#include <ImfBoxAttribute.h>
+#include <ImfChannelListAttribute.h>
+#include <ImfCompressionAttribute.h>
+#include <ImfChromaticitiesAttribute.h>
+#include <ImfFloatAttribute.h>
+#include <ImfEnvmapAttribute.h>
+#include <ImfDoubleAttribute.h>
+#include <ImfIntAttribute.h>
+#include <ImfLineOrderAttribute.h>
+#include <ImfMatrixAttribute.h>
+#include <ImfOpaqueAttribute.h>
+#include <ImfStringAttribute.h>
+#include <ImfVecAttribute.h>
+
+using namespace Imf;
+using namespace Imath;
+
 RenderParticle::RenderParticle() : m_isInitialized(0),
 m_image_fbo(0),
 m_image_tex(0),
@@ -469,5 +494,91 @@ void RenderParticle::setDownSample(int val)
 	if(val==0) m_downSample = 1;
 	else if(val==1) m_downSample = 2;
 	else m_downSample = 4;
+}
+
+void RenderParticle::saveToFile(const char *filename, int outWidth, int outHeight)
+{
+	setImageDim(outWidth, outHeight);
+// calculate display widnow	
+	double ratio = (double)outHeight / (double)outWidth;
+	double radians = 0.0174532925 * m_fov * 0.5; // half aperture degrees to radians 
+	double wd2 = m_near * tan(radians);
+	
+	GLdouble left, right, top, bottom;
+	left  = -wd2;
+	right = left + wd2*2;
+	
+	top = wd2 * ratio;
+	bottom = top -  wd2*2*ratio;
+// update, keep clipping	
+	setFrustum(left, right, bottom, top, m_near, m_far);
+	render();
+	
+// get pixels
+	float * tmp = new float[m_image_width * m_image_height * 4];
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_image_fbo);
+	glViewport(0,0,m_image_width, m_image_height);
+	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);        
+
+	glReadPixels( 0, 0,  m_image_width, m_image_height, GL_RGBA, GL_FLOAT, tmp);
+
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+	
+// write to exr
+	
+	half *idr_r = new half[m_image_width * m_image_height];
+	half *idr_g = new half[m_image_width * m_image_height];
+	half *idr_b = new half[m_image_width * m_image_height];
+	half *idr_a = new half[m_image_width * m_image_height];
+	
+	for(int j=0; j< m_image_height; j++) {
+		int invj = m_image_height - 1 -j;
+		for(int i=0; i<m_image_width; i++) {
+			idr_r[j*m_image_width + i] = (half)tmp[(invj*m_image_width + i)*4];
+			idr_g[j*m_image_width + i] = (half)tmp[(invj*m_image_width + i)*4+1];
+			idr_b[j*m_image_width + i] = (half)tmp[(invj*m_image_width + i)*4+2];
+			idr_a[j*m_image_width + i] = (half)tmp[(invj*m_image_width + i)*4+3];
+		}
+	}
+// write exr
+	Header idrheader (m_image_width, m_image_height); 
+
+		idrheader.channels().insert ("R", Channel (HALF));
+		idrheader.channels().insert ("G", Channel (HALF));                                   // 1 
+        idrheader.channels().insert ("B", Channel (HALF));
+		idrheader.channels().insert ("A", Channel (HALF));                   // 2  
+    
+        OutputFile idrfile (filename, idrheader);                               // 4 
+        FrameBuffer idrframeBuffer;
+		 idrframeBuffer.insert ("R",                                // name   // 6 
+                            Slice (HALF,                        // type   // 7 
+                                   (char *) idr_r,            // base   // 8 
+                                   sizeof (*idr_r) * 1,       // xStride// 9 
+                                   sizeof (*idr_r) * m_image_width));
+        idrframeBuffer.insert ("G",                                // name   // 6 
+                            Slice (HALF,                        // type   // 7 
+                                   (char *) idr_g,            // base   // 8 
+                                   sizeof (*idr_g) * 1,       // xStride// 9 
+                                   sizeof (*idr_g) * m_image_width));
+		 idrframeBuffer.insert ("B",                                // name   // 6 
+                            Slice (HALF,                        // type   // 7 
+                                   (char *) idr_b,            // base   // 8 
+                                   sizeof (*idr_b) * 1,       // xStride// 9 
+                                   sizeof (*idr_b) * m_image_width));
+		 idrframeBuffer.insert ("A",                                // name   // 6 
+                            Slice (HALF,                        // type   // 7 
+                                   (char *) idr_a,            // base   // 8 
+                                   sizeof (*idr_a) * 1,       // xStride// 9 
+                                   sizeof (*idr_a) * m_image_width));
+       
+        idrfile.setFrameBuffer (idrframeBuffer);                                // 16 
+        idrfile.writePixels (m_image_height); 
+        
+// cleanup
+	delete[] idr_r;
+	delete[] idr_g;
+	delete[] idr_b;
+	delete[] idr_a;
+	delete[] tmp;
 }
 //:~

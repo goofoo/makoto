@@ -26,7 +26,7 @@
 #include "../shared/gExtension.h"
 #endif
 
-#define ZPUBLIC
+//#define ZPUBLIC
 
 MTypeId     PMapNode::id( 0x0004093 );
 MObject     PMapNode::frame;
@@ -121,9 +121,12 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		fEyeCamera = data.inputValue( acameraname ).asString();
 
 	    double time = data.inputValue( frame ).asTime().value();
+	    iFrame = int(time + 0.005);
 	    int minfrm = data.inputValue( aminframe ).asInt();
 		f_type = data.inputValue( adrawtype ).asInt();
 		fSaveImage = data.inputValue( asaveimage ).asInt();
+		iOutWidth = data.inputValue( aresolutionx ).asInt();
+		iOutHeight = data.inputValue( aresolutiony ).asInt();
 		
 		if( time < minfrm ) time = minfrm;
 		int frame_lo = time + 0.005;
@@ -257,6 +260,7 @@ void PMapNode::draw( M3dView & view, const MDagPath & path,
 	bottom = top -  wd2*2*ratio;
 	
 	renderer->setFrustum(left, right, bottom, top, clipNear, clipFar);
+	renderer->setFov(fov);
 
 	float x,y,z,w;
 	if(fValid) {
@@ -621,6 +625,25 @@ void PMapNode::drawPoint()
 	
 	renderer->compose();
 	//renderer->showShadow();
+	
+	
+	if(fSaveImage==1) {
+#ifndef ZPUBLIC
+		MString sfile;
+		MGlobal::executeCommand(MString ("string $p = `workspace -q -fn`"), sfile);
+		if(iFrame < 10) sfile = sfile + "/images/" + name() + ".000" + iFrame + ".exr";
+		else if(iFrame < 100) sfile = sfile + "/images/" + name() + ".00" + iFrame + ".exr";
+		else if(iFrame < 1000) sfile = sfile + "/images/" + name() + ".0" + iFrame + ".exr";
+		else sfile = sfile + "/images/" + name() + "." + iFrame + ".exr";
+		
+		MGlobal::displayInfo(MString(" render zSmoke to ") + sfile);
+				
+		renderer->saveToFile(sfile.asChar(), iOutWidth, iOutHeight);
+#else
+		MGlobal::displayInfo("Public Beta skips render-to-image feature.");
+#endif
+	}
+	
 	glPopAttrib();
 
 	delete[] pVertex;
