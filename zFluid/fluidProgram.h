@@ -55,7 +55,7 @@ public:
 	void buoyancyEnd();
 	void flatBegin();
 	void flatEnd();
-	void convexBegin(GLuint iX, GLuint iY, GLuint iZ);
+	void convexBegin(GLuint iX, GLuint iY, GLuint iZ, GLuint iold);
 	void convexEnd();
 	void addTemperatureBegin(GLuint i_textureU, GLuint i_textureImpulse, float k);
 	void addTemperatureEnd();
@@ -106,7 +106,7 @@ private:
 	CGparameter abc_u, abc_o, abc_dimensions;
 	//CGparameter addTemperature_u, addTemperature_T, addTemperature_radius, addTemperature_p;
 	CGparameter buoyancy_u, buoyancy_t, buoyancy_Kb;
-	CGparameter convex_x, convex_y, convex_z;
+	CGparameter convex_x, convex_y, convex_z, convex_o;
 	CGparameter addTemperature_u, addTemperature_impulse, addTemperature_scale;
 	CGparameter addVelocity_u, addVelocity_impulse;
 	CGparameter particle_modelViewMatrix;

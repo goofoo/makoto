@@ -242,10 +242,10 @@ static const char *programSource =
 "	return IN.color; \n"
 "}"
 "\n"
-"half4 convex(vfconn IN, uniform samplerRECT x, uniform samplerRECT y, uniform samplerRECT z) : COLOR"
+"half4 convex(vfconn IN, uniform samplerRECT x, uniform samplerRECT y, uniform samplerRECT z, uniform samplerRECT old) : COLOR"
 "{"
-"	return h4texRECT(x, IN.coord3D.zy) * h4texRECT(y, IN.coord3D.xz) * h4texRECT(z, IN.coord3D.xy);"
-//"	return h4texRECT(y, IN.coord3D.xz);"
+"	half4 opa = h4texRECT(old, IN.TexCoord) + h4texRECT(x, IN.coord3D.zy) * h4texRECT(y, IN.coord3D.xz) * h4texRECT(z, IN.coord3D.xy);"
+"	return saturate(opa);"
 "}"
 "\n"
 "half4 addTemperature(vfconn IN, uniform samplerRECT u, uniform samplerRECT impulse, uniform float scale) : COLOR"
@@ -428,6 +428,7 @@ m_frag_advect(0)
 	convex_x = cgGetNamedParameter(m_frag_convex, "x");
 	convex_y = cgGetNamedParameter(m_frag_convex, "y");
 	convex_z = cgGetNamedParameter(m_frag_convex, "z");
+	convex_o = cgGetNamedParameter(m_frag_convex, "old");
 	
 	m_frag_addTemperature = cgCreateProgram(m_context, CG_SOURCE, programSource, m_frag_profile, "addTemperature", 0);
 	
@@ -698,7 +699,7 @@ void CFluidProgram::flatEnd()
 	
 }
 
-void CFluidProgram::convexBegin(GLuint iX, GLuint iY, GLuint iZ)
+void CFluidProgram::convexBegin(GLuint iX, GLuint iY, GLuint iZ, GLuint iold)
 {
 	cgGLBindProgram(m_frag_convex);
 	
@@ -710,6 +711,9 @@ void CFluidProgram::convexBegin(GLuint iX, GLuint iY, GLuint iZ)
 	
 	cgGLSetTextureParameter(convex_z, iZ);
 	cgGLEnableTextureParameter(convex_z);
+	
+	cgGLSetTextureParameter(convex_o, iold);
+	cgGLEnableTextureParameter(convex_o);
 }
 
 void CFluidProgram::convexEnd()
@@ -717,6 +721,7 @@ void CFluidProgram::convexEnd()
 	cgGLDisableTextureParameter(convex_x);
 	cgGLDisableTextureParameter(convex_y);
 	cgGLDisableTextureParameter(convex_z);
+	cgGLDisableTextureParameter(convex_o);
 }
 
 void CFluidProgram::addTemperatureBegin(GLuint i_textureU, GLuint i_textureImpulse, float k)

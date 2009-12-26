@@ -43,14 +43,7 @@ MStatus initializePlugin( MObject obj )
 		status.perror("registerNode");
 		return status;
 	}
-/*
-	status = plugin.registerNode( "fluidCacheNode", fluidCacheNode::id, fluidCacheNode::creator,
-								  fluidCacheNode::initialize );
-	if (!status) {
-		status.perror("registerNode");
-		return status;
-	}	
-*/	
+	
 	MGlobal::executeCommand ( "source zFluidMenus.mel; zfluidCreateMenus;" );
 
 	return status;
@@ -84,13 +77,7 @@ MStatus uninitializePlugin( MObject obj)
 		status.perror("deregisterNode");
 		return status;
 	}
-/*
-	status = plugin.deregisterNode( fluidCacheNode::id );
-	if (!status) {
-		status.perror("deregisterNode");
-		return status;
-	}
-*/		
+		
 	MGlobal::executeCommand ( "zfluidRemoveMenus;" );
 	return status;
 }

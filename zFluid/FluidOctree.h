@@ -15,9 +15,9 @@
 #include <list>
 
 #include "../shared/zData.h"
-
+#ifndef __APPLE__
 #include <winsock2.h>
-
+#endif
 #define INDIRECTIONPOOLWIDTH 512
 #define INDIRECTIONIMAGEWIDTH 1024
 //#define INDIRECTIONPOOLSIZE 1024*1024

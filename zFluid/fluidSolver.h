@@ -56,6 +56,9 @@ public:
 	void needDensity() {m_needDensity = 1;}
 	void getDimension(int& x, int& y, int& z) const {x = m_width; y = m_height; z = m_depth;}
 	
+	void drawTriangleMesh(int count, const float* vert);
+	void setFrameView();
+	
 protected:
 	float* m_velocityField;
 	float *m_densityField;

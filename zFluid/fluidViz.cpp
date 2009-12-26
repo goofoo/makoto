@@ -167,7 +167,7 @@ void fluidViz::draw( M3dView & view, const MDagPath & /*path*/,
 			glVertex3f(mx,my,0);
 			glVertex3f(mx,my,mz);
 			
-			for(int i=1; i<m_pDesc->resolution_x; i++)
+			/*for(int i=1; i<m_pDesc->resolution_x; i++)
 			{
 				glVertex3f(i*m_pDesc->gridSize,0,0);
 				glVertex3f(i*m_pDesc->gridSize,0,mz);
@@ -177,7 +177,7 @@ void fluidViz::draw( M3dView & view, const MDagPath & /*path*/,
 			{
 				glVertex3f(0,0,i*m_pDesc->gridSize);
 				glVertex3f(mx,0,i*m_pDesc->gridSize);
-			}
+			}*/
 		
 	glEnd();
 
@@ -280,6 +280,20 @@ MStatus fluidViz::initialize()
 	status = addAttribute(aoutDesc);
 	
 	attributeAffects(aenable, aoutDesc);
+	attributeAffects(asaveCache, aoutDesc);
+	attributeAffects(ashotex, aoutDesc);
+	attributeAffects(asize, aoutDesc);
+	attributeAffects(resolutionX, aoutDesc);
+	attributeAffects(resolutionY, aoutDesc);
+	attributeAffects(resolutionZ, aoutDesc);
+	attributeAffects(abuoyancy, aoutDesc);
+	attributeAffects(aswirl, aoutDesc);
+	attributeAffects(aconserveVelocity, aoutDesc);
+	attributeAffects(atemperature, aoutDesc);
+	attributeAffects(aconserveTemperature, aoutDesc);
+	attributeAffects(aconserveDensity, aoutDesc);
+	attributeAffects(awindx, aoutDesc);
+	attributeAffects(awindz, aoutDesc);
 	
 	return MS::kSuccess;
 }
