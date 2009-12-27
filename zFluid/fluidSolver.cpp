@@ -1020,7 +1020,10 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
 // no object		
-	if(obstacles.length() < 1) return;
+	if(obstacles.length() < 1) {
+		glPopAttrib();
+		return;
+	}
 
 	MStatus status;
 	
@@ -1213,6 +1216,7 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 	delete[] pVertex;
 	delete[] pColor;
 	
+	if(m_source_density > 0) {
 	MStatus status;
 	
 	for(int iter = 0; iter<sources.length(); iter++)
@@ -1249,7 +1253,7 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 			gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
 					  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
 					  0, 1, 0);
-			glTexCoord4f(0,1,0,fTemperature);
+			glTexCoord4f(0,1,0,m_source_density);
 			f_cg->particleBegin();
 			drawTriangleMesh(n_tri, pp);
 			f_cg->particleEnd();
@@ -1258,24 +1262,8 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 			delete[] pp;
 		}
 	}
-
-/*	
-// add source
-	if(sources.length() > 0) {
-		glColor4f(0,1,0,4);
-		for(int i=1; i<m_depth-1; i++) {
-			x_offset = i%i_frame*m_width;
-			y_offset = i/i_frame*m_height;
-			glViewport(x_offset, y_offset, m_width, m_height);
-			glLoadIdentity();
-			gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
-					  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
-					  0, 1, 0);
-			drawList(sources);
-			
-		}
 	}
-*/	
+	
 	glPopAttrib();
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }

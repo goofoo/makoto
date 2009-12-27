@@ -93,7 +93,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	
 	if( plug == mOutputForce) {
 		int ison, rx, ry, rz;
-		float Kbuoyancy, Kswirl, Kvelocity, Ktemperature, temperatureLoss, wind_x, wind_z, conserve_density;
+		float Kbuoyancy, Kswirl, Kvelocity, Ktemperature, temperatureLoss, wind_x, wind_z, conserve_density, source_density;
 		MDataHandle hdesc = block.inputValue(ainDesc);
 		MObject odesc = hdesc.data();
 		MFnPluginData fdesc(odesc);
@@ -118,6 +118,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 			conserve_density = pDesc->conserveDensity;
 			m_sho_tex = pDesc->sho_tex;
 			m_slice_id = pDesc->slice_id;
+			source_density = pDesc->source_density;
 		}
 		else return MS::kUnknownParameter;
 		
@@ -180,6 +181,7 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	m_pSolver->setSwirl(Kswirl);
 	m_pSolver->setWind(wind_x, wind_z);
 	m_pSolver->setConserveDensity(conserve_density);
+	m_pSolver->setSourceDensity(source_density);
 	
 	// initialize velocity field
 	if(currentTime.value() <= startTime.value() + 1){

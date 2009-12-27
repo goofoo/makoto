@@ -95,18 +95,6 @@ private:
 						GLuint& height,
 						GLuint& xbo,
 						GLuint& ybo   );
-							
-	double fish_speed;
-	double neighbor_dist;
-	double c_boundary;
-	double k_separating;
-	double k_vmatching;
-	double k_centering;
-	double view_angle;
-	
-	MVector m_box_min;
-	MVector m_box_size;
-	MPoint prey;
 	
 	int m_rx, m_ry, m_rz;
 	float m_gridSize;

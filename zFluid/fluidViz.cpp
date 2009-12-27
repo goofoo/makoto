@@ -39,6 +39,7 @@ MObject	fluidViz::aconserveVelocity;
 MObject fluidViz::atemperature;
 MObject	fluidViz::aconserveTemperature;
 MObject	fluidViz::aconserveDensity;
+MObject	fluidViz::asourceDensity;
 MObject	fluidViz::awindx;
 MObject	fluidViz::awindz;
 MObject	fluidViz::asaveCache;
@@ -94,6 +95,7 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 	m_pDesc->wind_z = zGetDoubleAttr(block, awindz);
 	m_pDesc->sho_tex = zGetIntAttr(block, ashotex);
 	m_pDesc->slice_id = zGetIntAttr(block, atexz);
+	m_pDesc->source_density = zGetDoubleAttr(block, asourceDensity);
 	
 	MStatus status;
 	
@@ -243,6 +245,10 @@ MStatus fluidViz::initialize()
 	status = zCreateKeyableDoubleAttr(aconserveDensity, MString("conserveDenisty"), MString("csd"), 1.0);
 	zCheckStatus(status, "ERROR creating conserveDensity");
 	zCheckStatus(addAttribute(aconserveDensity), "ERROR adding conserveDensity");
+	
+	status = zCreateKeyableDoubleAttr(asourceDensity, MString("sourceDenisty"), MString("scd"), 1.0);
+	zCheckStatus(status, "ERROR creating sourceDensity");
+	zCheckStatus(addAttribute(asourceDensity), "ERROR adding source density");
 	
 	status = zCreateKeyableDoubleAttr(awindx, MString("windX"), MString("wdx"), 0.0);
 	zCheckStatus(status, "ERROR creating wind x");

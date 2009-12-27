@@ -44,6 +44,7 @@ public:
 	void setTemperature(const float& val) {fTemperature = val;}
 	void setWind(const float& x, const float& z) {fWindX = x; fWindZ = z;}
 	void setConserveDensity(float val) {m_conserve_denisty = val;}
+	void setSourceDensity(float val) {m_source_density = val;}
 
 	void setGridSize(float size) {m_gridSize = size;}
 	float getGridSize() const {return m_gridSize;}
@@ -99,7 +100,7 @@ GLuint i_xTexture;
 	GLuint i_yTexture;
 	GLuint i_zTexture;
 	
-	float m_conserve_denisty;
+	float m_conserve_denisty, m_source_density;
 	char m_needDensity;
 };
 

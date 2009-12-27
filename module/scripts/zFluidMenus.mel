@@ -62,6 +62,9 @@ global proc zfluidCreateMenus()
 				menuItem -l "Create/Attach Fluid Field" -c "zcreateFluidField";
 				menuItem -l "Object As Source" -c "zcreateFluidSource";
 				menuItem -l "Attach Fluid Obstacle" -c "zcreateFluidObstacle";
+				menuItem -l "Disable All Solvers" -c "zfluid_setEnableAll(0)";
+				menuItem -l "Enable All Solvers" -c "zfluid_setEnableAll(1)";
+				menuItem -l "Create Demo" -c "zfluid_demo";
 		setParent -menu ..;
 	}
 }
@@ -233,3 +236,25 @@ global proc zfluidJetEmit()
 	}
 }
 
+global proc zfluid_setEnableAll(int $value)
+{
+	string $sol[] = `ls -type fluidViz`;	
+	string $a;
+	for($a in $sol) setAttr ($a + ".enable") $value;
+}
+
+global proc zfluid_demo()
+{
+	string $src[] = `polyCreateFacet -ch off -tx 1 -s 1 -p 5.874143 1 5.742566 -p -0.159824 1 -5.652077 -p -5.494297 1 5.572607`;
+	select -r $src[0];
+	$src = `pickWalk -d down`;
+	string $particle[] = `particle -name jetparticle`;
+	string $emt = `createNode jetEmitter -name jet`;
+	connectDynamic -em $emt $particle[0];
+	addDynamic $emt $src[0];
+	select -r $particle[0];
+	zcreateFluidField();
+	select -r transform1 ;
+	move -r -32 -4 -32;
+	playbackOptions -min 0 -max 200;
+}
