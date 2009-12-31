@@ -1,0 +1,159 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeArchitecture = i386;
+		activeBuildConfigurationName = Debug;
+		activeTarget = D2AAC0620554660B00DB518D /* zFluid */;
+		addToTargets = (
+			D2AAC0620554660B00DB518D /* zFluid */,
+		);
+		breakpoints = (
+		);
+		codeSenseManager = 7F85A27310ADD666005171E3 /* Code sense */;
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					227,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					203,
+					60,
+					20,
+					48,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 283687460;
+			PBXWorkspaceStateSaveDate = 283687460;
+		};
+		sourceControlManager = 7F85A27210ADD666005171E3 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	7F23B95610D9648200FE03A1 /* FluidOctree.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {613, 12348}}";
+			sepNavSelRange = "{22090, 0}";
+			sepNavVisRange = "{21449, 1005}";
+			sepNavWindowFrame = "{{431, 101}, {672, 677}}";
+		};
+	};
+	7F5CC41410B6F76600F0110C /* zFluidMenus.mel */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {722, 3206}}";
+			sepNavSelRange = "{3319, 0}";
+			sepNavVisRange = "{2991, 1014}";
+			sepNavWindowFrame = "{{15, 89}, {781, 684}}";
+		};
+	};
+	7F85A27210ADD666005171E3 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	7F85A27310ADD666005171E3 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	7F85A27510ADD6DD005171E3 /* fluidDescData.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {586, 826}}";
+			sepNavSelRange = "{150, 0}";
+			sepNavVisRange = "{0, 683}";
+			sepNavWindowFrame = "{{30, 60}, {645, 633}}";
+		};
+	};
+	7F85A27610ADD6DD005171E3 /* fluidField.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {980, 5852}}";
+			sepNavSelRange = "{5973, 0}";
+			sepNavVisRange = "{2708, 1396}";
+			sepNavWindowFrame = "{{217, 63}, {673, 659}}";
+		};
+	};
+	7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 10766}}";
+			sepNavSelRange = "{9451, 0}";
+			sepNavVisRange = "{9430, 1107}";
+			sepNavWindowFrame = "{{577, 138}, {627, 596}}";
+		};
+	};
+	7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 19614}}";
+			sepNavSelRange = "{35854, 0}";
+			sepNavVisRange = "{35228, 978}";
+			sepNavWindowFrame = "{{295, 90}, {631, 686}}";
+		};
+	};
+	7F85A27910ADD6DD005171E3 /* fluidViz.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {734, 4942}}";
+			sepNavSelRange = "{3647, 0}";
+			sepNavVisRange = "{2730, 1358}";
+			sepNavWindowFrame = "{{8, 82}, {624, 679}}";
+		};
+	};
+	7F85A27A10ADD6DD005171E3 /* pluginMain.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {659, 1120}}";
+			sepNavSelRange = "{261, 0}";
+			sepNavVisRange = "{0, 926}";
+			sepNavWindowFrame = "{{533, 79}, {718, 636}}";
+		};
+	};
+	7F85A28810ADD714005171E3 /* zWorks.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {679, 8498}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 797}";
+			sepNavWindowFrame = "{{179, -17}, {738, 660}}";
+		};
+	};
+	7FACE2B410B458140035777D /* boomEmitter.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {573, 3892}}";
+			sepNavSelRange = "{4894, 14}";
+			sepNavVisRange = "{4554, 931}";
+			sepNavWindowFrame = "{{463, 105}, {632, 615}}";
+		};
+	};
+	D2AAC0620554660B00DB518D /* zFluid */ = {
+		activeExec = 0;
+	};
+}
