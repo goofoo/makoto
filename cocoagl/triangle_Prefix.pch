@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'triangle' target in the 'triangle' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
