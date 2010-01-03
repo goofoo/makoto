@@ -493,6 +493,8 @@ gl_Extension	extension[] = {
  
 @implementation myGLView
 
+@synthesize piece;
+
 + (NSOpenGLPixelFormat*) basicPixelFormat
 {
     NSOpenGLPixelFormatAttribute attributes [] = {

@@ -14,7 +14,8 @@
 - (id) init
 {
 	[super init];
-	
+	modelName = @"FFTImage";
+	glInited = 0;
 	return self;
 }
 
@@ -80,7 +81,7 @@
 	
 	for(v=0; v<h; v++) {
 			for(u=0; u<w; u++) {
-				texels[Modi(v+h/2,h)*w+Modi(u+w/2,w)] = (w+h)/2*sqrt(comimg[v*w+u].real*comimg[v*w+u].real + comimg[v*w+u].imag * comimg[v*w+u].imag);
+				texels[Modi(v-h/2,h)*w+Modi(u-w/2,w)] = (w+h)/2*sqrt(comimg[v*w+u].real*comimg[v*w+u].real + comimg[v*w+u].imag * comimg[v*w+u].imag);
 			}
 		}
 		

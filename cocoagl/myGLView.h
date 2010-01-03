@@ -25,6 +25,8 @@
 	float eyex, eyey, eyez;
 }
 
+@property(copy, readwrite) TestPiece *piece;
+
 + (NSOpenGLPixelFormat*) basicPixelFormat;
 
 - (void) updateProjection;

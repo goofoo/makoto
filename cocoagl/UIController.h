@@ -12,6 +12,7 @@
 @interface UIController : NSObject {
 	IBOutlet NSTableView *table_view;
 	IBOutlet myGLView  *opengl_view;
+	IBOutlet NSArrayController *attrib_array;
 	NSArray *pieces;
 }
 

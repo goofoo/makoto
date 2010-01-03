@@ -9,6 +9,7 @@
 #import "UIController.h"
 #import "WhiteNoise.h"
 #import "FFTImage.h"
+#import "SimpleNoise.h"
 
 @implementation UIController
 
@@ -19,6 +20,7 @@
 	pieces = [NSArray arrayWithObjects:
 	[[WhiteNoise alloc] init],
 	[[FFTImage alloc] init],
+	[[SimpleNoise alloc] init],
 	nil];
 	
 	[pieces retain];
@@ -40,17 +42,22 @@
 
 - (void) tableViewSelectionDidChange: (NSNotification *) aNotification
 {
+// cleanup
+	[attrib_array removeObjects:[opengl_view.piece getFloatAttr]];
+	
 	unsigned int rowindex;
 	TestPiece  *piece;
-	
-   
+
    rowindex = [table_view selectedRow];
    
    if ((rowindex < 0) || (rowindex >= [pieces count])) return;
    
 	piece = [pieces objectAtIndex: rowindex];
 	
-	[opengl_view setPiece: piece];
+	opengl_view.piece = piece;
+	
+	[attrib_array addObjects:[piece getFloatAttr]];
+	
 }
 
 @end

@@ -13,8 +13,9 @@
 - (id) init
 {
 	[super init];
-	
+	modelName = @"WhiteNoise";
 	poolw = poolh = 128;
+	
 	glInited = 0;
 
 	return self;
