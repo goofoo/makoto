@@ -161,7 +161,6 @@ float *pVertex;
 float *pCoord;
 
 static GLuint texname;
-static GLuint img2, img3;
 
 float fSpriteX[3] = {-1.0, 0, 0};
 float fSpriteY[3] = {0, 1.0, 0};
@@ -492,8 +491,6 @@ gl_Extension	extension[] = {
 };
  
 @implementation myGLView
-
-@synthesize piece;
 
 + (NSOpenGLPixelFormat*) basicPixelFormat
 {
@@ -1120,51 +1117,17 @@ glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
     return self;
 }
 
-- (IBAction)setExposure:(id)sender {
-
-    knoise = [knoiseDial floatValue];
-	
-	//NSLog(@"k noise: %f", knoise);
-	//[ViewImage setExposure: pow(2, exp)];
-	//[self setNeedsDisplay:YES];
-	
-	//char foo[32];
-	//sprintf(foo, "%f", exp);
-	//NSString *bar; 
-
-	//bar = [NSString stringWithUTF8String:foo]; 
-	//[shoexp setStringValue: bar];
-}
-
-- (IBAction)setZCam:(id)sender {
-
-    zcam = [zcamDial floatValue]* 0.99;
-}
-
-- (IBAction)setNSlice:(id)sender {
-
-    nslice = 39 - [nsliceDial floatValue];
-	NSLog(@"n slice: %i", nslice);
-}
-
-- (IBAction)setFreq:(id)sender {
-
-    freq = 1.1 - [freqDial floatValue];
-}
-
-- (IBAction)setLacunarty:(id)sender {
-
-    lacunarity = [lacunarityDial floatValue];
-}
-
-- (IBAction)setDimension:(id)sender {
-	dimension = [dimensionDial floatValue];
+- (TestPiece *)piece 
+{
+    return piece;
 }
 
 - (void)setPiece:(TestPiece *) apiece
 {
-	piece = apiece;
+     piece = apiece;
 }
+
+
 
 - (void)mouseDown:(NSEvent *)event
 {

@@ -7,12 +7,7 @@
 	NSTimer *timer;
 
 	float dir;
-	IBOutlet NSSlider *knoiseDial;
-	IBOutlet NSSlider *zcamDial;
-	IBOutlet NSSlider *nsliceDial;
-	IBOutlet NSSlider *freqDial;
-	IBOutlet NSSlider *lacunarityDial;
-	IBOutlet NSSlider *dimensionDial;
+	
 	float knoise, zcam, freq, lacunarity, dimension;
 	int nslice;
 	
@@ -25,8 +20,6 @@
 	float eyex, eyey, eyez;
 }
 
-@property(copy, readwrite) TestPiece *piece;
-
 + (NSOpenGLPixelFormat*) basicPixelFormat;
 
 - (void) updateProjection;
@@ -37,10 +30,8 @@
 
 - (void) prepareOpenGL;
 - (id) initWithFrame: (NSRect) frameRect;
-- (IBAction)setExposure:(id)sender;
-- (IBAction)setFreq:(id)sender;
-- (IBAction)setLacunarty:(id)sender;
-- (IBAction)setDimension:(id)sender;
-
+ 
+- (TestPiece *)piece;
 - (void)setPiece:(TestPiece *) apiece;
+
 @end

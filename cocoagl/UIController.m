@@ -43,7 +43,7 @@
 - (void) tableViewSelectionDidChange: (NSNotification *) aNotification
 {
 // cleanup
-	[attrib_array removeObjects:[opengl_view.piece getFloatAttr]];
+	[attrib_array removeObjects:[[opengl_view piece] getFloatAttr]];
 	
 	unsigned int rowindex;
 	TestPiece  *piece;
@@ -54,9 +54,9 @@
    
 	piece = [pieces objectAtIndex: rowindex];
 	
-	opengl_view.piece = piece;
+	[opengl_view setPiece:piece];
 	
-	[attrib_array addObjects:[piece getFloatAttr]];
+	[attrib_array addObjects:[[opengl_view piece] getFloatAttr]];
 	
 }
 

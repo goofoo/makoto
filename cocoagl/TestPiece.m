@@ -18,7 +18,7 @@
 	return self;
 }
 
-- (NSString *) name
+- (NSString *)name
 {
 	return @"Unnamed Test";
 }
@@ -66,8 +66,7 @@ GLuint vertex_shader   = glCreateShader(GL_VERTEX_SHADER);
 	GLint linked;
 	glGetProgramiv(program, GL_LINK_STATUS, &linked);
 	
-	if(linked) NSLog(@"shader compiled");
-	else {
+	if(!linked) {
 		NSLog(vert_source);
 		NSLog(frag_source);
 	}
