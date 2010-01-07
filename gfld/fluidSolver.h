@@ -55,6 +55,7 @@ public:
 	void getDimension(int& x, int& y, int& z) const {x = m_width; y = m_height; z = m_depth;}
 	
 	void drawTriangleMesh(int count, const float* vert);
+	void drawPoints(int count, const float* vert);
 	void setFrameView();
 	void showSlice(int i);
 	

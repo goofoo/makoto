@@ -1147,10 +1147,40 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 	delete[] pColor;
 	
 	if(m_source_density > 0) {
-	MStatus status;
+		MStatus status;
 	
-	for(int iter = 0; iter<sources.length(); iter++)
-	{
+		for(int iter = 0; iter<sources.length(); iter++) {
+			MFnMesh fmesh(sources[iter], &status);
+			if(status) {
+				int n_pt = fmesh.numVertices();
+				MPointArray pts;
+				fmesh.getPoints(pts,  MSpace::kWorld);
+				float *pp = new float[n_pt*3];
+				for(int i=0; i<n_pt;i++) {
+					pp[i*3] = pts[i].x;
+					pp[i*3+1] = pts[i].y;
+					pp[i*3+2] = pts[i].z;
+				}
+				
+	// velocity is up
+				glTexCoord4f(0,1,0,m_source_density);
+				for(int i=1; i<m_depth-1; i++) {
+					x_offset = i%i_frame*m_width;
+					y_offset = i/i_frame*m_height;
+					glViewport(x_offset, y_offset, m_width, m_height);
+					glLoadIdentity();
+					gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
+							  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
+							  0, 1, 0);
+
+					f_cg->particleBegin();
+					drawPoints(n_pt, pp);
+					f_cg->particleEnd();
+				}
+	// end of object
+				delete[] pp;
+			}
+	/*
 		MItMeshPolygon faceIter(sources[iter], &status );
 		if(status) {
 			int n_tri = faceIter.count();
@@ -1191,8 +1221,8 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 		}
 // end of object
 			delete[] pp;
+		}*/
 		}
-	}
 	}
 	
 	glPopAttrib();
@@ -1205,6 +1235,16 @@ void FluidSolver::drawTriangleMesh(int count, const float* vert)
 	glVertexPointer(3, GL_FLOAT, 0, (float*)vert);
 	
 	glDrawArrays(GL_TRIANGLES, 0, count*3);
+	
+	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void FluidSolver::drawPoints(int count, const float* vert)
+{
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, (float*)vert);
+	
+	glDrawArrays(GL_POINTS, 0, count);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 }
