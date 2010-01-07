@@ -10,7 +10,7 @@
 MStatus initializePlugin( MObject obj )
 { 
 	MStatus   status;
-	MFnPlugin plugin( obj, "Zhang Jian", "1.5.1 Mon Dec 28 2009", "Any");
+	MFnPlugin plugin( obj, "Zhang Jian", "1.6.0 Fri Jan 8 2010", "Any");
 	
 	status = plugin.registerData("fluidDescData", zjFluidDescData::id,
 								 zjFluidDescData::creator);

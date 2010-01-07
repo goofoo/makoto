@@ -79,24 +79,37 @@ protected:
 	char fInitialized;
 	char fUndiagnosed;
 	
-	GLuint img_temper, img_density;
-	GLuint density_fbo;
-GLuint fbo;
-GLuint depthBuffer;
+// rgb
+	GLuint m_rgb_fbo;
+	
+// 1-component	
+	GLuint img_density;	// attachment 0
+// 1-component
+	GLuint img_temper;	// attachment 1
+// 3-component
+	GLuint i_velocityTexture; // attachment 2
+// 3-component
+	GLuint i_vorticityTexture; // attachment 3
+// 1-component
+	GLuint i_divergenceTexture; // attachment 4
+// 1-component
+	GLuint i_pressureTexture; // attachment 5
+// 3-component
+	GLuint i_bufTexture; // attachment 6
 
-GLuint img_impuls;
+// rgba
+	GLuint m_rgba_fbo;
+// 4-component
+	GLuint img_impuls;
+// 4-component
+	GLuint i_offsetTexture;
 
-GLuint i_velocityTexture;
-GLuint i_divergenceTexture;
-GLuint i_vorticityTexture;
-GLuint i_pressureTexture;
-GLuint i_bufTexture;
-GLuint i_offsetTexture;
-
-GLuint x_fbo;
-GLuint y_fbo;
-GLuint z_fbo;
-GLuint i_xTexture;
+// rgb
+	GLuint x_fbo;
+	GLuint y_fbo;
+	GLuint z_fbo;
+// 1-component
+	GLuint i_xTexture;
 	GLuint i_yTexture;
 	GLuint i_zTexture;
 	
