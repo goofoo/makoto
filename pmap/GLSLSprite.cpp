@@ -23,6 +23,8 @@ const char *particleVS =
 
 "uniform mat4 shadowMatrix;"
 
+
+
 "void main()                                                 \n"
 "{                                                           \n"
 "	vec4 wpos = vec4(gl_Vertex.xyz, 1.0);                   \n"
@@ -55,6 +57,10 @@ const char *particleVS =
 
 const char *particleGS =      
 "uniform float pointRadius;  \n"
+
+"uniform float Frequency;"
+"uniform vec3 NoiseOrigin;"
+
 "void main()                                                    \n"
 "{                                                              \n"
 "	float radius = pointRadius;                                \n"
@@ -86,11 +92,15 @@ const char *particleGS =
 "    gl_TexCoord[2] = gl_TexCoordIn[0][2];"
 "    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz + Side + Up, 1);"
 
+" gl_TexCoord[3].xyz = (gl_TexCoord[3].xyz + NoiseOrigin) * Frequency;"
+
 "    gl_Position = gl_ProjectionMatrix * vec4(pos + x + y, 1);  \n"
 "    EmitVertex();                                              \n"
 
 "    gl_TexCoord[0] = vec4(0, 1, 0, 1);                     \n"
 "    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz + Side - Up, 1);"
+
+" gl_TexCoord[3].xyz = (gl_TexCoord[3].xyz + NoiseOrigin) * Frequency;"
 
 "    gl_Position = gl_ProjectionMatrix * vec4(pos + x - y, 1);  \n"
 "    EmitVertex();                                              \n"
@@ -98,11 +108,15 @@ const char *particleGS =
 "    gl_TexCoord[0] = vec4(1, 0, 0, 1);                     \n"
 "    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz - Side + Up, 1);"
 
+" gl_TexCoord[3].xyz = (gl_TexCoord[3].xyz + NoiseOrigin) * Frequency;"
+
 "    gl_Position = gl_ProjectionMatrix * vec4(pos - x + y, 1); \n"
 "    EmitVertex();                                              \n"
 
 "    gl_TexCoord[0] = vec4(1, 1, 0, 1);                     \n"
 "    gl_TexCoord[3] = vec4(gl_TexCoordIn[0][3].xyz - Side - Up, 1);"
+
+" gl_TexCoord[3].xyz = (gl_TexCoord[3].xyz + NoiseOrigin) * Frequency;"
 
 "    gl_Position = gl_ProjectionMatrix * vec4(pos - x - y, 1); \n"
 "    EmitVertex();                                              \n"
@@ -120,30 +134,28 @@ const char *particleFS =
 "uniform sampler3D EarthNight;"
 "uniform float Lacunarity;"
 "uniform float Dimension;"
-"uniform float Frequency;"
-"uniform vec3 NoiseOrigin;"
 
-"vec4 fractal_func(vec3 pcoord)"
+"float fractal_func(vec3 pcoord)"
 "{"
 "	float f=1.0;"
-"	vec4 fractal = texture3D(EarthNight, pcoord).rgba;" 
+"	float fractal = texture3D(EarthNight, pcoord).r*0.5 + 0.5;" 
 
 "	f*= Lacunarity;"
 
-"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
+"	fractal += texture3D(EarthNight, pcoord*f).r /pow(f, Dimension);" 
 
 "	f*= Lacunarity;"
 
-"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
+"	fractal += texture3D(EarthNight, pcoord*f).r /pow(f, Dimension);" 
 
 "	f*= Lacunarity;"
 
-"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
+"	fractal += texture3D(EarthNight, pcoord*f).r /pow(f, Dimension);" 
 
 "	f*= Lacunarity;"
 
-"	fractal += (texture3D(EarthNight, pcoord*f).rgba-vec4(0.5))/pow(f, Dimension);" 
-"return fractal;"
+"	fractal += texture3D(EarthNight, pcoord*f).r /pow(f, Dimension);" 
+"return clamp(fractal,0.0, 1.0);"
 "}"
 
 "void main()                                                        \n"
@@ -161,9 +173,9 @@ const char *particleFS =
 
 "alpha *= density;"
 
-"	vec4 fractal = fractal_func((gl_TexCoord[3].xyz + NoiseOrigin) * Frequency);"
+"	float fractal = fractal_func(gl_TexCoord[3].xyz);"
 
-"alpha = clamp(alpha * fractal.a, 0.0, 1.0);"
+"alpha = clamp(alpha * fractal * fractal, 0.0, 1.0);"
 
 "	float inshd = texture2D(ShadowMap, gl_TexCoord[2].xy).r;"
 "	inshd = exp(-inshd*4.0);"
@@ -357,7 +369,7 @@ void GLSLSprite::setParam(GLSLSpritePARAM& param)
 	glUniform4f(glGetUniformLocation(program, "spriteUp"), param.up_x, param.up_y, param.up_z, 1.0);
 	glUniform1f(glGetUniformLocation(program, "Lacunarity"), param.lacunarity);
 	glUniform1f(glGetUniformLocation(program, "Dimension"), param.dimension);
-	glUniform1f(glGetUniformLocation(program, "Frequency"), param.frequency/256.0);
+	glUniform1f(glGetUniformLocation(program, "Frequency"), param.frequency);
 	glUniform3f(glGetUniformLocation(program, "NoiseOrigin"), param.noise_x, param.noise_y, param.noise_z);
 	//glUseProgram(0);
 	

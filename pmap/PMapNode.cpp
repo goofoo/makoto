@@ -145,9 +145,9 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 
 		renderer->setLightPoint(x, y, z);
 
-		fParam.density = data.inputValue(adensity).asFloat();
+		fParam.density = data.inputValue(adensity).asFloat() * 0.2;
 		fParam.shadow_scale = data.inputValue(ashadowscale).asFloat();
-		fParam.radius = data.inputValue(aradius).asFloat();
+		fParam.radius = data.inputValue(aradius).asFloat() * fData->getGridSize() * 2.8;
 		fParam.base_r = data.inputValue(acloudr).asFloat();
 		fParam.base_g = data.inputValue(acloudg).asFloat();
 		fParam.base_b = data.inputValue(acloudb).asFloat();
@@ -159,7 +159,7 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 		fParam.shadow_b = data.inputValue(ashadowb).asFloat();
 		fParam.lacunarity = data.inputValue(alacunarity).asFloat();
 		fParam.dimension = data.inputValue(adimension).asFloat();
-		fParam.frequency = data.inputValue(afreq).asFloat();
+		fParam.frequency = data.inputValue(afreq).asFloat() / fData->getBoxSize();
 		fParam.noise_x = data.inputValue(aoriginx).asFloat();
 		fParam.noise_y = data.inputValue(aoriginy).asFloat();
 		fParam.noise_z = data.inputValue(aoriginz).asFloat();

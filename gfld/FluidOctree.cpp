@@ -398,6 +398,14 @@ char FluidOctree::load(const char *filename)
 		const FloatAttribute *levelattr = idrfile.header().findTypedAttribute <FloatAttribute> ("max_level");
 		m_maxLevel = (int)levelattr->value();
 		
+// calc grid size
+		m_grid_size = m_rootSize;
+		short la = m_maxLevel;
+		while(la > 1) {
+			m_grid_size /= 2;
+			la--;
+		}
+		
 		const V3fAttribute *centerattr = idrfile.header().findTypedAttribute <V3fAttribute> ("root_center");
 		Imath::V3f center = centerattr->value();
 		

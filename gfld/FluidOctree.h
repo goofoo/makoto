@@ -75,6 +75,8 @@ public:
 	char load(const char *filename);
 	void getBBox(double& xmin, double& xmax, double& ymin, double& ymax, double& zmin, double& zmax) const;
 	void getBBox(float& rootX, float& rootY, float& rootZ, float& rootSize) const;
+	float getGridSize() const {return m_grid_size;}
+	float getBoxSize() const {return m_rootSize*2;}
 	void drawBox() const;
 	void drawBoxNode(const XYZ& center, float size, int x, int y, short level) const;
 	void drawCube() const;
@@ -95,6 +97,7 @@ private:
 	long m_currentLeafIndex;
 	XYZ m_rootCenter;
 	float m_rootSize;
+	float m_grid_size;
 	
 	float *m_dt;
 	short *m_idr;

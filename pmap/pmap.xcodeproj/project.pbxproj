@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7F23B9F910D98C9F00FE03A1 /* FluidOctree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F23B9F810D98C9F00FE03A1 /* FluidOctree.cpp */; };
 		7F81222910711B440022BF82 /* zGlobal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81222810711B440022BF82 /* zGlobal.cpp */; };
 		7F81223310711B8A0022BF82 /* zWorks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81223210711B8A0022BF82 /* zWorks.cpp */; };
 		7F81224E10711C7C0022BF82 /* gBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F81224D10711C7C0022BF82 /* gBase.cpp */; };
 		7F82690210CEC37800AF3FE9 /* PMapNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F82690110CEC37800AF3FE9 /* PMapNode.cpp */; };
+		7F85E83B10F678D9004DB127 /* FluidOctree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F85E83A10F678D9004DB127 /* FluidOctree.cpp */; };
+		7F85E88A10F68DE5004DB127 /* perlin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F85E88910F68DE5004DB127 /* perlin.cpp */; };
+		7F85E89C10F69070004DB127 /* sampleMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F85E89B10F69070004DB127 /* sampleMath.cpp */; };
 		7F976DCF10DC185E00252E4F /* RenderParticle.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F976DCD10DC185E00252E4F /* RenderParticle.h */; };
 		7F976DD010DC185E00252E4F /* RenderParticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F976DCE10DC185E00252E4F /* RenderParticle.cpp */; };
 		7F9D7AF110DE6F850051800F /* QuickSortIdx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7F9D7AF010DE6F850051800F /* QuickSortIdx.cpp */; };
@@ -21,12 +23,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7F23B9F810D98C9F00FE03A1 /* FluidOctree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FluidOctree.cpp; path = ../zFluid/FluidOctree.cpp; sourceTree = SOURCE_ROOT; };
 		7F81222810711B440022BF82 /* zGlobal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zGlobal.cpp; path = ../shared/zGlobal.cpp; sourceTree = SOURCE_ROOT; };
 		7F81223210711B8A0022BF82 /* zWorks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = zWorks.cpp; path = ../shared/zWorks.cpp; sourceTree = SOURCE_ROOT; };
 		7F81224D10711C7C0022BF82 /* gBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gBase.cpp; path = ../shared/gBase.cpp; sourceTree = SOURCE_ROOT; };
 		7F812284107120470022BF82 /* particleCacheMenus.mel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = particleCacheMenus.mel; path = ../module/scripts/particleCacheMenus.mel; sourceTree = SOURCE_ROOT; };
 		7F82690110CEC37800AF3FE9 /* PMapNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PMapNode.cpp; sourceTree = "<group>"; };
+		7F85E83A10F678D9004DB127 /* FluidOctree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FluidOctree.cpp; path = ../gfld/FluidOctree.cpp; sourceTree = SOURCE_ROOT; };
+		7F85E88910F68DE5004DB127 /* perlin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = perlin.cpp; path = ../shared/perlin.cpp; sourceTree = SOURCE_ROOT; };
+		7F85E89B10F69070004DB127 /* sampleMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sampleMath.cpp; path = ../shared/sampleMath.cpp; sourceTree = SOURCE_ROOT; };
 		7F976DCD10DC185E00252E4F /* RenderParticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderParticle.h; sourceTree = "<group>"; };
 		7F976DCE10DC185E00252E4F /* RenderParticle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderParticle.cpp; sourceTree = "<group>"; };
 		7F9D7AF010DE6F850051800F /* QuickSortIdx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuickSortIdx.cpp; path = ../shared/QuickSortIdx.cpp; sourceTree = SOURCE_ROOT; };
@@ -61,8 +65,10 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				7F85E89B10F69070004DB127 /* sampleMath.cpp */,
+				7F85E88910F68DE5004DB127 /* perlin.cpp */,
+				7F85E83A10F678D9004DB127 /* FluidOctree.cpp */,
 				7F9D7AF010DE6F850051800F /* QuickSortIdx.cpp */,
-				7F23B9F810D98C9F00FE03A1 /* FluidOctree.cpp */,
 				7F82690110CEC37800AF3FE9 /* PMapNode.cpp */,
 				7F976DCD10DC185E00252E4F /* RenderParticle.h */,
 				7F976DCE10DC185E00252E4F /* RenderParticle.cpp */,
@@ -158,10 +164,12 @@
 				7F81223310711B8A0022BF82 /* zWorks.cpp in Sources */,
 				7F81224E10711C7C0022BF82 /* gBase.cpp in Sources */,
 				7F82690210CEC37800AF3FE9 /* PMapNode.cpp in Sources */,
-				7F23B9F910D98C9F00FE03A1 /* FluidOctree.cpp in Sources */,
 				7F976DD010DC185E00252E4F /* RenderParticle.cpp in Sources */,
 				7FC0A73510DD8FA200E13AF0 /* GLSLSprite.cpp in Sources */,
 				7F9D7AF110DE6F850051800F /* QuickSortIdx.cpp in Sources */,
+				7F85E83B10F678D9004DB127 /* FluidOctree.cpp in Sources */,
+				7F85E88A10F68DE5004DB127 /* perlin.cpp in Sources */,
+				7F85E89C10F69070004DB127 /* sampleMath.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

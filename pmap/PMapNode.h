@@ -13,7 +13,7 @@
 #include <string>
 #include <maya/MFnCamera.h>
 #include <maya/MDagPath.h>
-#include "../zFluid/FluidOctree.h"
+#include "../gfld/FluidOctree.h"
 #include "RenderParticle.h"
  
 class PMapNode : public MPxLocatorNode

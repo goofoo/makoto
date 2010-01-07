@@ -231,6 +231,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -277,13 +279,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>4</integer>
+									<integer>11</integer>
 									<integer>2</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 24}, {202, 338}}</string>
+							<string>{{0, 0}, {202, 338}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -347,8 +349,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -385,9 +385,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7FA9212710E90240008BD0CA</string>
+				<string>7F85E82110F6777C004DB127</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7FA9212810E90240008BD0CA</string>
+				<string>7F85E82210F6777C004DB127</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -521,8 +521,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>7F85E82410F6777C004DB127</string>
+		<string>7F85E82510F6777C004DB127</string>
+		<string>7F85E82610F6777C004DB127</string>
 		<string>7F85A28210ADD6E6005171E3</string>
-		<string>/Users/jianzhang/Documents/plankton/zFluid/fluid.xcodeproj</string>
+		<string>/Users/jianzhang/Documents/plankton/gfld/fluid.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>370 348 690 397 0 0 1280 778 </string>
@@ -602,7 +605,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7F85A28210ADD6E6005171E3</string>
-				<string>7FA9212910E90240008BD0CA</string>
+				<string>7F85E82310F6777C004DB127</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

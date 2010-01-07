@@ -107,18 +107,19 @@
 	};
 	7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {932, 10766}}";
-			sepNavSelRange = "{9451, 0}";
-			sepNavVisRange = "{9430, 1107}";
+			sepNavIntBoundsRect = "{{0, 0}, {1700, 10388}}";
+			sepNavSelRange = "{9938, 0}";
+			sepNavVisRange = "{7946, 1218}";
 			sepNavWindowFrame = "{{577, 138}, {627, 596}}";
 		};
 	};
 	7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1160, 19614}}";
-			sepNavSelRange = "{35854, 0}";
-			sepNavVisRange = "{35228, 978}";
-			sepNavWindowFrame = "{{295, 90}, {631, 686}}";
+			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{39791, 1168}\";\n        }\n    );\n    r = \"{0, 43499}\";\n}";
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 17976}}";
+			sepNavSelRange = "{39818, 0}";
+			sepNavVisRange = "{36867, 1499}";
+			sepNavWindowFrame = "{{436, 83}, {631, 686}}";
 		};
 	};
 	7F85A27910ADD6DD005171E3 /* fluidViz.cpp */ = {
@@ -131,10 +132,10 @@
 	};
 	7F85A27A10ADD6DD005171E3 /* pluginMain.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {659, 1120}}";
+			sepNavIntBoundsRect = "{{0, 0}, {659, 1148}}";
 			sepNavSelRange = "{261, 0}";
-			sepNavVisRange = "{0, 926}";
-			sepNavWindowFrame = "{{533, 79}, {718, 636}}";
+			sepNavVisRange = "{0, 925}";
+			sepNavWindowFrame = "{{499, 87}, {718, 636}}";
 		};
 	};
 	7F85A28810ADD714005171E3 /* zWorks.cpp */ = {

@@ -37,6 +37,10 @@
 #include <ImfStringAttribute.h>
 #include <ImfVecAttribute.h>
 
+#include <zmath.h>
+#include "../shared/perlin.h"
+#include "../shared/sampleMath.h"
+
 using namespace Imf;
 using namespace Imath;
 
@@ -88,27 +92,50 @@ void RenderParticle::initialize()
 #define PARTICLENOISE_WIDTH	128
 #define PARTICLENOISE_HEIGHT 128
 #define PARTICLENOISE_DEPTH	128
-	unsigned char *texels = new unsigned char[PARTICLENOISE_WIDTH*PARTICLENOISE_HEIGHT*PARTICLENOISE_DEPTH*4];
+
+	double ni[3];
+	double inci, incj, inck;
+	ni[0] = ni[1] = ni[2] = 0;
+	SetNoiseFrequency(64);
+	
+	inck = 1.0/2.0; incj = 1.0/2.0; inci = 1.0/2.0;
+	
+	float *texels = new float[PARTICLENOISE_WIDTH*PARTICLENOISE_HEIGHT*PARTICLENOISE_DEPTH];
 	int u, v, w;
 	for(w=0; w<PARTICLENOISE_DEPTH; w++) {
+	ni[2] += inck;
 		for(v=0; v<PARTICLENOISE_HEIGHT; v++) {
+			ni[1] += incj;
 			for(u=0; u<PARTICLENOISE_WIDTH; u++) {
-#ifndef __APPLE__
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4] = rand()%256;
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+1] = rand()%256;
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+2] = rand()%256;
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+3] = rand()%256;
-#else
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4] = random()%256;
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+1] = random()%256;
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+2] = random()%256;
-				texels[(w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u)*4+3] = random()%256;
-#endif
+				ni[0] += inci;
+				texels[w*(PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT)+v*PARTICLENOISE_WIDTH+u] = noise3(ni);
+
 			}
 		}
 	}
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, PARTICLENOISE_WIDTH, PARTICLENOISE_HEIGHT, PARTICLENOISE_DEPTH, 0, GL_RGBA, GL_UNSIGNED_BYTE, texels);
+	
+	float *down_pix = new float[PARTICLENOISE_WIDTH/2 * PARTICLENOISE_HEIGHT/2 * PARTICLENOISE_DEPTH/2];
+	
+	for(w=0; w< PARTICLENOISE_DEPTH/2; w++)
+		for(v=0; v< PARTICLENOISE_HEIGHT/2; v++)
+			for(u=0; u< PARTICLENOISE_WIDTH/2; u++) down_pix[w*  PARTICLENOISE_WIDTH /2 * PARTICLENOISE_HEIGHT /2  + v * PARTICLENOISE_DEPTH /2 + u] = downSample3D(u, v, w, PARTICLENOISE_WIDTH, PARTICLENOISE_HEIGHT, PARTICLENOISE_DEPTH, texels);
+
+	float *up_pix = new float[PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT * PARTICLENOISE_DEPTH];
+	
+	for(w=0; w< PARTICLENOISE_DEPTH; w++)
+		for(v=0; v< PARTICLENOISE_HEIGHT; v++)
+			for(u=0; u< PARTICLENOISE_WIDTH; u++) up_pix[w*  PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT  + v * PARTICLENOISE_DEPTH + u] = upSample3D(u, v, w, PARTICLENOISE_WIDTH/2, PARTICLENOISE_HEIGHT/2, PARTICLENOISE_DEPTH/2, down_pix);
+
+	
+	for(w=0; w< PARTICLENOISE_DEPTH; w++)
+		for(v=0; v< PARTICLENOISE_HEIGHT; v++)
+			for(u=0; u< PARTICLENOISE_WIDTH; u++) texels[w* PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT  + v * PARTICLENOISE_DEPTH + u] = texels[w*  PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT  + v * PARTICLENOISE_DEPTH + u] - up_pix[w*  PARTICLENOISE_WIDTH * PARTICLENOISE_HEIGHT  + v * PARTICLENOISE_DEPTH + u];
+
+
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_LUMINANCE16F_ARB, PARTICLENOISE_WIDTH, PARTICLENOISE_HEIGHT, PARTICLENOISE_DEPTH, 0, GL_RED, GL_FLOAT, texels);
 	delete[] texels;
+	delete[] down_pix;
+	delete[] up_pix;
 	
 	m_isInitialized = 1;
 }
@@ -237,7 +264,7 @@ void RenderParticle::render()
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 	
 // calc per-slice count
-	int count_per_slice = 39;
+	int count_per_slice = 59;
 	int num_slice = m_num_particle / count_per_slice;
 	
 	for(int i = 0; i<= num_slice; i++) {
