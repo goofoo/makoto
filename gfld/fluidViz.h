@@ -43,6 +43,7 @@ public:
 	static MObject	aconserveTemperature;
 	static MObject	aconserveDensity;
 	static MObject	asourceDensity;
+	static MObject	adiffusion;
 	static MObject	awindx;
 	static MObject	awindz;
 	static MObject	ashotex;

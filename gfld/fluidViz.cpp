@@ -40,6 +40,7 @@ MObject fluidViz::atemperature;
 MObject	fluidViz::aconserveTemperature;
 MObject	fluidViz::aconserveDensity;
 MObject	fluidViz::asourceDensity;
+MObject	fluidViz::adiffusion;
 MObject	fluidViz::awindx;
 MObject	fluidViz::awindz;
 MObject	fluidViz::asaveCache;
@@ -96,6 +97,7 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 	m_pDesc->sho_tex = zGetIntAttr(block, ashotex);
 	m_pDesc->slice_id = zGetIntAttr(block, atexz);
 	m_pDesc->source_density = zGetDoubleAttr(block, asourceDensity);
+	m_pDesc->diffusion = zGetDoubleAttr(block, adiffusion);
 	
 	MStatus status;
 	
@@ -222,11 +224,11 @@ MStatus fluidViz::initialize()
 	status = addAttribute(resolution);
 	zCheckStatus(status, "ERROR creating resolution");
 	
-	status = zCreateKeyableDoubleAttr(abuoyancy, MString("buoyancy"), MString("buo"), 1.0);
+	status = zCreateKeyableDoubleAttr(abuoyancy, MString("buoyancy"), MString("buo"), 2.0);
 	zCheckStatus(status, "ERROR creating buoyancy");
 	zCheckStatus(addAttribute(abuoyancy), "ERROR adding buoyancy");
 	
-	status = zCreateKeyableDoubleAttr(aswirl, MString("swirl"), MString("swl"), 1.0);
+	status = zCreateKeyableDoubleAttr(aswirl, MString("swirl"), MString("swl"), 0.5);
 	zCheckStatus(status, "ERROR creating swirl");
 	zCheckStatus(addAttribute(aswirl), "ERROR adding swirl");
 	
@@ -238,7 +240,7 @@ MStatus fluidViz::initialize()
 	zCheckStatus(status, "ERROR creating temperature");
 	zCheckStatus(addAttribute(atemperature), "ERROR adding temperature");
 	
-	status = zCreateKeyableDoubleAttr(aconserveTemperature, MString("temperatureLoss"), MString("tls"), 1.0);
+	status = zCreateKeyableDoubleAttr(aconserveTemperature, MString("temperatureLoss"), MString("tls"), 0.0);
 	zCheckStatus(status, "ERROR creating conserveTemperature");
 	zCheckStatus(addAttribute(aconserveTemperature), "ERROR adding conserveTemperature");
 	
@@ -249,6 +251,13 @@ MStatus fluidViz::initialize()
 	status = zCreateKeyableDoubleAttr(asourceDensity, MString("sourceDenisty"), MString("scd"), 1.0);
 	zCheckStatus(status, "ERROR creating sourceDensity");
 	zCheckStatus(addAttribute(asourceDensity), "ERROR adding source density");
+	
+	adiffusion = numAttr.create( "diffusion", "dfs", MFnNumericData::kDouble, 0.1 );
+	numAttr.setMin(0);
+	numAttr.setMax(1);
+	numAttr.setStorable(true);
+	numAttr.setKeyable(true);
+	addAttribute( adiffusion );
 	
 	status = zCreateKeyableDoubleAttr(awindx, MString("windX"), MString("wdx"), 0.0);
 	zCheckStatus(status, "ERROR creating wind x");
@@ -294,6 +303,7 @@ MStatus fluidViz::initialize()
 	attributeAffects(awindx, aoutDesc);
 	attributeAffects(awindz, aoutDesc);
 	attributeAffects(atexz, aoutDesc);
+	attributeAffects(adiffusion, aoutDesc);
 	
 	return MS::kSuccess;
 }

@@ -49,8 +49,6 @@ public:
 	void offsetEnd();
 	void abcBegin(GLuint i_textureU, GLuint i_textureO, float x, float y, float z, float w);
 	void abcEnd();
-	//void addTemperatureBegin(GLuint i_textureU, float radius, float T, float px, float py, float pz);
-	//void addTemperatureEnd();
 	void buoyancyBegin(GLuint iU, GLuint iT, float Kb);
 	void buoyancyEnd();
 	void flatBegin();
@@ -63,6 +61,8 @@ public:
 	void addVelocityEnd();
 	void particleBegin();
 	void particleEnd();
+	void diffusionBegin(GLuint i_textureX, float Kd);
+	void diffusionEnd();
 	
 private:
 	CGcontext m_context;
@@ -84,13 +84,13 @@ private:
 	CGprogram m_frag_boundary;
 	CGprogram m_frag_offset;
 	CGprogram m_frag_abc;
-	//CGprogram m_frag_addTemperature;
 	CGprogram m_frag_buoyancy;
 	CGprogram m_frag_flat;
 	CGprogram m_frag_convex;
 	CGprogram m_frag_addTemperature;
 	CGprogram m_frag_addVelocity;
 	CGprogram m_frag_particle;
+	CGprogram m_frag_diffusion;
 	
 	CGparameter modelViewMatrix;
 	CGparameter advect_timeStep, advect_u, advect_q, advect_dimensions, advect_alpha;
@@ -104,11 +104,11 @@ private:
 	CGparameter boundary_u, boundary_alpha;
 	CGparameter offset_o;
 	CGparameter abc_u, abc_o, abc_dimensions;
-	//CGparameter addTemperature_u, addTemperature_T, addTemperature_radius, addTemperature_p;
 	CGparameter buoyancy_u, buoyancy_t, buoyancy_Kb;
 	CGparameter convex_x, convex_y, convex_z, convex_o;
 	CGparameter addTemperature_u, addTemperature_impulse, addTemperature_scale;
 	CGparameter addVelocity_u, addVelocity_impulse;
 	CGparameter particle_modelViewMatrix;
+	CGparameter diffusion_x, diffusion_kd;
 	string errorlog;
 };

@@ -145,7 +145,7 @@ MStatus PMapNode::compute( const MPlug& plug, MDataBlock& data )
 
 		renderer->setLightPoint(x, y, z);
 
-		fParam.density = data.inputValue(adensity).asFloat() * 0.2;
+		fParam.density = data.inputValue(adensity).asFloat();
 		fParam.shadow_scale = data.inputValue(ashadowscale).asFloat();
 		fParam.radius = data.inputValue(aradius).asFloat() * fData->getGridSize() * 2.8;
 		fParam.base_r = data.inputValue(acloudr).asFloat();

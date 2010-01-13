@@ -38,13 +38,14 @@ public:
 	void processSources(const MVectorArray &points, const MVectorArray &velocities, const MDoubleArray& ages, const MObjectArray& sources);
 	
 	void setBuoyancy(float val) {m_buoyancy = val/20.0f;}
-	void setSwirl(float val) {m_swirl = val/10.0f;}
+	void setSwirl(float val) {m_swirl = val;}
 	void setConserveVelocity(float val) {m_keepVelocity = val;}
 	void setTemperatureLoss(float val) {m_keepTemperature = val;}
 	void setTemperature(const float& val) {fTemperature = val;}
 	void setWind(const float& x, const float& z) {fWindX = x; fWindZ = z;}
 	void setConserveDensity(float val) {m_conserve_denisty = val;}
 	void setSourceDensity(float val) {m_source_density = val;}
+	void setDiffusion(float val) { m_diffusion = val;}
 
 	void setGridSize(float size) {m_gridSize = size;}
 	float getGridSize() const {return m_gridSize;}
@@ -116,6 +117,7 @@ protected:
 	
 	float m_conserve_denisty, m_source_density;
 	char m_needDensity;
+	float m_diffusion;
 };
 
 #endif

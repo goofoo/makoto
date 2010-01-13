@@ -513,20 +513,17 @@ void FluidSolver::update()
 	gluLookAt(m_frame_width/2, m_frame_height/2, 10,
 			  m_frame_width/2, m_frame_height/2, -10,
 			  0, 1, 0);
-// update density
-	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_rgb_fbo);
-	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);        
-	f_cg->begin();
-	
-	f_cg->advectBegin(i_velocityTexture, img_density, m_width, m_height, m_depth, m_tile_s, m_conserve_denisty);
-	drawQuad();
-	f_cg->advectEnd();
 
-	f_cg->addTemperatureBegin(img_density, img_impuls, 1.0f);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_rgb_fbo);
+	f_cg->begin();
+// add density
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+
+	f_cg->addTemperatureBegin(img_density, img_impuls, m_source_density);
 	drawQuad();
 	f_cg->addTemperatureEnd();
 	
-// record temperature
+// add temperature
 	glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);        
 	f_cg->begin();
 	
@@ -565,29 +562,15 @@ void FluidSolver::update()
 
 // record vorticity	
     glDrawBuffer(GL_COLOR_ATTACHMENT3_EXT);
-glClear(GL_COLOR_BUFFER_BIT);
-        
+       
 	f_cg->vorticityBegin(i_velocityTexture);
 	drawQuad();
 	f_cg->vorticityEnd();
-	
-// record velocity
-	glDrawBuffer(GL_COLOR_ATTACHMENT2_EXT);
 
-	f_cg->swirlBegin(i_vorticityTexture, i_velocityTexture, m_swirl);
-	drawQuad();
-	f_cg->swirlEnd();
-	
-	f_cg->boundaryBegin(i_velocityTexture,-1.0f);
-	drawBoundary();
-	f_cg->boundaryEnd();
-	
-	
-	
 // record divergence
 	glDrawBuffer(GL_COLOR_ATTACHMENT4_EXT);
 	
-	glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
+	//glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
 	f_cg->divergenceBegin(i_velocityTexture);
 	drawQuad();
 	f_cg->divergenceEnd();
@@ -602,7 +585,7 @@ glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_COLOR_BUFFER_BIT);
 // reset the pressure field texture before jacobi
 	
-	for(int i =0; i<36; i++) { 
+	for(int i =0; i<50; i++) { 
 
 		f_cg->jacobiBegin(i_pressureTexture, i_divergenceTexture);
 		drawQuad();
@@ -613,7 +596,7 @@ glClear(GL_COLOR_BUFFER_BIT);
 	drawBoundary();
 	f_cg->boundaryEnd();
 	
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
+	//glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
 	
 // record velocity
 	glDrawBuffer(GL_COLOR_ATTACHMENT2_EXT);
@@ -626,9 +609,35 @@ glClear(GL_COLOR_BUFFER_BIT);
 	drawQuad();
 	f_cg->gradientEnd();
 	
+// vorticity confinement
+	//glDrawBuffer(GL_COLOR_ATTACHMENT2_EXT);
+
+	f_cg->swirlBegin(i_vorticityTexture, i_velocityTexture, m_swirl);
+	drawQuad();
+	f_cg->swirlEnd();
+	
+	f_cg->boundaryBegin(i_velocityTexture,-1.0f);
+	drawBoundary();
+	f_cg->boundaryEnd();
+	
 	glReadBuffer(GL_COLOR_ATTACHMENT2_EXT);
 glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RGB, GL_FLOAT, m_velocityField);
-// end of frame buffer
+
+
+// advect density
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);        
+	
+	f_cg->advectBegin(i_velocityTexture, img_density, m_width, m_height, m_depth, m_tile_s, m_conserve_denisty);
+	drawQuad();
+	f_cg->advectEnd();
+	
+// density diffusion
+	if(m_diffusion > 0.f) {
+		f_cg->diffusionBegin(img_density, m_diffusion);
+		drawQuad();
+		f_cg->diffusionEnd();
+	}
+	
 	glPopAttrib();
 	f_cg->end();
 	
@@ -638,6 +647,7 @@ glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RGB, GL_FLOAT, m_velocity
 	
 		glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RED, GL_FLOAT, m_densityField);
 	}
+// end of frame buffer
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 }
 
@@ -920,17 +930,7 @@ void FluidSolver::flatTo2D(int& s, int& t, int x, int y, int z)
 	s = col*m_width + x;
 	t = row*m_height + y;
 }
-/*
-void FluidSolver::addImpulse(int _type, float _radius, float _spread, float posx, float posy, float posz, float velx, float vely, float velz)
-{
-	if (posx < 1 || posx > m_width-1 || posy < 1 || posy > m_height-1 || posz<1 || posz>m_depth-1)
-        return;
 
-    ImpulseDesc imp(_type, _radius, _spread, posx, posy, posz, velx, vely, velz);
-
-    m_impulseList.push_back(imp);
-}
-*/
 void FluidSolver::processObstacles(const MObjectArray& obstacles)
 {
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -1180,48 +1180,6 @@ void FluidSolver::processSources(const MVectorArray &points, const MVectorArray 
 	// end of object
 				delete[] pp;
 			}
-	/*
-		MItMeshPolygon faceIter(sources[iter], &status );
-		if(status) {
-			int n_tri = faceIter.count();
-			float *pp = new float[n_tri*3*3];
-			int acc = 0;
-			for( ; !faceIter.isDone(); faceIter.next() ) {
-			
-				MPointArray pts;
-				faceIter.getPoints(pts,  MSpace::kWorld);
-				
-				pp[acc*3] = pts[0].x;
-				pp[acc*3+1] = pts[0].y;
-				pp[acc*3+2] = pts[0].z;
-				acc++;
-				pp[acc*3] = pts[1].x;
-				pp[acc*3+1] = pts[1].y;
-				pp[acc*3+2] = pts[1].z;
-				acc++;
-				pp[acc*3] = pts[2].x;
-				pp[acc*3+1] = pts[2].y;
-				pp[acc*3+2] = pts[2].z;
-				acc++;
-			}
-		
-		for(int i=1; i<m_depth-1; i++) {
-			x_offset = i%i_frame*m_width;
-			y_offset = i/i_frame*m_height;
-			glViewport(x_offset, y_offset, m_width, m_height);
-			glLoadIdentity();
-			gluLookAt(m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i+1)*m_gridSize,
-					  m_origin_x + m_width/2*m_gridSize, m_origin_y + m_height/2*m_gridSize, m_origin_z + (i-1)*m_gridSize,
-					  0, 1, 0);
-// velocity is up
-			glTexCoord4f(0,1,0,m_source_density);
-			f_cg->particleBegin();
-			drawTriangleMesh(n_tri, pp);
-			f_cg->particleEnd();
-		}
-// end of object
-			delete[] pp;
-		}*/
 		}
 	}
 	

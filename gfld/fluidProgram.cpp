@@ -265,6 +265,15 @@ static const char *programSource =
 "{"
 "	return IN.Tex;"
 "}"
+
+"half4 diffusion(vfconn IN, uniform samplerRECT x, uniform half kd) : COLOR \n"
+"{"
+"	half4 left, right, bottom, top, back, front;"
+"	h4gridneighbourst(x, IN.TexCoord, IN.coordZ, left, right, bottom, top, back, front);"
+"	half4 center = h4texRECT(x, IN.TexCoord);"
+"	return center + (left + right + bottom + top + back + front - center * 6.0)*kd;"
+"}"
+
 "\n";
 
 CFluidProgram::CFluidProgram(void):
@@ -394,17 +403,7 @@ m_frag_advect(0)
 	abc_u = cgGetNamedParameter(m_frag_abc, "u");
 	abc_o = cgGetNamedParameter(m_frag_abc, "o");
 	abc_dimensions = cgGetNamedParameter(m_frag_abc, "dimensions");
-	/*
-	m_frag_addTemperature = cgCreateProgram(m_context, CG_SOURCE, programSource, m_frag_profile, "addTemperature", 0);
-	
-	if (m_frag_addTemperature == NULL) cgCheckError("ERROR create addTemperature");
-	
-	cgGLLoadProgram(m_frag_addTemperature);
-	addTemperature_u = cgGetNamedParameter(m_frag_addTemperature, "u");
-	addTemperature_T = cgGetNamedParameter(m_frag_addTemperature, "T");
-	addTemperature_p = cgGetNamedParameter(m_frag_addTemperature, "p");
-	addTemperature_radius = cgGetNamedParameter(m_frag_addTemperature, "radius");
-	*/
+
 	m_frag_buoyancy = cgCreateProgram(m_context, CG_SOURCE, programSource, m_frag_profile, "buoyancy", 0);
 	
 	if (m_frag_buoyancy == NULL) cgCheckError("ERROR create buoyancy");
@@ -451,6 +450,14 @@ m_frag_advect(0)
 	
 	if (m_frag_particle == NULL) cgCheckError("ERROR create particle");
 	cgGLLoadProgram(m_frag_particle);
+	
+	m_frag_diffusion = cgCreateProgram(m_context, CG_SOURCE, programSource, m_frag_profile, "diffusion", 0);
+	
+	if (m_frag_diffusion == NULL) cgCheckError("ERROR create diffusion");
+	
+	cgGLLoadProgram(m_frag_diffusion);
+	diffusion_x = cgGetNamedParameter(m_frag_diffusion, "x");
+	diffusion_kd = cgGetNamedParameter(m_frag_diffusion, "kd");
 	
 }
 
@@ -652,24 +659,7 @@ void CFluidProgram::abcEnd()
 	cgGLDisableTextureParameter(abc_u);
 	cgGLDisableTextureParameter(abc_o);
 }
-/*
-void CFluidProgram::addTemperatureBegin(GLuint i_textureU, float radius, float T, float px, float py, float pz)
-{
-	cgGLBindProgram(m_frag_addTemperature);
-	
-	cgGLSetTextureParameter(addTemperature_u, i_textureU);
-	cgGLEnableTextureParameter(addTemperature_u);
-	
-	cgGLSetParameter1f(addTemperature_radius, radius/0.5f);
-	cgGLSetParameter1f(addTemperature_T, T);
-	cgGLSetParameter3f(addTemperature_p, px, py, pz);
-}
 
-void CFluidProgram::addTemperatureEnd()
-{
-	cgGLDisableTextureParameter(addTemperature_u);
-}
-*/
 void CFluidProgram::buoyancyBegin(GLuint iU, GLuint iT, float Kb)
 {
 	cgGLBindProgram(m_frag_buoyancy);
@@ -779,3 +769,18 @@ void CFluidProgram::particleEnd()
 	cgGLDisableProfile(m_vert_profile);
 }
 	
+void CFluidProgram::diffusionBegin(GLuint i_textureX, float Kd)
+{
+	cgGLBindProgram(m_frag_diffusion);
+	
+	cgGLSetTextureParameter(diffusion_x, i_textureX);
+	cgGLEnableTextureParameter(diffusion_x);
+	
+	cgGLSetParameter1f(diffusion_kd, Kd*0.08);
+}
+
+void CFluidProgram::diffusionEnd()
+{
+	cgGLDisableTextureParameter(diffusion_x);
+}
+//:~

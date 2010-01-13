@@ -55,8 +55,24 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 284574511;
-			PBXWorkspaceStateSaveDate = 284574511;
+			PBXPerProjectTemplateStateSaveDate = 285082501;
+			PBXWorkspaceStateSaveDate = 285082501;
+		};
+		perUserProjectItems = {
+			7F8A58FF10FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A58FF10FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A590010FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A590010FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A590310FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A590310FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A590410FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A590410FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A590710FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A590710FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A590910FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A590910FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A590D10FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A590D10FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A590F10FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A590F10FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A591310FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A591310FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A591410FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A591410FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A591710FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A591710FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A591910FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A591910FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A591D10FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A591D10FE25D800A6BC3E /* PBXTextBookmark */;
+			7F8A591F10FE25D800A6BC3E /* PBXTextBookmark */ = 7F8A591F10FE25D800A6BC3E /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7F85A27210ADD666005171E3 /* Source Control */;
 		userBuildSettings = {
@@ -91,50 +107,49 @@
 	};
 	7F85A27510ADD6DD005171E3 /* fluidDescData.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {586, 826}}";
+			sepNavIntBoundsRect = "{{0, 0}, {586, 770}}";
 			sepNavSelRange = "{150, 0}";
-			sepNavVisRange = "{0, 683}";
+			sepNavVisRange = "{27, 707}";
 			sepNavWindowFrame = "{{30, 60}, {645, 633}}";
 		};
 	};
 	7F85A27610ADD6DD005171E3 /* fluidField.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {980, 5852}}";
-			sepNavSelRange = "{5973, 0}";
-			sepNavVisRange = "{2708, 1396}";
+			sepNavIntBoundsRect = "{{0, 0}, {854, 6048}}";
+			sepNavSelRange = "{3643, 0}";
+			sepNavVisRange = "{2465, 1386}";
 			sepNavWindowFrame = "{{217, 63}, {673, 659}}";
 		};
 	};
 	7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1700, 10388}}";
-			sepNavSelRange = "{9938, 0}";
-			sepNavVisRange = "{7946, 1218}";
-			sepNavWindowFrame = "{{577, 138}, {627, 596}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1700, 11004}}";
+			sepNavSelRange = "{25751, 0}";
+			sepNavVisRange = "{25064, 775}";
+			sepNavWindowFrame = "{{138, 145}, {627, 596}}";
 		};
 	};
 	7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */ = {
 		uiCtxt = {
-			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{39791, 1168}\";\n        }\n    );\n    r = \"{0, 43499}\";\n}";
-			sepNavIntBoundsRect = "{{0, 0}, {1160, 17976}}";
-			sepNavSelRange = "{39818, 0}";
-			sepNavVisRange = "{36867, 1499}";
-			sepNavWindowFrame = "{{436, 83}, {631, 686}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 17836}}";
+			sepNavSelRange = "{19303, 0}";
+			sepNavVisRange = "{18619, 1123}";
+			sepNavWindowFrame = "{{553, 85}, {631, 686}}";
 		};
 	};
 	7F85A27910ADD6DD005171E3 /* fluidViz.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {734, 4942}}";
-			sepNavSelRange = "{3647, 0}";
-			sepNavVisRange = "{2730, 1358}";
-			sepNavWindowFrame = "{{8, 82}, {624, 679}}";
+			sepNavIntBoundsRect = "{{0, 0}, {734, 5138}}";
+			sepNavSelRange = "{7828, 0}";
+			sepNavVisRange = "{6606, 1998}";
+			sepNavWindowFrame = "{{12, 76}, {624, 679}}";
 		};
 	};
 	7F85A27A10ADD6DD005171E3 /* pluginMain.cpp */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {659, 1148}}";
 			sepNavSelRange = "{261, 0}";
-			sepNavVisRange = "{0, 925}";
+			sepNavVisRange = "{0, 926}";
 			sepNavWindowFrame = "{{499, 87}, {718, 636}}";
 		};
 	};
@@ -145,6 +160,216 @@
 			sepNavVisRange = "{0, 797}";
 			sepNavWindowFrame = "{{179, -17}, {738, 660}}";
 		};
+	};
+	7F8A58FF10FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */;
+		name = "fluidSolver.cpp: 643";
+		rLen = 0;
+		rLoc = 22324;
+		rType = 0;
+		vrLen = 929;
+		vrLoc = 21901;
+	};
+	7F8A590010FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */;
+		name = "fluidSolver.cpp: 520";
+		rLen = 0;
+		rLoc = 19303;
+		rType = 0;
+		vrLen = 1123;
+		vrLoc = 18619;
+	};
+	7F8A590310FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27910ADD6DD005171E3 /* fluidViz.cpp */;
+		name = "fluidViz.cpp: 257";
+		rLen = 0;
+		rLoc = 8557;
+		rType = 0;
+		vrLen = 1769;
+		vrLoc = 7598;
+	};
+	7F8A590410FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27910ADD6DD005171E3 /* fluidViz.cpp */;
+		name = "fluidViz.cpp: 243";
+		rLen = 0;
+		rLoc = 7828;
+		rType = 0;
+		vrLen = 1998;
+		vrLoc = 6606;
+	};
+	7F8A590710FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A590810FE25D800A6BC3E /* fluidViz.h */;
+		rLen = 0;
+		rLoc = 2147483675;
+		rType = 0;
+	};
+	7F8A590810FE25D800A6BC3E /* fluidViz.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = fluidViz.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidViz.h;
+		sourceTree = "<absolute>";
+	};
+	7F8A590910FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A590A10FE25D800A6BC3E /* fluidViz.h */;
+		name = "fluidViz.h: 46";
+		rLen = 19;
+		rLoc = 1298;
+		rType = 0;
+		vrLen = 1130;
+		vrLoc = 401;
+	};
+	7F8A590A10FE25D800A6BC3E /* fluidViz.h */ = {
+		isa = PBXFileReference;
+		name = fluidViz.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidViz.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {614, 826}}";
+			sepNavSelRange = "{1298, 19}";
+			sepNavVisRange = "{401, 1130}";
+			sepNavWindowFrame = "{{15, 77}, {593, 696}}";
+		};
+	};
+	7F8A590D10FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A590E10FE25D800A6BC3E /* fluidSolver.h */;
+		name = "fluidSolver.h: 118";
+		rLen = 16;
+		rLoc = 3446;
+		rType = 0;
+		vrLen = 752;
+		vrLoc = 2763;
+	};
+	7F8A590E10FE25D800A6BC3E /* fluidSolver.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = fluidSolver.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidSolver.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {842, 1722}}";
+			sepNavSelRange = "{3446, 16}";
+			sepNavVisRange = "{2763, 752}";
+			sepNavWindowFrame = "{{38, 56}, {593, 696}}";
+		};
+	};
+	7F8A590F10FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A591010FE25D800A6BC3E /* fluidSolver.h */;
+		name = "fluidSolver.h: 118";
+		rLen = 16;
+		rLoc = 3446;
+		rType = 0;
+		vrLen = 752;
+		vrLoc = 2763;
+	};
+	7F8A591010FE25D800A6BC3E /* fluidSolver.h */ = {
+		isa = PBXFileReference;
+		name = fluidSolver.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidSolver.h;
+		sourceTree = "<absolute>";
+	};
+	7F8A591310FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */;
+		name = "fluidProgram.cpp: 779";
+		rLen = 0;
+		rLoc = 25751;
+		rType = 0;
+		vrLen = 775;
+		vrLoc = 25064;
+	};
+	7F8A591410FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */;
+		name = "fluidProgram.cpp: 779";
+		rLen = 0;
+		rLoc = 25751;
+		rType = 0;
+		vrLen = 775;
+		vrLoc = 25064;
+	};
+	7F8A591710FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A591810FE25D800A6BC3E /* fluidProgram.h */;
+		name = "fluidProgram.h: 64";
+		rLen = 71;
+		rLoc = 1863;
+		rType = 0;
+		vrLen = 1487;
+		vrLoc = 483;
+	};
+	7F8A591810FE25D800A6BC3E /* fluidProgram.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = fluidProgram.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidProgram.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {842, 1610}}";
+			sepNavSelRange = "{3384, 0}";
+			sepNavVisRange = "{2081, 1326}";
+			sepNavWindowFrame = "{{38, 56}, {593, 696}}";
+		};
+	};
+	7F8A591910FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A591A10FE25D800A6BC3E /* fluidProgram.h */;
+		name = "fluidProgram.h: 112";
+		rLen = 0;
+		rLoc = 3384;
+		rType = 0;
+		vrLen = 1326;
+		vrLoc = 2081;
+	};
+	7F8A591A10FE25D800A6BC3E /* fluidProgram.h */ = {
+		isa = PBXFileReference;
+		name = fluidProgram.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidProgram.h;
+		sourceTree = "<absolute>";
+	};
+	7F8A591D10FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A591E10FE25D800A6BC3E /* fluidField.h */;
+		rLen = 0;
+		rLoc = 2147483647;
+		rType = 0;
+	};
+	7F8A591E10FE25D800A6BC3E /* fluidField.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = fluidField.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidField.h;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {752, 1484}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{1594, 897}";
+			sepNavWindowFrame = "{{15, 77}, {593, 696}}";
+		};
+	};
+	7F8A591F10FE25D800A6BC3E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A592010FE25D800A6BC3E /* fluidField.h */;
+		name = "fluidField.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 897;
+		vrLoc = 1594;
+	};
+	7F8A592010FE25D800A6BC3E /* fluidField.h */ = {
+		isa = PBXFileReference;
+		name = fluidField.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidField.h;
+		sourceTree = "<absolute>";
 	};
 	7FACE2B410B458140035777D /* boomEmitter.cpp */ = {
 		uiCtxt = {
