@@ -277,6 +277,11 @@ static const char *programSource =
 "	return center + (left + right + bottom + top + back + front - center * 6.0)*kd;"
 "}"
 
+"half4 nochange(vfconn IN, uniform samplerRECT x) : COLOR \n"
+"{"
+"	return h4texRECT(x, IN.TexCoord);"
+"}"
+
 "\n";
 
 CFluidProgram::CFluidProgram(void):
@@ -461,6 +466,13 @@ m_frag_advect(0)
 	cgGLLoadProgram(m_frag_diffusion);
 	diffusion_x = cgGetNamedParameter(m_frag_diffusion, "x");
 	diffusion_kd = cgGetNamedParameter(m_frag_diffusion, "kd");
+	
+	m_frag_nochange = cgCreateProgram(m_context, CG_SOURCE, programSource, m_frag_profile, "nochange", 0);
+	
+	if (m_frag_diffusion == NULL) cgCheckError("ERROR create nochange");
+	
+	cgGLLoadProgram(m_frag_nochange);
+	nochange_x = cgGetNamedParameter(m_frag_nochange, "x");
 	
 }
 
@@ -786,4 +798,17 @@ void CFluidProgram::diffusionEnd()
 {
 	cgGLDisableTextureParameter(diffusion_x);
 }
+
+void CFluidProgram::nochangeBegin(GLuint i_textureX)
+{
+	cgGLBindProgram(m_frag_nochange);
+	
+	cgGLSetTextureParameter(nochange_x, i_textureX);
+}
+
+void CFluidProgram::nochangeEnd()
+{
+	cgGLDisableTextureParameter(nochange_x);
+}
+
 //:~

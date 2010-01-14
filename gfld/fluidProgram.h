@@ -63,6 +63,8 @@ public:
 	void particleEnd();
 	void diffusionBegin(GLuint i_textureX, float Kd);
 	void diffusionEnd();
+	void nochangeBegin(GLuint i_textureX);
+	void nochangeEnd();
 	
 private:
 	CGcontext m_context;
@@ -91,6 +93,7 @@ private:
 	CGprogram m_frag_addVelocity;
 	CGprogram m_frag_particle;
 	CGprogram m_frag_diffusion;
+	CGprogram m_frag_nochange;
 	
 	CGparameter modelViewMatrix;
 	CGparameter advect_timeStep, advect_u, advect_q, advect_dimensions, advect_alpha;
@@ -110,5 +113,6 @@ private:
 	CGparameter addVelocity_u, addVelocity_impulse;
 	CGparameter particle_modelViewMatrix;
 	CGparameter diffusion_x, diffusion_kd;
+	CGparameter nochange_x;
 	string errorlog;
 };

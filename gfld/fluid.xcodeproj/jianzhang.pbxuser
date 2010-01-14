@@ -55,28 +55,103 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 285172737;
-			PBXWorkspaceStateSaveDate = 285172737;
+			PBXPerProjectTemplateStateSaveDate = 285180729;
+			PBXWorkspaceStateSaveDate = 285180729;
 		};
 		perUserProjectItems = {
-			7F8A58FF10FE25D800A6BC3E = 7F8A58FF10FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A590010FE25D800A6BC3E = 7F8A590010FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A590310FE25D800A6BC3E = 7F8A590310FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A590410FE25D800A6BC3E = 7F8A590410FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A590710FE25D800A6BC3E = 7F8A590710FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A590910FE25D800A6BC3E = 7F8A590910FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A590D10FE25D800A6BC3E = 7F8A590D10FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A590F10FE25D800A6BC3E = 7F8A590F10FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A591310FE25D800A6BC3E = 7F8A591310FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A591410FE25D800A6BC3E = 7F8A591410FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A591710FE25D800A6BC3E = 7F8A591710FE25D800A6BC3E /* PBXTextBookmark */;
+			7F088C7B10FF808000E1C8E2 = 7F088C7B10FF808000E1C8E2 /* PBXTextBookmark */;
+			7F088C7C10FF808000E1C8E2 = 7F088C7C10FF808000E1C8E2 /* PBXTextBookmark */;
+			7F088C7E10FF808000E1C8E2 = 7F088C7E10FF808000E1C8E2 /* PBXTextBookmark */;
+			7F088C8210FF808000E1C8E2 = 7F088C8210FF808000E1C8E2 /* PBXTextBookmark */;
+			7F088C8310FF808000E1C8E2 = 7F088C8310FF808000E1C8E2 /* PBXTextBookmark */;
+			7F088C8410FF808000E1C8E2 = 7F088C8410FF808000E1C8E2 /* PBXTextBookmark */;
 			7F8A591910FE25D800A6BC3E = 7F8A591910FE25D800A6BC3E /* PBXTextBookmark */;
-			7F8A591D10FE25D800A6BC3E = 7F8A591D10FE25D800A6BC3E /* PBXTextBookmark */;
 			7F8A591F10FE25D800A6BC3E = 7F8A591F10FE25D800A6BC3E /* PBXTextBookmark */;
 		};
 		sourceControlManager = 7F85A27210ADD666005171E3 /* Source Control */;
 		userBuildSettings = {
 		};
+	};
+	7F088C7B10FF808000E1C8E2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F8A590E10FE25D800A6BC3E /* fluidSolver.h */;
+		name = "fluidSolver.h: 118";
+		rLen = 16;
+		rLoc = 3451;
+		rType = 0;
+		vrLen = 752;
+		vrLoc = 2763;
+	};
+	7F088C7C10FF808000E1C8E2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F088C7D10FF808000E1C8E2 /* fluidSolver.h */;
+		name = "fluidSolver.h: 100";
+		rLen = 12;
+		rLoc = 3160;
+		rType = 0;
+		vrLen = 772;
+		vrLoc = 2743;
+	};
+	7F088C7D10FF808000E1C8E2 /* fluidSolver.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = fluidSolver.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidSolver.h;
+		sourceTree = "<absolute>";
+	};
+	7F088C7E10FF808000E1C8E2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F088C7F10FF808000E1C8E2 /* fluidField.h */;
+		name = "fluidField.h: 106";
+		rLen = 0;
+		rLoc = 2491;
+		rType = 0;
+		vrLen = 897;
+		vrLoc = 1594;
+	};
+	7F088C7F10FF808000E1C8E2 /* fluidField.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = fluidField.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidField.h;
+		sourceTree = "<absolute>";
+	};
+	7F088C8210FF808000E1C8E2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27610ADD6DD005171E3 /* fluidField.cpp */;
+		name = "fluidField.cpp: 429";
+		rLen = 0;
+		rLoc = 12574;
+		rType = 0;
+		vrLen = 1371;
+		vrLoc = 1591;
+	};
+	7F088C8310FF808000E1C8E2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F85A27610ADD6DD005171E3 /* fluidField.cpp */;
+		name = "fluidField.cpp: 429";
+		rLen = 0;
+		rLoc = 12574;
+		rType = 0;
+		vrLen = 713;
+		vrLoc = 116;
+	};
+	7F088C8410FF808000E1C8E2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 7F088C8510FF808000E1C8E2 /* fluidProgram.h */;
+		name = "fluidProgram.h: 112";
+		rLen = 0;
+		rLoc = 3473;
+		rType = 0;
+		vrLen = 1354;
+		vrLoc = 2053;
+	};
+	7F088C8510FF808000E1C8E2 /* fluidProgram.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = fluidProgram.h;
+		path = /Users/jianzhang/Documents/plankton/gfld/fluidProgram.h;
+		sourceTree = "<absolute>";
 	};
 	7F23B95610D9648200FE03A1 /* FluidOctree.cpp */ = {
 		uiCtxt = {
@@ -115,34 +190,34 @@
 	};
 	7F85A27610ADD6DD005171E3 /* fluidField.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {854, 6048}}";
-			sepNavSelRange = "{3643, 0}";
-			sepNavVisRange = "{2465, 1386}";
+			sepNavIntBoundsRect = "{{0, 0}, {614, 6286}}";
+			sepNavSelRange = "{12574, 0}";
+			sepNavVisRange = "{116, 713}";
 			sepNavWindowFrame = "{{217, 63}, {673, 659}}";
 		};
 	};
 	7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1700, 11004}}";
-			sepNavSelRange = "{25751, 0}";
-			sepNavVisRange = "{25064, 775}";
-			sepNavWindowFrame = "{{138, 145}, {627, 596}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1700, 10220}}";
+			sepNavSelRange = "{7804, 0}";
+			sepNavVisRange = "{7354, 1565}";
+			sepNavWindowFrame = "{{572, 115}, {627, 596}}";
 		};
 	};
 	7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1160, 17836}}";
-			sepNavSelRange = "{19303, 0}";
-			sepNavVisRange = "{18619, 1123}";
-			sepNavWindowFrame = "{{553, 85}, {631, 686}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 18158}}";
+			sepNavSelRange = "{19047, 0}";
+			sepNavVisRange = "{18619, 1187}";
+			sepNavWindowFrame = "{{360, 67}, {631, 686}}";
 		};
 	};
 	7F85A27910ADD6DD005171E3 /* fluidViz.cpp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {734, 5138}}";
-			sepNavSelRange = "{7828, 0}";
-			sepNavVisRange = "{6606, 1998}";
-			sepNavWindowFrame = "{{12, 76}, {624, 679}}";
+			sepNavIntBoundsRect = "{{0, 0}, {572, 5082}}";
+			sepNavSelRange = "{12274, 0}";
+			sepNavVisRange = "{0, 1774}";
+			sepNavWindowFrame = "{{413, 71}, {624, 679}}";
 		};
 	};
 	7F85A27A10ADD6DD005171E3 /* pluginMain.cpp */ = {
@@ -161,87 +236,6 @@
 			sepNavWindowFrame = "{{179, -17}, {738, 660}}";
 		};
 	};
-	7F8A58FF10FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */;
-		name = "fluidSolver.cpp: 643";
-		rLen = 0;
-		rLoc = 22324;
-		rType = 0;
-		vrLen = 929;
-		vrLoc = 21901;
-	};
-	7F8A590010FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F85A27810ADD6DD005171E3 /* fluidSolver.cpp */;
-		name = "fluidSolver.cpp: 520";
-		rLen = 0;
-		rLoc = 19303;
-		rType = 0;
-		vrLen = 1123;
-		vrLoc = 18619;
-	};
-	7F8A590310FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F85A27910ADD6DD005171E3 /* fluidViz.cpp */;
-		name = "fluidViz.cpp: 257";
-		rLen = 0;
-		rLoc = 8557;
-		rType = 0;
-		vrLen = 1769;
-		vrLoc = 7598;
-	};
-	7F8A590410FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F85A27910ADD6DD005171E3 /* fluidViz.cpp */;
-		name = "fluidViz.cpp: 243";
-		rLen = 0;
-		rLoc = 7828;
-		rType = 0;
-		vrLen = 1998;
-		vrLoc = 6606;
-	};
-	7F8A590710FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F8A590810FE25D800A6BC3E /* fluidViz.h */;
-		rLen = 0;
-		rLoc = 1533;
-		rType = 0;
-	};
-	7F8A590810FE25D800A6BC3E /* fluidViz.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = fluidViz.h;
-		path = /Users/jianzhang/Documents/plankton/gfld/fluidViz.h;
-		sourceTree = "<absolute>";
-	};
-	7F8A590910FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F8A590A10FE25D800A6BC3E /* fluidViz.h */;
-		name = "fluidViz.h: 46";
-		rLen = 19;
-		rLoc = 1298;
-		rType = 0;
-		vrLen = 1130;
-		vrLoc = 401;
-	};
-	7F8A590A10FE25D800A6BC3E /* fluidViz.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = fluidViz.h;
-		path = /Users/jianzhang/Documents/plankton/gfld/fluidViz.h;
-		sourceTree = "<absolute>";
-	};
-	7F8A590D10FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F8A590E10FE25D800A6BC3E /* fluidSolver.h */;
-		name = "fluidSolver.h: 118";
-		rLen = 16;
-		rLoc = 3446;
-		rType = 0;
-		vrLen = 752;
-		vrLoc = 2763;
-	};
 	7F8A590E10FE25D800A6BC3E /* fluidSolver.h */ = {
 		isa = PBXFileReference;
 		lastKnownFileType = sourcecode.c.h;
@@ -249,66 +243,12 @@
 		path = /Users/jianzhang/Documents/plankton/gfld/fluidSolver.h;
 		sourceTree = "<absolute>";
 	};
-	7F8A590F10FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F8A591010FE25D800A6BC3E /* fluidSolver.h */;
-		name = "fluidSolver.h: 118";
-		rLen = 16;
-		rLoc = 3446;
-		rType = 0;
-		vrLen = 752;
-		vrLoc = 2763;
-	};
-	7F8A591010FE25D800A6BC3E /* fluidSolver.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = fluidSolver.h;
-		path = /Users/jianzhang/Documents/plankton/gfld/fluidSolver.h;
-		sourceTree = "<absolute>";
-	};
-	7F8A591310FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */;
-		name = "fluidProgram.cpp: 779";
-		rLen = 0;
-		rLoc = 25751;
-		rType = 0;
-		vrLen = 775;
-		vrLoc = 25064;
-	};
-	7F8A591410FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F85A27710ADD6DD005171E3 /* fluidProgram.cpp */;
-		name = "fluidProgram.cpp: 779";
-		rLen = 0;
-		rLoc = 25751;
-		rType = 0;
-		vrLen = 775;
-		vrLoc = 25064;
-	};
-	7F8A591710FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F8A591810FE25D800A6BC3E /* fluidProgram.h */;
-		name = "fluidProgram.h: 64";
-		rLen = 71;
-		rLoc = 1863;
-		rType = 0;
-		vrLen = 1487;
-		vrLoc = 483;
-	};
-	7F8A591810FE25D800A6BC3E /* fluidProgram.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = fluidProgram.h;
-		path = /Users/jianzhang/Documents/plankton/gfld/fluidProgram.h;
-		sourceTree = "<absolute>";
-	};
 	7F8A591910FE25D800A6BC3E /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 7F8A591A10FE25D800A6BC3E /* fluidProgram.h */;
 		name = "fluidProgram.h: 112";
 		rLen = 0;
-		rLoc = 3384;
+		rLoc = 3473;
 		rType = 0;
 		vrLen = 1326;
 		vrLoc = 2081;
@@ -318,20 +258,6 @@
 		lastKnownFileType = sourcecode.c.h;
 		name = fluidProgram.h;
 		path = /Users/jianzhang/Documents/plankton/gfld/fluidProgram.h;
-		sourceTree = "<absolute>";
-	};
-	7F8A591D10FE25D800A6BC3E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 7F8A591E10FE25D800A6BC3E /* fluidField.h */;
-		rLen = 0;
-		rLoc = 2147483647;
-		rType = 0;
-	};
-	7F8A591E10FE25D800A6BC3E /* fluidField.h */ = {
-		isa = PBXFileReference;
-		lastKnownFileType = sourcecode.c.h;
-		name = fluidField.h;
-		path = /Users/jianzhang/Documents/plankton/gfld/fluidField.h;
 		sourceTree = "<absolute>";
 	};
 	7F8A591F10FE25D800A6BC3E /* PBXTextBookmark */ = {
