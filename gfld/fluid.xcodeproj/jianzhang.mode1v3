@@ -202,46 +202,6 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
-				<string>7F088D0210FFBBBE00E1C8E2</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>fluidViz.cpp</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>7F088D0310FFBBBE00E1C8E2</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>fluidViz.cpp</string>
-						<key>_historyCapacity</key>
-						<integer>0</integer>
-						<key>bookmark</key>
-						<string>7F088D0410FFBBBE00E1C8E2</string>
-						<key>history</key>
-						<array>
-							<string>7F088CF210FFAB5300E1C8E2</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {624, 582}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>407 155 624 623 0 0 1280 778 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
 				<string>7F088D0510FFBBBE00E1C8E2</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>fluidProgram.cpp</string>
@@ -256,10 +216,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F088D0710FFBBBE00E1C8E2</string>
+						<string>7F088D1E10FFDD4900E1C8E2</string>
 						<key>history</key>
 						<array>
-							<string>7F088CFA10FFB35000E1C8E2</string>
+							<string>7F088D1D10FFDD4900E1C8E2</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -282,6 +242,46 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
+				<string>7F088D0210FFBBBE00E1C8E2</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>fluidViz.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>7F088D0310FFBBBE00E1C8E2</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>fluidViz.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>7F088D1F10FFDD4900E1C8E2</string>
+						<key>history</key>
+						<array>
+							<string>7F088D0410FFBBBE00E1C8E2</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {624, 582}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>407 155 624 623 0 0 1280 778 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
 				<string>7F088D0810FFBBBE00E1C8E2</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>fluidSolver.cpp</string>
@@ -296,10 +296,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F088D0A10FFBBBE00E1C8E2</string>
+						<string>7F088D2010FFDD4900E1C8E2</string>
 						<key>history</key>
 						<array>
-							<string>7F088CF810FFB0B600E1C8E2</string>
+							<string>7F088D0A10FFBBBE00E1C8E2</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -336,10 +336,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F088D0E10FFBBBE00E1C8E2</string>
+						<string>7F088D2110FFDD4900E1C8E2</string>
 						<key>history</key>
 						<array>
-							<string>7F088D0D10FFBBBE00E1C8E2</string>
+							<string>7F088D0E10FFBBBE00E1C8E2</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -376,10 +376,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>7F088D1110FFBBBE00E1C8E2</string>
+						<string>7F088D2310FFDD4900E1C8E2</string>
 						<key>history</key>
 						<array>
-							<string>7F088D1010FFBBBE00E1C8E2</string>
+							<string>7F088D1110FFBBBE00E1C8E2</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -395,7 +395,7 @@
 				<key>PBXModuleWindowStatusBarHidden2</key>
 				<false/>
 				<key>RubberWindowFrame</key>
-				<string>326 94 593 640 0 0 1280 778 </string>
+				<string>326 123 593 640 0 0 1280 778 </string>
 			</dict>
 		</dict>
 	</array>
@@ -480,7 +480,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>11</integer>
+									<integer>8</integer>
 									<integer>2</integer>
 									<integer>0</integer>
 								</array>
@@ -586,9 +586,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>7F088D0010FFBBBE00E1C8E2</string>
+				<string>7F088D1B10FFDD4900E1C8E2</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>7F088D0110FFBBBE00E1C8E2</string>
+				<string>7F088D1C10FFDD4900E1C8E2</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -722,13 +722,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>7F088D1310FFBBBE00E1C8E2</string>
 		<string>7F85A28210ADD6E6005171E3</string>
 		<string>7F8A591B10FE25D800A6BC3E</string>
 		<string>7F088D0B10FFBBBE00E1C8E2</string>
 		<string>7F088D0810FFBBBE00E1C8E2</string>
-		<string>7F088D0510FFBBBE00E1C8E2</string>
 		<string>7F088D0210FFBBBE00E1C8E2</string>
+		<string>7F088D0510FFBBBE00E1C8E2</string>
 		<string>/Users/jianzhang/Documents/plankton/gfld/fluid.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -770,8 +769,6 @@
 							<string>218pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -811,7 +808,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>7F85A28210ADD6E6005171E3</string>
-				<string>7F088CF010FFAACD00E1C8E2</string>
+				<string>7F088D2510FFDD4900E1C8E2</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

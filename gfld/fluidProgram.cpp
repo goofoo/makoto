@@ -204,9 +204,9 @@ static const char *programSource =
 "	half magSqr = max(EPSILON, dot(force, force));"
 "	force = force / sqrt(magSqr);" 
 
-//"	h4gridneighbourst(u, IN.TexCoord, IN.coordZ, left, right, bottom, top, back, front);"
-//"	half3 vC = half3((top.z - bottom.z) - (front.y - back.y), (front.x - back.x) - (right.z - left.z), (right.y - left.y) - (top.x - bottom.x)) * 0.5;"
-"	half3 vC = h4texRECT(v, IN.TexCoord).xyz;" 
+"	h4gridneighbourst(u, IN.TexCoord, IN.coordZ, left, right, bottom, top, back, front);"
+"	half3 vC = half3((top.z - bottom.z) - (front.y - back.y), (front.x - back.x) - (right.z - left.z), (right.y - left.y) - (top.x - bottom.x)) * 0.5;"
+//"	half3 vC = h4texRECT(v, IN.TexCoord).xyz;" 
 "	force = Ks * cross(force, vC);"
 "	return h4texRECT(u, IN.TexCoord) + half4(force,1.0);"
 "}"
