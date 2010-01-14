@@ -516,22 +516,30 @@ void FluidSolver::update()
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_rgb_fbo);
 	f_cg->begin();
+// advect density
+	glDrawBuffer(GL_COLOR_ATTACHMENT6_EXT);
+	f_cg->advectBegin(i_velocityTexture, img_density, m_width, m_height, m_depth, m_tile_s, m_conserve_denisty);
+	drawQuad();
+	f_cg->advectEnd();
+	
 // add density
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
 
-	f_cg->addTemperatureBegin(img_density, img_impuls, m_source_density);
+	f_cg->addTemperatureBegin(i_bufTexture, img_impuls, m_source_density);
 	drawQuad();
 	f_cg->addTemperatureEnd();
 	
 // add temperature
-	glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);        
+	glDrawBuffer(GL_COLOR_ATTACHMENT6_EXT);        
 	f_cg->begin();
 	
 	f_cg->advectBegin(i_velocityTexture, img_temper, m_width, m_height, m_depth, m_tile_s, 0.98f);
 	drawQuad();
 	f_cg->advectEnd();
+	
+	glDrawBuffer(GL_COLOR_ATTACHMENT1_EXT);
 
-	f_cg->addTemperatureBegin(img_temper, img_impuls, fTemperature);
+	f_cg->addTemperatureBegin(i_bufTexture, img_impuls, fTemperature);
 	drawQuad();
 	f_cg->addTemperatureEnd();
 	
@@ -636,10 +644,6 @@ glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RGB, GL_FLOAT, m_velocity
 
 // advect density
 	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);        
-	
-	f_cg->advectBegin(i_velocityTexture, img_density, m_width, m_height, m_depth, m_tile_s, m_conserve_denisty);
-	drawQuad();
-	f_cg->advectEnd();
 	
 // density diffusion
 	if(m_diffusion > 0.f) {
