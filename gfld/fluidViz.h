@@ -50,7 +50,7 @@ public:
 	static MObject	atexz;
 	static MObject	asaveCache;
 	static MObject	aoutDesc;
-
+	static MObject aoutval;
 public: 
 	static	MTypeId		id;
 private:

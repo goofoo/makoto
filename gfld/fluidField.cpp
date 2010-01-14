@@ -16,6 +16,8 @@ MObject	fluidField::aobstacle;
 MObject	fluidField::ainDesc;
 MObject	fluidField::ainAge;
 MObject	fluidField::asourcegeo;
+MObject	fluidField::aoutval;
+MObject	fluidField::ainval;
 
 fluidField::fluidField():
 m_rx(32),
@@ -77,6 +79,19 @@ MStatus fluidField::initialize()
 	zCheckStatus(addAttribute(asourcegeo), "ERROR adding sourcegeo");
 	
 	attributeAffects(asourcegeo, mOutputForce);
+	
+	MFnNumericAttribute		numAttr;
+	aoutval = numAttr.create( "outVal", "otv", MFnNumericData::kDouble, 0.0 );
+	numAttr.setStorable(false);
+	numAttr.setKeyable(false);
+	addAttribute( aoutval );
+	
+	ainval = numAttr.create( "inVal", "ivl", MFnNumericData::kDouble, 0.0 );
+	numAttr.setStorable(false);
+	numAttr.setKeyable(false);
+	addAttribute( ainval );
+	
+	attributeAffects(ainval, aoutval);
 
 	return( MS::kSuccess );
 }
@@ -91,7 +106,13 @@ MStatus fluidField::compute(const MPlug& plug, MDataBlock& block)
 	MStatus status;
 	int do_save_cache;
 	
-	if( plug == mOutputForce) {
+	if(plug == aoutval) {
+
+		block.setClean( plug );
+
+		return( MS::kSuccess );
+	}
+	else if( plug == mOutputForce) {
 		int ison, rx, ry, rz;
 		float Kbuoyancy, Kswirl, Kvelocity, Ktemperature, temperatureLoss, wind_x, wind_z, conserve_density, source_density;
 		float Kdiffusion;

@@ -87,6 +87,10 @@ global proc zcreateFluidField()
 		connectAttr -f ($particle[0]+".age") ($field+".age");
 		connectAttr -f ("time1.outTime") ($field+".currentTime");
 		connectAttr -f ($particle[0]+".startFrame") ($field+".startTime");
+		connectAttr -f ($viz+".outVal") ($field+".inVal");
+		
+		string $dummy = `createNode -n "dummy" transform`;
+		connectAttr -f ($field + ".outVal") ($dummy+".translateX");
 		
 		select -r $viz;
 		string $transform[] = `pickWalk -d up`;
@@ -245,7 +249,7 @@ global proc zfluid_setEnableAll(int $value)
 
 global proc zfluid_demo()
 {
-	string $src[] = `polyCreateFacet -ch off -tx 1 -s 1 -p 5.874143 1 5.742566 -p -0.159824 1 -5.652077 -p -5.494297 1 5.572607`;
+	string $src[] = `polyCreateFacet -ch off -tx 1 -s 1 -p 2.5 1 2.5  -p 2.5 1 -2.5 -p -2.5 1 -2.5 -p -2.5 1 2.5 `;
 	select -r $src[0];
 	$src = `pickWalk -d down`;
 	string $particle[] = `particle -name jetparticle`;

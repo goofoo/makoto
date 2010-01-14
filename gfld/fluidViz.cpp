@@ -47,6 +47,7 @@ MObject	fluidViz::asaveCache;
 MObject	fluidViz::ashotex;
 MObject	fluidViz::atexz;
 MObject	fluidViz::aoutDesc;
+MObject fluidViz::aoutval;
 
 fluidViz::fluidViz() : m_pDesc(0) 
 {
@@ -60,7 +61,7 @@ fluidViz::~fluidViz() {if(m_pDesc) delete m_pDesc;}
 
 MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 {
-        
+	if(plug == aoutDesc) {
 	int rx = zGetIntAttr(block, resolutionX);
 	int ry = zGetIntAttr(block, resolutionY);
 	int rz = zGetIntAttr(block, resolutionZ);
@@ -109,7 +110,8 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 		
 		if(pData) pData->setDesc(m_pDesc);
 	
-		// Update outConstraint.
+		MGlobal::displayInfo("update fluid desc");
+		
 		MDataHandle outDescHandle = block.outputValue(aoutDesc);
 		status = outDescHandle.set(pData);
 		
@@ -117,6 +119,8 @@ MStatus fluidViz::compute( const MPlug& plug, MDataBlock& block )
 		block.setClean(aoutDesc);
 	
 	return MS::kSuccess;
+	}
+	else return MS::kUnknownParameter;
 }
 
 void fluidViz::draw( M3dView & view, const MDagPath & /*path*/, 
@@ -287,6 +291,11 @@ MStatus fluidViz::initialize()
 	zCheckStatus(status, "ERROR creating output fluid desc");
 	status = addAttribute(aoutDesc);
 	
+	aoutval = numAttr.create( "outVal", "otv", MFnNumericData::kDouble, 0.0 );
+	numAttr.setStorable(false);
+	numAttr.setKeyable(false);
+	addAttribute( aoutval );
+	
 	attributeAffects(aenable, aoutDesc);
 	attributeAffects(asaveCache, aoutDesc);
 	attributeAffects(ashotex, aoutDesc);
@@ -300,10 +309,30 @@ MStatus fluidViz::initialize()
 	attributeAffects(atemperature, aoutDesc);
 	attributeAffects(aconserveTemperature, aoutDesc);
 	attributeAffects(aconserveDensity, aoutDesc);
+	attributeAffects(asourceDensity, aoutDesc);
 	attributeAffects(awindx, aoutDesc);
 	attributeAffects(awindz, aoutDesc);
 	attributeAffects(atexz, aoutDesc);
 	attributeAffects(adiffusion, aoutDesc);
+	
+	attributeAffects(aenable, aoutval);
+	attributeAffects(asaveCache, aoutval);
+	attributeAffects(ashotex, aoutval);
+	attributeAffects(asize, aoutval);
+	attributeAffects(resolutionX, aoutval);
+	attributeAffects(resolutionY, aoutval);
+	attributeAffects(resolutionZ, aoutval);
+	attributeAffects(abuoyancy, aoutval);
+	attributeAffects(aswirl, aoutval);
+	attributeAffects(aconserveVelocity, aoutval);
+	attributeAffects(atemperature, aoutval);
+	attributeAffects(aconserveTemperature, aoutval);
+	attributeAffects(aconserveDensity, aoutval);
+	attributeAffects(asourceDensity, aoutval);
+	attributeAffects(awindx, aoutval);
+	attributeAffects(awindz, aoutval);
+	attributeAffects(atexz, aoutval);
+	attributeAffects(adiffusion, aoutval);
 	
 	return MS::kSuccess;
 }
@@ -358,7 +387,7 @@ MStatus fluidViz::connectionMade ( const  MPlug & plug, const  MPlug & otherPlug
 		m_pDesc->wind_x = wind_x;
 		m_pDesc->wind_z = wind_z;
 			
-		MGlobal::displayInfo("update fluid desc");
+		MGlobal::displayInfo("connect fluid desc");
 		return MS::kSuccess;
 	}
 	

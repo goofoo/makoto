@@ -549,7 +549,7 @@ void FluidSolver::update()
 	f_cg->addVelocityBegin(i_velocityTexture, img_impuls);
 	drawQuad();
 	f_cg->addVelocityEnd();
-
+	
 	f_cg->abcBegin(i_velocityTexture, i_offsetTexture, m_width, m_height, m_depth, m_tile_s);
 	drawQuad();
 	f_cg->abcEnd();
@@ -625,7 +625,7 @@ void FluidSolver::update()
 	f_cg->boundaryBegin(i_bufTexture,-1.0f);
 	drawBoundary();
 	f_cg->boundaryEnd();
-
+	
 	glReadBuffer(GL_COLOR_ATTACHMENT6_EXT);
 glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RGB, GL_FLOAT, m_velocityField);
 
@@ -642,6 +642,11 @@ glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RGB, GL_FLOAT, m_velocity
 	f_cg->advectBegin(i_velocityTexture, img_density, m_width, m_height, m_depth, m_tile_s, m_conserve_denisty);
 	drawQuad();
 	f_cg->advectEnd();
+	
+// cutoff
+	f_cg->cutoffBegin(i_xTexture, i_yTexture, i_zTexture, img_density);
+	drawQuad();
+	f_cg->cutoffEnd();
 	
 // density diffusion
 	if(m_diffusion > 0.f) {

@@ -201,7 +201,7 @@ static const char *programSource =
 "	half4 left, right, bottom, top, back, front;"
 "	h4gridneighbourst(v, IN.TexCoord, IN.coordZ, left, right, bottom, top, back, front);"
 "	half3 force = 0.5 * half3(abs(right.x) - abs(left.x), abs(top.y) - abs(bottom.y), abs(front.z) - abs(back.z));\n" 
-"	half magSqr = max(0.001, dot(force, force));"
+"	half magSqr = max(EPSILON, dot(force, force));"
 "	force = force / sqrt(magSqr);" 
 
 //"	h4gridneighbourst(u, IN.TexCoord, IN.coordZ, left, right, bottom, top, back, front);"
@@ -280,6 +280,12 @@ static const char *programSource =
 "half4 nochange(vfconn IN, uniform samplerRECT x) : COLOR \n"
 "{"
 "	return h4texRECT(x, IN.TexCoord);"
+"}"
+
+"half4 cutoff(vfconn IN, uniform samplerRECT x, uniform samplerRECT y, uniform samplerRECT z, uniform samplerRECT q) : COLOR"
+"{"
+"	half4 opa = h4texRECT(x, IN.coord3D.zy) * h4texRECT(y, IN.coord3D.xz) * h4texRECT(z, IN.coord3D.xy);"
+"	return h4texRECT(q, IN.TexCoord) * (half4(1.0) - saturate(opa));"
 "}"
 
 "\n";
@@ -474,6 +480,15 @@ m_frag_advect(0)
 	cgGLLoadProgram(m_frag_nochange);
 	nochange_x = cgGetNamedParameter(m_frag_nochange, "x");
 	
+	m_frag_cutoff = cgCreateProgram(m_context, CG_SOURCE, programSource, m_frag_profile, "cutoff", 0);
+	
+	if (m_frag_cutoff == NULL) cgCheckError("ERROR create cutoff");
+	
+	cgGLLoadProgram(m_frag_cutoff);
+	cutoff_x = cgGetNamedParameter(m_frag_cutoff, "x");
+	cutoff_y = cgGetNamedParameter(m_frag_cutoff, "y");
+	cutoff_z = cgGetNamedParameter(m_frag_cutoff, "z");
+	cutoff_q = cgGetNamedParameter(m_frag_cutoff, "q");
 }
 
 CFluidProgram::~CFluidProgram(void)
@@ -809,6 +824,31 @@ void CFluidProgram::nochangeBegin(GLuint i_textureX)
 void CFluidProgram::nochangeEnd()
 {
 	cgGLDisableTextureParameter(nochange_x);
+}
+
+void CFluidProgram::cutoffBegin(GLuint iX, GLuint iY, GLuint iZ, GLuint iq)
+{
+	cgGLBindProgram(m_frag_cutoff);
+	
+	cgGLSetTextureParameter(cutoff_x, iX);
+	cgGLEnableTextureParameter(cutoff_x);
+	
+	cgGLSetTextureParameter(cutoff_y, iY);
+	cgGLEnableTextureParameter(cutoff_y);
+	
+	cgGLSetTextureParameter(cutoff_z, iZ);
+	cgGLEnableTextureParameter(cutoff_z);
+	
+	cgGLSetTextureParameter(cutoff_q, iq);
+	cgGLEnableTextureParameter(cutoff_q);
+}
+
+void CFluidProgram::cutoffEnd()
+{
+	cgGLDisableTextureParameter(cutoff_x);
+	cgGLDisableTextureParameter(cutoff_y);
+	cgGLDisableTextureParameter(cutoff_z);
+	cgGLDisableTextureParameter(cutoff_q);
 }
 
 //:~

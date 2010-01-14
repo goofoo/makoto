@@ -73,7 +73,8 @@ public:
 	static MObject	asourcegeo;
 	static MObject	ainDesc;
 	static MObject	ainAge;
-
+	static MObject	ainval;
+	static MObject	aoutval;
 private:
 
 	// data

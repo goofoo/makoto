@@ -65,6 +65,8 @@ public:
 	void diffusionEnd();
 	void nochangeBegin(GLuint i_textureX);
 	void nochangeEnd();
+	void cutoffBegin(GLuint iX, GLuint iY, GLuint iZ, GLuint iq);
+	void cutoffEnd();
 	
 private:
 	CGcontext m_context;
@@ -94,6 +96,7 @@ private:
 	CGprogram m_frag_particle;
 	CGprogram m_frag_diffusion;
 	CGprogram m_frag_nochange;
+	CGprogram m_frag_cutoff;
 	
 	CGparameter modelViewMatrix;
 	CGparameter advect_timeStep, advect_u, advect_q, advect_dimensions, advect_alpha;
@@ -114,5 +117,6 @@ private:
 	CGparameter particle_modelViewMatrix;
 	CGparameter diffusion_x, diffusion_kd;
 	CGparameter nochange_x;
+	CGparameter cutoff_x, cutoff_y, cutoff_z, cutoff_q;
 	string errorlog;
 };
