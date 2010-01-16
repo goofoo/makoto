@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "view hdr", "fluid10.vcproj", "{681412B0-F197-4A2F-9263-DEA2E8690146}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fluid", "fluid10.vcproj", "{681412B0-F197-4A2F-9263-DEA2E8690146}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,6 +8,10 @@ Global
 		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
+		release2009|Win32 = release2009|Win32
+		release2009|x64 = release2009|x64
+		release2010|Win32 = release2010|Win32
+		release2010|x64 = release2010|x64
 		ReleaseDebug|Win32 = ReleaseDebug|Win32
 		ReleaseDebug|x64 = ReleaseDebug|x64
 	EndGlobalSection
@@ -20,6 +24,14 @@ Global
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.Release|Win32.Build.0 = Release|Win32
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.Release|x64.ActiveCfg = Release|x64
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.Release|x64.Build.0 = Release|x64
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2009|Win32.ActiveCfg = release2009|Win32
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2009|Win32.Build.0 = release2009|Win32
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2009|x64.ActiveCfg = release2009|x64
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2009|x64.Build.0 = release2009|x64
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2010|Win32.ActiveCfg = release2010|Win32
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2010|Win32.Build.0 = release2010|Win32
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2010|x64.ActiveCfg = release2010|x64
+		{681412B0-F197-4A2F-9263-DEA2E8690146}.release2010|x64.Build.0 = release2010|x64
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.ReleaseDebug|Win32.ActiveCfg = ReleaseDebug|Win32
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.ReleaseDebug|Win32.Build.0 = ReleaseDebug|Win32
 		{681412B0-F197-4A2F-9263-DEA2E8690146}.ReleaseDebug|x64.ActiveCfg = ReleaseDebug|x64

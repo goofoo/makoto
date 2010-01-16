@@ -118,6 +118,7 @@ protected:
 	float m_conserve_denisty, m_source_density;
 	char m_needDensity;
 	float m_diffusion;
+	char m_has_obstacles;
 };
 
 #endif

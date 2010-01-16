@@ -819,6 +819,7 @@ void CFluidProgram::nochangeBegin(GLuint i_textureX)
 	cgGLBindProgram(m_frag_nochange);
 	
 	cgGLSetTextureParameter(nochange_x, i_textureX);
+	cgGLEnableTextureParameter(nochange_x);
 }
 
 void CFluidProgram::nochangeEnd()

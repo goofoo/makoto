@@ -220,7 +220,7 @@ void FluidSolver::initialize(int width, int height, int depth)
 	
 	glGenTextures(1, &img_density);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_density);
-	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB16F_ARB, m_frame_width, m_frame_height, 0, GL_RGBA, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGB16F_ARB, m_frame_width, m_frame_height, 0, GL_RGB, GL_FLOAT, 0);
 	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, 
                     GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB, 
@@ -644,9 +644,11 @@ glReadPixels( 0, 0,  m_frame_width, m_frame_height, GL_RGB, GL_FLOAT, m_velocity
 	f_cg->advectEnd();
 	
 // cutoff
-	f_cg->cutoffBegin(i_xTexture, i_yTexture, i_zTexture, img_density);
-	drawQuad();
-	f_cg->cutoffEnd();
+	if(m_has_obstacles) {
+		f_cg->cutoffBegin(i_xTexture, i_yTexture, i_zTexture, img_density);
+		drawQuad();
+		f_cg->cutoffEnd();
+	}
 	
 // density diffusion
 	if(m_diffusion > 0.f) {
@@ -968,9 +970,12 @@ void FluidSolver::processObstacles(const MObjectArray& obstacles)
 
 // no object		
 	if(obstacles.length() < 1) {
+		m_has_obstacles = 0;
 		glPopAttrib();
 		return;
 	}
+	
+	m_has_obstacles = 1;
 
 	MStatus status;
 	
@@ -1241,41 +1246,40 @@ void FluidSolver::setFrameView()
 }
 
 void FluidSolver::showTexture(int itex, int islice)
-{
-	glColor3f(1,1,1);
+{	
+	f_cg->begin();
 	switch (itex)
 	{
 		case 1:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_density);
+			f_cg->nochangeBegin( img_density);
 			break;
 		case 2:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_temper);
+			f_cg->nochangeBegin( img_temper);
 			break;
 		case 3:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_pressureTexture);
+			f_cg->nochangeBegin( i_pressureTexture);
 			break;
 		case 4:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, img_impuls);
+			f_cg->nochangeBegin( img_impuls);
 			break;
 		case 5:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_offsetTexture);
+			f_cg->nochangeBegin( i_offsetTexture);
 			break;
 		case 6:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_vorticityTexture);
+			f_cg->nochangeBegin( i_vorticityTexture);
 			break;
 		case 7:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_divergenceTexture);
+			f_cg->nochangeBegin( i_divergenceTexture);
 			break;
 		case 8:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_velocityTexture);
+			f_cg->nochangeBegin( i_velocityTexture);
 			break;
 		default:
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, i_bufTexture);
-			break;
+			f_cg->nochangeBegin( i_bufTexture);
 	}
-	glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	showSlice(islice);
-	glDisable(GL_TEXTURE_RECTANGLE_ARB);
+	f_cg->nochangeEnd();
+	f_cg->end();
 }
 
 void FluidSolver::showSlice(int i)
