@@ -504,6 +504,16 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/GR /GS /EHsc"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="D:\local\Cg\include;D:\Maya2010x86\include;D:\Deploy\include"
+				PreprocessorDefinitions="OPENEXR_DLL;_CRT_SECURE_NO_DEPRECATE;NDEBUG;WIN32;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				WarningLevel="3"
+				CompileAs="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -516,8 +526,16 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/export:initializePlugin /export:uninitializePlugin "
+				AdditionalDependencies="OpenMaya.lib Foundation.lib OpenMayaFX.lib OpenMayaUI.lib cg.lib cgGL.lib half.lib ilmimf.lib iex.lib zlib.lib"
+				OutputFile="..\module\plug-ins\zFluid2010x86.mll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="D:\Deploy\lib\Release;D:\local\Cg\lib;D:\Maya2010x86\lib"
+				IgnoreDefaultLibraryNames=""
+				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
